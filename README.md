@@ -74,7 +74,7 @@ Importing Levels
 
    Then install virtualenv: `pip install virtualenv`
 
-1. Set up chapterutil:
+2. Set up chapterutil:
 
    ```
    # All of these must be run IN THE SAME TERMINAL
@@ -83,12 +83,16 @@ Importing Levels
    pip install -r requirements.txt
    ```
 
-1. Download the sheet from Google Sheets as XSLX.
-1. Create any JSON files for chapters that did not previously
+3. Download the sheet from Google Sheets as XSLX:
+
+   https://docs.google.com/spreadsheets/d/178_SiWADvfS1NkWVbd6ZY78iSxccc-foOLL2WT5P3uI
+
+4. Create any JSON files for chapters that did not previously
    exist. (Just copy an existing JSON file and edit its title/name. To
    preserve continuity of what aliens appear, try to copy the chapter
    immediately preceding the new chapter.)
-1. Run the following script: `bash automate.sh
+
+5. Run the following script: `bash automate.sh
    PATH/TO/XLSX/FILE.xlsx`. Again, this must be run from the same
    terminal as previously.
 
