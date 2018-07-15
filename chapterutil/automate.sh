@@ -2,21 +2,26 @@
 
 set -e
 
-# https://stackoverflow.com/a/34676160
-# the temp directory used, within $DIR
-# omit the -p parameter to create a temporary directory in the default location
-WORK_DIR=$(mktemp -d "$(pwd)/$$")
-
-# check if tmp dir was created
-if [[ ! "$WORK_DIR" || ! -d "$WORK_DIR" ]]; then
-  echo "Could not create temp dir"
+function usage {
+  echo "Usage: automate.sh [XLSX file | CSV directory]"
+  echo "Probably should use 'levels' as the second argument"
   exit 1
+}
+
+if [[ $# != 1 ]]
+then
+  usage
 fi
+
+gen_csv=0
 
 # deletes the temp directory
 function cleanup {
-  rm -rf "$WORK_DIR"
-  echo "Deleted temp working directory $WORK_DIR"
+  if [[ "$gen_csv" = 1 ]]
+  then
+    rm -rf "$WORK_DIR"
+    echo "Deleted temp working directory $WORK_DIR"
+  fi
 }
 
 # register the cleanup function to be called on the EXIT signal
@@ -24,10 +29,28 @@ trap cleanup EXIT
 
 ## Start of script
 
-xlsx2csv $1 -i -s 0 | python splitcsv.py ${WORK_DIR}
+if [[ -d "$1" ]]
+then
+  gen_csv=0
+  WORK_DIR="$1"
+else
+  gen_csv=1
+  WORK_DIR=$(mktemp -d "$(pwd)/temp.XXXX")
+
+# check if tmp dir was created
+  if [[ ! "$WORK_DIR" || ! -d "$WORK_DIR" ]]; then
+    echo "Could not create temp dir"
+    exit 1
+  fi
+  xlsx2csv "$1" -i -s 0 | python splitcsv.py ${WORK_DIR}
+fi
 
 for filepath in ${WORK_DIR}/*.csv; do
     filename=$(basename ${filepath})
     echo Importing ${filename%.*}
     python chapterutil.py ${filepath} ../resources/levels-progression/${filename%.*}.json
 done
+
+#cd "$WORK_DIR"
+#echo "Spawning a shell in $WORK_DIR"
+#$SHELL

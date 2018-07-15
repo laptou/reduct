@@ -1,0 +1,10 @@
+board,goal,textgoal,,toolbox,defines,globals,syntax,animationScales,fade
+"['_(3)', '_(8)', 'addOne(_)']","['4', '8']",,76: should illustrate direct application to show equivalence...,"['__unlimited;addOne;', '__unlimited;doNothing;']",,{},[],{},{}
+"['_(addOne(4))', '_(_(1))', 'addOne(_(10))']","['2', '6', '11']",,,"['addOne', 'addOne', 'doNothing', 'doNothing']",,{},[],{},{}
+"['x => C', '__tests(f(A), f(B))']","['C', 'C']",,,[''],,{},[],{},{}
+"['__tests(f(A), f(C))']","['A', 'A']",,,"['x => A', 'x => B', 'x => C']",,{},[],{},{}
+"['__tests(f(2), f(6))']","['3', '7']",,,['__unlimited;addOne;'],,{},[],{},{}
+"['function starify(x) { return A; }', 'function squarify(x) { return B; }', '__tests(f(C), f(B))']","['A', 'A']",,,"['__unlimited; starify', '__unlimited; squarify']",,{},[],{},{}
+"['__argumentAnnotated; function threeify(x) { return _; }', '__tests(f(1), f(2), f(3))']","['3', '3', '3']",Define a function that outputs 3,,"['__unlimited; threeify', 'x => _', 'x', '1', '2', '3']",['function threeify(x) { return 3; }'],{},[],{},{}
+"['__tests(f(2), f(3), f(1))']","['2', '3', '4']",,,"['threeify', 'addOne', 'doNothing']",,{},[],{},{}
+"['function addThree(x) { return _; }', '__tests(f(2), f(6))', 'x']","['5', '9']",Define a function that computes x plus 3,,"['__unlimited; addThree', 'addOne', 'addOne', 'addOne', '__unlimited;doNothing;']",['function addThree(x) { return addOne(addOne(addOne(x))); }'],{},[],{},{}

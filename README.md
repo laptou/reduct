@@ -63,41 +63,65 @@ If the build system gets confused and doesn't seem to pick up changes
 to files, delete the `.cache` folder in the project directory and try
 again.
 
-Importing Levels
+Editing levels
 ----------------
 
-1. Go to the `chapterutil` directory. Make sure you have Python 3 and
-   virtualenv installed.
+Levels used by the running server are stored in JSON form in the
+resources/levels-progression directory.
 
-   MacOS instructions:
-   http://docs.python-guide.org/en/latest/starting/install3/osx/
+Previously these were generated from a Google sheet. Now that sheet has been
+converted to CSV files in the chapterutil/levels that can be used to update the
+levels completely locally. These CSV files are the place to make edits to level
+content, NOT the JSON files.
 
-   Then install virtualenv: `pip install virtualenv`
+Instructions:
 
-1. Set up chapterutil:
+0. Make sure you have Python 3 installed.
+1. Go to the `chapterutil` directory.
+2. Run "automate.sh levels". This will update the JSON files with the level information.
+   Note that the JSON files have some information that is separate from the level
+   information, so they are also source files.
 
-   ```
-   # All of these must be run IN THE SAME TERMINAL
-   virtualenv -p python3 venv
-   source venv/bin/activate
-   pip install -r requirements.txt
-   ```
+    --------
+    Old instructions:
+    --------
 
-1. Download the sheet from Google Sheets as XSLX.
-1. Create any JSON files for chapters that did not previously
-   exist. (Just copy an existing JSON file and edit its title/name. To
-   preserve continuity of what aliens appear, try to copy the chapter
-   immediately preceding the new chapter.)
-1. Run the following script: `bash automate.sh
-   PATH/TO/XLSX/FILE.xlsx`. Again, this must be run from the same
-   terminal as previously.
+    0. Go to the `chapterutil` directory. Make sure you have Python 3 and
+        virtualenv installed.
 
-   If you're running this and have previously set it up, run `source
-   venv/bin/activate` first.
+        MacOS instructions:
+        http://docs.python-guide.org/en/latest/starting/install3/osx/
 
-   It might spit out warnings about not being able to import things -
-   this is caused by the rows in the spreadsheet that just contain
-   notes.
+        Then install virtualenv: `pip install virtualenv`
+
+    1. Set up chapterutil:
+
+    ```
+    # All of these must be run IN THE SAME TERMINAL
+    virtualenv -p python3 venv
+    source venv/bin/activate
+    pip install -r requirements.txt
+    ```
+
+    2. Download the sheet from Google Sheets as XSLX.
+    3. Create any JSON files for chapters that did not previously
+    exist. (Just copy an existing JSON file and edit its title/name. To
+    preserve continuity of what aliens appear, try to copy the chapter
+    immediately preceding the new chapter.)
+    4. Run the following script: `bash automate.sh
+    PATH/TO/XLSX/FILE.xlsx`. Again, this must be run from the same
+    terminal as previously.
+
+    If you're running this and have previously set it up, run `source
+    venv/bin/activate` first.
+
+    It might spit out warnings about not being able to import things -
+    this is caused by the rows in the spreadsheet that just contain
+    notes.
+
+    --------
+    End old instructions
+    --------
 
 Generating Spritesheets
 -----------------------
