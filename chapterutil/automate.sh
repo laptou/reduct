@@ -4,8 +4,8 @@ set -e
 
 # https://stackoverflow.com/a/34676160
 # the temp directory used, within $DIR
-# omit the -p parameter to create a temporal directory in the default location
-WORK_DIR=$(mktemp -d -p "$(pwd)")
+# omit the -p parameter to create a temporary directory in the default location
+WORK_DIR=$(mktemp -d "$(pwd)/$$")
 
 # check if tmp dir was created
 if [[ ! "$WORK_DIR" || ! -d "$WORK_DIR" ]]; then
