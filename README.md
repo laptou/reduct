@@ -78,7 +78,7 @@ Instructions:
 
 0. Make sure you have Python 3 installed.
 1. Go to the `chapterutil` directory.
-2. Run "automate.sh levels". This will update the JSON files with the level information.
+2. Run "build.sh levels". This will update the JSON files with the level information.
    Note that the JSON files have some information that is separate from the level
    information, so they are also source files.
 
@@ -108,8 +108,8 @@ Instructions:
     exist. (Just copy an existing JSON file and edit its title/name. To
     preserve continuity of what aliens appear, try to copy the chapter
     immediately preceding the new chapter.)
-    4. Run the following script: `bash automate.sh
-    PATH/TO/XLSX/FILE.xlsx`. Again, this must be run from the same
+    4. Run the following script: `build.sh PATH/TO/XLSX/FILE.xlsx`.
+    Again, this must be run from the same
     terminal as previously.
 
     If you're running this and have previously set it up, run `source
