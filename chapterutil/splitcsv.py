@@ -8,7 +8,7 @@ def main():
 
     for line in sys.stdin:
         if line.startswith("--------"):
-            filename = f"{line[9:].split('-', 1)[-1].strip()}.csv"
+            filename = line[9:].split('-', 1)[-1].strip() + ".csv"
             print("Opening file", filename)
 
             if output_file:
