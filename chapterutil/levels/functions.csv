@@ -1,6 +1,6 @@
 ,board,goal,textgoal,toolbox,defines,globals,syntax,animationScales,tutorialUrl,FVG text,FVG text,FVG note
 0,"['x => x', 'A']",['A'],Drop the {star} onto the function!,[''],,{},[],{},,Drop the star <> onto the function <> to get a star <>,L,"Interestingly, here I wanted to say ""Apply"". Also identity might not be the best sarting point to express that function are producing a result. It might also be useful to introduce the notion of argument."
-1,"['x => x', 'x => x', 'x => x', 'A']",['A'],Use these functions to get {a star}.,[''],,{},['syntax-lambda'],{},http://www.cs.cornell.edu,Use these functions <> to get a star,L,
+1,"['x => x', 'x => x', 'x => x', 'A']",['A'],Use these functions to get {a star}.,[''],,{},['syntax-lambda'],{},resources/videos/test-video.html,Use these functions <> to get a star,L,
 2,"['x => x', 'x => x', 'x => x']",['x => x'],Functions can be dropped into functions.,[''],,{},[],{},,Drop a function <> onto a funtion <> to get one function,L,
 3,['1 + 1'],['2'],Evaluate the expression ,[],,{},[],{},,,[],
 4,['B'],"['B', 'B']",Use the toolbox at the bottom of the screen to place two {squares} on the board,"['C', 'B', 'A']",,{},[],{},,Use the toolbox at the bottomg of the screen to place two square on the board,L,
