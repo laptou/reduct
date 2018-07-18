@@ -7,12 +7,12 @@ export default function tutorial(url) {
 
         const video = outerContainer.querySelector("video");
         const source = video.querySelector("source");
-        alert("source currently is " + source.src + " = " + video.currentSrc)
+        // alert("source currently is " + source.src + " = " + video.currentSrc)
         source.setAttribute("src", url);
         video.src = url;
-        alert("source set to " + source.src + " = " + url + " = " + video.currentSrc);
+        // alert("source set to " + source.src + " = " + url + " = " + video.currentSrc);
         video.load();
-        alert("source is now " + source.src + " = " + url + " = " + video.currentSrc);
+        // alert("source is now " + source.src + " = " + url + " = " + video.currentSrc);
         const continueButton = outerContainer.querySelector("button");
         continueButton.style.display = "none";
         video.play();
