@@ -31,7 +31,8 @@
             "syntax": [
                 "syntax-lambda"
             ], 
-            "textgoal": "Use these functions to get {a star}."
+            "textgoal": "Use these functions to get {a star}.", 
+            "tutorialUrl": "http://www.cs.cornell.edu"
         }, 
         {
             "animationScales": {}, 
