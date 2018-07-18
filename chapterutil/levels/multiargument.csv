@@ -12,4 +12,3 @@
 25,"['x => _', 'y => _', 'x => xx', 'C', 'B', 'B', 'A']","['A', 'C']",Create {a star} and {a triangle},build your own function to create a star and a Triangle,L,,"Too much of a puzzle, Move to challenge  (23)",[''],,{},[],{},,,,,,,,,,,,,,,,,,
 26,"['x => y => _', 'y => x => _', 'A', 'A', 'B', 'C', 'C']","['A', 'B']",Create {a star} and {a square},build your own functions to create a star and a square,P,,OK,"['x', 'y']",,{},[],{}
 27,"['x => y => _', 'y => x => _', 'A', 'A', 'A', 'B', 'C']",['B'],Create {a square},build your own functions to create a square,P,,OK,"['x', 'y']",,{},[],{},,,,,,,,,,,,,,,,,,
-,,,,,,,We feel we should cut about 5 levels toward the end.
