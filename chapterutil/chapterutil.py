@@ -21,8 +21,9 @@ fieldnames = {
     "syntax": ast.literal_eval,
     "animationScales": ast.literal_eval,
     "fade": ast.literal_eval,
+    "tutorialUrl": str
 }
-singleton_fields = {"textgoal", "globals", "animationScales"}
+singleton_fields = {"textgoal", "globals", "animationScales", "tutorialUrl"}
 field_defaults = {
     "animationScales": {},
     "globals": {},
