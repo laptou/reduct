@@ -93,6 +93,12 @@ function initialize() {
             toggleDev();
             e.preventDefault();
         }
+        else if (e.ctrlKey && e.code === "F9") {
+            document.querySelector("#goto-level").classList.add("visible");
+            document.querySelector("#goto-level input").value = "";
+            document.querySelector("#goto-level input").focus();
+            e.preventDefault();
+        }
         else if (e.shiftKey && e.code === "F9") {
             window.localStorage["version"] = "";
             Logging.resetState();
@@ -367,6 +373,13 @@ window.prev = function prev() {
     if (stg.pushState) stg.pushState("prev");
     start(() => progression.prevLevel());
 };
+
+window.jumpToLevel = function(lev) {
+    const d = document.querySelector("#goto-level");
+    d.classList.remove("visible");
+    progression.jumpToLevel(lev);
+    window.prev();
+}
 
 window.updateStateGraph = function updateStateGraph(networkData) {
     if (!document.querySelector("#state-graph")) {

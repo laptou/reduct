@@ -334,3 +334,13 @@ canvas {
 #tutorial > div > p {
     font-size: 1.25em;
 }
+
+#goto-level {
+    background-color: #fed;
+    border: 2px solid gray;
+    padding: 1em;
+    width: 30%;
+    position: fixed;
+    top: 100px;
+    left: 100px;
+}
