@@ -81,31 +81,35 @@ function initialize() {
     document.querySelector("#loading-container").remove();
 
     document.body.addEventListener("keyup", (e) => {
-        if (e.ctrlKey && e.code === "F6") {
-            window.prev();
-            e.preventDefault();
-        }
-        else if (e.ctrlKey && e.code === "F7") {
-            window.next();
-            e.preventDefault();
-        }
-        else if (e.ctrlKey && e.code === "F8") {
-            toggleDev();
-            e.preventDefault();
-        }
-        else if (e.ctrlKey && e.code === "F9") {
-            document.querySelector("#goto-level").classList.add("visible");
-            document.querySelector("#goto-level input").value = "";
-            document.querySelector("#goto-level input").focus();
-            e.preventDefault();
-        }
-        else if (e.shiftKey && e.code === "F9") {
-            window.localStorage["version"] = "";
-            Logging.resetState();
-            Logging.clearStaticLog();
-            Logging.saveState();
-            e.preventDefault();
-            window.location.reload();
+        if (e.ctrlKey) {
+            switch (e.code) {
+                case "F6":
+                    window.prev();
+                    e.preventDefault();
+                    break;
+                case "F7":
+                    window.next();
+                    e.preventDefault();
+                    break;
+                case "F8":
+                    toggleDev();
+                    e.preventDefault();
+                    break;
+                case "F9":
+                    document.querySelector("#goto-level").classList.add("visible");
+                    document.querySelector("#goto-level input").value = "";
+                    document.querySelector("#goto-level input").focus();
+                    e.preventDefault();
+                    break;
+                case "F10":
+                    window.localStorage["version"] = "";
+                    Logging.resetState();
+                    Logging.clearStaticLog();
+                    Logging.saveState();
+                    e.preventDefault();
+                    window.location.reload();
+                    break;
+            }
         }
     });
 
