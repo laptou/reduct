@@ -14,7 +14,8 @@
                 "A"
             ], 
             "syntax": [], 
-            "textgoal": "Drop the {star} onto the function!"
+            "textgoal": "Drop the {star} onto the function!", 
+            "tutorialUrl": "resources/videos/reduct-intro.mp4"
         }, 
         {
             "animationScales": {}, 
