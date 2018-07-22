@@ -1,0 +1,3 @@
+On this level, the toolbox at the bottom of the screen holds something new.
+The x and y are called variables. They are just names that stand for something else.
+The letters x and y are gray because they don't stand for anything right now.

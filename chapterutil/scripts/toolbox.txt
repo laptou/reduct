@@ -1,0 +1,4 @@
+The blue strip at the bottom of the screen is called the toolbox. It holds some
+things that you can drag onto the board to help solve the level. But you don't
+have to use things in the toolbox.  As long as they stay in the toolbox, they
+don't count against the goal.
