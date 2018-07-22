@@ -13,7 +13,7 @@
                 "B"
             ], 
             "syntax": [], 
-            "textgoal": "Build you own function to create a {square} and use it to create {a square}", 
+            "textgoal": "Build your own function to create a {square}", 
             "toolbox": [
                 "A", 
                 "B"
@@ -29,12 +29,13 @@
                 "A"
             ], 
             "syntax": [], 
-            "textgoal": "Create a function that gives back the input and create {a star}", 
+            "textgoal": "Hint: create a function that gives back the input", 
             "toolbox": [
                 "A", 
                 "x", 
                 "y"
-            ]
+            ], 
+            "tutorialUrl": "resources/videos/variables.mp4"
         }, 
         {
             "animationScales": {}, 

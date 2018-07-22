@@ -73,6 +73,12 @@ def csv2json(infile, outfile):
             level = {}
             skip_level = False
 
+            try:
+              if lvl['number'] == "SKIP":
+                skip_level = True
+            except KeyError as ke:
+                {}
+                
             for field, converter in fieldnames.items():
                 try:
                     if field not in lvl:
