@@ -22,11 +22,15 @@ function modifier(ast) {
 export function makeParser(jssemant) {
     return function parseES6(program, macros) {
         const ast = esprima.parse(program);
+        document.body.appendChild(document.createTextNode("parsed: " + JSON.stringify(ast.body[0])))
+        document.body.appendChild(document.createElement('br'))
 
         const mod = modifier(ast);
 
         if (ast.body.length === 1) {
             const result = parseNode(ast.body[0], macros);
+        document.body.appendChild(document.createTextNode("node: " + JSON.stringify(result)))
+        document.body.appendChild(document.createElement('br'))
             if (result === null) {
                 return fail(`Cannot parse program.`, program);
             }
@@ -220,6 +224,14 @@ export function makeParser(jssemant) {
             return jssemant.define(name, [], body);
         }
 
+        case "ArrayExpression": {
+            let a = [];
+            for (let e of node.elements) {
+                a.push(parseNode(e, macros));
+            }
+            return jssemant.array(a);
+        }
+
         default: return fail(`parsers.es6: Unrecognized ES6 node type ${node.type}`, node);
         }
     }
@@ -300,6 +312,15 @@ export function makeUnparser(jssemant) {
                 return `__defineAttach(${unparseES6(node.notch0)})`;
             }
             return "__defineAttach";
+        }
+        case "array": {
+            let result = "[", first = true;
+            for (let e of node.elements) {
+                if (!first) result += ",";
+                result += unparseES6(e);
+            }
+            result += "]";
+            return result;
         }
         default:
             console.error(`unparsers.es6: Unrecognized ES6 node type ${node.type}`, node);
