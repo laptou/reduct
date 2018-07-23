@@ -88,7 +88,7 @@ you can try to tackle these improvements:
   Currently a lot of things are hard-coded, and a lot of invariants
   are left unstated. (See :ref:`Expression Fields` for some of the
   core invariants.) It would be nice to use Immutable.js Records to
-  make the fields than an object has explicit. Also, it would be nice
+  make the fields that an object has explicit. Also, it would be nice
   to not hard-code expression types in the codebase (outside of
   semantics definitions). This refers to how the stage and the
   "generic" semantics functions hard-code what expressions are
