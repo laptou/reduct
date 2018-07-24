@@ -112,9 +112,15 @@ export default function transform(definition) {
                 for (const fieldName of exprDefinition.fields) {
                     result[fieldName] = params[argPointer++];
                 }
-                const subexprs = typeof exprDefinition.subexpressions === "function" ?
-                      exprDefinition.subexpressions(module, immutable.Map(result))
-                      : exprDefinition.subexpressions;
+                if (exprName === "array") {
+                    for (const e of result.elements) {
+                        params.push(e); // subexpr
+                    }
+                }
+                const map = immutable.Map(result);
+                const subexprs = typeof exprDefinition.subexpressions === "function"
+                                 ? exprDefinition.subexpressions(module, map)
+                                 : exprDefinition.subexpressions;
                 for (const fieldName of subexprs) {
                     result[fieldName] = params[argPointer++];
                 }
@@ -148,6 +154,14 @@ export default function transform(definition) {
             const nc = expr.get ? expr.get("numChildren") : expr.numChildren;
             for (let i = 0; i < nc; i++) {
                 result.push(`child${i}`);
+            }
+            return result;
+        }
+        if (type === "array") {
+            const result = [];
+            const nc = expr.get ? expr.get("elements").length : expr.elements.length
+            for (let i = 0; i < nc; i++) {
+                result.push(`elem${i}`);
             }
             return result;
         }
@@ -339,6 +353,9 @@ export default function transform(definition) {
         case "vtuple":
             // TODO: This isn't quite right - depends on the children
             return "expression";
+        case "array":
+            // TODO: This isn't quite right - depends on the children
+            return "expression";
         default:
             return module.definitionOf(expr).kind;
         }
@@ -432,7 +449,7 @@ export default function transform(definition) {
         return node.get("notches");
     };
 
-    /** Check whether two nodes have an ycompatible notches. */
+    /** Check whether two nodes have any compatible notches. */
     module.notchesCompatible = function(node1, node2) {
         const notches1 = node1.get("notches");
         const notches2 = node2.get("notches");
