@@ -355,7 +355,7 @@ export default function transform(definition) {
             return "expression";
         case "array":
             for (const e of expr.get("elements")) {
-                if (module.kind(immutable.Map(e)) == "expression") return "expression";
+                if (module.kind(immutable.Map(e)) != "value") return "expression";
             }
             return "value";
         default:
