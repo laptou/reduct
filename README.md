@@ -51,6 +51,16 @@ d004428b9d33a5c3a235b1f80a1a6641.png  resources
 
 Now you can copy the contents of this directory to a web server.
 
+Documentation
+-------------
+
+Some documentation of the game is found in the docs/ directory, and
+the file docs/README.md explains how to build the documentation.
+A possibly out-of-date version of the documentation can also be
+found here:
+
+    https://games.lidavidm.me/reduct-redux/docs/
+
 Debugging
 ---------
 
