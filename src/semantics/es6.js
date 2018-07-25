@@ -4,7 +4,7 @@ import * as animate from "../gfx/animate";
 import { makeParser, makeUnparser } from "../syntax/es6";
 import transform from "./transform";
 
-import apply from "./es6/value";
+import apply from "./es6/apply";
 import array from "./es6/array";
 import binop from "./es6/binop";
 import conditional from "./es6/conditional";
