@@ -105,8 +105,13 @@ export function hbox(childrenFunc, options={}, baseProjection=roundedRect) {
         let x = this.padding.left;
 
         let maxY = typeof this.minHeight === "number" ? this.minHeight : 40;
-        for (const [ childId, subexprId ] of this.children(exprId, state)) {
+        const kids = this.children(exprId, state)
+        for (const [ childId, subexprId ] of kids) {
+            if (childId == null) {
+                alert(childId)
+            }
             const childProjection = stage.views[childId];
+
 
             childProjection.parent = this;
 
