@@ -23,7 +23,6 @@ export default class BaseStage {
 
         this.effects = {};
 
-        this.scale = 1;
         this._width = width;
         this._height = height;
 
@@ -205,7 +204,6 @@ export default class BaseStage {
     }
 
     drawImpl() {
-        this.ctx.setTransform(1/this.scale, 0, 0, 1/this.scale, 0, 0);
         this.drawContents();
 
         this._redrawPending = false;

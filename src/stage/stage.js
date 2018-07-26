@@ -356,13 +356,12 @@ export default class Stage extends BaseStage {
         this.ctx.fillStyle = "#8ab7db";
         this.ctx.fillRect(0, 0, this.width, this.height);
         this.ctx.fillStyle = this.color;
-        const s = this.scale;
         gfxCore.primitive.roundRect(
             this.ctx,
-            25*s, 125*s,
-            (this.width - 50)*s,
-            (this.height - this.toolbox.size.h - 50 - 100)*s,
-            25*s,
+            25, 125,
+            this.width - 50,
+            this.height - this.toolbox.size.h - 50 - 100,
+            25,
             true, false
         );
 
