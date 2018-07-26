@@ -23,6 +23,7 @@ export default class BaseStage {
 
         this.effects = {};
 
+        this.scale = 1;
         this._width = width;
         this._height = height;
 
@@ -64,7 +65,6 @@ export default class BaseStage {
 
     /** Compute and resize the canvas when the window is resized. */
     computeDimensions() {
-        this.ctx.scale(1.0, 1.0);
         this._height = window.innerHeight - document.querySelector("#nav").offsetHeight;
         if (gfxCore.viewport.IS_PHONE) {
             this._width = window.innerWidth * 0.75;
@@ -205,6 +205,7 @@ export default class BaseStage {
     }
 
     drawImpl() {
+        this.ctx.setTransform(1/this.scale, 0, 0, 1/this.scale, 0, 0);
         this.drawContents();
 
         this._redrawPending = false;

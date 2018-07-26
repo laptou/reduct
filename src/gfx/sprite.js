@@ -17,7 +17,9 @@ export function sprite(options={}) {
         const ctx = stage.ctx;
         ctx.save();
 
-        const [ sx, sy ] = util.absoluteScale(this, offset);
+        let [ sx, sy ] = util.absoluteScale(this, offset);
+        sx *= stage.scale;
+        sy *= stage.scale;
 
         util.setOpacity(ctx, this.opacity, offset);
         const width = sx * this.size.w;
