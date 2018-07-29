@@ -352,7 +352,7 @@ export default class Stage extends BaseStage {
         this.sidebar.drawImpl(state);
 
         this.ctx.save();
-        this.ctx.translate(this.sidebarWidth, 0);
+        this.ctx.translate(this.sidebarWidth * this.scale, 0);
         this.ctx.fillStyle = "#8ab7db";
         this.ctx.fillRect(0, 0, this.width, this.height);
         this.ctx.fillStyle = this.color;

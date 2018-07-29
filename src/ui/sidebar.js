@@ -196,7 +196,7 @@ export default class Sidebar {
             this.fullWidth = Math.max(this.fullWidth, size.w + 20);
         }
 
-        ctx.translate(sidebarWidth - 15, 0);
+        ctx.translate(this.scale * (sidebarWidth - 15), 0);
         ctx.fillStyle = this.gradient;
         ctx.fillRect(0, 0, 15, this.stage.height);
 
