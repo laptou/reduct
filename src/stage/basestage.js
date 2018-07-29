@@ -78,11 +78,8 @@ export default class BaseStage {
         }
         this.canvas.setAttribute("width", this._width);
         this.canvas.setAttribute("height", this._height);
-        let scale = 1;
-        if (window.devicePixelRatio) {
-            scale *= window.devicePixelRatio;
-        }
-        this.scale = scale
+        const scale = window.devicePixelRatio ? window.devicePixelRatio : 1;
+        this.scale = scale // number of screen pixels per CSS pixel
         this.canvas.style.width = this._width + "px";
         this.canvas.style.height = this._height + "px";
         this.canvas.width = this._width * scale;
