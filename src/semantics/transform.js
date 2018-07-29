@@ -112,15 +112,14 @@ export default function transform(definition) {
                 for (const fieldName of exprDefinition.fields) {
                     result[fieldName] = params[argPointer++];
                 }
-                if (exprName === "array") {
+                if (exprName === "array" || exprName === "arrayvalue") {
                     for (const e of result.elements) {
-                        params.push(e); // subexpr
+                        params.push(e); // subexprs
                     }
                 }
-                const map = immutable.Map(result);
                 const subexprs = typeof exprDefinition.subexpressions === "function"
-                                 ? exprDefinition.subexpressions(module, map)
-                                 : exprDefinition.subexpressions;
+                    ? exprDefinition.subexpressions(module, result)
+                    : exprDefinition.subexpressions;
                 for (const fieldName of subexprs) {
                     result[fieldName] = params[argPointer++];
                 }
@@ -160,9 +159,9 @@ export default function transform(definition) {
         if (type === "array") {
             const result = [];
             const nc = expr.get ? expr.get("elements").length : expr.elements.length
-            for (let i = 0; i < nc; i++) {
-                result.push(`elem${i}`);
-            }
+                for (let i = 0; i < nc; i++) {
+                    result.push(`elem${i}`);
+                }
             return result;
         }
 
@@ -173,8 +172,8 @@ export default function transform(definition) {
 
         const subexprBase = defn.reductionOrder || defn.subexpressions;
         const subexprs = typeof subexprBase === "function" ?
-              subexprBase(module, expr)
-              : defn.reductionOrder || defn.subexpressions;
+            subexprBase(module, expr)
+            : defn.reductionOrder || defn.subexpressions;
         // Handle notches
         if (defn.notches && defn.notches.length > 0) {
             const result = subexprs.slice();
@@ -210,15 +209,15 @@ export default function transform(definition) {
     module.searchNoncapturing = function(nodes, targetName, exprId) {
         const result = [];
         module.map(nodes, exprId, (nodes, id) => {
-            const node = nodes.get(id);
-            if (node.get("type") === "lambdaVar" && node.get("name") === targetName) {
+                const node = nodes.get(id);
+                if (node.get("type") === "lambdaVar" && node.get("name") === targetName) {
                 result.push(id);
                 return [ node, nodes ];
-            }
-            return [ node, nodes ];
-        }, (nodes, node) => (
-            node.get("type") !== "lambda" ||
-                nodes.get(node.get("arg")).get("name") !== targetName));
+                }
+                return [ node, nodes ];
+                }, (nodes, node) => (
+                    node.get("type") !== "lambda" ||
+                    nodes.get(node.get("arg")).get("name") !== targetName));
         return result;
     };
 
@@ -230,15 +229,15 @@ export default function transform(definition) {
 
         const remainingNodes = board.concat(toolbox);
 
-        const containsReducableExpr = remainingNodes.some((id) => {
-            const node = nodes.get(id);
-            const kind = module.kind(node);
-            return kind === "expression" ||
+        const containsReduceableExpr = remainingNodes.some((id) => {
+                const node = nodes.get(id);
+                const kind = module.kind(node);
+                return kind === "expression" ||
                 kind === "statement" ||
                 node.get("type") === "lambda";
-        });
+                });
 
-        if (containsReducableExpr) {
+        if (containsReduceableExpr) {
             return true;
         }
 
@@ -251,9 +250,9 @@ export default function transform(definition) {
         // Only one thing in toolbox - does using it complete the level?
         if (toolbox.size === 1) {
             return checkVictory(state.withMutations((s) => {
-                s.set("toolbox", immutable.List());
-                s.set("board", remainingNodes);
-            }));
+                        s.set("toolbox", immutable.List());
+                        s.set("board", remainingNodes);
+                        }));
         }
 
         // Try adding any combination of toolbox items to the board -
@@ -279,9 +278,9 @@ export default function transform(definition) {
 
         for (const subset of powerset(toolbox.toArray())) {
             const matching = checkVictory(state.withMutations((s) => {
-                s.set("toolbox", toolbox.filter(i => subset.indexOf(i) === -1));
-                s.set("board", board.concat(immutable.List(subset)));
-            }));
+                        s.set("toolbox", toolbox.filter(i => subset.indexOf(i) === -1));
+                        s.set("board", board.concat(immutable.List(subset)));
+                        }));
             if (matching && Object.keys(matching).length > 0) {
                 return true;
             }
@@ -328,9 +327,9 @@ export default function transform(definition) {
             }
         }
         else if (target.get("type") === "lambdaArg" &&
-                 !state.getIn([ "nodes", target.get("parent"), "parent" ]) &&
-                 // Lambda vars can't be dropped into lambda args
-                 item.get("type") !== "lambdaVar") {
+                !state.getIn([ "nodes", target.get("parent"), "parent" ]) &&
+                // Lambda vars can't be dropped into lambda args
+                item.get("type") !== "lambdaVar") {
             return "arg";
         }
         return false;
@@ -350,12 +349,9 @@ export default function transform(definition) {
     /** Get the kind of an expression (e.g. "expression", "statement"). */
     module.kind = function(expr) {
         switch (expr.get("type")) {
-        case "vtuple":
-            // TODO: This isn't quite right - depends on the children
-            return "expression";
-        case "array":
-            // TODO: This isn't quite right - depends on the children
-            return "expression";
+            case "vtuple":
+                // TODO: This isn't quite right - depends on the children
+                return "expression";
         default:
             return module.definitionOf(expr).kind;
         }
