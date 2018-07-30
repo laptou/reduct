@@ -93,6 +93,11 @@ class Logger {
             this.info("Starting session with no logging.");
             return Promise.resolve();
         }
+        const player_id = document.getElementById("player_id");
+        console.log("player id " + player_id + ":" + player_id.value);
+        if (player_id.value) {
+            this.currentUserId = player_id.value;
+        }
 
         if (this.currentUserId === null) {
             this.currentUserId = random.getRandString(40);
