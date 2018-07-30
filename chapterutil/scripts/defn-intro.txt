@@ -1,0 +1,5 @@
+The red block is a definition. It lets you create a permanent name for
+something. This block allows you to define the name "star" to mean a star. A
+definition in the middle of the board doesn't do anything. To turn a definition
+on, you have to drag it to the upper left corner. You can also click on the
+left side of the screen to see all the definitions on a level.
