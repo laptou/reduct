@@ -220,14 +220,6 @@ export function makeParser(jssemant) {
             return jssemant.define(name, [], body);
         }
 
-        case "ArrayExpression": {
-            let a = [];
-            for (let e of node.elements) {
-                a.push(parseNode(e, macros));
-            }
-            return jssemant.array(a);
-        }
-
         default: return fail(`parsers.es6: Unrecognized ES6 node type ${node.type}`, node);
         }
     }
@@ -308,15 +300,6 @@ export function makeUnparser(jssemant) {
                 return `__defineAttach(${unparseES6(node.notch0)})`;
             }
             return "__defineAttach";
-        }
-        case "array": {
-            let result = "[", first = true;
-            for (let e of node.elements) {
-                if (!first) result += ",";
-                result += unparseES6(e);
-            }
-            result += "]";
-            return result;
         }
         default:
             console.error(`unparsers.es6: Unrecognized ES6 node type ${node.type}`, node);
