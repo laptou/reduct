@@ -354,10 +354,8 @@ export default function transform(definition) {
             // TODO: This isn't quite right - depends on the children
             return "expression";
         case "array":
-            for (const e of expr.get("elements")) {
-                if (module.kind(immutable.Map(e)) == "expression") return "expression";
-            }
-            return "value";
+            // TODO: This isn't quite right - depends on the children
+            return "expression";
         default:
             return module.definitionOf(expr).kind;
         }
