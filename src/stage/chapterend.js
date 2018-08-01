@@ -147,16 +147,17 @@ export default class ChapterEndStage extends BaseStage {
         const colStart = this.height / 3;
         const starTweens = [];
         const levelStars = [];
+        const starsPerRow = 10;
         for (let i = 0; i < chapter.levels.length; i++) {
             const remainingLevels = chapter.levels.length - i;
-            if (remainingLevels < 9 && i % 9 === 0) {
+            if (remainingLevels < starsPerRow && i % starsPerRow === 0) {
                 let spacingOffset = Math.floor(remainingLevels / 2);
                 if (remainingLevels % 2 === 0) spacingOffset -= 0.5;
                 rowStart = (this.width / 2) - (spacingOffset * spacing);
             }
 
-            const col = i % 9;
-            const row = Math.floor(i / 9);
+            const col = i % starsPerRow;
+            const row = Math.floor(i / starsPerRow);
             const star = gfx.shapes.star({
                 color: "gold",
                 anchor: { x: 0.5, y: 0.5 },

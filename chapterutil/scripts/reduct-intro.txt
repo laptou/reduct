@@ -1,0 +1,7 @@
+Welcome to Reduct! This is a game about programming.
+
+Reduct has a lot of levels. In every level, there's a funny looking guy 
+who will ask you to make something. This one is asking you to make a star
+and have nothing else left on the board. And that's pretty easy to do, because
+you can use this gray block, and just drop a star onto its left side, and
+a star comes out on the right side.

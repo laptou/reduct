@@ -1,0 +1,3 @@
+This is a new kind of block, which we call an application [show 'application'].
+When you click on it, it automatically drops the block on the right side into
+the function on the left.

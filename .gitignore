@@ -56,10 +56,17 @@ typings/
 
 # dotenv environment variables file
 .env
-
 .cache
-*~
 
+
+# distribution dir
 dist/
 
+# editor backup files
 \#*\#
+*~
+.*.sw?
+*.bak
+
+# movie projects
+*.mov

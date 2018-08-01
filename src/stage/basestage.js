@@ -64,7 +64,6 @@ export default class BaseStage {
 
     /** Compute and resize the canvas when the window is resized. */
     computeDimensions() {
-        this.ctx.scale(1.0, 1.0);
         this._height = window.innerHeight - document.querySelector("#nav").offsetHeight;
         if (gfxCore.viewport.IS_PHONE) {
             this._width = window.innerWidth * 0.75;
@@ -79,6 +78,12 @@ export default class BaseStage {
         }
         this.canvas.setAttribute("width", this._width);
         this.canvas.setAttribute("height", this._height);
+        const scale = window.devicePixelRatio ? window.devicePixelRatio : 1;
+        this.scale = scale // number of screen pixels per CSS pixel
+        this.canvas.style.width = this._width + "px";
+        this.canvas.style.height = this._height + "px";
+        this.canvas.width = this._width * scale;
+        this.canvas.height = this._height * scale;
     }
 
     /**
@@ -205,6 +210,7 @@ export default class BaseStage {
     }
 
     drawImpl() {
+        this.ctx.setTransform(this.scale, 0, 0, this.scale, 0, 0);
         this.drawContents();
 
         this._redrawPending = false;

@@ -352,6 +352,11 @@ export default function transform(definition) {
             case "vtuple":
                 // TODO: This isn't quite right - depends on the children
                 return "expression";
+            case "array":
+                for (const e of expr.get("elements")) {
+                    if (module.kind(immutable.Map(e)) != "value") return "expression";
+                }
+                return "value";
         default:
             return module.definitionOf(expr).kind;
         }

@@ -1,0 +1,10 @@
+This gray box you were just playing with is called a function. A
+function is like a box you can drop things into. When you drop
+something into a function, something comes out.  The thing you drop in is called
+the input.  It has a name. For this function the input is named x. The
+right side of the function tells you what comes out. The thing that
+comes out is called the output. For this function, the output is the
+same as the input; whatever you drop into the function comes back out.
+
+Here's another function. No matter what input you drop into this function, you get a star
+back as output.
