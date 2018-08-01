@@ -16,17 +16,7 @@ function arraySubexprs(module, map) {
 // Returns the fields that are supposed to be displayed by
 // the projection of an array
 function arrayFields(expr) {
-    const a = arraySubexprs(null, immutable.Map(expr));
-    const result = [];
-    let first = true;
-    for (const e of a) {
-        if (first) result.push("'['");
-        else result.push("','");
-        first = false;
-        result.push(e);
-    }
-    result.push("']'");
-    return result
+    return arraySubexprs(null, immutable.Map(expr));
 }
 
 export default {
