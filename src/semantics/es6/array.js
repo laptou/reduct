@@ -20,7 +20,8 @@ function arrayFields(expr) {
     const result = [];
     let first = true;
     for (const e of a) {
-        result.push(first ? "'['" : "','");
+        if (first) result.push("'['");
+        else result.push("','");
         first = false;
         result.push(e);
     }
@@ -30,15 +31,15 @@ function arrayFields(expr) {
 
 export default {
     array: {
-        kind: "expression", // transform.kind computes this dynamically
+        kind: "expression",
         type: "array",
         fields: ["elements"],
         subexpressions: arraySubexprs,
         projection: {
             type: "default",
+            shape: "()",
             fields: arrayFields,
-            subexpScale: 1.0,
-            color: "#bed"
+            subexpScale: 1.0
         }
     }
 }
