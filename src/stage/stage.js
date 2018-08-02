@@ -1007,14 +1007,15 @@ export default class Stage extends BaseStage {
                 const layoutId = this.allocate(layout);
 
                 let i = 0;
+                const starsPerRow = 10;
                 while (i < starList.length) {
                     const j = i;
                     rows.push(this.allocate(gfxCore.layout.hbox(
-                        () => starList.slice(j, j + 9),
+                        () => starList.slice(j, j + starsPerRow),
                         {},
                         gfxCore.baseProjection
                     )));
-                    i += 9;
+                    i += starsPerRow;
                 }
 
                 this.addEffect({
