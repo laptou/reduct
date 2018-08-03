@@ -345,3 +345,8 @@ canvas {
     top: 100px;
     left: 100px;
 }
+
+.error {
+    font-style: italic;
+    color: red
+}
