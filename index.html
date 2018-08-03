@@ -57,18 +57,30 @@
                 <section id="consent-body">
                     <h1>Welcome to Reduct!</h1>
                     <p>
-                        The Reduct game is part of scientific research on
-                        using a game to teach ideas about computer programming.
+                    We are studying how to make a video game to teach
+                    programming. If you agree to be in our study, you will play
+                    our video game and answer some questions about the game.
+                    While you play, the game will anonymously record how you
+                    play the game.</p>
+                    <p>You can ask questions about this study at
+                    any time. If you decide at any time not to finish, you can
+                    ask us to stop.
                     </p>
+                    <p>If you click “agree” below, it means that you have read
+                    this and that you want to be in the study. Click “disagree”
+                    if you don’t want to participate.</p>
 
-                <p><em>
-                    If you agree to play and be part of the study,
-                    please type in the number from your blue strip
-                    and click on the &ldquo;I Agree&rdquo; button.
-                </em></p>
+                    <p><em>
+                        If you agree to play and be part of the study,
+                        please type in the number from your blue strip
+                        and click on the &ldquo;I Agree&rdquo; button.
+                    </em></p>
                 <p>
                     Number: <input type="text" name="player_id" id="player_id" />
                 </p>
+                <script>
+                    setTimeout(() => document.getElementById("player_id").focus(), 250)
+                </script>
 
                 <span style="padding: 0 4em">&nbsp;</span>
                 <button id="consent-agree">I Agree</button>
