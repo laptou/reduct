@@ -76,13 +76,16 @@ again.
 Editing levels
 ----------------
 
-Levels used by the running server are stored in JSON form in the
-resources/levels-progression directory.
+The order of the chapters is defined by the variable PROGRESSIONS in the
+source file src/game/progression.js. Levels used by the running server
+are stored in JSON form in the resources/levels-progression directory.
 
-Previously these were generated from a Google sheet. Now that sheet has been
-converted to CSV files in the chapterutil/levels that can be used to update the
-levels completely locally. These CSV files are the place to make edits to level
+Previously the JSON representations were generated from a Google
+sheet, but sheet has now been converted to CSV files in the
+chapterutil/levels. These CSV files can be used to update the levels
+completely locally, and they are the place to make edits to level
 content, NOT the JSON files.
+
 
 Instructions:
 
