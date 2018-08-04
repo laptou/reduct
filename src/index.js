@@ -39,22 +39,21 @@ Loader.loadImageAtlas("menusprites", "resources/graphics/menu-assets.json", "res
 Loader.loadChapters("Elementary", progression.ACTIVE_PROGRESSION_DEFINITION);
 Loader.waitForFonts([ "Fira Mono", "Fira Sans", "Nanum Pen Script" ]);
 
-const consent_handler = ([ _, consented ]) => {
-    console.log(`User consented to logging: ${consented}`);
-    if (consented) {
-    } else {
-        Logging.resetState();
-        Logging.clearStaticLog();
-        Logging.saveState();
-    }
-    Logging.config("enabled", consented);
-    if (consented) Logging.config("offline", false);
-};
-
 Promise.all([ Loader.finished, consent() ])
-    .then(consent_handler)
-    .then(() => Logging.startSession())
-    .then(initialize);
+    .then(([_, consented]) => {
+        console.log(`User consented to logging: ${consented}`);
+        if (!consented) {
+            Logging.resetState();
+            Logging.clearStaticLog();
+            Logging.saveState();
+        }
+        Logging.config("enabled", consented);
+        if (consented) Logging.config("offline", false);
+    })
+    .then(() => { console.log("starting session"); Logging.startSession() })
+    .then(initialize)
+    .catch(x =>
+        console.log("ok"))
 
 const views = {};
 let store;
