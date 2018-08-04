@@ -52,7 +52,7 @@ const fetchLevel = session_params => {
         if (message == "success" && level > 0) {
             progression.setLevel(level);
         } else {
-            progression.setLevel(1);
+            progression.setLevel(0);
         }
       }
     )
