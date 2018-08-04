@@ -39,8 +39,12 @@ export function currentLevel() {
     return currentLevelIdx;
 }
 
-export function jumpToLevel(idx) {
+export function setLevel(idx) {
     currentLevelIdx = idx;
+}
+
+export function jumpToLevel(idx) {
+    setLevel(idx);
     save();
 }
 
@@ -200,7 +204,7 @@ export function restore() {
         return;
     }
 
-    if (window.localStorage["currentLevelIdx"]) {
+    if (!currentLevelIdx && window.localStorage["currentLevelIdx"]) {
         currentLevelIdx = window.parseInt(window.localStorage["currentLevelIdx"], 10);
     }
 
