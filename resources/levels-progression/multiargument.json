@@ -6,6 +6,62 @@
         {
             "animationScales": {}, 
             "board": [
+                "(a) => (b) => a + b"
+            ], 
+            "globals": {}, 
+            "goal": [
+                "7"
+            ], 
+            "syntax": [], 
+            "toolbox": [
+                "1", 
+                "2", 
+                "3", 
+                "4", 
+                "5"
+            ]
+        }, 
+        {
+            "animationScales": {}, 
+            "board": [
+                "(a) => (b) => b + a"
+            ], 
+            "globals": {}, 
+            "goal": [
+                "12"
+            ], 
+            "syntax": [], 
+            "toolbox": [
+                "1", 
+                "11", 
+                "8", 
+                "4", 
+                "5"
+            ]
+        }, 
+        {
+            "animationScales": {}, 
+            "board": [
+                "(x) => (y) => x + 1", 
+                "(x) => (y) => y + 3"
+            ], 
+            "globals": {}, 
+            "goal": [
+                "4", 
+                "6"
+            ], 
+            "syntax": [], 
+            "toolbox": [
+                "1", 
+                "2", 
+                "3", 
+                "4", 
+                "5"
+            ]
+        }, 
+        {
+            "animationScales": {}, 
+            "board": [
                 "x => y => x", 
                 "A", 
                 "B"
@@ -115,124 +171,6 @@
                 "B", 
                 "C", 
                 "D"
-            ]
-        }, 
-        {
-            "animationScales": {}, 
-            "board": [
-                "(x) => (y) => x + 1", 
-                "(x) => (y) => y + 3"
-            ], 
-            "globals": {}, 
-            "goal": [
-                "4", 
-                "6"
-            ], 
-            "syntax": [], 
-            "toolbox": [
-                "1", 
-                "2", 
-                "3", 
-                "4", 
-                "5"
-            ]
-        }, 
-        {
-            "animationScales": {}, 
-            "board": [
-                "(a) => (b) => a + b"
-            ], 
-            "globals": {}, 
-            "goal": [
-                "7"
-            ], 
-            "syntax": [], 
-            "toolbox": [
-                "1", 
-                "2", 
-                "3", 
-                "4", 
-                "5"
-            ]
-        }, 
-        {
-            "animationScales": {}, 
-            "board": [
-                "x => _", 
-                "y => _", 
-                "C", 
-                "B", 
-                "A"
-            ], 
-            "globals": {}, 
-            "goal": [
-                "C"
-            ], 
-            "syntax": [], 
-            "textgoal": "Create {a triangle}"
-        }, 
-        {
-            "animationScales": {}, 
-            "board": [
-                "x => _", 
-                "y => _", 
-                "x => xx", 
-                "C", 
-                "B", 
-                "B", 
-                "A"
-            ], 
-            "globals": {}, 
-            "goal": [
-                "A", 
-                "C"
-            ], 
-            "syntax": [], 
-            "textgoal": "Create {a star} and {a triangle}"
-        }, 
-        {
-            "animationScales": {}, 
-            "board": [
-                "x => y => _", 
-                "y => x => _", 
-                "A", 
-                "A", 
-                "B", 
-                "C", 
-                "C"
-            ], 
-            "globals": {}, 
-            "goal": [
-                "A", 
-                "B"
-            ], 
-            "syntax": [], 
-            "textgoal": "Create {a star} and {a square}", 
-            "toolbox": [
-                "x", 
-                "y"
-            ]
-        }, 
-        {
-            "animationScales": {}, 
-            "board": [
-                "x => y => _", 
-                "y => x => _", 
-                "A", 
-                "A", 
-                "A", 
-                "B", 
-                "C"
-            ], 
-            "globals": {}, 
-            "goal": [
-                "B"
-            ], 
-            "syntax": [], 
-            "textgoal": "Create {a square}", 
-            "toolbox": [
-                "x", 
-                "y"
             ]
         }
     ], 

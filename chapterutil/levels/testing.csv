@@ -1,6 +1,4 @@
 board,goal,textgoal,,toolbox,defines,globals,syntax,animationScales,fade
-"['_(3)', '_(8)', 'addOne(_)']","['4', '8']",,76: should illustrate direct application to show equivalence...,"['__unlimited;addOne;', '__unlimited;doNothing;']",,{},[],{},{}
-"['_(addOne(4))', '_(_(1))', 'addOne(_(10))']","['2', '6', '11']",,,"['addOne', 'addOne', 'doNothing', 'doNothing']",,{},[],{},{}
 "['x => C', '__tests(f(A), f(B))']","['C', 'C']",,,[''],,{},[],{},{}
 "['__tests(f(A), f(C))']","['A', 'A']",,,"['x => A', 'x => B', 'x => C']",,{},[],{},{}
 "['__tests(f(2), f(6))']","['3', '7']",,,['__unlimited;addOne;'],,{},[],{},{}
