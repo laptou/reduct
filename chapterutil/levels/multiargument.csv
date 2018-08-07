@@ -1,14 +1,11 @@
-,board,goal,textgoal,FVG text,FVG leanring action,FVG note,,toolbox,defines,globals,syntax,animationScales
-15,"['x => y => x', 'A', 'B']",['A'],Create {a star},Create a Star,P,This is a logic follower of 10 because like 10 it shows the use of function returning function.,,[''],,{},[],{}
-16,"['x => y => y', 'B', 'C']",['C'],Create {a triangle},Create a Star,P,,,[''],,{},[],{}
-17,"['x => y => x', 'A', 'B', 'C']","['A', 'C']",Create {a star} and {a triangle},Create a Star and a Triangle,P,,,[''],,{},[],{}
-18,"['x => y => x', 'x => y => y', 'A', 'B', 'B', 'C']","['A', 'C']",Create {a star} and {a triangle},Create a Star and a Triangle,P,,Scope and how to use it...,[''],,{},[],{}
-19,['x => y => _'],['A'],Create {a star},build your own function to create a star,L,,,"['A', 'B', 'x', 'y']",,{},[],{}
-20,"['x => y => A', 'B', 'B']",['A'],Create {a star},Create a Star,P,,Too much of a repeat..,[''],,{},[],{}
-21,"['x => y => C', 'x => y => x']","['A', 'C']",Create {a star} and {a triangle},Create a Star and a triangle,P,,Same here,"['A', 'B', 'C', 'D']",,{},[],{}
-22,"['(x) => (y) => x + 1', '(x) => (y) => y + 3']","['4', '6']",,,,,,"['1', '2', '3', '4', '5']",,{},[],{}
-23,['(a) => (b) => a + b'],['7'],,,,,,"['1', '2', '3', '4', '5']",,{},[],{}
-24,"['x => _', 'y => _', 'C', 'B', 'A']",['C'],Create {a triangle},build your own function to create a Triangle,L,,"Too much of a puzzle, Move to challenge  (23)",[''],,{},[],{}
-25,"['x => _', 'y => _', 'x => xx', 'C', 'B', 'B', 'A']","['A', 'C']",Create {a star} and {a triangle},build your own function to create a star and a Triangle,L,,"Too much of a puzzle, Move to challenge  (23)",[''],,{},[],{},,,,,,,,,,,,,,,,,,
-26,"['x => y => _', 'y => x => _', 'A', 'A', 'B', 'C', 'C']","['A', 'B']",Create {a star} and {a square},build your own functions to create a star and a square,P,,OK,"['x', 'y']",,{},[],{}
-27,"['x => y => _', 'y => x => _', 'A', 'A', 'A', 'B', 'C']",['B'],Create {a square},build your own functions to create a square,P,,OK,"['x', 'y']",,{},[],{},,,,,,,,,,,,,,,,,,
+,board,goal,textgoal,FVG text,FVG leanring action,FVG note,,toolbox,defines,globals,syntax,animationScales,,,,,,,,,,,,,,,,,,
+15,['(a) => (b) => a + b'],['7'],,,,,,"['1', '2', '3', '4', '5']",,{},[],{},,,,,,,,,,,,,,,,,,
+16,['(a) => (b) => b + a'],['12'],,,,,,"['1', '11', '8', '4', '5']",,{},[],{},,,,,,,,,,,,,,,,,,
+17,"['(x) => (y) => x + 1', '(x) => (y) => y + 3']","['4', '6']",,,,,,"['1', '2', '3', '4', '5']",,{},[],{},,,,,,,,,,,,,,,,,,
+18,"['x => y => x', 'A', 'B']",['A'],Create {a star},Create a Star,P,This is a logic follower of 10 because like 10 it shows the use of function returning function.,,[''],,{},[],{},,,,,,,,,,,,,,,,,,
+19,"['x => y => y', 'B', 'C']",['C'],Create {a triangle},Create a Star,P,,,[''],,{},[],{},,,,,,,,,,,,,,,,,,
+20,"['x => y => x', 'A', 'B', 'C']","['A', 'C']",Create {a star} and {a triangle},Create a Star and a Triangle,P,,,[''],,{},[],{},,,,,,,,,,,,,,,,,,
+21,"['x => y => x', 'x => y => y', 'A', 'B', 'B', 'C']","['A', 'C']",Create {a star} and {a triangle},Create a Star and a Triangle,P,,Scope and how to use it...,[''],,{},[],{},,,,,,,,,,,,,,,,,,
+22,['x => y => _'],['A'],Create {a star},build your own function to create a star,L,,,"['A', 'B', 'x', 'y']",,{},[],{},,,,,,,,,,,,,,,,,,
+23,"['x => y => A', 'B', 'B']",['A'],Create {a star},Create a Star,P,,Too much of a repeat..,[''],,{},[],{},,,,,,,,,,,,,,,,,,
+24,"['x => y => C', 'x => y => x']","['A', 'C']",Create {a star} and {a triangle},Create a Star and a triangle,P,,Same here,"['A', 'B', 'C', 'D']",,{},[],{},,,,,,,,,,,,,,,,,,
