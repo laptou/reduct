@@ -82,7 +82,7 @@
         {
             "animationScales": {}, 
             "board": [
-                "function trianglify(x) { return _; }", 
+                "function trianglify(object) { return _; }", 
                 "A", 
                 "D", 
                 "C"
@@ -125,7 +125,7 @@
         {
             "animationScales": {}, 
             "board": [
-                "function addOne(x) { return _; }", 
+                "function addOne(number) { return _; }", 
                 "2", 
                 "4"
             ], 
@@ -142,7 +142,7 @@
             "textgoal": "Define a function that computes x plus 1", 
             "toolbox": [
                 "__unlimited;addOne", 
-                "x", 
+                "number", 
                 "_ + 1"
             ]
         }, 
