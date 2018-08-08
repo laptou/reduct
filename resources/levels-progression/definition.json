@@ -234,6 +234,47 @@
                 "__unlimited;doNothing;", 
                 "_(_)"
             ]
+        }, 
+        {
+            "animationScales": {}, 
+            "board": [
+                "_(3)", 
+                "_(8)", 
+                "addOne(_)"
+            ], 
+            "fade": {}, 
+            "globals": {}, 
+            "goal": [
+                "4", 
+                "8"
+            ], 
+            "syntax": [], 
+            "toolbox": [
+                "__unlimited;addOne;", 
+                "__unlimited;doNothing;"
+            ]
+        }, 
+        {
+            "animationScales": {}, 
+            "board": [
+                "_(addOne(4))", 
+                "_(_(1))", 
+                "addOne(_(10))"
+            ], 
+            "fade": {}, 
+            "globals": {}, 
+            "goal": [
+                "2", 
+                "6", 
+                "11"
+            ], 
+            "syntax": [], 
+            "toolbox": [
+                "addOne", 
+                "addOne", 
+                "doNothing", 
+                "doNothing"
+            ]
         }
     ], 
     "macros": {
