@@ -6,18 +6,23 @@ Setup
 
 Install the necessary packages and run the bundler.
 
-*Choose one of the two below:*
+*Choose either Yarn or NPM:
 
 Yarn:
 
+First, install Yarn if necessary. On the Mac this can be done with `brew install yarn`. Then:
+
 ```
-yarn install
+yarn install     # install all required node modules in the node_modules directory
 mkdir dist
 # Symlink resources into the folder that our bundler serves
 ln -s $(pwd)/resources/ dist/resources
 yarn serve
 open http://localhost:1234/index.html
 ```
+
+Note that if the installation fails for some reason, you can remove the
+node_modules directory to make sure you are starting from a fresh state.
 
 NPM:
 
