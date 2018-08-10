@@ -9,6 +9,7 @@
                 "function broken(x) { return broken(x); }", 
                 "broken(2)"
             ], 
+            "fade": {}, 
             "globals": {}, 
             "goal": [], 
             "syntax": [], 
@@ -20,6 +21,7 @@
                 "function infinite(x) { return infinite(x + 1); }", 
                 "infinite(0)"
             ], 
+            "fade": {}, 
             "globals": {}, 
             "goal": [
                 "infinite(5)"
@@ -33,6 +35,7 @@
                 "function infinite(x) { return infinite(x - 1); }", 
                 "infinite(_)"
             ], 
+            "fade": {}, 
             "globals": {}, 
             "goal": [
                 "infinite(0)"
@@ -57,6 +60,7 @@
             "defines": [
                 "function countdown(x) { return isZero(x) ? 0 : countdown(x - 1); }"
             ], 
+            "fade": {}, 
             "globals": {}, 
             "goal": [
                 "0", 
@@ -81,6 +85,7 @@
             "defines": [
                 "function justOne(x) { return x == 1 ? 1 : justOne(x - 1); }"
             ], 
+            "fade": {}, 
             "globals": {}, 
             "goal": [
                 "1", 
@@ -109,6 +114,7 @@
             "defines": [
                 "function justTwo(x) { return x == 2 ? x : justTwo(x - 1); }"
             ], 
+            "fade": {}, 
             "globals": {}, 
             "goal": [
                 "2", 
@@ -144,6 +150,7 @@
             "defines": [
                 "function countToFive(x) { return x == 5 ? x : countToFive(x + 1); }"
             ], 
+            "fade": {}, 
             "globals": {}, 
             "goal": [
                 "5", 
@@ -174,6 +181,7 @@
             "defines": [
                 "function howFarFromTen(x) { return x == 10 ? 0 : 1 + howFarFromTen(x + 1); }"
             ], 
+            "fade": {}, 
             "globals": {}, 
             "goal": [
                 "7", 
@@ -204,6 +212,7 @@
                 "function addTwo(x) { return twice(addOne, x); }", 
                 "function addFour(x) { return twice(addTwo, x); }"
             ], 
+            "fade": {}, 
             "globals": {}, 
             "goal": [
                 "4", 

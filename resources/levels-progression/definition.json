@@ -17,8 +17,7 @@
             "textgoal": "Make me {a star}!", 
             "toolbox": [
                 "star"
-            ], 
-            "tutorialUrl": "resources/videos/defn-intro.mp4"
+            ]
         }, 
         {
             "animationScales": {}, 
