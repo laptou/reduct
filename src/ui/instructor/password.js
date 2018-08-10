@@ -1,4 +1,4 @@
-import { DEVELOPMENT_BUILD } from "../../logging/logging";
+import { DEVELOPMENT_BUILD, REQUIRE_PASSWORDS } from "../../logging/logging";
 
 /**
  * Display a dialog prompt and resolve when successful (reject if
@@ -6,7 +6,7 @@ import { DEVELOPMENT_BUILD } from "../../logging/logging";
  */
 export default function password(promptText, password) {
     return new Promise((resolve, reject) => {
-        if (DEVELOPMENT_BUILD) {
+        if (DEVELOPMENT_BUILD || !REQUIRE_PASSWORDS) {
             resolve();
             return;
         }
