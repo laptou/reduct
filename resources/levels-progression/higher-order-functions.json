@@ -165,7 +165,7 @@
                 "5"
             ], 
             "syntax": [], 
-            "textgoal": "Use the repeat function", 
+            "textgoal": "The repeat function let you use the same function many time!", 
             "toolbox": [
                 "__unlimited; _(_)", 
                 "1", 
@@ -277,86 +277,6 @@
         {
             "animationScales": {}, 
             "board": [
-                "repeat(x)", 
-                "x", 
-                "addOne", 
-                "function double(x) { return _; }", 
-                "__tests(test_me(4), test_me(5))"
-            ], 
-            "fade": {}, 
-            "globals": {
-                "twice": "function twice(f) { return (x) => f(f(x)); }"
-            }, 
-            "goal": [
-                "8", 
-                "10"
-            ], 
-            "syntax": [], 
-            "textgoal": "Define a function that computes x times 2", 
-            "toolbox": [
-                "__unlimited; _(_)", 
-                "double"
-            ]
-        }, 
-        {
-            "animationScales": {}, 
-            "board": [
-                "repeat(_, _)", 
-                "x", 
-                "x", 
-                "function triple(x) { return _; }", 
-                "__tests(test_me(3), test_me(_))"
-            ], 
-            "fade": {}, 
-            "globals": {
-                "twice": "function twice(f) { return (x) => f(f(x)); }"
-            }, 
-            "goal": [
-                "6", 
-                "9"
-            ], 
-            "syntax": [], 
-            "textgoal": "Define a function that computes x times 3", 
-            "toolbox": [
-                "__unlimited; _(_)", 
-                "addTwo", 
-                "addOne", 
-                "triple", 
-                "0", 
-                "1", 
-                "2", 
-                "3"
-            ]
-        }, 
-        {
-            "animationScales": {}, 
-            "board": [
-                "__argumentAnnotated(func, num); function apply(func) { return _; }", 
-                "__tests(test_me(doNothing, 3), test_me(addSix, 3), test_me(addOne, 4))", 
-                "_(_)"
-            ], 
-            "fade": {}, 
-            "globals": {
-                "twice": "function twice(f) { return (x) => f(f(x)); }"
-            }, 
-            "goal": [
-                "3", 
-                "9", 
-                "5"
-            ], 
-            "syntax": [], 
-            "textgoal": "Define a function that applies func to an input", 
-            "toolbox": [
-                "__unlimited; _(_)", 
-                "apply", 
-                "num => _", 
-                "func", 
-                "num"
-            ]
-        }, 
-        {
-            "animationScales": {}, 
-            "board": [
                 "function addTogether(a, b) { return _; }", 
                 "__tests(test_me(_, _), test_me(_, _), test_me(1, 2))", 
                 "repeat(_)", 
@@ -381,8 +301,6 @@
             "toolbox": [
                 "__unlimited; _(_)", 
                 "addTogether", 
-                "_(_)", 
-                "_(_)", 
                 "2", 
                 "3", 
                 "5", 
