@@ -8,5 +8,5 @@ number,board,goal,textgoal,toolbox,defines,globals,syntax,animationScales,tutori
 7,"['x => A', 'A', 'D']","['A', 'A']",Create two {stars},[''],,{},[],{},,Creat two stars,P,
 8,"['x => x', 'dontCare => A', 'whatever => B']","['C', 'B', 'A']","Create a {star}, {square}, and {triangle}","['A', 'D', 'C', 'C']",,{},[],{},,Create ...,P,
 9,['(number) => number + 1'],['4'],,"['2', '3', '4', '5']",,{},[],{},,,,
-10,"['(number) => number + 3', '(i) => i + 1']",['8'],,"['2', '3', '4', '5', '6']",,{},[],{},,,,
-SKIP,['x => x'],['B'],Create {a square},"['something => B', 'dontCare => C']",,{},[],{},,Create a square,P,
+10,"['(number) => number + 3', '(i) => i + 1']",['8'],Hint: you can’t add a function to a number,"['2', '3', '4', '5', '6']",,{},[],{},,,,
+SKIP,['x => x'],['B'],Create {a square},"['something => B', 'dont_care => C']",,{},[],{},,Create a square,P,
