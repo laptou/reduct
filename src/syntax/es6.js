@@ -220,6 +220,7 @@ export function makeParser(jssemant) {
             return jssemant.define(name, [], body);
         }
 
+<<<<<<< HEAD
         case "ArrayExpression": {
             let a = [];
             let expr = false;
@@ -234,6 +235,8 @@ export function makeParser(jssemant) {
             return expr ? jssemant.array(a) : jssemant.arrayvalue(a)
         }
 
+=======
+>>>>>>> sc-francois
         default: return fail(`parsers.es6: Unrecognized ES6 node type ${node.type}`, node);
         }
     }
@@ -315,6 +318,7 @@ export function makeUnparser(jssemant) {
             }
             return "__defineAttach";
         }
+<<<<<<< HEAD
         case "arrayvalue":
         case "array": {
             let result = "[", first = true;
@@ -325,6 +329,8 @@ export function makeUnparser(jssemant) {
             result += "]";
             return result;
         }
+=======
+>>>>>>> sc-francois
         default:
             console.error(`unparsers.es6: Unrecognized ES6 node type ${node.type}`, node);
             return null;

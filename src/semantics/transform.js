@@ -117,9 +117,9 @@ export default function transform(definition) {
                         params.push(e); // subexprs
                     }
                 }
-                const subexprs = typeof exprDefinition.subexpressions === "function"
-                    ? exprDefinition.subexpressions(module, result)
-                    : exprDefinition.subexpressions;
+                const subexprs = typeof exprDefinition.subexpressions === "function" ?
+                      exprDefinition.subexpressions(module, immutable.Map(result))
+                      : exprDefinition.subexpressions;
                 for (const fieldName of subexprs) {
                     result[fieldName] = params[argPointer++];
                 }
@@ -156,6 +156,7 @@ export default function transform(definition) {
             }
             return result;
         }
+<<<<<<< HEAD
         if (type === "array") {
             const result = [];
             const nc = expr.get ? expr.get("elements").length : expr.elements.length
@@ -164,6 +165,8 @@ export default function transform(definition) {
                 }
             return result;
         }
+=======
+>>>>>>> sc-francois
 
         const fadeLevel = expr.get ? expr.get("fadeLevel") : expr.fadeLevel;
 
@@ -349,6 +352,7 @@ export default function transform(definition) {
     /** Get the kind of an expression (e.g. "expression", "statement"). */
     module.kind = function(expr) {
         switch (expr.get("type")) {
+<<<<<<< HEAD
             case "vtuple":
                 // TODO: This isn't quite right - depends on the children
                 return "expression";
@@ -357,6 +361,11 @@ export default function transform(definition) {
                     if (module.kind(immutable.Map(e)) != "value") return "expression";
                 }
                 return "value";
+=======
+        case "vtuple":
+            // TODO: This isn't quite right - depends on the children
+            return "expression";
+>>>>>>> sc-francois
         default:
             return module.definitionOf(expr).kind;
         }
@@ -450,7 +459,7 @@ export default function transform(definition) {
         return node.get("notches");
     };
 
-    /** Check whether two nodes have any compatible notches. */
+    /** Check whether two nodes have an ycompatible notches. */
     module.notchesCompatible = function(node1, node2) {
         const notches1 = node1.get("notches");
         const notches2 = node2.get("notches");

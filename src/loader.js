@@ -87,6 +87,9 @@ export class LoaderClass {
                     this.finishLoad();
                 },
             });
+        })
+        .catch(err =>  {
+            console.log("Could not load audio sprites. Is resources/ directory available/symlinked?");
         });
     }
 

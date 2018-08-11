@@ -1,21 +1,21 @@
 import VERSION from "../version";
 
-export const PROGRESSIONS = {
-    "Elementary": {
+export const PROGRESSIONS = { 
+    "Elementary": { 
         dir: "levels-progression/",
         digraph: {
             "functions": ["replication"],
             "replication": ["multiargument"],
-            "multiargument": ["functions-challenge"],
-            "functions-challenge": ["application"],
+            "multiargument": ["booleans-intro"],  
+            "booleans-intro": ["application"],
+//            "functions-challenge": ["application"],
             "application": ["definition"],
             "definition": ["testing"],
-            "testing": ["higher-order-functions"],
-            "higher-order-functions": ["define-challenges"],
-            "booleans-intro": ["booleans-definition"],
+            "testing": ["booleans-definition"],
             "booleans-definition": ["weekdays"],
-            "define-challenges": ["booleans-intro"],
-            "weekdays": ["recursion-basics"],
+            "weekdays": ["higher-order-functions"],
+            "higher-order-functions": ["define-challenges"],
+            "define-challenges": ["recursion-basics"],
             "recursion-basics": ["recursion-higher-order"],
             "recursion-higher-order": [],
         },
@@ -39,8 +39,12 @@ export function currentLevel() {
     return currentLevelIdx;
 }
 
-export function jumpToLevel(idx) {
+export function setLevel(idx) {
     currentLevelIdx = idx;
+}
+
+export function jumpToLevel(idx) {
+    setLevel(idx);
     save();
 }
 
@@ -200,7 +204,7 @@ export function restore() {
         return;
     }
 
-    if (window.localStorage["currentLevelIdx"]) {
+    if (!currentLevelIdx && window.localStorage["currentLevelIdx"]) {
         currentLevelIdx = window.parseInt(window.localStorage["currentLevelIdx"], 10);
     }
 

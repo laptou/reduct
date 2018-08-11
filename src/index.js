@@ -18,7 +18,8 @@ import tutorial from "./ui/instructor/tutorial";
 
 import Loader from "./loader";
 import Logging from "./logging/logging";
-import { TITLE_LEVEL_ID, DEVELOPMENT_BUILD } from "./logging/logging";
+import * as ajax from "./util/ajax";
+import { TITLE_LEVEL_ID, DEVELOPMENT_BUILD, REQUIRE_PASSWORDS } from "./logging/logging";
 
 // Globals to help you debug
 window.gfx = gfx;
@@ -39,9 +40,28 @@ Loader.loadImageAtlas("menusprites", "resources/graphics/menu-assets.json", "res
 Loader.loadChapters("Elementary", progression.ACTIVE_PROGRESSION_DEFINITION);
 Loader.waitForFonts([ "Fira Mono", "Fira Sans", "Nanum Pen Script" ]);
 
-Promise.all([ Loader.finished, consent() ])
-    .then(([ _, consented ]) => {
-        console.log(`User consented to logging: ${consented}`);
+const fetchLevel = session_params => {
+    const {user_id} = session_params;
+    // console.log("Trying to fetch level for user ID " + JSON.stringify(user_id));
+    const url = "https://gdiac.cs.cornell.edu/research_games/php/reduct/last_level.php";
+    const params = {game_id: 7017019, version_id: 6, user_id: user_id};
+    ajax.jsonp(url, params).then(
+      result => {
+        // console.log(`GDIAC server reports: ${JSON.stringify(result)}`);
+        const {message, level} = result;
+        if (message == "success" && level > 0) {
+            progression.setLevel(level);
+        } else {
+            progression.setLevel(0);
+        }
+      }
+    )
+}
+
+window.startup = () => {
+  consent()
+    .then(consented => {
+        // console.log(`User consented to logging: ${consented}`);
         if (!consented) {
             Logging.resetState();
             Logging.clearStaticLog();
@@ -49,9 +69,20 @@ Promise.all([ Loader.finished, consent() ])
         }
         Logging.config("enabled", consented);
         if (consented) Logging.config("offline", false);
+        return Logging.currentUserId;
     })
     .then(() => Logging.startSession())
-    .then(initialize);
+    .then(fetchLevel)
+    .then(initialize)
+    .catch(() => {
+            // console.log("Invalid user id, trying again");
+            document.querySelector("#id-error").style.display = "block";
+            setTimeout(() => document.querySelector("#player_id").focus(), 250);
+            window.startup(); // try again
+          });
+}
+
+Loader.finished.then(() => window.startup());
 
 const views = {};
 let store;
@@ -72,13 +103,7 @@ function toggleDev() {
     }
 }
 
-function initialize() {
-    if (DEVELOPMENT_BUILD && !gfx.viewport.IS_PHONE) {
-        toggleDev();
-    }
-
-    document.querySelector("#loading-container").remove();
-
+function bindSpecialKeys() {
     document.body.addEventListener("keyup", (e) => {
         if (e.ctrlKey) {
             switch (e.code) {
@@ -111,6 +136,16 @@ function initialize() {
             }
         }
     });
+}
+
+function initialize() {
+    if (DEVELOPMENT_BUILD && !gfx.viewport.IS_PHONE) {
+        toggleDev();
+    }
+
+    document.querySelector("#loading-container").remove();
+
+    bindSpecialKeys();
 
     canvas = document.createElement("canvas");
     document.body.appendChild(canvas);

@@ -30,6 +30,7 @@ const URLS = {
 
 export const VICTORY_LEVEL_ID = -1;
 export const TITLE_LEVEL_ID = -2;
+export const REQUIRE_PASSWORDS = false;
 
 const params = new URL(window.location).searchParams;
 export const DEVELOPMENT_BUILD = typeof params.get("nodev") !== "string" && (
@@ -94,8 +95,7 @@ class Logger {
             return Promise.resolve();
         }
         const player_id = document.getElementById("player_id");
-        console.log("player id " + player_id + ":" + player_id.value);
-        if (player_id.value) {
+        if (player_id && player_id.value) {
             this.currentUserId = player_id.value;
         }
 
@@ -108,24 +108,26 @@ class Logger {
         params.user_id = this.currentUserId;
         params.session_id = this.currentSessionId;
 
-        this.info(`Starting ${this.config("offline") ? "offline" : "online"} session with user ID ${this.currentUserId}.`);
+        this.info(`Trying to start ${this.config("offline") ? "offline" : "online"} session with user ID ${this.currentUserId}.`);
 
-        const offline = this.startOfflineSession(params);
         if (this.config("offline")) {
-            return offline;
+            return this.startOfflineSession(params);
         }
 
         return ajax.jsonp(this.getUrl("PAGE_LOAD"), params).then((response) => {
             // TODO: also accept server UID?
             this.currentSessionId = response.session_id || this.currentSessionId;
-            this.info(`Starting offline session with user ID ${this.currentUserId}.`);
+            this.info(`Starting online session with user ID ${this.currentUserId}.`);
             this.saveState();
 
             return ({
                 user_id: this.currentUserId,
                 session_id: this.currentSessionid,
             });
-        }).catch(() => offline);
+        }).catch(() => {
+            this.info("Contacting remote server failed");
+            return this.startOfflineSession(params)
+        });
     }
 
     get isSessionStarted() {
@@ -200,7 +202,10 @@ class Logger {
         if (this.config("offline")) {
             return Promise.resolve();
         }
-        ajax.jsonp(this.getUrl("QUEST_END"), params).catch(() => null);
+        if (params.quest_id >= 0) {
+            Logging.info(`Reporting completion of level ${params.quest_id} to remote server`);
+            ajax.jsonp(this.getUrl("QUEST_END"), params).catch(() => null);
+        }
         return Promise.resolve();
     }
 
@@ -371,6 +376,8 @@ class Logger {
     startOfflineSession(params) {
         this.isOfflineSession = true;
         // TODO: choose condition if not present
+
+        this.info(`Starting offline session, user ID = ${this.currentUserId}.`);
 
         this.logStatic("startSession", Object.assign({}, params, {
             session_id: this.currentSessionId,

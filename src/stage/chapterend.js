@@ -11,6 +11,7 @@ import passwordPrompt from "../ui/instructor/password";
 
 import BaseStage from "./basestage";
 import BaseTouchRecord from "./touchrecord";
+import { REQUIRE_PASSWORDS } from "../logging/logging";
 
 export default class ChapterEndStage extends BaseStage {
     constructor(...args) {
@@ -245,7 +246,7 @@ export default class ChapterEndStage extends BaseStage {
                 color: "#e95888",
                 click: () => {
                     const chapter = progression.nextChapter();
-                    if (chapter && chapter.password) {
+                    if (REQUIRE_PASSWORDS && chapter && chapter.password) {
                         passwordPrompt("Ask the teacher to continue on!", chapter.password).then(() => {
                             this.continue(false);
                         }, () => {});

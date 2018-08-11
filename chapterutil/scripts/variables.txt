@@ -4,3 +4,9 @@ x and y are gray because right now they don't stand for anything.
 A variable can only be used as part of a function whose input has the
 same name. Then it flashes green to show that it is a name for the input.
 Outside that function, the variable doesn't mean anything, so it stays gray.
+
+Idea:
+Split out to show that you can use variables to build functions.
+
+Then explain in a followup video what happened and introduce the name "variable".
+Could explain scoping issue here or in a third video
