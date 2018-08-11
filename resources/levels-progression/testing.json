@@ -7,7 +7,7 @@
             "animationScales": {}, 
             "board": [
                 "x => C", 
-                "__tests(test_me(A), test_me(B))"
+                "__tests(testMe(A), testMe(B))"
             ], 
             "fade": {}, 
             "globals": {}, 
@@ -20,7 +20,7 @@
         {
             "animationScales": {}, 
             "board": [
-                "__tests(test_me(A), test_me(C))"
+                "__tests(testMe(A), testMe(C))"
             ], 
             "fade": {}, 
             "globals": {}, 
@@ -38,7 +38,7 @@
         {
             "animationScales": {}, 
             "board": [
-                "__tests(test_me(2), test_me(6))"
+                "__tests(testMe(2), testMe(6))"
             ], 
             "fade": {}, 
             "globals": {}, 
@@ -56,7 +56,7 @@
             "board": [
                 "function starify(x) { return A; }", 
                 "function squarify(x) { return B; }", 
-                "__tests(test_me(C), test_me(B))"
+                "__tests(testMe(C), testMe(B))"
             ], 
             "fade": {}, 
             "globals": {}, 
@@ -74,7 +74,7 @@
             "animationScales": {}, 
             "board": [
                 "__argumentAnnotated; function threeify(x) { return _; }", 
-                "__tests(test_me(1),test_me(2),test_me(3))"
+                "__tests(testMe(1),testMe(2),testMe(3))"
             ], 
             "defines": [
                 "function threeify(x) { return 3; }"
@@ -100,7 +100,7 @@
         {
             "animationScales": {}, 
             "board": [
-                "__tests(test_me(2), test_me(3), test_me(1))"
+                "__tests(testMe(2), testMe(3), testMe(1))"
             ], 
             "fade": {}, 
             "globals": {}, 
@@ -120,7 +120,7 @@
             "animationScales": {}, 
             "board": [
                 "function addThree(x) { return _; }", 
-                "__tests(test_me(2), test_me(6))", 
+                "__tests(testMe(2), testMe(6))", 
                 "x"
             ], 
             "defines": [

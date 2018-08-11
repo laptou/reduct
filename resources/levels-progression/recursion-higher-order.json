@@ -11,7 +11,7 @@
                 "num", 
                 "value", 
                 "value", 
-                "__tests(test_me(3,addOne, 3), test_me(3,addOne, 8), test_me(3,addOne,6))", 
+                "__tests((3,addOne, 3), (3,addOne, 8), (3,addOne,6))", 
                 "func"
             ], 
             "globals": {}, 
@@ -35,7 +35,7 @@
                 "_ == _", 
                 "_ - _", 
                 "_ ? _ : _", 
-                "__tests(test_me(3, addOne, 6), test_me(3, addOne, 12), test_me(3, addOne, 22))", 
+                "__tests((3, addOne, 6), (3, addOne, 12), (3, addOne, 22))", 
                 "myRepeat"
             ], 
             "globals": {}, 

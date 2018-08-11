@@ -102,7 +102,7 @@
                 "twice", 
                 "x", 
                 "function addTwo(x) { return _; }", 
-                "__tests(test_me(3), test_me(7), test_me(11))"
+                "__tests(testMe(3), testMe(7), testMe(11))"
             ], 
             "defines": [
                 "function addTwo(x) { return (twice(addOne))(x); }"
@@ -130,7 +130,7 @@
                 "twice", 
                 "x", 
                 "function addFour(x) { return _; }", 
-                "__tests(test_me(1), test_me(test_me(5)))"
+                "__tests(testMe(1), testMe(testMe(5)))"
             ], 
             "defines": [
                 "function addFour(x) { return (twice(addTwo))(x); }", 
@@ -224,7 +224,7 @@
                 "repeat(_, _)", 
                 "x", 
                 "function addSix(x) { return _; }", 
-                "__tests(test_me(5), test_me(9))"
+                "__tests(testMe(5), testMe(9))"
             ], 
             "defines": [
                 "function addSix(x) { return (repeat(3, addTwo))(x); }"
@@ -252,7 +252,7 @@
         {
             "animationScales": {}, 
             "board": [
-                "__tests(test_me(_), test_me(_))"
+                "__tests(testMe(_), testMe(_))"
             ], 
             "fade": {}, 
             "globals": {
@@ -278,7 +278,7 @@
             "animationScales": {}, 
             "board": [
                 "function addTogether(a, b) { return _; }", 
-                "__tests(test_me(_, _), test_me(_, _), test_me(1, 2))", 
+                "__tests(testMe(_, _), testMe(_, _), testMe(1, 2))", 
                 "repeat(_)", 
                 "a", 
                 "b", 

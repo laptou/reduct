@@ -26,7 +26,7 @@
             "board": [
                 "function isSameDay(x, y) { return _; }", 
                 "_ == _", 
-                "__tests(test_me(sat, sat) == true, test_me(mon, tue) == false)"
+                "__tests(testMe(sat, sat) == true, testMe(mon, tue) == false)"
             ], 
             "globals": {}, 
             "goal": [
@@ -47,7 +47,7 @@
             "animationScales": {}, 
             "board": [
                 "function isMonday(x) {return _; }", 
-                "__tests(test_me(mon), test_me(tue))"
+                "__tests(testMe(mon), testMe(tue))"
             ], 
             "defines": [
                 "function isMonday(x) { return x == mon }"
@@ -70,7 +70,7 @@
             "animationScales": {}, 
             "board": [
                 "function isFriday(x) {return _; }", 
-                "__tests(test_me(mon), test_me(fri))"
+                "__tests(testMe(mon), testMe(fri))"
             ], 
             "defines": [
                 "function isFriday(x) { return x == fri }"
@@ -98,7 +98,7 @@
                 "function isMondayOrFriday(x) {return _; }", 
                 "isMonday(_) ? _ : _", 
                 "x", 
-                "__tests(test_me(mon), test_me(tue), test_me(fri), test_me(sun))"
+                "__tests(testMe(mon), testMe(tue), testMe(fri), testMe(sun))"
             ], 
             "globals": {}, 
             "goal": [
@@ -126,7 +126,7 @@
                 "function isWeekend(x) {return _; }", 
                 "_ ? _ : _", 
                 "x == _", 
-                "__tests(test_me(sat), test_me(tue), test_me(mon), test_me(sun))"
+                "__tests(testMe(sat), testMe(tue), testMe(mon), testMe(sun))"
             ], 
             "defines": [
                 "function isWeekend(x) { return x == sat ? true : x == sun }"
@@ -157,7 +157,7 @@
             "board": [
                 "function isWeekday(x) {return _; }", 
                 "_ ? _ : _", 
-                "__tests(test_me(sat), test_me(tue), test_me(mon), test_me(sun))"
+                "__tests(testMe(sat), testMe(tue), testMe(mon), testMe(sun))"
             ], 
             "defines": [
                 "function isWeekday(x) { return isWeekend(x) ? false : true }"

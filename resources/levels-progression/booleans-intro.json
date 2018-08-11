@@ -43,7 +43,7 @@
         {
             "animationScales": {}, 
             "board": [
-                "(is_two) => 2 == is_two"
+                "(isTwo) => 2 == isTwo"
             ], 
             "globals": {}, 
             "goal": [
@@ -61,7 +61,7 @@
         {
             "animationScales": {}, 
             "board": [
-                "(thing_1) => (thing_2) => thing_1 == thing_2", 
+                "(thing1) => (thing2) => thing1 == thing2", 
                 "x => xx", 
                 "1", 
                 "2", 
@@ -107,7 +107,7 @@
             "animationScales": {}, 
             "board": [
                 "(truth) => truth ? 'triangle' : 'rect'", 
-                "(true_or_false) => true_or_false ? 'rect' : 'star'"
+                "(trueOrFalse) => trueOrFalse ? 'rect' : 'star'"
             ], 
             "globals": {}, 
             "goal": [
@@ -160,7 +160,7 @@
         {
             "animationScales": {}, 
             "board": [
-                "(thing_1) => (thing_2) => thing_1 == thing_2 ? 1 : 2", 
+                "(thing1) => (thing2) => thing1 == thing2 ? 1 : 2", 
                 "x => xx"
             ], 
             "globals": {}, 
@@ -180,7 +180,7 @@
             "animationScales": {}, 
             "board": [
                 "(x) => xx", 
-                "(one_object) => (another_object) => one_object == another_object"
+                "(one_object) => (anotherObject) => one_object == anotherObject"
             ], 
             "globals": {}, 
             "goal": [

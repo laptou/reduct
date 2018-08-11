@@ -7,7 +7,7 @@
             "animationScales": {}, 
             "board": [
                 "function isTriangle(x) { return x == 'triangle'; }", 
-                "__tests(test_me('triangle'), test_me('rect'))"
+                "__tests(testMe('triangle'), testMe('rect'))"
             ], 
             "defines": [
                 "function isTriangle(x) { return x == 'triangle'; }"
@@ -26,7 +26,7 @@
             "animationScales": {}, 
             "board": [
                 "function isStar(x) { return _; }", 
-                "__tests(test_me('star'), test_me('rect'), test_me('star'))"
+                "__tests(testMe('star'), testMe('rect'), testMe('star'))"
             ], 
             "defines": [
                 "function isStar(x) { return x == 'star'; }"
@@ -52,7 +52,7 @@
             "board": [
                 "__argumentAnnotated; function isZero(x) { return _; }", 
                 "_ == _", 
-                "__tests(test_me(1), test_me(0), test_me(3), test_me(0))"
+                "__tests(testMe(1), testMe(0), testMe(3), testMe(0))"
             ], 
             "defines": [
                 "function isZero(x) { return x == 0; }"
@@ -82,7 +82,7 @@
                 "__argumentAnnotated; function equals(x, y) { return _; }", 
                 "_ == _", 
                 "(y) => _", 
-                "__tests(test_me(1, 2), test_me(2, 2), test_me(3, 3))"
+                "__tests(testMe(1, 2), testMe(2, 2), testMe(3, 3))"
             ], 
             "defines": [
                 "function equals(x, y) { return x == y; }"
@@ -109,7 +109,7 @@
             "board": [
                 "function noStar(x) { return _ ? 'rect' : x; }", 
                 "x == _", 
-                "__tests(test_me('rect') == 'rect', test_me('star') == 'rect', test_me('triangle') == 'triangle')"
+                "__tests(testMe('rect') == 'rect', testMe('star') == 'rect', testMe('triangle') == 'triangle')"
             ], 
             "defines": [
                 "function noStar(x) { return x == 'star' ? 'rect' : x; }"
@@ -135,7 +135,7 @@
                 "__argumentAnnotated; function alwaysOne(x) { return _; }", 
                 "_ ? x : 1", 
                 "(x) => _", 
-                "__tests(test_me(1) == 1, test_me(2) == 1, test_me(3) == 1)"
+                "__tests(testMe(1) == 1, testMe(2) == 1, testMe(3) == 1)"
             ], 
             "defines": [
                 "function alwaysOne(x) { return x == 1 ? x : 1; }"
@@ -162,7 +162,7 @@
             "board": [
                 "function firstNonZero(x, y) { return _; }", 
                 "_ ? _ : x", 
-                "__tests(test_me(1, 2) == 1, test_me(0, 1) == 1, test_me(2, 0) == 2, test_me(3, 2) == 3)"
+                "__tests(testMe(1, 2) == 1, testMe(0, 1) == 1, testMe(2, 0) == 2, testMe(3, 2) == 3)"
             ], 
             "defines": [
                 "function firstNonZero(x, y) { return x == 0 ? x : y; }"
