@@ -1,0 +1,34 @@
+#!/bin/bash
+
+target="reduct-web"
+
+for d in "../reduct-web" "${HOME}/reduct-web"
+do
+    if [[ ! -d "$target/.git" ]]
+    then
+        target="$d"
+    fi
+done
+if [[ ! -d "$target/.git" ]]
+then
+    echo "Can't find reduct-web directory to target"
+    exit 1
+fi
+
+rm -r dist .cache
+if [[ -d dist ]]
+then
+    mkdir dist
+fi
+
+if [[ -x yarn ]]
+then
+    yarn dist
+else
+    npm run dist
+fi
+
+ln -s ../resources dist/resources
+
+rsync -Lr dist/ "$target"/
+echo "Target $target updated. Use git add/git commit/git push to push updates"
