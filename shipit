@@ -15,17 +15,20 @@ then
     exit 1
 fi
 
-rm -r dist .cache
-if [[ -d dist ]]
+rm -rf dist .cache
+if [[ ! -d dist ]]
 then
     mkdir dist
 fi
 
-if [[ -x yarn ]]
+if [[ -x `which yarn` ]]
 then
     yarn dist
-else
+elif [[ -x `which npm` ]]
+then
     npm run dist
+else
+    echo "Can't find yarn or npm"
 fi
 
 ln -s ../resources dist/resources
