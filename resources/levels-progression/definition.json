@@ -14,7 +14,7 @@
                 "A"
             ], 
             "syntax": [], 
-            "textgoal": "Make me {a star}!", 
+            "textgoal": "Move the def block to the left box to define the word {star}!", 
             "toolbox": [
                 "star"
             ]
@@ -33,7 +33,7 @@
                 "A"
             ], 
             "syntax": [], 
-            "textgoal": "Make me two {squares} and {a star}!", 
+            "textgoal": "Reach the goal by creating new definitions!", 
             "toolbox": [
                 "__unlimited;star", 
                 "__unlimited;rect"
@@ -55,6 +55,7 @@
                 "A"
             ], 
             "syntax": [], 
+            "textgoal": "Define a function which always output a {star}", 
             "toolbox": [
                 "__unlimited;makeStar"
             ]
