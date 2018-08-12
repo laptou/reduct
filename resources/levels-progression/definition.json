@@ -17,7 +17,8 @@
             "textgoal": "Move the def block to the left box to define the word {star}!", 
             "toolbox": [
                 "star"
-            ]
+            ], 
+            "tutorialUrl": "resources/videos/defn-intro.mp4"
         }, 
         {
             "animationScales": {}, 
@@ -77,7 +78,8 @@
             "textgoal": "Define a function that outputs {a triangle}", 
             "toolbox": [
                 "__unlimited;triangle"
-            ]
+            ], 
+            "tutorialUrl": "This is not a function (no parameter)"
         }, 
         {
             "animationScales": {}, 
@@ -97,7 +99,8 @@
             "textgoal": "Define a function that takes an input and outputs {a triangle}", 
             "toolbox": [
                 "__unlimited;trianglify"
-            ]
+            ], 
+            "tutorialUrl": "65: need to a x for the square."
         }, 
         {
             "animationScales": {}, 
