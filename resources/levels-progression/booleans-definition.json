@@ -113,9 +113,9 @@
             ], 
             "globals": {}, 
             "goal": [
-                "B", 
-                "B", 
-                "C"
+                "rect", 
+                "rect", 
+                "triangle"
             ], 
             "syntax": [], 
             "textgoal": "Define a function that outputs anything but {a star}", 
