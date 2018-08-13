@@ -107,20 +107,20 @@
         {
             "animationScales": {}, 
             "board": [
-                "function noStar(x) { return _ ? 'rect' : x; }", 
+                "function starIs1(x) { return _ ? 1 : 0; }", 
                 "x == _", 
                 "__tests(testMe('rect'), testMe('star'), testMe('triangle'))"
             ], 
             "globals": {}, 
             "goal": [
-                "rect", 
-                "rect", 
-                "triangle"
+                "0", 
+                "1", 
+                "0"
             ], 
             "syntax": [], 
-            "textgoal": "Define a function that outputs anything but {a star}", 
+            "textgoal": "Define a function that outputs 1 if x is {a star}", 
             "toolbox": [
-                "__unlimited; noStar;", 
+                "__unlimited; starIs1;", 
                 "'star'", 
                 "'rect'", 
                 "'triangle'"
