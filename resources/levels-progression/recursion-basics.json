@@ -59,10 +59,9 @@
             ], 
             "syntax": [], 
             "toolbox": [
-                "countUpTo", 
+                "__unlimited; countUpTo(_, 10)", 
                 "x + 1", 
-                "__unlimited; n", 
-                "10"
+                "__unlimited; n"
             ]
         }, 
         {
