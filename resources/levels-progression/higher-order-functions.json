@@ -125,8 +125,8 @@
             "animationScales": {}, 
             "board": [
                 "twice", 
-                "x", 
-                "function addTwo(x) { return _; }", 
+                "y", 
+                "function addTwo(y) { return _; }", 
                 "__tests(testMe(3), testMe(7), testMe(11))"
             ], 
             "defines": [
@@ -153,8 +153,8 @@
             "animationScales": {}, 
             "board": [
                 "twice", 
-                "x", 
-                "function addFour(x) { return _; }", 
+                "z", 
+                "function addFour(z) { return _; }", 
                 "__tests(testMe(1), testMe(testMe(5)))"
             ], 
             "defines": [
