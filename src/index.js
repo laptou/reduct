@@ -19,7 +19,7 @@ import tutorial from "./ui/instructor/tutorial";
 import Loader from "./loader";
 import Logging from "./logging/logging";
 import * as ajax from "./util/ajax";
-import { TITLE_LEVEL_ID, DEVELOPMENT_BUILD, REQUIRE_PASSWORDS } from "./logging/logging";
+import { TITLE_LEVEL_ID, DEVELOPMENT_BUILD } from "./logging/logging";
 
 // Globals to help you debug
 window.gfx = gfx;
