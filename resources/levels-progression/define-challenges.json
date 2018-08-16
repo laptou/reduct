@@ -82,8 +82,43 @@
         {
             "animationScales": {}, 
             "board": [
-                "function multiplyBySix(a) { return _; }", 
+                "function multiplyBy4(a) { return repeat(4, (x => addTogether(_, x)))(0); }", 
+                "a", 
                 "__tests(testMe(2), testMe(3), testMe(5))"
+            ], 
+            "defines": [
+                "function multiplyBySix(a) { return repeat(a, addTogether(2), 0); }"
+            ], 
+            "fade": {}, 
+            "globals": {
+                "twice": "function twice(f) { return (x) => f(f(x)); }"
+            }, 
+            "goal": [
+                "32", 
+                "24", 
+                "20"
+            ], 
+            "syntax": [], 
+            "textgoal": "Define a function that multiplies a number by 4", 
+            "toolbox": [
+                "__unlimited;_(_)", 
+                "repeat", 
+                "a", 
+                "addTogether", 
+                "0", 
+                "5", 
+                "6", 
+                "7", 
+                "8", 
+                "multiplyBySix"
+            ]
+        }, 
+        {
+            "animationScales": {}, 
+            "board": [
+                "function multiplyBySix(a) { return _; }", 
+                "__tests(testMe(2), testMe(3), testMe(5))", 
+                "_(0)"
             ], 
             "defines": [
                 "function multiplyBySix(a) { return repeat(a, addTogether(2), 0); }"

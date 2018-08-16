@@ -80,6 +80,7 @@
         {
             "animationScales": {}, 
             "board": [
+                "__unlimited; _(_)", 
                 "twice(addOne)"
             ], 
             "fade": {}, 
@@ -91,7 +92,6 @@
             ], 
             "syntax": [], 
             "toolbox": [
-                "__unlimited; _(_)", 
                 "3", 
                 "4", 
                 "5", 
@@ -101,6 +101,7 @@
         {
             "animationScales": {}, 
             "board": [
+                "__unlimited; _(_)", 
                 "twice(_)"
             ], 
             "fade": {}, 
@@ -112,7 +113,6 @@
             ], 
             "syntax": [], 
             "toolbox": [
-                "__unlimited; _(_)", 
                 "addOne", 
                 "addThree", 
                 "1", 
