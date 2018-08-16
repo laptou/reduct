@@ -30,7 +30,7 @@
         {
             "animationScales": {}, 
             "board": [
-                "function threeTime(func, number){ return _(_(_(_)));}", 
+                "function threeTimes(func, number){ return _(_(_(_)));}", 
                 "number"
             ], 
             "fade": {}, 
@@ -43,7 +43,7 @@
             "toolbox": [
                 "__unlimited; addThree", 
                 "__unlimited; func", 
-                "threeTime", 
+                "threeTimes", 
                 "3", 
                 "4", 
                 "5", 
