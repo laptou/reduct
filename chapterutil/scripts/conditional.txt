@@ -1,0 +1,5 @@
+This blue block is called a *conditional*. What it does
+depends on the condition at the top. If the condition is true,
+then the conditional turns into the first choice. If the
+condition is false, it turns into the second choice. This time
+the condition is true.

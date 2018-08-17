@@ -322,7 +322,7 @@ export default class Stage extends BaseStage {
 
         const showSidebar = this.sidebar.startLevel(state);
         if (showSidebar) {
-            this.sidebarWidth = 50;
+            this.sidebarWidth = 200;
         }
         else {
             this.sidebarWidth = 0;

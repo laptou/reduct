@@ -100,6 +100,10 @@ canvas {
     background: #111;
 }
 
+#id-error {
+    display: none
+}
+
 #consent, .fade-container {
     position: fixed;
     top: 0;
@@ -344,4 +348,9 @@ canvas {
     position: fixed;
     top: 100px;
     left: 100px;
+}
+
+.error {
+    font-style: italic;
+    color: red
 }
