@@ -6,18 +6,23 @@ Setup
 
 Install the necessary packages and run the bundler.
 
-*Choose one of the two below:*
+*Choose either Yarn or NPM:
 
 Yarn:
 
+First, install Yarn if necessary. On the Mac this can be done with `brew install yarn`. Then:
+
 ```
-yarn install
+yarn install     # install all required node modules in the node_modules directory
 mkdir dist
 # Symlink resources into the folder that our bundler serves
 ln -s $(pwd)/resources/ dist/resources
 yarn serve
 open http://localhost:1234/index.html
 ```
+
+Note that if the installation fails for some reason, you can remove the
+node_modules directory to make sure you are starting from a fresh state.
 
 NPM:
 
@@ -76,13 +81,16 @@ again.
 Editing levels
 ----------------
 
-Levels used by the running server are stored in JSON form in the
-resources/levels-progression directory.
+The order of the chapters is defined by the variable PROGRESSIONS in the
+source file src/game/progression.js. Levels used by the running server
+are stored in JSON form in the resources/levels-progression directory.
 
-Previously these were generated from a Google sheet. Now that sheet has been
-converted to CSV files in the chapterutil/levels that can be used to update the
-levels completely locally. These CSV files are the place to make edits to level
+Previously the JSON representations were generated from a Google
+sheet, but sheet has now been converted to CSV files in the
+chapterutil/levels. These CSV files can be used to update the levels
+completely locally, and they are the place to make edits to level
 content, NOT the JSON files.
+
 
 Instructions:
 
