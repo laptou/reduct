@@ -58,36 +58,36 @@
                     <h1>Welcome to Reduct!</h1>
                     <p>
                     We are studying how to make a video game to teach
-                    programming. If you agree to be in our study, you will play
-                    our video game and answer some questions about the game.
+                    programming. <span class="consent-request-id">If you agree to be in our study, you will play
+                    our video game and answer some questions about the game.</span>
                     While you play, the game will anonymously record how you
                     play the game.</p>
-                    <p>You can ask questions about this study at
+
+                    <p class="consent-request-id">You can ask questions about this study at
                     any time. If you decide at any time not to finish, you can
                     ask us to stop.
                     </p>
+
                     <p>If you click “agree” below, it means that you have read
                     this and that you want to be in the study. Click “disagree”
                     if you don’t want to participate.</p>
 
-                    <p><em>
+                    <div class="consent-request-id">
+                      <p><em>
                         If you agree to play and be part of the study,
                         please type in the number from your blue strip
-                        and click on the &ldquo;I Agree&rdquo; button.
-                    </em></p>
-                <p>
-                    Number: <input type="text" name="player_id" id="player_id" />
-                </p>
-                <script>
-                    setTimeout(() => document.getElementById("player_id").focus(), 250)
-                </script>
+                        and click on the &ldquo;I Agree&rdquo; button.</em></p>
+                      <p>
+                        Number: <input type="text" name="player_id" id="player_id" />
+                      </p>
+                    </div>
 
-                <span style="padding: 0 4em">&nbsp;</span>
+                <span class=spacer>&nbsp;</span>
                 <button id="consent-agree">I Agree</button>
-                <span style="padding: 0 4em">&nbsp;</span>
+                <span class=spacer>&nbsp;</span>
                 <button id="consent-disagree">I Disagree</button>
 
-                <p id="id-error" class="error">
+                <p id="consent-id-error" class="error">
                 Sorry, you must enter a correct number from your blue paper strip.
                 </p>
 

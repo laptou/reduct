@@ -21,6 +21,9 @@ import Logging from "./logging/logging";
 import * as ajax from "./util/ajax";
 import { TITLE_LEVEL_ID, DEVELOPMENT_BUILD } from "./logging/logging";
 
+// Whether the game will ask for (valid) user ids
+const USER_IDS = false;
+
 // Globals to help you debug
 window.gfx = gfx;
 window.animate = animate;
@@ -59,7 +62,7 @@ const fetchLevel = session_params => {
 }
 
 window.startup = () => {
-  consent()
+  consent(USER_IDS)
     .then(consented => {
         // console.log(`User consented to logging: ${consented}`);
         if (!consented) {
@@ -76,7 +79,7 @@ window.startup = () => {
     .then(initialize)
     .catch(() => {
             // console.log("Invalid user id, trying again");
-            document.querySelector("#id-error").style.display = "block";
+            document.querySelector("#consent-id-error").style.display = "block";
             setTimeout(() => document.querySelector("#player_id").focus(), 250);
             window.startup(); // try again
           });

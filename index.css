@@ -100,7 +100,7 @@ canvas {
     background: #111;
 }
 
-#id-error {
+#consent-id-error {
     display: none
 }
 
@@ -159,6 +159,14 @@ canvas {
     height: calc(100% - 3rem);
     overflow-y: scroll;
     padding: 0 1rem;
+}
+
+span.spacer {
+    padding: 0 4em;
+}
+
+.consent-request-id {
+    display: none;
 }
 
 .password-prompt {

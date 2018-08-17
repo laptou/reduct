@@ -1,10 +1,18 @@
+// Report whether a player id is acceptable
 function playerIdOK() {
     const id = document.getElementById("player_id").value;
-    if (id >= 56000 && id < 59000 || id == 1234 || id == 513) return true;
+    if (id >= 56000 && id < 58000 || id == 1234 || id == 513) return true;
     return false;
 }
 
-export default function consent() {
+// Handle asking for consent. A valid user id is requested
+// (according to playerIdOK) if user_ids is true.
+export default function consent(user_ids) {
+    if (user_ids) {
+        Array.prototype.forEach.call(document.getElementsByClassName('consent-request-id'),
+            e => e.style.display = "inline"
+        )
+    }
     return new Promise((resolve, reject) => {
         document.querySelector("#consent")
              .classList.add("visible");
@@ -12,7 +20,7 @@ export default function consent() {
             .addEventListener("click", () => {
                 document.querySelector("#consent")
                     .classList.remove("visible");
-                if (playerIdOK()) resolve(true);
+                if (!user_ids || playerIdOK()) resolve(true);
                 else reject("invalid user id");
             });
         document.querySelector("#consent-disagree")
