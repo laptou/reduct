@@ -156,7 +156,6 @@ export default function transform(definition) {
             }
             return result;
         }
-<<<<<<< HEAD
         if (type === "array") {
             const result = [];
             const nc = expr.get ? expr.get("elements").length : expr.elements.length
@@ -165,8 +164,6 @@ export default function transform(definition) {
                 }
             return result;
         }
-=======
->>>>>>> sc-francois
 
         const fadeLevel = expr.get ? expr.get("fadeLevel") : expr.fadeLevel;
 
@@ -352,7 +349,6 @@ export default function transform(definition) {
     /** Get the kind of an expression (e.g. "expression", "statement"). */
     module.kind = function(expr) {
         switch (expr.get("type")) {
-<<<<<<< HEAD
             case "vtuple":
                 // TODO: This isn't quite right - depends on the children
                 return "expression";
@@ -361,11 +357,6 @@ export default function transform(definition) {
                     if (module.kind(immutable.Map(e)) != "value") return "expression";
                 }
                 return "value";
-=======
-        case "vtuple":
-            // TODO: This isn't quite right - depends on the children
-            return "expression";
->>>>>>> sc-francois
         default:
             return module.definitionOf(expr).kind;
         }

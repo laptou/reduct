@@ -183,7 +183,9 @@
         {
             "animationScales": {}, 
             "board": [
-                "x => xx"
+                "x => xx", 
+                "[1,2,3]", 
+                "[2+2, 3+4]"
             ], 
             "globals": {}, 
             "goal": [

@@ -111,5 +111,6 @@ export default transform({
         ...lambda,
         ...reference,
         ...value,
+        ...array
     },
 });
