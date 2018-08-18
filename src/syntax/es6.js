@@ -22,15 +22,11 @@ function modifier(ast) {
 export function makeParser(jssemant) {
     return function parseES6(program, macros) {
         const ast = esprima.parse(program);
-        document.body.appendChild(document.createTextNode("parsed: " + JSON.stringify(ast.body[0])))
-        document.body.appendChild(document.createElement('br'))
 
         const mod = modifier(ast);
 
         if (ast.body.length === 1) {
             const result = parseNode(ast.body[0], macros);
-        document.body.appendChild(document.createTextNode("node: " + JSON.stringify(result)))
-        document.body.appendChild(document.createElement('br'))
             if (result === null) {
                 return fail(`Cannot parse program.`, program);
             }
@@ -230,9 +226,9 @@ export function makeParser(jssemant) {
             for (let e of node.elements) {
                 const kid = parseNode(e, macros);
                 a.push(kid);
-                //const k = kind(kid);
+                // const k = kind(kid);
                 // if (k == "expression") {
-                //    expr = true;
+                    // expr = true;
                 // }
             }
             return expr ? jssemant.array(a) : jssemant.arrayvalue(a)

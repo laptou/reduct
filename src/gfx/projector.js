@@ -3,7 +3,6 @@
  */
 import * as gfx from "./core";
 import Loader from "../loader";
-import * as immutable from "immutable";
 
 const optionFields = [
     "color", "strokeWhenChild", "shadowOffset", "radius", "padding",
@@ -43,18 +42,12 @@ function defaultProjector(definition) {
     }
 
     return function defaultProjectorFactory(stage, nodes, expr) {
-        let subexprs = typeof definition.subexpressions === "function"
-                     ? definition.subexpressions(null, immutable.Map(expr))
-                     : definition.subexpressions
         let childrenFunc = (id, state) =>
-            subexprs.map(field => state.getIn([ "nodes", id, field ]));
+            definition.subexpressions.map(field => state.getIn([ "nodes", id, field ]));
 
         if (definition.projection.fields) {
             const fields = [];
-            const fieldNames = (typeof definition.projection.fields == "function")
-                             ? definition.projection.fields(expr)
-                             : definition.projection.fields
-            for (const field of fieldNames) {
+            for (const field of definition.projection.fields) {
                 if (typeof field === "object") {
                     // TODO: more extensible
                     const textOptions = {};

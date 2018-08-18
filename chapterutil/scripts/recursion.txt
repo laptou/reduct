@@ -1,0 +1,5 @@
+Here is a function definition that does something new. It uses its own
+name, "countDown", inside the definition. When something talks about itself,
+that is called recursion. When we use a recursive function, the 
+name inside expands back into the entire function as many times as
+it needs to in order to finish.

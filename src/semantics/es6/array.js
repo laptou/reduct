@@ -17,18 +17,26 @@ function arraySubexprs(module, arr) {
 // Returns the fields that are supposed to be displayed by
 // the projection of an array
 function arrayFields(expr) {
-    return arraySubexprs(null, immutable.Map(expr));
+    const a = arraySubexprs(null, immutable.Map(expr));
+    const result = [];
+    let first = true;
+    for (const e of a) {
+        result.push(first ? "'['" : "','");
+        first = false;
+        result.push(e);
+    }
+    result.push("']'");
+    return result
 }
 
 export default {
     array: {
-        kind: "expression",
+        kind: "expression", // transform.kind computes this dynamically
         type: "array",
         fields: ["elements"],
         subexpressions: arraySubexprs,
         projection: {
             type: "default",
-            shape: "()",
             fields: arrayFields,
             subexpScale: 0.9,
             color: "#bed"

@@ -100,6 +100,10 @@ canvas {
     background: #111;
 }
 
+#consent-id-error {
+    display: none
+}
+
 #consent, .fade-container {
     position: fixed;
     top: 0;
@@ -155,6 +159,14 @@ canvas {
     height: calc(100% - 3rem);
     overflow-y: scroll;
     padding: 0 1rem;
+}
+
+span.spacer {
+    padding: 0 4em;
+}
+
+.consent-request-id {
+    display: none;
 }
 
 .password-prompt {
@@ -344,4 +356,9 @@ canvas {
     position: fixed;
     top: 100px;
     left: 100px;
+}
+
+.error {
+    font-style: italic;
+    color: red
 }

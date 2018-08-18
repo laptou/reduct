@@ -6,7 +6,7 @@
         {
             "animationScales": {}, 
             "board": [
-                "x => _"
+                "object => _"
             ], 
             "globals": {}, 
             "goal": [
@@ -40,8 +40,8 @@
         {
             "animationScales": {}, 
             "board": [
-                "x => _", 
-                "y => _", 
+                "something => _", 
+                "something_else => _", 
                 "A", 
                 "B", 
                 "C"
@@ -95,7 +95,7 @@
             "animationScales": {}, 
             "board": [
                 "x => xx", 
-                "x => x", 
+                "something => something", 
                 "A"
             ], 
             "globals": {}, 
@@ -156,16 +156,20 @@
             ], 
             "syntax": [], 
             "toolbox": [
-                "x => x + 1", 
-                "x => x - 1"
+                "number => number + 1", 
+                "k => k - 1"
             ]
         }, 
         {
             "animationScales": {}, 
             "board": [
                 "(x) => xx", 
+<<<<<<< HEAD
                 "(x) => _ + x", 
                 "[1,2,3+4]"
+=======
+                "(number) => _ + number"
+>>>>>>> 99ef21a6be89aade4806f086f4ad0599fa76c7dd
             ], 
             "globals": {}, 
             "goal": [
@@ -184,7 +188,9 @@
         {
             "animationScales": {}, 
             "board": [
-                "x => xx"
+                "x => xx", 
+                "[1,2,3]", 
+                "[2+2, 3+4]"
             ], 
             "globals": {}, 
             "goal": [
@@ -193,8 +199,8 @@
             "syntax": [], 
             "textgoal": "Choose your functions wisely", 
             "toolbox": [
-                "(x) => x + 1", 
-                "(x) => x + 2", 
+                "(m) => m + 1", 
+                "(z) => z + 2", 
                 "6", 
                 "7", 
                 "8"
@@ -211,6 +217,7 @@
                 "8"
             ], 
             "syntax": [], 
+            "textgoal": "Hint: what function should you duplicate?", 
             "toolbox": [
                 "x", 
                 "0", 
