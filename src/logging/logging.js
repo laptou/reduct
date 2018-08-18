@@ -30,6 +30,8 @@ const URLS = {
 
 export const VICTORY_LEVEL_ID = -1;
 export const TITLE_LEVEL_ID = -2;
+
+// REQUIRE_PASSWORDS controls whether a password must be supplied to skip to the next level or chapter
 export const REQUIRE_PASSWORDS = false;
 
 const params = new URL(window.location).searchParams;

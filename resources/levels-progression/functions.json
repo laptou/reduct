@@ -117,7 +117,7 @@
             "animationScales": {}, 
             "board": [
                 "x => x", 
-                "dont_care => A", 
+                "dontCare => A", 
                 "whatever => B"
             ], 
             "globals": {}, 
@@ -163,6 +163,7 @@
                 "8"
             ], 
             "syntax": [], 
+            "textgoal": "Hint: you can\u2019t add a function to a number", 
             "toolbox": [
                 "2", 
                 "3", 

@@ -26,12 +26,12 @@
             "board": [
                 "function isSameDay(x, y) { return _; }", 
                 "_ == _", 
-                "__tests(test_me(sat, sat) == true, test_me(mon, tue) == false)"
+                "__tests(testMe(sat, sat), testMe(mon, tue))"
             ], 
             "globals": {}, 
             "goal": [
                 "true", 
-                "true"
+                "false"
             ], 
             "syntax": [], 
             "textgoal": "Define a function that outputs true if the x and y are the same weekday, otherwise false", 
@@ -47,7 +47,7 @@
             "animationScales": {}, 
             "board": [
                 "function isMonday(x) {return _; }", 
-                "__tests(test_me(mon), test_me(tue))"
+                "__tests(testMe(mon), testMe(tue))"
             ], 
             "defines": [
                 "function isMonday(x) { return x == mon }"
@@ -70,7 +70,7 @@
             "animationScales": {}, 
             "board": [
                 "function isFriday(x) {return _; }", 
-                "__tests(test_me(mon), test_me(fri))"
+                "__tests(testMe(mon), testMe(fri))"
             ], 
             "defines": [
                 "function isFriday(x) { return x == fri }"
@@ -95,10 +95,36 @@
         {
             "animationScales": {}, 
             "board": [
-                "function isMondayOrFriday(x) {return _; }", 
-                "isMonday(_) ? _ : _", 
+                "function isMondayOrFriday(x) {return isMonday(_) ? true : _ ; }", 
                 "x", 
-                "__tests(test_me(mon), test_me(tue), test_me(fri), test_me(sun))"
+                "isFriday(_)", 
+                "__tests(testMe(mon), testMe(tue), testMe(fri), testMe(sun))"
+            ], 
+            "globals": {}, 
+            "goal": [
+                "true", 
+                "true", 
+                "false", 
+                "false"
+            ], 
+            "syntax": [], 
+            "textgoal": "Define a function that outputs true if x is Monday or Friday, otherwise false", 
+            "toolbox": [
+                "mon", 
+                "tue", 
+                "true", 
+                "false", 
+                "x", 
+                "__unlimited; isMondayOrFriday;"
+            ]
+        }, 
+        {
+            "animationScales": {}, 
+            "board": [
+                "function isMondayOrFriday(x) {return _; }", 
+                "isFriday(_) ? _ : _", 
+                "x", 
+                "__tests(testMe(mon), testMe(tue), testMe(fri), testMe(sun))"
             ], 
             "globals": {}, 
             "goal": [
@@ -126,7 +152,7 @@
                 "function isWeekend(x) {return _; }", 
                 "_ ? _ : _", 
                 "x == _", 
-                "__tests(test_me(sat), test_me(tue), test_me(mon), test_me(sun))"
+                "__tests(testMe(sat), testMe(tue), testMe(mon), testMe(sun))"
             ], 
             "defines": [
                 "function isWeekend(x) { return x == sat ? true : x == sun }"
@@ -155,12 +181,35 @@
         {
             "animationScales": {}, 
             "board": [
+                "function isWeekday(x) {return isWeekend ? false : _; }", 
+                "__tests(testMe(sat), testMe(tue), testMe(mon), testMe(sun))"
+            ], 
+            "globals": {}, 
+            "goal": [
+                "false", 
+                "true", 
+                "true", 
+                "false"
+            ], 
+            "syntax": [], 
+            "textgoal": "Define a function that outputs true if x is one of the weekdays, otherwise false", 
+            "toolbox": [
+                "isWeekend", 
+                "sat", 
+                "sun", 
+                "mon", 
+                "tue", 
+                "true", 
+                "false", 
+                "x"
+            ]
+        }, 
+        {
+            "animationScales": {}, 
+            "board": [
                 "function isWeekday(x) {return _; }", 
                 "_ ? _ : _", 
-                "__tests(test_me(sat), test_me(tue), test_me(mon), test_me(sun))"
-            ], 
-            "defines": [
-                "function isWeekday(x) { return isWeekend(x) ? false : true }"
+                "__tests(testMe(sat), testMe(tue), testMe(mon), testMe(sun))"
             ], 
             "globals": {}, 
             "goal": [
@@ -210,7 +259,7 @@
             "animationScales": {}, 
             "board": [
                 "function yesterday(day) {return _;}", 
-                "day == mon ? sun : (day == tue ? mon : (day == wed ? tue : (day == thu ? wed : (day == fri ? thu : (day == sat ? fri : sat))))); }"
+                "{day == mon ? sun : (day == tue ? mon : (day == wed ? tue : (day == thu ? wed : (day == fri ? thu : (day == sat ? fri : sat))))); }"
             ], 
             "globals": {}, 
             "goal": [
@@ -218,7 +267,7 @@
                 "sun"
             ], 
             "syntax": [], 
-            "textgoal": "Define the function tomorrow to compute the previous day of any given day", 
+            "textgoal": "Define the function yesterday to compute the previous day of any given day", 
             "toolbox": [
                 "mon", 
                 "wed", 

@@ -6,7 +6,7 @@
         {
             "animationScales": {}, 
             "board": [
-                "(first_number) => (second_number) => first_number + second_number"
+                "(firstNumber) => (secondNumber) => firstNumber + secondNumber"
             ], 
             "globals": {}, 
             "goal": [
@@ -42,8 +42,8 @@
         {
             "animationScales": {}, 
             "board": [
-                "(parameter) => (dont_care) => parameter + 1", 
-                "(dont_care) => (number) => number + 3"
+                "(number) => (dontCare) => number + 1", 
+                "(dontCare) => (number) => number + 3"
             ], 
             "globals": {}, 
             "goal": [
@@ -142,7 +142,7 @@
         {
             "animationScales": {}, 
             "board": [
-                "something => something_else => A", 
+                "something => somethingElse => A", 
                 "B", 
                 "B"
             ], 
@@ -156,7 +156,7 @@
         {
             "animationScales": {}, 
             "board": [
-                "dont_care => something => C", 
+                "dontCare => something => C", 
                 "object => y => object"
             ], 
             "globals": {}, 

@@ -32,7 +32,7 @@
         "spritesheet-js": "^1.2.6"
     },
     "scripts": {
-        "serve": "parcel --no-hmr --public-url / index.html",
+        "serve": "parcel --public-url / index.html",
         "dist": "parcel build index.html --public-url ./"
     }
 }

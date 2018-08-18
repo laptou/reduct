@@ -156,7 +156,7 @@
             ], 
             "syntax": [], 
             "toolbox": [
-                "a_number => a_number + 1", 
+                "number => number + 1", 
                 "k => k - 1"
             ]
         }, 
@@ -164,7 +164,7 @@
             "animationScales": {}, 
             "board": [
                 "(x) => xx", 
-                "(a_number) => _ + a_number"
+                "(number) => _ + number"
             ], 
             "globals": {}, 
             "goal": [
@@ -210,6 +210,7 @@
                 "8"
             ], 
             "syntax": [], 
+            "textgoal": "Hint: what function should you duplicate?", 
             "toolbox": [
                 "x", 
                 "0", 
