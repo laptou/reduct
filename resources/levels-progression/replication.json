@@ -164,12 +164,7 @@
             "animationScales": {}, 
             "board": [
                 "(x) => xx", 
-<<<<<<< HEAD
-                "(x) => _ + x", 
-                "[1,2,3+4]"
-=======
                 "(number) => _ + number"
->>>>>>> 99ef21a6be89aade4806f086f4ad0599fa76c7dd
             ], 
             "globals": {}, 
             "goal": [
@@ -188,9 +183,7 @@
         {
             "animationScales": {}, 
             "board": [
-                "x => xx", 
-                "[1,2,3]", 
-                "[2+2, 3+4]"
+                "x => xx"
             ], 
             "globals": {}, 
             "goal": [
