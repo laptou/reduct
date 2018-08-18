@@ -230,10 +230,10 @@ export function makeParser(jssemant) {
             for (let e of node.elements) {
                 const kid = parseNode(e, macros);
                 a.push(kid);
-                const k = kind(kid);
-                if (k == "expression") {
-                    expr = true;
-                }
+                //const k = kind(kid);
+                // if (k == "expression") {
+                //    expr = true;
+                // }
             }
             return expr ? jssemant.array(a) : jssemant.arrayvalue(a)
         }
