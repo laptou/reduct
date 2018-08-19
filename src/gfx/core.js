@@ -428,7 +428,7 @@ export function baseShape(name, defaults, draw, baseShapeOptions={}) {
                 primitive.setStroke(ctx, null);
             }
 
-            if (node && !node.get("parent") && stage.semantics.kind(node) === "expression") {
+            if (node && !node.get("parent") && stage.semantics.kind(state, node) === "expression") {
                 if (node.get("complete")) {
                     ctx.shadowColor = "DeepPink";
                     ctx.shadowBlur = 10;

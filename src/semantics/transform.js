@@ -117,9 +117,7 @@ export default function transform(definition) {
                         params.push(e); // subexprs
                     }
                 }
-                const subexprs = typeof exprDefinition.subexpressions === "function" ?
-                      exprDefinition.subexpressions(module, immutable.Map(result))
-                      : exprDefinition.subexpressions;
+                const subexprs = core.getField(exprDefinition, "subexpressions", module, immutable.Map(result));
                 for (const fieldName of subexprs) {
                     result[fieldName] = params[argPointer++];
                 }
@@ -231,7 +229,7 @@ export default function transform(definition) {
 
         const containsReduceableExpr = remainingNodes.some((id) => {
                 const node = nodes.get(id);
-                const kind = module.kind(node);
+                const kind = module.kind(state, node);
                 return kind === "expression" ||
                 kind === "statement" ||
                 node.get("type") === "lambda";
@@ -347,18 +345,23 @@ export default function transform(definition) {
     };
 
     /** Get the kind of an expression (e.g. "expression", "statement"). */
-    module.kind = function(expr) {
+    module.kind = function(state, expr) {
+        if (arguments.length < 2) { // XXX should remove this at some point
+            console.log("old-style call to module.kind");
+            console.trace();
+        }
         switch (expr.get("type")) {
             case "vtuple":
-                // TODO: This isn't quite right - depends on the children
-                return "expression";
             case "array":
-                for (const e of expr.get("elements")) {
-                    if (module.kind(immutable.Map(e)) != "value") return "expression";
+                const nodes = state.get("nodes");
+                for (const field of module.subexpressions(expr)) {
+                    const subexp = nodes.get(expr.get(field))
+                    if (module.kind(state, subexp) == "expression")
+                        return "expression";
                 }
                 return "value";
-        default:
-            return module.definitionOf(expr).kind;
+            default:
+                return module.definitionOf(expr).kind;
         }
     };
 
@@ -415,7 +418,7 @@ export default function transform(definition) {
                         id,
                         complete && module.subexpressions(expr)
                             .map(field => completeness.get(expr.get(field)) ||
-                                 module.kind(nodes.get(expr.get(field))) !== "expression")
+                                 module.kind(state, nodes.get(expr.get(field))) !== "expression")
                             .every(x => x)
                     );
                     for (const entry of types.entries()) {
@@ -541,9 +544,9 @@ export default function transform(definition) {
      * Check whether we should ignore the given node when matching
      * nodes to determine victory.
      */
-    module.ignoreForVictory = function(node) {
+    module.ignoreForVictory = function(state, node) {
         const defn = module.definitionOf(node);
-        return module.kind(node) === "syntax" || (defn && defn.ignoreForVictory);
+        return module.kind(state, node) === "syntax" || (defn && defn.ignoreForVictory);
     };
 
     /** Compare two nodes for equality (recursively). */

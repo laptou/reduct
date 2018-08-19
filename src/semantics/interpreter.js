@@ -99,7 +99,7 @@ export default function(module) {
      */
     module.interpreter.singleStep = function singleStep(state, expr, exprFilter=null) {
         const nodes = state.get("nodes");
-        const kind = module.kind(expr);
+        const kind = module.kind(state, expr);
         if (kind !== "expression") {
             console.debug(`semant.interpreter.singleStep: could not step since ${expr.get("id")} is '${kind}', not 'expression'`);
             let reason = "This expression can't step!";
@@ -116,7 +116,7 @@ export default function(module) {
             for (const field of module.subexpressions(expr)) {
                 const subexprId = expr.get(field);
                 const subexpr = nodes.get(subexprId);
-                const subexprKind = module.kind(subexpr);
+                const subexprKind = module.kind(state, subexpr);
 
                 if (!substepFilter(module, state, expr, field)) {
                     continue;
@@ -218,7 +218,7 @@ export default function(module) {
                 // args are not references or applications
                 for (const subexprField of module.subexpressions(expr)) {
                     const subexpr = state.getIn([ "nodes", expr.get(subexprField) ]);
-                    const kind = module.kind(subexpr);
+                    const kind = module.kind(state, subexpr);
                     if (kind === "expression") {
                         if (subexpr.get("type") === "reference") {
                             return (!subexpr.get("params") ||
@@ -258,7 +258,7 @@ export default function(module) {
                             .some(p => state.getIn([ "nodes", subexpr.get(`arg_${p}`), "type" ]) !== "missing")
                     );
                 }
-                else if (module.kind(subexpr) === "expression" && subexpr.get("type") !== "reference") {
+                else if (module.kind(state, subexpr) === "expression" && subexpr.get("type") !== "reference") {
                     return false;
                 }
             }
@@ -326,7 +326,7 @@ export default function(module) {
                         }
 
                         if ((callbacks.stop && callbacks.stop(newState, topExpr)) ||
-                            module.kind(topExpr) !== "expression") {
+                            module.kind(state, topExpr) !== "expression") {
                             return Promise.reject(topExpr.get("id"));
                         }
                         return [ newState, topExpr ];
@@ -456,7 +456,7 @@ export default function(module) {
                             node = newState.getIn([ "nodes", node.get("parent") ]);
                         }
 
-                        if (module.kind(node) !== "expression") {
+                        if (module.kind(newState, node) !== "expression") { // XXX use newState here?
                             return Promise.reject(topId);
                         }
                         return [ newState, node ];
@@ -477,7 +477,7 @@ export default function(module) {
                             topExpr = newState.getIn([ "nodes", topExpr.get("id") ]);
                         }
 
-                        if (module.kind(topExpr) !== "expression") {
+                        if (module.kind(newState, topExpr) !== "expression") {
                             return Promise.reject(topExpr.get("id"));
                         }
                         return [ newState, topExpr ];

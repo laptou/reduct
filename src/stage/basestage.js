@@ -319,7 +319,7 @@ export default class BaseStage {
             if (view && view.onmousedown && (typeof view.enabled === "undefined" || view.enabled)) {
                 this.setCursor("pointer");
             }
-            else if (node && this.semantics.kind(node) === "expression") {
+            else if (node && this.semantics.kind(this.getState(), node) === "expression") {
                 this.setCursor("pointer");
             }
             else if (node) {

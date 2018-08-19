@@ -222,16 +222,10 @@ export function makeParser(jssemant) {
 
         case "ArrayExpression": {
             let a = [];
-            let expr = false;
             for (let e of node.elements) {
-                const kid = parseNode(e, macros);
-                a.push(kid);
-                // const k = kind(kid);
-                // if (k == "expression") {
-                    // expr = true;
-                // }
+                a.push(parseNode(e, macros));
             }
-            return expr ? jssemant.array(a) : jssemant.arrayvalue(a)
+            return jssemant.array(a);
         }
 
         default: return fail(`parsers.es6: Unrecognized ES6 node type ${node.type}`, node);

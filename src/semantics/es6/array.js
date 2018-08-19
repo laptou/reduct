@@ -31,7 +31,15 @@ function arrayFields(expr) {
 
 export default {
     array: {
-        kind: "expression", // transform.kind computes this dynamically
+        kind: "expression",
+//        () => {
+//          alert('dealing with the kind of an array')
+//         let expr = false
+//        for (const k of this.subexpressions) {
+//          if (k == "expression") expr = true;
+//        }
+//        return expr;
+//      },
         type: "array",
         fields: ["elements"],
         subexpressions: arraySubexprs,
@@ -43,17 +51,4 @@ export default {
         },
         complete: true
     },
-    arrayvalue: {
-        kind: "value",
-        type: "arrayvalue",
-        fields: ["elements"],
-        subexpressions: arraySubexprs,
-        projection: {
-            type: "default",
-            fields: arrayFields,
-            subexpScale: 0.9,
-            color: "#bed"
-        },
-        complete: true
-    }
 }

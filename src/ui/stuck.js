@@ -49,7 +49,7 @@ export default class StuckEffect {
         });
 
         const board = state.get("board")
-              .filter(n => !this.stage.semantics.ignoreForVictory(state.getIn([ "nodes", n ])));
+              .filter(n => !this.stage.semantics.ignoreForVictory(state, state.getIn([ "nodes", n ])));
         const goal = state.get("goal");
 
         const blinkers = [];

@@ -3,6 +3,7 @@
  */
 import * as gfx from "./core";
 import Loader from "../loader";
+import * as core from "../semantics/core";
 
 const optionFields = [
     "color", "strokeWhenChild", "shadowOffset", "radius", "padding",
@@ -42,12 +43,14 @@ function defaultProjector(definition) {
     }
 
     return function defaultProjectorFactory(stage, nodes, expr) {
+        const subexprs = core.getField(definition, "subexpressions", null, expr);
         let childrenFunc = (id, state) =>
-            definition.subexpressions.map(field => state.getIn([ "nodes", id, field ]));
+            subexprs.map(field => state.getIn([ "nodes", id, field ]));
 
         if (definition.projection.fields) {
             const fields = [];
-            for (const field of definition.projection.fields) {
+            const fieldNames = core.getField(definition.projection, "fields", expr);
+            for (const field of fieldNames) {
                 if (typeof field === "object") {
                     // TODO: more extensible
                     const textOptions = {};

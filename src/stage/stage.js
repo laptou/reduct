@@ -701,7 +701,7 @@ export default class Stage extends BaseStage {
         const nodes = state.get("nodes");
         const node = nodes.get(selectedNode);
 
-        if (this.semantics.kind(node) !== "expression") {
+        if (this.semantics.kind(state, node) !== "expression") {
             return;
         }
 
@@ -945,7 +945,7 @@ export default class Stage extends BaseStage {
 
         for (const [ nodeId, view ] of views) {
             if (state.getIn([ "nodes", nodeId ]) &&
-                this.semantics.ignoreForVictory(state.getIn([ "nodes", nodeId ]))) {
+                this.semantics.ignoreForVictory(state, state.getIn([ "nodes", nodeId ]))) {
                 continue;
             }
 

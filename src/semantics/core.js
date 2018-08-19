@@ -331,3 +331,10 @@ export const missing = {
         },
     },
 };
+
+export function getField(object, field, ...args) {
+  const v = object[field];
+  return typeof v == "function"
+           ? v.apply(object, args)
+           : v;
+}
