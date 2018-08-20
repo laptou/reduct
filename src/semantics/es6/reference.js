@@ -85,6 +85,16 @@ const baseReference = {
     },
 };
 
+const specialFunctions = immutable.Map({
+                           repeat: 2,
+                           length: 1,
+                           get: 2,
+                           set: 3,
+                           map: 2,
+                           fold: 3,
+                           concat: 2
+                         });
+
 export default {
     reference: [
         baseReference,
@@ -104,40 +114,45 @@ export default {
                     res = resNode.get("body");
                 }
 
-                if (expr.get("name") === "repeat") {
-                    // Black-box repeat
-                    const times = state.get("nodes").get(expr.get("arg_n"));
-                    const fn = state.get("nodes").get(expr.get("arg_f"));
-                    if (times.get("type") !== "number") return null;
+                const name = expr.get("name");
 
-                    let resultExpr = semant.lambdaVar("x");
-                    for (let i = 0; i < times.get("value"); i++) {
-                        // Rehydrate each time to get a new copy
-                        const hydratedFn = semant.hydrate(state.get("nodes"), fn);
-                        delete hydratedFn["parent"];
-                        delete hydratedFn["parentField"];
-                        // If hydrated function is a
-                        // reference-with-holes, apply directly
-                        if (Array.isArray(hydratedFn.params) && hydratedFn.params.length > 0) {
-                            const arg = {};
-                            arg[`arg_${hydratedFn.params[0]}`] = resultExpr;
-                            resultExpr = Object.assign(hydratedFn, arg);
+                if (specialFunctions.has(name)) {
+                    if (expr.get("name") === "repeat") {
+                        // Black-box repeat
+                        const times = state.get("nodes").get(expr.get("arg_n"));
+                        const fn = state.get("nodes").get(expr.get("arg_f"));
+                        if (times.get("type") !== "number") return null;
+
+                        let resultExpr = semant.lambdaVar("x");
+                        for (let i = 0; i < times.get("value"); i++) {
+                            // Rehydrate each time to get a new copy
+                            const hydratedFn = semant.hydrate(state.get("nodes"), fn);
+                            delete hydratedFn["parent"];
+                            delete hydratedFn["parentField"];
+                            // If hydrated function is a
+                            // reference-with-holes, apply directly
+                            if (Array.isArray(hydratedFn.params) && hydratedFn.params.length > 0) {
+                                const arg = {};
+                                arg[`arg_${hydratedFn.params[0]}`] = resultExpr;
+                                resultExpr = Object.assign(hydratedFn, arg);
+                            }
+                            else {
+                                resultExpr = semant.apply(hydratedFn, resultExpr);
+                            }
+                            hydratedFn.locked = true;
+                            delete resultExpr["parent"];
+                            delete resultExpr["parentField"];
+                            resultExpr.locked = true;
                         }
-                        else {
-                            resultExpr = semant.apply(hydratedFn, resultExpr);
-                        }
-                        hydratedFn.locked = true;
-                        delete resultExpr["parent"];
-                        delete resultExpr["parentField"];
-                        resultExpr.locked = true;
+                        resultExpr = semant.lambda(semant.lambdaArg("x"), resultExpr);
+                        const newNodes = semant.flatten(resultExpr).map(n => immutable.Map(n));
+                        return [
+                            expr.get("id"),
+                            [ newNodes[0].get("id") ],
+                            newNodes,
+                        ];
                     }
-                    resultExpr = semant.lambda(semant.lambdaArg("x"), resultExpr);
-                    const newNodes = semant.flatten(resultExpr).map(n => immutable.Map(n));
-                    return [
-                        expr.get("id"),
-                        [ newNodes[0].get("id") ],
-                        newNodes,
-                    ];
+                    alert(`No implementation of built-in function ${name} found`);
                 }
 
                 if (!(expr.has("parent") && state.getIn([ "nodes", expr.get("parent"), "type"]) === "define") &&
