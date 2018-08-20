@@ -1,6 +1,7 @@
 import * as gfx from "../gfx/core";
 import * as animate from "../gfx/animate";
 import * as progression from "../game/progression";
+import { builtins } from "../semantics/es6/builtins";
 
 import Loader from "../loader";
 
@@ -106,7 +107,7 @@ export default class Sidebar {
 
         // TODO: don't hardcode repeat (also see stage/stage.js)
         for (const name of names) {
-            if (name === "repeat") continue;
+            if (builtins.has(name)) continue;
             const viewId = this.project(state, name, globals.get(name));
             this.viewMap.set(name, viewId);
         }

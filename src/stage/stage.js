@@ -7,6 +7,7 @@ import * as animate from "../gfx/animate";
 import Audio from "../resource/audio";
 import * as gfxCore from "../gfx/core";
 import * as progression from "../game/progression";
+import { builtins } from "../semantics/es6/builtins";
 
 import Feedback from "../ui/feedback";
 import Goal from "../ui/goal";
@@ -1175,8 +1176,7 @@ export default class Stage extends BaseStage {
     showReferenceDefinition(state, referenceId, immediate=false) {
         const referenceNameNode = state.getIn([ "nodes", referenceId ]);
         const name = referenceNameNode.get("name");
-        // TODO: don't hardcode repeat (also see ui/sidebar.js)
-        if (name === "repeat") return;
+        if (builtins.has(name)) return;
         const functionNodeId = state.get("globals").get(name);
         const functionNode = state.get("nodes").get(functionNodeId);
         if (!functionNode) return;
