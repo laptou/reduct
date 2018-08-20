@@ -31,7 +31,7 @@ export default class ReductToolbar {
     update(id, prevId=null) {
         const state = this.stage.getState();
         if (id !== null && (prevId === null || !this.ids.has(prevId))) {
-            if (this.stage.semantics.kind(state.getIn([ "nodes", id ])) !== "expression") {
+            if (this.stage.semantics.kind(state, state.getIn([ "nodes", id ])) !== "expression") {
                 return;
             }
 
@@ -66,7 +66,7 @@ export default class ReductToolbar {
             const idRecord = this.ids.get(prevId);
             this.ids.delete(prevId);
             if (id !== null &&
-                this.stage.semantics.kind(state.getIn([ "nodes", id ])) === "expression") {
+                this.stage.semantics.kind(state, state.getIn([ "nodes", id ])) === "expression") {
                 this.ids.set(id, idRecord);
                 idRecord.el.dataset.id = id;
             }

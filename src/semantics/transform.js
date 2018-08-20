@@ -352,6 +352,7 @@ export default function transform(definition) {
         }
         switch (expr.get("type")) {
             case "vtuple":
+                return "expression";
             case "array":
                 const nodes = state.get("nodes");
                 for (const field of module.subexpressions(expr)) {
@@ -432,7 +433,7 @@ export default function transform(definition) {
                         id,
                         module.subexpressions(expr)
                             .map(field => completeness.get(expr.get(field)) ||
-                                 completeKind(module.kind(nodes.get(expr.get(field)))))
+                                 completeKind(module.kind(state, nodes.get(expr.get(field)))))
                             .every(x => x)
                     );
                 }
