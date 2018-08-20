@@ -85,14 +85,80 @@ const baseReference = {
     },
 };
 
+function applyBuiltinRepeat(expr, semant, state) {
+    // Black-box repeat
+    const times = state.get("nodes").get(expr.get("arg_n"));
+    const fn = state.get("nodes").get(expr.get("arg_f"));
+    if (times.get("type") !== "number") return null;
+
+    let resultExpr = semant.lambdaVar("x");
+    for (let i = 0; i < times.get("value"); i++) {
+        // Rehydrate each time to get a new copy
+        const hydratedFn = semant.hydrate(state.get("nodes"), fn);
+        delete hydratedFn["parent"];
+        delete hydratedFn["parentField"];
+        // If hydrated function is a
+        // reference-with-holes, apply directly
+        if (Array.isArray(hydratedFn.params) && hydratedFn.params.length > 0) {
+            const arg = {};
+            arg[`arg_${hydratedFn.params[0]}`] = resultExpr;
+            resultExpr = Object.assign(hydratedFn, arg);
+        }
+        else {
+            resultExpr = semant.apply(hydratedFn, resultExpr);
+        }
+        hydratedFn.locked = true;
+        delete resultExpr["parent"];
+        delete resultExpr["parentField"];
+        resultExpr.locked = true;
+    }
+    resultExpr = semant.lambda(semant.lambdaArg("x"), resultExpr);
+    const newNodes = semant.flatten(resultExpr).map(n => immutable.Map(n));
+    return [
+        expr.get("id"),
+        [ newNodes[0].get("id") ],
+        newNodes,
+    ];
+}
+
+// Evaluate the "length" function. Return null if failure.
+function applyBuiltinLength(expr, semant, state) {
+    const nodes = state.get("nodes");
+    const arr = nodes.get(expr.get("arg_a"));
+    if (arr.get("type") !== "array") return null;
+    const result = semant.number(arr.get("elements").length);
+    const newNodes = semant.flatten(result).map(n => immutable.Map(n));
+    return [
+        expr.get("id"),
+        [ newNodes[0].get("id") ],
+        newNodes,
+    ];
+}
+
+// Evaluate the "get" function. Return null if failure.
+function applyBuiltinGet(expr, semant, state) {
+    const nodes = state.get("nodes");
+    const arr = nodes.get(expr.get("arg_a"));
+    const i = nodes.get(expr.get("arg_i"));
+    if (arr.get("type") !== "array") return null;
+    if (i.get("type") !== "number") return null;
+    const result = arr.get("elements")[i.get("value")];
+    const newNodes = semant.flatten(result).map(n => immutable.Map(n));
+    return [
+        expr.get("id"),
+        [ newNodes[0].get("id") ],
+        newNodes,
+    ];
+}
+
 const specialFunctions = immutable.Map({
-                           repeat: 2,
-                           length: 1,
-                           get: 2,
-                           set: 3,
-                           map: 2,
-                           fold: 3,
-                           concat: 2
+                           repeat: {args: 2, impl: applyBuiltinRepeat},
+                           length: {args: 1, impl: applyBuiltinLength},
+                           get: {args: 2, impl: applyBuiltinGet},
+                           set: {args: 3, impl: undefined},
+                           map: {args: 2, impl: undefined},
+                           fold: {args: 2, impl: undefined},
+                           concat: {args: 2, impl: undefined}, 
                          });
 
 export default {
@@ -117,42 +183,11 @@ export default {
                 const name = expr.get("name");
 
                 if (specialFunctions.has(name)) {
-                    if (expr.get("name") === "repeat") {
-                        // Black-box repeat
-                        const times = state.get("nodes").get(expr.get("arg_n"));
-                        const fn = state.get("nodes").get(expr.get("arg_f"));
-                        if (times.get("type") !== "number") return null;
-
-                        let resultExpr = semant.lambdaVar("x");
-                        for (let i = 0; i < times.get("value"); i++) {
-                            // Rehydrate each time to get a new copy
-                            const hydratedFn = semant.hydrate(state.get("nodes"), fn);
-                            delete hydratedFn["parent"];
-                            delete hydratedFn["parentField"];
-                            // If hydrated function is a
-                            // reference-with-holes, apply directly
-                            if (Array.isArray(hydratedFn.params) && hydratedFn.params.length > 0) {
-                                const arg = {};
-                                arg[`arg_${hydratedFn.params[0]}`] = resultExpr;
-                                resultExpr = Object.assign(hydratedFn, arg);
-                            }
-                            else {
-                                resultExpr = semant.apply(hydratedFn, resultExpr);
-                            }
-                            hydratedFn.locked = true;
-                            delete resultExpr["parent"];
-                            delete resultExpr["parentField"];
-                            resultExpr.locked = true;
-                        }
-                        resultExpr = semant.lambda(semant.lambdaArg("x"), resultExpr);
-                        const newNodes = semant.flatten(resultExpr).map(n => immutable.Map(n));
-                        return [
-                            expr.get("id"),
-                            [ newNodes[0].get("id") ],
-                            newNodes,
-                        ];
-                    }
-                    alert(`No implementation of built-in function ${name} found`);
+                    const {args, impl} = specialFunctions.get(name);
+                    if (impl)
+                        return impl(expr, semant, state);
+                    else
+                        console.log(`Undefined builtin implementation: ${name}`);
                 }
 
                 if (!(expr.has("parent") && state.getIn([ "nodes", expr.get("parent"), "type"]) === "define") &&

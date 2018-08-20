@@ -188,7 +188,7 @@ export default {
         stepSound: "heatup",
         validateStep: (semant, state, expr) => {
             const callee = state.getIn([ "nodes", expr.get("callee") ]);
-            const kind = semant.kind(callee);
+            const kind = semant.kind(state, callee);
             if (kind === "value" && callee.get("type") !== "lambda") {
                 return [ expr.get("callee"), "We can only apply functions!" ];
             }
