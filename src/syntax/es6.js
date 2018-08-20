@@ -221,11 +221,12 @@ export function makeParser(jssemant) {
         }
 
         case "ArrayExpression": {
-            let a = [];
-            for (let e of node.elements) {
+            const a = [];
+            a.push(node.elements.length);
+            for (const e of node.elements) {
                 a.push(parseNode(e, macros));
             }
-            return jssemant.array(a);
+            return jssemant.array(...a);
         }
 
         default: return fail(`parsers.es6: Unrecognized ES6 node type ${node.type}`, node);
@@ -233,6 +234,7 @@ export function makeParser(jssemant) {
     }
 }
 
+// Make an unparser for a hydrated AST node
 export function makeUnparser(jssemant) {
     const unparseES6 = function unparseES6(node) {
         switch (node.type) {
@@ -312,7 +314,11 @@ export function makeUnparser(jssemant) {
         case "arrayvalue":
         case "array": {
             let result = "[", first = true;
-            for (let e of node.elements) {
+            if (typeof node.length != "number") {
+                throw `array length is not a number: ${node.length}`;
+            }
+            for (let i = 0; i < node.length; i++) {
+                const e = node[`elem${i}`];
                 if (!first) result += ",";
                 result += unparseES6(e);
             }
@@ -320,7 +326,7 @@ export function makeUnparser(jssemant) {
             return result;
         }
         default:
-            console.error(`unparsers.es6: Unrecognized ES6 node type ${node.type}`, node);
+            console.error(`unparsers.es6: Unrecognized ES6 node type "${node.type}": `, node);
             return null;
         }
     };

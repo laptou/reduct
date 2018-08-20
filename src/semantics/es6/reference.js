@@ -126,7 +126,7 @@ function applyBuiltinLength(expr, semant, state) {
     const nodes = state.get("nodes");
     const arr = nodes.get(expr.get("arg_a"));
     if (arr.get("type") !== "array") return null;
-    const result = semant.number(arr.get("elements").length);
+    const result = semant.number(arr.get("length"));
     const newNodes = semant.flatten(result).map(n => immutable.Map(n));
     return [
         expr.get("id"),
@@ -142,7 +142,10 @@ function applyBuiltinGet(expr, semant, state) {
     const i = nodes.get(expr.get("arg_i"));
     if (arr.get("type") !== "array") return null;
     if (i.get("type") !== "number") return null;
-    const result = arr.get("elements")[i.get("value")];
+    const iv = i.get("value");
+    const n = arr.get("length");
+    if (iv < 0 || iv >= n) return null;
+    const result = nodes.get(arr.get(`elem${iv}`));
     const newNodes = semant.flatten(result).map(n => immutable.Map(n));
     return [
         expr.get("id"),
@@ -150,6 +153,29 @@ function applyBuiltinGet(expr, semant, state) {
         newNodes,
     ];
 }
+
+/*
+// Evaluate the "get" function. Return null if failure.
+function applyBuiltinSet(expr, semant, state) {
+    const nodes = state.get("nodes");
+    const arr = nodes.get(expr.get("arg_a"));
+    const i = nodes.get(expr.get("arg_i"));
+    const v = nodes.get(expr.get("arg_v"));
+    if (arr.get("type") !== "array") return null;
+    if (i.get("type") !== "number") return null;
+    const iv = i.get("value");
+    const n = arr.get("length");
+    if (iv < 0 || iv >= n) return null;
+    const result = nodes.get(arr.get(`elem${iv}`));
+
+    const newNodes = semant.flatten(result).map(n => immutable.Map(n));
+    return [
+        expr.get("id"),
+        [ newNodes[0].get("id") ],
+        newNodes,
+    ];
+}
+*/
 
 const specialFunctions = immutable.Map({
                            repeat: {args: 2, impl: applyBuiltinRepeat},

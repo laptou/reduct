@@ -112,11 +112,6 @@ export default function transform(definition) {
                 for (const fieldName of exprDefinition.fields) {
                     result[fieldName] = params[argPointer++];
                 }
-                if (exprName === "array" || exprName === "arrayvalue") {
-                    for (const e of result.elements) {
-                        params.push(e); // subexprs
-                    }
-                }
                 const subexprs = core.getField(exprDefinition, "subexpressions", module, immutable.Map(result));
                 for (const fieldName of subexprs) {
                     result[fieldName] = params[argPointer++];
@@ -143,6 +138,7 @@ export default function transform(definition) {
 
     /**
      * Return a list of field names containing subexpressions of an expression.
+     * The expression may be represented in either hydrated or immutable form.
      */
     module.subexpressions = function subexpressions(expr) {
         const type = expr.type || expr.get("type");
@@ -156,7 +152,7 @@ export default function transform(definition) {
         }
         if (type === "array") {
             const result = [];
-            const nc = expr.get ? expr.get("elements").length : expr.elements.length
+            const nc = expr.get ? expr.get("length") : expr.length
                 for (let i = 0; i < nc; i++) {
                     result.push(`elem${i}`);
                 }

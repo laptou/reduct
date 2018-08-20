@@ -4,10 +4,12 @@ import * as animate from "../../gfx/animate";
 import * as immutable from "immutable";
 
 // Returns the names of the subexpressions of an array: elem0, elem1, etc.
-// Requires: arr is a mutable array node or an immutable map for an array node
+// Requires: arr is a hydrated array node or an immutable map for an array node
 function arraySubexprs(module, arr) {
-    const n = arr.elements ? arr.elements.length : arr.get("elements").length
-    const result = []
+    const n = typeof arr.length == "number"
+              ? arr.length
+              : arr.get("length");
+    const result = [];
     for (let i = 0; i < n; i++) {
         result.push(`elem${i}`);
     }
@@ -16,7 +18,7 @@ function arraySubexprs(module, arr) {
 
 // Returns the fields that are supposed to be displayed by
 // the projection of an array
-function arrayFields(expr) {
+function arrayDisplayParts(expr) {
     const a = arraySubexprs(null, immutable.Map(expr));
     const result = [];
     let first = true;
@@ -26,26 +28,18 @@ function arrayFields(expr) {
         result.push(e);
     }
     result.push("']'");
-    return result
+    return result;
 }
 
 export default {
     array: {
-        kind: "expression",
-//        () => {
-//          alert('dealing with the kind of an array')
-//         let expr = false
-//        for (const k of this.subexpressions) {
-//          if (k == "expression") expr = true;
-//        }
-//        return expr;
-//      },
+        kind: "expression", // overridden by kind() in transform.js
         type: "array",
-        fields: ["elements"],
+        fields: ["length"],
         subexpressions: arraySubexprs,
         projection: {
             type: "default",
-            fields: arrayFields,
+            fields: arrayDisplayParts,
             subexpScale: 0.9,
             color: "#bed"
         },
