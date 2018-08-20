@@ -4,6 +4,7 @@
 import * as gfx from "./core";
 import Loader from "../loader";
 import * as core from "../semantics/core";
+import * as immutable from "immutable";
 
 const optionFields = [
     "color", "strokeWhenChild", "shadowOffset", "radius", "padding",
@@ -43,7 +44,7 @@ function defaultProjector(definition) {
     }
 
     return function defaultProjectorFactory(stage, nodes, expr) {
-        const subexprs = core.getField(definition, "subexpressions", null, expr);
+        const subexprs = core.getField(definition, "subexpressions", null, immutable.Map(expr));
         let childrenFunc = (id, state) =>
             subexprs.map(field => state.getIn([ "nodes", id, field ]));
 
