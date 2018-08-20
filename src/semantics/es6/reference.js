@@ -85,16 +85,16 @@ const baseReference = {
     },
 };
 
-function applyBuiltinRepeat(expr, semant, state) {
+function builtinRepeat(expr, semant, nodes) {
     // Black-box repeat
-    const times = state.get("nodes").get(expr.get("arg_n"));
-    const fn = state.get("nodes").get(expr.get("arg_f"));
+    const times = nodes.get(expr.get("arg_n"));
+    const fn = nodes.get(expr.get("arg_f"));
     if (times.get("type") !== "number") return null;
 
     let resultExpr = semant.lambdaVar("x");
     for (let i = 0; i < times.get("value"); i++) {
         // Rehydrate each time to get a new copy
-        const hydratedFn = semant.hydrate(state.get("nodes"), fn);
+        const hydratedFn = semant.hydrate(nodes, fn);
         delete hydratedFn["parent"];
         delete hydratedFn["parentField"];
         // If hydrated function is a
@@ -112,32 +112,18 @@ function applyBuiltinRepeat(expr, semant, state) {
         delete resultExpr["parentField"];
         resultExpr.locked = true;
     }
-    resultExpr = semant.lambda(semant.lambdaArg("x"), resultExpr);
-    const newNodes = semant.flatten(resultExpr).map(n => immutable.Map(n));
-    return [
-        expr.get("id"),
-        [ newNodes[0].get("id") ],
-        newNodes,
-    ];
+    return semant.lambda(semant.lambdaArg("x"), resultExpr);
 }
 
 // Evaluate the "length" function. Return null if failure.
-function applyBuiltinLength(expr, semant, state) {
-    const nodes = state.get("nodes");
+function builtinLength(expr, semant, nodes) {
     const arr = nodes.get(expr.get("arg_a"));
     if (arr.get("type") !== "array") return null;
-    const result = semant.number(arr.get("length"));
-    const newNodes = semant.flatten(result).map(n => immutable.Map(n));
-    return [
-        expr.get("id"),
-        [ newNodes[0].get("id") ],
-        newNodes,
-    ];
+    return semant.number(arr.get("length"));
 }
 
 // Evaluate the "get" function. Return null if failure.
-function applyBuiltinGet(expr, semant, state) {
-    const nodes = state.get("nodes");
+function builtinGet(expr, semant, nodes) {
     const arr = nodes.get(expr.get("arg_a"));
     const i = nodes.get(expr.get("arg_i"));
     if (arr.get("type") !== "array") return null;
@@ -145,19 +131,12 @@ function applyBuiltinGet(expr, semant, state) {
     const iv = i.get("value");
     const n = arr.get("length");
     if (iv < 0 || iv >= n) return null;
-    const result = nodes.get(arr.get(`elem${iv}`));
-    const newNodes = semant.flatten(result).map(n => immutable.Map(n));
-    return [
-        expr.get("id"),
-        [ newNodes[0].get("id") ],
-        newNodes,
-    ];
+    return semant.hydrate(nodes, nodes.get(arr.get(`elem${iv}`)));
 }
 
-/*
-// Evaluate the "get" function. Return null if failure.
-function applyBuiltinSet(expr, semant, state) {
-    const nodes = state.get("nodes");
+// Evaluate the "set" function, which nondestructively
+// updates an array element. Return null if failure.
+function builtinSet(expr, semant, nodes) {
     const arr = nodes.get(expr.get("arg_a"));
     const i = nodes.get(expr.get("arg_i"));
     const v = nodes.get(expr.get("arg_v"));
@@ -166,22 +145,22 @@ function applyBuiltinSet(expr, semant, state) {
     const iv = i.get("value");
     const n = arr.get("length");
     if (iv < 0 || iv >= n) return null;
-    const result = nodes.get(arr.get(`elem${iv}`));
-
-    const newNodes = semant.flatten(result).map(n => immutable.Map(n));
-    return [
-        expr.get("id"),
-        [ newNodes[0].get("id") ],
-        newNodes,
-    ];
+    const elems = [];
+    const new_elem = semant.hydrate(nodes, v);
+    new_elem.locked = true;
+    for (let j = 0; j < n; j++) {
+        elems.push(iv == j
+            ? new_elem
+            : semant.hydrate(nodes, nodes.get(arr.get(`elem${j}`))));
+    }
+    return semant.array(n, ...elems);
 }
-*/
 
 const specialFunctions = immutable.Map({
-                           repeat: {args: 2, impl: applyBuiltinRepeat},
-                           length: {args: 1, impl: applyBuiltinLength},
-                           get: {args: 2, impl: applyBuiltinGet},
-                           set: {args: 3, impl: undefined},
+                           repeat: {args: 2, impl: builtinRepeat},
+                           length: {args: 1, impl: builtinLength},
+                           get: {args: 2, impl: builtinGet},
+                           set: {args: 3, impl: builtinSet},
                            map: {args: 2, impl: undefined},
                            fold: {args: 2, impl: undefined},
                            concat: {args: 2, impl: undefined}, 
@@ -210,10 +189,20 @@ export default {
 
                 if (specialFunctions.has(name)) {
                     const {args, impl} = specialFunctions.get(name);
-                    if (impl)
-                        return impl(expr, semant, state);
-                    else
+                    if (impl) {
+                        let resultExpr = impl(expr, semant, state.get("nodes"));
+                        resultExpr.locked = false;
+                        delete resultExpr.parent;
+                        delete resultExpr.parentField;
+                        const newNodes = semant.flatten(resultExpr).map(n => immutable.Map(n));
+                        return [
+                            expr.get("id"),
+                            [ newNodes[0].get("id") ],
+                            newNodes
+                        ];
+                    } else {
                         console.log(`Undefined builtin implementation: ${name}`);
+                    }
                 }
 
                 if (!(expr.has("parent") && state.getIn([ "nodes", expr.get("parent"), "type"]) === "define") &&
