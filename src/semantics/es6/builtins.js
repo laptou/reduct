@@ -1,5 +1,7 @@
 import * as immutable from "immutable";
 
+const VALID = null;
+
 function builtinRepeat(expr, semant, nodes) {
     // Black-box repeat
     const times = nodes.get(expr.get("arg_n"));
@@ -39,13 +41,13 @@ function validateRepeat(expr, semant, nodes) {
     if (fn.get("type") !== "reference" && fn.get("type") !== "lambda")
         return { subexpr: "arg_f",
                  msg: "the second argument must be a function to be repeated!" };
-    return null;
+    return VALID;
 }
 
 // Evaluate the "length" function. Return null if failure.
 function builtinLength(expr, semant, nodes) {
     const arr = nodes.get(expr.get("arg_a"));
-    if (arr.get("type") !== "array") return null;
+    if (arr.get("type") !== "array") console.error("Bad call to length")
     return semant.number(arr.get("length"));
 }
 
@@ -55,18 +57,16 @@ function validateLength(expr, semant, nodes) {
         return { subexpr: "arg_a",
                  msg: "We can only get the length of an array!" };
     }
-    return null;
+    return VALID;
 }
 
 // Evaluate the "get" function. Return null if failure.
+// Requires call has already been validated. 
 function builtinGet(expr, semant, nodes) {
     const arr = nodes.get(expr.get("arg_a"));
     const i = nodes.get(expr.get("arg_i"));
-    if (arr.get("type") !== "array") return null;
-    if (i.get("type") !== "number") return null;
     const iv = i.get("value");
     const n = arr.get("length");
-    if (iv < 0 || iv >= n) return null;
     return semant.hydrate(nodes, nodes.get(arr.get(`elem${iv}`)));
 }
 
@@ -84,7 +84,7 @@ function validateGet(expr, semant, nodes) {
         return { subexpr: "arg_i",
                  msg: `This array index must be between 0 and ${n-1}, because the array only has ${n} elements!`};
     }
-    return null;
+    return VALID;
 }
 
 
@@ -123,7 +123,7 @@ function validateSet(expr, semant, nodes) {
     if (iv < 0 || iv >= n) 
         return { subexpr: "arg_i",
                  msg: `This array index must be between 0 and ${n-1}, because the array only has ${n} elements!`};
-    return null;
+    return VALID;
 }
 
 function builtinConcat(expr, semant, nodes) {
@@ -155,13 +155,87 @@ function validateConcat(expr, semant, nodes) {
     return null;
 }
 
+function builtinMap(expr, semant, nodes) {
+    const a = semant.hydrate(nodes, nodes.get(expr.get("arg_a"))),
+          n = a.length
+
+    const elems = [];
+    for (let j = 0; j < n; j++) {
+        const f = semant.hydrate(nodes, nodes.get(expr.get("arg_f"))); // need copy per call
+
+        if (f.type == "reference" && f.params && f.params.length == 1 && f[`arg_${f.params[0]}`].type == "missing") {
+            f[`arg_${f.params[0]}`] = a[`elem${j}`];
+            elems.push(f);
+        } else {
+            elems.push(semant.apply(f, a[`elem${j}`]));
+        }
+    }
+    return semant.array(n, ...elems);
+}
+
+function validateMap(expr, semant, nodes) {
+    const f = nodes.get(expr.get("arg_f")),
+          a = nodes.get(expr.get("arg_a"));
+
+    if (f.get("type") !== "reference" &&
+        f.get("type") !== "lambda") {
+        return {subexpr: "arg_f",
+                msg: "The first argument to \"map\" must be a function."}
+    }
+    if (a.get("type") !== "array") {
+        return {subexpr: "arg_a",
+                msg: "The second argument to \"map\" must be an array."}
+    }
+    return null;
+}
+
+// fold a f init = f(a[n-1], ..., f(a[2], f(a[1], f(a[0], init))))
+//    let b = f(a[0], init) in
+//      fold(a[1..], f, b)
+//     = fold(a[1..], f, f(a[0], init))
+// fold [] f init = init
+function builtinFold(expr, semant, nodes) {
+    const a = semant.hydrate(nodes, nodes.get(expr.get("arg_a"))),
+          n = a.length,
+          init = semant.hydrate(nodes, nodes.get(expr.get("arg_init"))),
+          f = nodes.get(expr.get("arg_f")),
+          f1 = semant.hydrate(nodes, f),
+          f2 = semant.hydrate(nodes, f);
+
+    if (n == 0) return init;
+
+    const tail = [];
+    for (let j = 1; j < n; j++) {
+        tail.push(a[`elem${j}`]);
+    }
+    const a_tail = semant.array(n-1, ...tail);
+
+    return semant.reference("fold", ["arg_f", "arg_a", "arg_init"], 
+        f1, a_tail, semant.apply(f2, a.elem0, init));
+}
+
+function validateFold(expr, semant, nodes) {
+    const f = nodes.get(expr.get("arg_f")),
+          a = nodes.get(expr.get("arg_a")),
+          init = nodes.get(expr.get("arg_init"));
+    if (f.get("type") !== "reference" &&
+        f.get("type") !== "lambda") {
+        return {subexpr: "arg_f",
+                msg: "The first argument to \"fold\" must be a function."}
+    }
+    if (a.get("type") !== "array") {
+        return {subexpr: "arg_a",
+                msg: "The second argument to \"fold\" must be an array."}
+    }
+    return null;
+}
 
 export const builtins = immutable.Map({
                            repeat: {args: 2, impl: builtinRepeat, validate: validateRepeat},
                            length: {args: 1, impl: builtinLength, validate: validateLength},
                            get: {args: 2, impl: builtinGet, validate: validateGet},
                            set: {args: 3, impl: builtinSet, validate: validateSet},
-                           map: {args: 2, impl: undefined},
-                           fold: {args: 2, impl: undefined},
+                           map: {args: 2, impl: builtinMap, validate: validateMap},
+                           fold: {args: 2, impl: builtinFold, validate: validateFold},
                            concat: {args: 2, impl: builtinConcat, validate: validateConcat}, 
                          });
