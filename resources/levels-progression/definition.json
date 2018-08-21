@@ -222,6 +222,12 @@
                 "_(4)", 
                 "_(8)"
             ], 
+            "defines": [
+                "function length(a) { return 0; }", 
+                "function get(a,i) { return 0; }", 
+                "function set(a, i, v) { return a; }", 
+                "function concat(left,right) { return left; }"
+            ], 
             "fade": {}, 
             "globals": {}, 
             "goal": [
@@ -241,6 +247,14 @@
             "board": [
                 "_(3)", 
                 "_(8)", 
+                "length", 
+                "get", 
+                "set", 
+                "concat", 
+                "1", 
+                "2", 
+                "[1, 2, 3+4]", 
+                "[A, C]", 
                 "addOne(_)"
             ], 
             "fade": {}, 

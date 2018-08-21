@@ -9,5 +9,5 @@ number,board,goal,textgoal,Learning,toolbox,defines,globals,syntax,animationScal
 18,"['x => xx', 'B']","['A', 'B']",Create {a star} and {a square},,"['A', 'x', 'x => _']",,{},[],{},,TBD,
 19,"['2', '7', 'x => xxx']","['1', '5']",,,"['number => number + 1', 'k => k - 1']",,{},[],{},,,
 20,"['(x) => xx', '(number) => _ + number']","['5', '6']",Create a function to add 2 to the input,,"['1', '2', '3', '4']",,{},[],{},,,
-21,['x => xx'],['11'],Choose your functions wisely,,"['(m) => m + 1', '(z) => z + 2', '6', '7', '8']",,{},[],{},,,
+21,"['x => xx']",['11'],Choose your functions wisely,,"['(m) => m + 1', '(z) => z + 2', '6', '7', '8']",,"{}",[],{},,,
 22,"['(x) => x + _', 'x => xx']",['8'],Hint: what function should you duplicate?,,"['x', '0', '1', '2']",,{},[],{},,,

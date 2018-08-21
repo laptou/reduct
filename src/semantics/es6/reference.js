@@ -43,7 +43,15 @@ const baseReference = {
                 `We don't know what '${expr.get("name")}' is yet! Look for a "def ${expr.get("name")}".`,
             ];
         }
-        return null;
+        const name = expr.get("name");
+        if (!builtins.has(name)) return null;
+
+        const {validate} = builtins.get(name);
+        if (!validate) return null;
+        const val = validate(expr, semant, state.get("nodes"));
+        if (!val) return null;
+        const { subexpr, msg } = val;
+        return [ expr.get(subexpr), msg ];
     },
     projection: {
         type: "dynamic",
@@ -108,9 +116,13 @@ export default {
                 const name = expr.get("name");
 
                 if (builtins.has(name)) {
-                    const {args, impl} = builtins.get(name);
+                    const {impl} = builtins.get(name);
                     if (impl) {
                         let resultExpr = impl(expr, semant, state.get("nodes"));
+                        if (resultExpr == null) {
+                            console.error(`Small step on ${expr.type} failed`);
+                            return null;
+                        }
                         resultExpr.locked = false;
                         delete resultExpr.parent;
                         delete resultExpr.parentField;
@@ -121,7 +133,7 @@ export default {
                             newNodes
                         ];
                     } else {
-                        console.log(`Undefined builtin implementation: ${name}`);
+                        console.error(`Undefined builtin implementation: ${name}`);
                     }
                 }
 

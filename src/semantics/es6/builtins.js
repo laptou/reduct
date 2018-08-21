@@ -30,11 +30,32 @@ function builtinRepeat(expr, semant, nodes) {
     return semant.lambda(semant.lambdaArg("x"), resultExpr);
 }
 
+function validateRepeat(expr, semant, nodes) {
+    const times = nodes.get(expr.get("arg_n"));
+    const fn = nodes.get(expr.get("arg_f"));
+    if (times.get("type") !== "number")
+        return { subexpr: "arg_n",
+                 msg: "the first argument must be the number of times to repeat the function!" }
+    if (fn.get("type") !== "reference" && fn.get("type") !== "lambda")
+        return { subexpr: "arg_f",
+                 msg: "the second argument must be a function to be repeated!" };
+    return null;
+}
+
 // Evaluate the "length" function. Return null if failure.
 function builtinLength(expr, semant, nodes) {
     const arr = nodes.get(expr.get("arg_a"));
     if (arr.get("type") !== "array") return null;
     return semant.number(arr.get("length"));
+}
+
+function validateLength(expr, semant, nodes) {
+    const arr = nodes.get(expr.get("arg_a"));
+    if (arr.get("type") !== "array") {
+        return { subexpr: "arg_a",
+                 msg: "We can only get the length of an array!" };
+    }
+    return null;
 }
 
 // Evaluate the "get" function. Return null if failure.
@@ -48,6 +69,24 @@ function builtinGet(expr, semant, nodes) {
     if (iv < 0 || iv >= n) return null;
     return semant.hydrate(nodes, nodes.get(arr.get(`elem${iv}`)));
 }
+
+function validateGet(expr, semant, nodes) {
+    const arr = nodes.get(expr.get("arg_a"));
+    const i = nodes.get(expr.get("arg_i"));
+    if (arr.get("type") !== "array")
+        return { subexpr: "arg_a", msg: "Can only get elements from an array!" };
+    if (i.get("type") !== "number") 
+        return { subexpr: "arg_i", msg: "The array index must be a number!" };
+
+    const iv = i.get("value");
+    const n = arr.get("length");
+    if (iv < 0 || iv >= n) {
+        return { subexpr: "arg_i",
+                 msg: `This array index must be between 0 and ${n-1}, because the array only has ${n} elements!`};
+    }
+    return null;
+}
+
 
 // Evaluate the "set" function, which nondestructively
 // updates an array element. Return null if failure.
@@ -71,6 +110,22 @@ function builtinSet(expr, semant, nodes) {
     return semant.array(n, ...elems);
 }
 
+function validateSet(expr, semant, nodes) {
+    const arr = nodes.get(expr.get("arg_a")),
+          i = nodes.get(expr.get("arg_i")),
+          v = nodes.get(expr.get("arg_v"));
+    if (arr.get("type") !== "array")
+        return {subexpr: "arg_a", msg: "The first argument to \"set\" must be an array!" };
+    if (i.get("type") !== "number")
+        return {subexpr: "arg_i", msg: "The second argument to \"set\" is an array index and must be a number!" };
+    const iv = i.get("value");
+    const n = arr.get("length");
+    if (iv < 0 || iv >= n) 
+        return { subexpr: "arg_i",
+                 msg: `This array index must be between 0 and ${n-1}, because the array only has ${n} elements!`};
+    return null;
+}
+
 function builtinConcat(expr, semant, nodes) {
     const left = nodes.get(expr.get("arg_left")),
           right = nodes.get(expr.get("arg_right"));
@@ -89,12 +144,24 @@ function builtinConcat(expr, semant, nodes) {
     return semant.array(nl + nr, ...elems);
 }
 
+function validateConcat(expr, semant, nodes) {
+    const left = nodes.get(expr.get("arg_left")),
+          right = nodes.get(expr.get("arg_right"));
+    
+    if (left.get("type") !== "array")
+        return {subexpr: "arg_left", msg: "concat can only be used on two arrays!"}
+    if (right.get("type") !== "array")
+        return {subexpr: "arg_right", msg: "concat can only be used on two arrays!"}
+    return null;
+}
+
+
 export const builtins = immutable.Map({
-                           repeat: {args: 2, impl: builtinRepeat},
-                           length: {args: 1, impl: builtinLength},
-                           get: {args: 2, impl: builtinGet},
-                           set: {args: 3, impl: builtinSet},
+                           repeat: {args: 2, impl: builtinRepeat, validate: validateRepeat},
+                           length: {args: 1, impl: builtinLength, validate: validateLength},
+                           get: {args: 2, impl: builtinGet, validate: validateGet},
+                           set: {args: 3, impl: builtinSet, validate: validateSet},
                            map: {args: 2, impl: undefined},
                            fold: {args: 2, impl: undefined},
-                           concat: {args: 2, impl: builtinConcat}, 
+                           concat: {args: 2, impl: builtinConcat, validate: validateConcat}, 
                          });
