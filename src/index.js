@@ -54,17 +54,17 @@ const fetchLevel = session_params => {
         const {message, level} = result;
         if (message == "success" && level > 0) {
             progression.setLevel(level);
-        } else {
-            progression.setLevel(0);
         }
       }
     )
 }
 
 window.startup = () => {
+  let consented = false;
   consent(USER_IDS)
-    .then(consented => {
-        // console.log(`User consented to logging: ${consented}`);
+    .then(c => {
+        consented = c;
+        console.log(`User consented to logging: ${consented}`);
         if (!consented) {
             Logging.resetState();
             Logging.clearStaticLog();
@@ -79,9 +79,13 @@ window.startup = () => {
     .then(initialize)
     .catch(() => {
             // console.log("Invalid user id, trying again");
-            document.querySelector("#consent-id-error").style.display = "block";
-            setTimeout(() => document.querySelector("#player_id").focus(), 250);
-            window.startup(); // try again
+            if (USER_IDS) {
+                document.querySelector("#consent-id-error").style.display = "block";
+                setTimeout(() => document.querySelector("#player_id").focus(), 250);
+                window.startup(); // try again
+            } else {
+                Array.prototype.forEach.call(document.body.childNodes, c => c.parentNode.removeChild(c));
+            }
           });
 }
 
