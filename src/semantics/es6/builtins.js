@@ -210,8 +210,8 @@ function builtinFold(expr, semant, nodes) {
     }
     const a_tail = semant.array(n-1, ...tail);
 
-    return semant.reference("fold", ["arg_f", "arg_a", "arg_init"], 
-        f1, a_tail, semant.apply(f2, a.elem0, init));
+    return semant.reference("fold", ["f", "a", "init"], 
+        f1, a_tail, semant.apply(semant.apply(f2, a.elem0), init));
 }
 
 function validateFold(expr, semant, nodes) {
@@ -230,12 +230,13 @@ function validateFold(expr, semant, nodes) {
     return null;
 }
 
-export const builtins = immutable.Map({
-                           repeat: {args: 2, impl: builtinRepeat, validate: validateRepeat},
-                           length: {args: 1, impl: builtinLength, validate: validateLength},
-                           get: {args: 2, impl: builtinGet, validate: validateGet},
-                           set: {args: 3, impl: builtinSet, validate: validateSet},
-                           map: {args: 2, impl: builtinMap, validate: validateMap},
-                           fold: {args: 2, impl: builtinFold, validate: validateFold},
-                           concat: {args: 2, impl: builtinConcat, validate: validateConcat}, 
-                         });
+export const builtins =
+    immutable.Map({
+        repeat: {args: ["n", "f"], impl: builtinRepeat, validate: validateRepeat},
+        length: {args: ["a"], impl: builtinLength, validate: validateLength},
+        get: {args: ["a", "i"], impl: builtinGet, validate: validateGet},
+        set: {args: ["a", "i", "v"], impl: builtinSet, validate: validateSet},
+        map: {args: ["f", "a"], impl: builtinMap, validate: validateMap},
+        fold: {args: ["f", "a", "init"], impl: builtinFold, validate: validateFold},
+        concat: {args: ["left", "right"], impl: builtinConcat, validate: validateConcat}, 
+    });
