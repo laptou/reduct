@@ -1,4 +1,5 @@
 import * as immutable from "immutable";
+import * as core from "../core";
 import { builtins } from "./builtins";
 
 const baseReference = {
@@ -103,6 +104,33 @@ export default {
                 const params = (expr.get ? expr.get("params") : expr.params) || [];
                 return params.map(name => `arg_${name}`);
             },
+            /* The kind of a ref with or without params:
+             *  f           : expr
+             *  f a a a a   : expr
+             *  f a a • •   : expr if f not builtin, value otherwise
+             *  f • • • •   : topexpr (that is, treat as value if not at top)
+             *  f • a • •   : expr (could be a topexpr)
+             */
+            kind: (ref, semant, state) => {
+                const nodes = state.get("nodes");
+                const params = ref.get("params");
+                const nparams = params ? params.length : 0;
+                const builtin = builtins.has(ref.get("name"));
+                let incomplete = false,
+                    args = false;
+                for (let i = 0; i < nparams; i++) {
+                    const p = params[i],
+                          arg = nodes.get(ref.get(`arg_${p}`)),
+                          hole = (arg.get("type") == "missing");
+                    incomplete |= hole;
+                    args |= !hole;
+                    if (incomplete && !hole) return "expression"; // topexpr?
+                }
+                if (!incomplete) return "expression";
+                if (!args) return "value";                        // topexpr. Or do we let substepFilter handle this?
+                if (builtin) return "value";
+                return "expression";
+            },
             smallStep: (semant, stage, state, expr) => {
                 // TODO: reuse orig smallStep somehow
                 let res = state.get("globals").get(expr.get("name"));
@@ -114,6 +142,7 @@ export default {
                 }
 
                 const name = expr.get("name");
+                console.log(`stepping name ${name}`)
 
                 if (builtins.has(name)) {
                     const {impl} = builtins.get(name);
@@ -123,15 +152,7 @@ export default {
                             console.error(`Small step on ${expr.type} failed`);
                             return null;
                         }
-                        resultExpr.locked = false;
-                        delete resultExpr.parent;
-                        delete resultExpr.parentField;
-                        const newNodes = semant.flatten(resultExpr).map(n => immutable.Map(n));
-                        return [
-                            expr.get("id"),
-                            [ newNodes[0].get("id") ],
-                            newNodes
-                        ];
+                        return core.makeResult(expr, resultExpr, semant);
                     } else {
                         console.error(`Undefined builtin implementation: ${name}`);
                     }
@@ -175,6 +196,26 @@ export default {
                 }
 
                 return !params.every(p => state.getIn([ "nodes", expr.get(`arg_${p}`), "type" ]) === "missing");
+            },
+            betaReduce: (semant, stage, state, expr, argIds) => {
+                const nodes = state.get("nodes"),
+                      result = semant.hydrate(nodes, expr),
+                      np = result.params ? result.params.length : 0;
+                let nmissing = 0, i = 0, j = 0;
+                for (; i < argIds.length && j < np; i++) {
+                    let param = null;
+                    for (; j < np; j++) {
+                        param = `arg_${result.params[j]}`;
+                        if (result[param].type == "missing") break;
+                    }
+                    if (j == np) break;
+                    const arg = semant.hydrate(nodes, nodes.get(argIds[i]));
+                    result[param] = arg;
+                }
+                if (i != argIds.length) {
+                    return [ "error", expr.get("id"), "Not enough holes for the supplied arguments" ];
+                }
+                return core.makeResult(expr, result, semant);
             },
             projection: {
                 type: "dynamic",
