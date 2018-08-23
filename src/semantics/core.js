@@ -1,3 +1,5 @@
+import * as immutable from "immutable";
+
 export function genericFlatten(nextId, subexpressions) {
     return function flatten(expr) {
         expr.id = nextId();
@@ -335,6 +337,20 @@ export const missing = {
 export function getField(object, field, ...args) {
   const v = object[field];
   return typeof v == "function"
-           ? v.apply(object, args)
+           ? v.call(object, ...args)
            : v;
+}
+
+// Turn a hydrated AST node resultExpr into a computation result for evaluating
+// the immutable AST node sourceExpr.
+export function makeResult(sourceExpr, resultExpr, semant) {
+    resultExpr.locked = false;
+    delete resultExpr.parent;
+    delete resultExpr.parentField;
+    const newNodes = semant.flatten(resultExpr).map(n => immutable.Map(n));
+    return [
+        sourceExpr.get("id"),
+        [ newNodes[0].get("id") ],
+        newNodes
+    ];
 }
