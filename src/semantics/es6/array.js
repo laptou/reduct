@@ -22,8 +22,9 @@ function arrayDisplayParts(expr) {
     const a = arraySubexprs(null, immutable.Map(expr));
     const result = [];
     let first = true;
+    result.push("'['");
     for (const e of a) {
-        result.push(first ? "'['" : "','");
+        if (!first) result.push("','");
         first = false;
         result.push(e);
     }
@@ -33,7 +34,15 @@ function arrayDisplayParts(expr) {
 
 export default {
     array: {
-        kind: "expression", // overridden by kind() in transform.js
+        kind: (arr, semant, state) => {
+            const nodes = state.get("nodes");
+            for (const field of semant.subexpressions(arr)) {
+                const subexp = nodes.get(arr.get(field))
+                if (semant.kind(state, subexp) == "expression")
+                    return "expression";
+            }
+            return "value";
+        },
         type: "array",
         fields: ["length"],
         subexpressions: arraySubexprs,

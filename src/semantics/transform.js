@@ -340,26 +340,10 @@ export default function transform(definition) {
         return !expr.get("parent") || !expr.get("locked") || (defn && defn.alwaysTargetable);
     };
 
-    /** Get the kind of an expression (e.g. "expression", "statement"). */
+    /** Get the kind of an expression (e.g., "expression", "value", "statement"). */
     module.kind = function(state, expr) {
-        if (arguments.length < 2) { // XXX should remove this at some point
-            console.log("old-style call to module.kind");
-            console.trace();
-        }
-        switch (expr.get("type")) {
-            case "vtuple":
-                return "expression";
-            case "array":
-                const nodes = state.get("nodes");
-                for (const field of module.subexpressions(expr)) {
-                    const subexp = nodes.get(expr.get(field))
-                    if (module.kind(state, subexp) == "expression")
-                        return "expression";
-                }
-                return "value";
-            default:
-                return module.definitionOf(expr).kind;
-        }
+        const def = module.definitionOf(expr);
+        return core.getField(def, "kind", expr, module, state);
     };
 
     /** Turn an immutable expression into a mutable one (recursively). */
