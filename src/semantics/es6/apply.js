@@ -189,7 +189,9 @@ export default {
         validateStep: (semant, state, expr) => {
             const callee = state.getIn([ "nodes", expr.get("callee") ]);
             const kind = semant.kind(state, callee);
-            if (kind === "value" && callee.get("type") !== "lambda") {
+            if (kind === "value" &&
+                    callee.get("type") !== "lambda" &&
+                    callee.get("type") !== "reference") {
                 return [ expr.get("callee"), "We can only apply functions!" ];
             }
             return null;
