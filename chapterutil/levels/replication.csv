@@ -1,13 +1,14 @@
-number,board,goal,textgoal,Learning,toolbox,defines,globals,syntax,animationScales,tutorialUrl,FVG text,FVG learning action,FVG note,,,,,,,,,,,
-11,['object => _'],['B'],Build your own function to create a {square},,"['A', 'B']",,{},[],{},,,L,,,,,,,,,,,,
-12,['x => _'],['A'],Hint: create a function that gives back the input,,"['A', 'x', 'y']",,{},[],{},resources/videos/variables.mp4,,L,,,,,,,,,,,,
-13,"['something => _', 'something_else => _', 'A', 'B', 'C']",['B'],Create {a square} using functions,Introduce variables,[''],,{},[],{},,build a function that return a function to create a square,L,,,,,,,,,,,,
-14,['x => xx'],"['C', 'C']",Create two {triangles},,"['A', 'B', 'C']",,{},[],{},,TBD,,We need a new visual for the texting bloc for sure. We discussed that it might be possible to have that on the side as a special area for testing. The problem I could see here is that this looks like a new kind of function. I am not sure what text to write so that it is clea it is something special.,,,,,,,,,,,
-15,"['(x) => xx', '_ + 7', '4 + _']","['5', '5', '9']",,,"['1', '2', '3']",,{},[],{},,,,,,,,,,,,,,,
-16,"['x => xx', 'something => something', 'A']",['A'],Create {a star},,[''],,{},[],{},,TBD,,Similar statement here,,,,,,,,,,,
-17,"['x => xx', 'x => C']","['B', 'C']",Create {a square} and {a triangle},Testing block,"['A', 'B']",,{},[],{},,TBD,,"As I am trying to type a description I am realizing that this is the kind of level which is too much on the puzzle solving side... Also the testing block is used as an intermediary step, not a final testing step.",,,,,,,,,,,
-18,"['x => xx', 'B']","['A', 'B']",Create {a star} and {a square},,"['A', 'x', 'x => _']",,{},[],{},,TBD,,,,,,,,,,,,,
-19,"['2', '7', 'x => xxx']","['1', '5']",,,"['number => number + 1', 'k => k - 1']",,{},[],{},,,,,,,,,,,,,,,
-20,"['(x) => xx', '(number) => _ + number']","['5', '6']",Create a function to add 2 to the input,,"['1', '2', '3', '4']",,{},[],{},,,,,,,,,,,,,,,
-21,['x => xx'],['11'],Choose your functions wisely,,"['(m) => m + 1', '(z) => z + 2', '6', '7', '8']",,{},[],{},,,,,,,,,,,,,,,
-22,"['(x) => x + _', 'x => xx']",['8'],Hint: what function should you duplicate?,,"['x', '0', '1', '2']",,{},[],{},,,,,,,,,,,,,,,
+number,board,goal,textgoal,Learning,toolbox,defines,globals,syntax,animationScales,tutorialUrl,FVG text,FVG learning action,FVG note
+11,['object => _'],['B'],Build your own function to create a {square},,"['A', 'B']",,{},[],{},,,L,
+12,['x => _'],['A'],Hint: create a function that gives back the input,,"['A', 'x', 'y']",,{},[],{},resources/videos/variables.mp4,,L,
+13,"['something => _', 'something_else => _', 'A', 'B', 'C']",['B'],Create {a square} using functions,Introduce variables,[''],,{},[],{},,build a function that return a function to create a square,L,
+14,['x => xx'],"['C', 'C']",Create two {triangles},,"['A', 'B', 'C']",,{},[],{},,TBD,,We need a new visual for the texting bloc for sure. We discussed that it might be possible to have that on the side as a special area for testing. The problem I could see here is that this looks like a new kind of function. I am not sure what text to write so that it is clea it is something special.
+15,"['(x) => xx', '_ + 7', '4 + _']","['5', '5', '9']",,,"['1', '2', '3']",,{},[],{},,,,
+16,"['x => xx', 'something => something', 'A']",['A'],Create {a star},,[''],,{},[],{},,TBD,,Similar statement here
+17,"['x => xx', 'x => C']","['B', 'C']",Create {a square} and {a triangle},Testing block,"['A', 'B']",,{},[],{},,TBD,,"As I am trying to type a description I am realizing that this is the kind of level which is too much on the puzzle solving side... Also the testing block is used as an intermediary step, not a final testing step."
+18,"['x => xx', 'B']","['A', 'B']",Create {a star} and {a square},,"['A', 'x', 'x => _']",,{},[],{},,TBD,,
+19,"['2', '7', 'x => xxx']","['1', '5']",,,"['number => number + 1', 'k => k - 1']",,{},[],{},,,,
+20,"['(x) => xx', '(number) => _ + number']","['5', '6']",Create a function to add 2 to the input,,"['1', '2', '3', '4']",,{},[],{},,,,
+21,['x => xx'],['11'],Choose your functions wisely,,"['(m) => m + 1', '(z) => z + 2', '6', '7', '8']",,{},[],{},,,,
+22,['x => x + x'],['4'],,,"['0', '1', '3', 'y => y + y']",,{},[],{},,,,
+23,"['(x) => x + _', 'x => xx']",['8'],Hint: what function should you duplicate?,,"['x', '0', '1', '2']",,{},[],{},,,,old 22
