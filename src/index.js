@@ -59,6 +59,7 @@ const fetchLevel = session_params => {
     )
 }
 
+
 window.startup = () => {
   let consented = false;
   consent(USER_IDS)
@@ -74,19 +75,16 @@ window.startup = () => {
         if (consented) Logging.config("offline", false);
         return Logging.currentUserId;
     })
-    .then(() => Logging.startSession())
+    .then(() => consented
+                ? Logging.startSession()
+                : Logging.startOfflineSession())
     .then(fetchLevel)
     .then(initialize)
     .catch(() => {
-            // console.log("Invalid user id, trying again");
-            if (USER_IDS) {
-                document.querySelector("#consent-id-error").style.display = "block";
-                setTimeout(() => document.querySelector("#player_id").focus(), 250);
-                window.startup(); // try again
-            } else {
-                Array.prototype.forEach.call(document.body.childNodes, c => c.parentNode.removeChild(c));
-            }
-          });
+        document.querySelector("#consent-id-error").style.display = "block";
+        setTimeout(() => document.querySelector("#player_id").focus(), 250);
+        window.startup(); // try again
+    });
 }
 
 Loader.finished.then(() => window.startup());
