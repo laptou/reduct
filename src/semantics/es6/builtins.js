@@ -209,9 +209,17 @@ function builtinFold(expr, semant, nodes) {
         tail.push(a[`elem${j}`]);
     }
     const a_tail = semant.array(n-1, ...tail);
+    let fncall;
+    if (f2.type == "reference" && f2.params && f2.params.length >= 2) {
+        fncall = f2;
+        f2[`arg_${f2.params[0]}`] = a.elem0;
+        f2[`arg_${f2.params[1]}`] = init;
+    } else {
+        fncall = semant.apply(semant.apply(f2, a.elem0), init);
+    }
 
     return semant.reference("fold", ["f", "a", "init"], 
-        f1, a_tail, semant.apply(semant.apply(f2, a.elem0), init));
+        f1, a_tail, fncall);
 }
 
 function validateFold(expr, semant, nodes) {
