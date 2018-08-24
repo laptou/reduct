@@ -228,7 +228,8 @@ export default function transform(definition) {
                 const kind = module.kind(state, node);
                 return kind === "expression" ||
                 kind === "statement" ||
-                node.get("type") === "lambda";
+                node.get("type") === "lambda" ||
+                node.get("type") === "reference"
                 });
 
         if (containsReduceableExpr) {
