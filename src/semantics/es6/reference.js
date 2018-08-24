@@ -124,6 +124,9 @@ export default {
                           hole = (arg.get("type") == "missing");
                     incomplete |= hole;
                     args |= !hole;
+                    if (!incomplete && semant.kind(state, arg) === "expression") {
+                        return "expression";
+                    }
                     if (incomplete && !hole) return "expression"; // topexpr?
                 }
                 if (!incomplete) return "expression";
