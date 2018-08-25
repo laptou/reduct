@@ -2,6 +2,16 @@ import * as immutable from "immutable";
 
 const VALID = null;
 
+function hydrateLocked(expr, semant, nodes) {
+    return semant.lockSubexprs(semant.hydrate(nodes, expr), nodes);
+}
+
+function hydrateInput(expr, semant, nodes) {
+    const result = semant.lockSubexprs(semant.hydrate(nodes, expr), nodes);
+    result.locked = true;
+    return result;
+}
+
 function builtinRepeat(expr, semant, nodes) {
     // Black-box repeat
     const times = nodes.get(expr.get("arg_n"));
@@ -11,7 +21,7 @@ function builtinRepeat(expr, semant, nodes) {
     let resultExpr = semant.lambdaVar("x");
     for (let i = 0; i < times.get("value"); i++) {
         // Rehydrate each time to get a new copy
-        const hydratedFn = semant.hydrate(nodes, fn);
+        const hydratedFn = hydrateInput(fn, semant, nodes);
         delete hydratedFn["parent"];
         delete hydratedFn["parentField"];
         // If hydrated function is a
@@ -24,7 +34,6 @@ function builtinRepeat(expr, semant, nodes) {
         else {
             resultExpr = semant.apply(hydratedFn, resultExpr);
         }
-        hydratedFn.locked = true;
         delete resultExpr["parent"];
         delete resultExpr["parentField"];
         resultExpr.locked = true;
@@ -46,7 +55,7 @@ function builtinGet(expr, semant, nodes) {
     const i = nodes.get(expr.get("arg_i"));
     const iv = i.get("value");
     const n = arr.get("length");
-    return semant.hydrate(nodes, nodes.get(arr.get(`elem${iv}`)));
+    return hydrateLocked(nodes.get(arr.get(`elem${iv}`)), semant, nodes);
 }
 
 function validateGet(expr, semant, state) {
@@ -79,12 +88,11 @@ function builtinSet(expr, semant, nodes) {
     const n = arr.get("length");
     if (iv < 0 || iv >= n) return null;
     const elems = [];
-    const new_elem = semant.hydrate(nodes, v);
-    new_elem.locked = true;
+    const new_elem = hydrateInput(v, semant, nodes);
     for (let j = 0; j < n; j++) {
         elems.push(iv == j
             ? new_elem
-            : semant.hydrate(nodes, nodes.get(arr.get(`elem${j}`))));
+            : hydrateLocked(nodes.get(arr.get(`elem${j}`)), semant, nodes));
     }
     return semant.array(n, ...elems);
 }
@@ -113,22 +121,23 @@ function builtinConcat(expr, semant, nodes) {
     const nl = left.get("length"),
           nr = right.get("length");
     const elems = [];
-    for (let j = 0; j < nl; j++) {
-        elems.push(semant.hydrate(nodes, nodes.get(left.get(`elem${j}`))));
-    }
-    for (let j = 0; j < nr; j++) {
-        elems.push(semant.hydrate(nodes, nodes.get(right.get(`elem${j}`))));
+    for (let j = 0; j < nl + nr; j++) {
+        const id = j < nl ? left.get(`elem${j}`)
+                          : right.get(`elem${j-nl}`)
+        const e = hydrateLocked(nodes.get(id), semant, nodes);
+        e.locked = true;
+        elems.push(e);
     }
     return semant.array(nl + nr, ...elems);
 }
 
 function builtinMap(expr, semant, nodes) {
-    const a = semant.hydrate(nodes, nodes.get(expr.get("arg_a"))),
+    const a = hydrateLocked(nodes.get(expr.get("arg_a")), semant, nodes),
           n = a.length
 
     const elems = [];
     for (let j = 0; j < n; j++) {
-        const f = semant.hydrate(nodes, nodes.get(expr.get("arg_f"))); // need copy per call
+        const f = hydrateInput(nodes.get(expr.get("arg_f")), semant, nodes); // need copy per call
 
         if (f.type == "reference" && f.params && f.params.length == 1 && f[`arg_${f.params[0]}`].type == "missing") {
             f[`arg_${f.params[0]}`] = a[`elem${j}`];
@@ -146,12 +155,12 @@ function builtinMap(expr, semant, nodes) {
 //     = fold(a[1..], f, f(a[0], init))
 // fold [] f init = init
 function builtinFold(expr, semant, nodes) {
-    const a = semant.hydrate(nodes, nodes.get(expr.get("arg_a"))),
+    const a = hydrateInput(nodes.get(expr.get("arg_a")), semant, nodes),
           n = a.length,
-          init = semant.hydrate(nodes, nodes.get(expr.get("arg_init"))),
+          init = hydrateInput(nodes.get(expr.get("arg_init")), semant, nodes),
           f = nodes.get(expr.get("arg_f")),
-          f1 = semant.hydrate(nodes, f),
-          f2 = semant.hydrate(nodes, f);
+          f1 = hydrateInput(f, semant, nodes),
+          f2 = hydrateInput(f, semant, nodes);
 
     if (n == 0) return init;
 
@@ -174,7 +183,7 @@ function builtinFold(expr, semant, nodes) {
 }
 
 function builtinSlice(expr, semant, nodes) {
-    const a = semant.hydrate(nodes, nodes.get(expr.get("arg_array"))),
+    const a = hydrateInput(nodes.get(expr.get("arg_array")), semant, nodes),
           b = nodes.get(expr.get("arg_begin")).get("value"),
           e = nodes.get(expr.get("arg_end")).get("value"),
           n = arr.get("length");

@@ -356,6 +356,18 @@ export default function transform(definition) {
         }).toJS();
     };
 
+    /** Lock all proper subexpressions of mutable expression `expr`, and
+      * return the resulting (mutated) `expr`. */
+    module.lockSubexprs = function(expr, nodes) {
+        const s = module.subexpressions(expr);
+        s.forEach(f =>
+            { const se = expr[f];
+              se.locked = true;
+              module.lockSubexprs(se, nodes); }
+        );
+        return expr;
+    }
+
     /** The remnants of type checking. */
     module.collectTypes = function collectTypes(state, rootExpr) {
         const result = new Map();
