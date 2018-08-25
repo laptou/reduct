@@ -38,8 +38,10 @@ export default {
             const nodes = state.get("nodes");
             for (const field of semant.subexpressions(arr)) {
                 const subexp = nodes.get(arr.get(field))
-                if (semant.kind(state, subexp) == "expression")
+                if (semant.kind(state, subexp) == "expression" ||
+                    subexp.get("type") == "missing") {
                     return "expression";
+                }
             }
             return "value";
         },
