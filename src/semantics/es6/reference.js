@@ -1,6 +1,6 @@
 import * as immutable from "immutable";
 import * as core from "../core";
-import { builtins } from "./builtins";
+import { builtins, genericValidate } from "./builtins";
 
 const baseReference = {
     kind: "expression",
@@ -47,12 +47,12 @@ const baseReference = {
         const name = expr.get("name");
         if (!builtins.has(name)) return null;
 
-        const {validate} = builtins.get(name);
-        if (!validate) return null;
-        const val = validate(expr, semant, state.get("nodes"));
-        if (!val) return null;
-        const { subexpr, msg } = val;
-        return [ expr.get(subexpr), msg ];
+        const {validate} = builtins.get(name),
+              val = validate
+                    ? validate(expr, semant, state)
+                    : genericValidate(expr, semant, state);
+        if (!val) return null; // VALID
+        return [ expr.get(val.subexpr), val.msg ];
     },
     projection: {
         type: "dynamic",
