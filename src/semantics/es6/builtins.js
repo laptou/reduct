@@ -173,11 +173,17 @@ function builtinFold(expr, semant, nodes) {
         f1, a_tail, fncall);
 }
 
-function builtinSlice(expr, semant, state) {
-    const nodes = state.get("nodes"),
-          gval = genericValidate(expr, semant, state);
-
-    if (gval) return gval;
+function builtinSlice(expr, semant, nodes) {
+    const a = semant.hydrate(nodes, nodes.get(expr.get("arg_array"))),
+          b = nodes.get(expr.get("arg_begin")).get("value"),
+          e = nodes.get(expr.get("arg_end")).get("value"),
+          n = arr.get("length");
+    
+    const slice = [];
+    for (let i = b; i < e; i++) {
+        slice.push(a[`elem${i}`]);
+    }
+    return semant.array(e - b, ...slice);
 }
 
 function validateSlice(expr, semant, state) {
@@ -258,7 +264,8 @@ export function genericValidate(expr, semant, state) {
                     return { subexpr: `arg_${n}`,
                              msg: `The name ${r} is not defined`};
                 }
-                ty = nodes.get(id).get("type");
+                const body = nodes.get(nodes.get(id).get("body"));
+                ty = body.get("type");
             }
         }
         if (!compatible(ty, expected)) {
