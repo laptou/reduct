@@ -222,14 +222,6 @@
                 "_(4)", 
                 "_(8)"
             ], 
-            "defines": [
-                "function length(a) { return 0; }", 
-                "function get(a,i) { return 0; }", 
-                "function set(a, i, v) { return a; }", 
-                "function concat(left,right) { return left; }", 
-                "function map(f, a) { return a; }", 
-                "function fold(f, a, init) { return init; }"
-            ], 
             "fade": {}, 
             "globals": {}, 
             "goal": [
@@ -249,14 +241,6 @@
             "board": [
                 "_(3)", 
                 "_(8)", 
-                "length", 
-                "get", 
-                "set", 
-                "fold", 
-                "1", 
-                "2", 
-                "[1, 2, 3+4]", 
-                "[A, C]", 
                 "addOne(_)"
             ], 
             "fade": {}, 
@@ -268,13 +252,7 @@
             "syntax": [], 
             "toolbox": [
                 "__unlimited;addOne;", 
-                "__unlimited;doNothing;", 
-                "__unlimited;concat", 
-                "__unlimited;[_, _]", 
-                "__unlimited;map", 
-                "__unlimited; _(_)", 
-                "y => [y]", 
-                "x => y => concat(x,y)"
+                "__unlimited;doNothing;"
             ]
         }, 
         {
