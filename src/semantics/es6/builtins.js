@@ -270,7 +270,7 @@ export function genericValidate(expr, semant, state) {
         }
         if (!compatible(ty, expected)) {
             return {subexpr: `arg_${n}`,
-                    msg: `The ${nth(i+1)} argument to \"${name}\" must be ${article(expected)}.`};
+                    msg: `The ${nth(i+1)} argument to \"${name}\" must be ${article(expected)}!`};
         }
     }
     return null;
