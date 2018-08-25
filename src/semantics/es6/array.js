@@ -52,7 +52,14 @@ export default {
             type: "default",
             fields: arrayDisplayParts,
             subexpScale: 0.9,
-            color: "#bed"
+            padding: {
+                top: 3.5,
+                bottom: 3.5,
+                left: 1,
+                right: 1,
+                inner: 4,
+            },
+            color: "#bec"
         },
         complete: true
     },
