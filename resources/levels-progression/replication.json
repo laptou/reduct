@@ -15,7 +15,7 @@
             "syntax": [], 
             "textgoal": "Build your own function to create a {square}", 
             "toolbox": [
-                "A", 
+                "D", 
                 "B"
             ]
         }, 

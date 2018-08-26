@@ -80,7 +80,8 @@ window.startup = () => {
                 : Logging.startOfflineSession())
     .then(fetchLevel)
     .then(initialize)
-    .catch(() => {
+    .catch((msg) => {
+        console.error(msg);
         document.querySelector("#consent-id-error").style.display = "block";
         setTimeout(() => document.querySelector("#player_id").focus(), 250);
         window.startup(); // try again

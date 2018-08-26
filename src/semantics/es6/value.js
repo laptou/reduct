@@ -162,6 +162,50 @@ export default {
                 },
             },
         },
+        {
+            kind: "value",
+            type: "symbol",
+            fields: ["name"],
+            subexpressions: [],
+            goalNames: {
+                "star": [ "sea star", "a sea star", "sea stars" ],
+                "circle": [ "dog", "a dog", "dogs" ],
+                "triangle": [ "orca", "an orca", "orcas" ],
+                "square": [ "bear", "a bear", "bears" ],
+            },
+            nameReplacements: [
+                [ "trianglify", "orcify" ],
+                [ "squarify", "bearify" ],
+                [ "rect", "bear" ],
+                [ "triangle", "orca" ],
+            ],
+            projection: {
+                type: "case",
+                on: "name",
+                cases: {
+                    star: {
+                        type: "sprite",
+                        image: "starfish",
+                        size: { h: 40 },
+                    },
+                    circle: {
+                        type: "sprite",
+                        image: "dog",
+                        size: { h: 40 },
+                    },
+                    triangle: {
+                        type: "sprite",
+                        image: "orca",
+                        size: { h: 40 },
+                    },
+                    rect: {
+                        type: "sprite",
+                        image: "bear",
+                        size: { h: 40 },
+                    },
+                },
+            },
+        },
     ],
 
     bool: {
