@@ -63,8 +63,8 @@ export default class TitleStage extends BaseStage {
                 },
         })));
         const animalIds = [
-            Loader.images["dog"],
-            Loader.images["orca"],
+            Loader.images["animal_dog"],
+            Loader.images["animal_orca"],
         ].map(image => this.allocate(gfx.sprite({
             image,
             size: image.naturalHeight / image.naturalWidth > 1.5 ?

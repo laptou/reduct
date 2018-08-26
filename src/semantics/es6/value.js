@@ -185,23 +185,23 @@ export default {
                 cases: {
                     star: {
                         type: "sprite",
-                        image: "starfish",
+                        image: "animal_starfish",
                         size: { h: 40 },
                     },
                     circle: {
                         type: "sprite",
-                        image: "dog",
+                        image: "animal_dog",
                         size: { h: 40 },
                     },
                     triangle: {
                         type: "sprite",
-                        image: "orca",
-                        size: { h: 40 },
+                        image: "animal_orca",
+                        size: { h: 50 },
                     },
                     rect: {
                         type: "sprite",
-                        image: "bear",
-                        size: { h: 40 },
+                        image: "animal_bear",
+                        size: { h: 50 },
                     },
                 },
             },

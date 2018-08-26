@@ -972,7 +972,7 @@ export default class Stage extends BaseStage {
             .then(() => {
                 const title = gfxCore.sprite({
                     image: Loader.images["you_win"],
-                    size: { w: 509, h: 110.0 },
+                    size: { w: 509, h: 350 },
                 });
                 const titleId = this.allocate(title);
 
