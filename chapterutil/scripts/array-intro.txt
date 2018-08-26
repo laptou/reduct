@@ -1,0 +1,5 @@
+So far we've been playing with functions that work on simple things like
+numbers and shapes. But computers let us use functions on more stuff at the
+same time.  This new block is called an *array*. It can hold three different
+things at the same time, and functions can do things on the whole array at
+once.
