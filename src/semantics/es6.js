@@ -13,6 +13,10 @@ import lambda from "./es6/lambda";
 import reference from "./es6/reference";
 import value from "./es6/value";
 
+function ucfirst(s) {
+    return s.charAt(0).toUpperCase() + s.substr(1);
+}
+
 export default transform({
     name: "ECMAScript 6",
     parser: {
@@ -24,7 +28,10 @@ export default transform({
             const replacements = defn.nameReplacements || [];
 
             for (const [ key, replacement ] of replacements) {
-                name = name.replace(new RegExp(key, "g"), replacement);
+                const Key = ucfirst(key),
+                      Replacement = ucfirst(replacement);
+                name = name.replace(new RegExp(key, "g"), replacement)
+                           .replace(new RegExp(Key, "g"), Replacement);
             }
             return name;
         },
