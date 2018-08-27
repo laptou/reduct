@@ -85,6 +85,8 @@ export function blink(stage, projection, opts) {
         field: "stroke",
     }, opts);
 
+    if (!projection.color) projection.color = "black";
+
     if (options.background) {
         if (!projection.__origColor) {
             projection.__origColor = projection.color;
