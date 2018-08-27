@@ -7,4 +7,4 @@ comes out is called the output. For this function, the output is the
 same as the input; whatever you drop into the function comes back out.
 
 Here's another function. No matter what input you drop into this function, you get a star
-back as output.
+back as the output.
