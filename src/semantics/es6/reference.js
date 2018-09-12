@@ -131,8 +131,8 @@ export default {
                 }
                 if (!incomplete) return "expression";
                 if (!args) return "value";                        // topexpr. Or do we let substepFilter handle this?
-                if (builtin) return "value";
-                return "expression";
+                return "value"; // treat builtins and user definitions the same way - desirable?
+                // return builtin ? "value" : "expression";
             },
             smallStep: (semant, stage, state, expr) => {
                 // TODO: reuse orig smallStep somehow
@@ -145,7 +145,6 @@ export default {
                 }
 
                 const name = expr.get("name");
-                console.log(`stepping name ${name}`)
 
                 if (builtins.has(name)) {
                     const {impl} = builtins.get(name);
@@ -156,6 +155,7 @@ export default {
                             return null;
                         }
                         return core.makeResult(expr, resultExpr, semant);
+                        // return resultExpr;
                     } else {
                         console.error(`Undefined builtin implementation: ${name}`);
                     }

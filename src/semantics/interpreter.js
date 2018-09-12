@@ -100,8 +100,9 @@ export default function(module) {
     module.interpreter.singleStep = function singleStep(state, expr, exprFilter=null) {
         const nodes = state.get("nodes");
         const kind = module.kind(state, expr);
+        console.log(`stepping ${expr.toString()}`)
         if (kind !== "expression") {
-            console.debug(`semant.interpreter.singleStep: could not step since ${expr.get("id")} is '${kind}', not 'expression'`);
+            console.log(`semant.interpreter.singleStep: could not step since ${expr.get("id")} is '${kind}', not 'expression'`);
             let reason = "This expression can't step!";
             if (kind === "placeholder") {
                 reason = "There's a hole that needs to be filled in!";
@@ -113,12 +114,16 @@ export default function(module) {
         const substepFilter = module.interpreter.substepFilter(expr.get("type"));
 
         if (!exprFilter(state, expr)) {
+            console.log("no expr filter")
             for (const field of module.subexpressions(expr)) {
+                console.log(`considering subexpression ${field}`)
                 const subexprId = expr.get(field);
                 const subexpr = nodes.get(subexprId);
                 const subexprKind = module.kind(state, subexpr);
+                console.log(`subexpr kind is ${subexprKind}`)
 
                 if (!substepFilter(module, state, expr, field)) {
+                    console.log(`skipping subexpr ${subexpr} because substepFilter`)
                     continue;
                 }
 
@@ -127,18 +132,25 @@ export default function(module) {
                 if (subexpr.get("type") === "reference") {
                     if (expr.get("type") !== "apply" && (
                         !subexpr.get("params") ||
-                            module.subexpressions(subexpr)
-                            .every(f => nodes.get(subexpr.get(f)).get("type") === "missing")
+                            module.subexpressions(subexpr).some(f =>
+                                nodes.get(subexpr.get(f)).get("type") === "missing")
                     )) {
+                        console.log("delaying expansion because of missing arguments")
                         continue;
                     }
+                    console.log("going ahead with expanding a nested reference")
                 }
 
                 if (subexprKind !== "value" && subexprKind !== "syntax") {
+                    console.log(`recursing into ${field}`)
                     return module.interpreter.singleStep(state, subexpr, exprFilter);
+                } else {
+                    console.log(`${field} is not an expression, not recursing into it`)
                 }
             }
         }
+
+        console.log(`validating step for ${expr}`)
 
         const validation = module.interpreter.validateStep(state, expr);
         if (validation !== null) {
@@ -298,7 +310,10 @@ export default function(module) {
     ) {
         let firstStep = true;
 
+        console.log("in multiStepReducer")
+
         const takeStep = (innerState, topExpr) => {
+            console.log(`in takeStep ${topExpr}`)
             const [ result, exprId, reason ] = module.interpreter.singleStep(innerState, topExpr);
             if (result === "error") {
                 callbacks.error(exprId, reason);
@@ -306,7 +321,10 @@ export default function(module) {
             }
 
             const innerExpr = innerState.get("nodes").get(exprId);
+            console.log(`successful result was ${innerExpr}`)
+
             const nextStep = () => {
+                console.log(`in nextStep ${innerExpr}`)
                 const result = module.interpreter.smallStep(stage, innerState, innerExpr);
                 if (result === null) {
                     callbacks.error(exprId);
@@ -321,8 +339,7 @@ export default function(module) {
                             // TODO: handle multiple newNodeIds
                             topExpr = newState.getIn([ "nodes", newNodeIds[0] ]);
                         }
-                        else {
-                            topExpr = newState.getIn([ "nodes", topExpr.get("id") ]);
+                        else { topExpr = newState.getIn([ "nodes", topExpr.get("id") ]);
                         }
 
                         if ((callbacks.stop && callbacks.stop(newState, topExpr)) ||
@@ -334,6 +351,7 @@ export default function(module) {
             };
 
             if (animated) {
+                console.log("starting animation")
                 return module.interpreter
                     .animateStep(stage, innerState, innerExpr)
                     .then(() => nextStep());
