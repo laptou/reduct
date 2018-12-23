@@ -347,7 +347,9 @@ export function makeResult(sourceExpr, resultExpr, semant) {
     resultExpr.locked = false;
     delete resultExpr.parent;
     delete resultExpr.parentField;
-    const newNodes = semant.flatten(resultExpr).map(n => immutable.Map(n));
+    console.log(`Making result for ${resultExpr.type}`);
+    const newNodes = semant.flatten(resultExpr).map(immutable.Map);
+    console.log(`New nodes are ${newNodes}`);
     return [
         sourceExpr.get("id"),
         [ newNodes[0].get("id") ],
