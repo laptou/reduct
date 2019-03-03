@@ -342,6 +342,7 @@ function start(updateLevel, options={}) {
                 tutorial(levelDefinition.tutorialUrl);
             }
 
+
             level.startLevel(levelDefinition, es6.parser.parse, store, stg);
             stg.drawImpl();
 
