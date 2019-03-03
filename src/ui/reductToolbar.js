@@ -122,7 +122,7 @@ export default class ReductToolbar {
         if (this.ids.has(id)) {
             this.ids.get(id).shouldStop = false;
         }
-        this.stage.step(this.stage.getState(), id, "hybrid", this._shouldStop);
+        this.stage.step(this.stage.getState(), id, "multi", this._shouldStop);
     }
 
     pause(id) {
@@ -133,6 +133,9 @@ export default class ReductToolbar {
 
     ffwd(id) {
         // TODO: LOGGING
+        if (this.ids.has(id)) {
+            this.ids.get(id).shouldStop = false;
+        }
         this.stage.step(this.stage.getState(), id, "big");
     }
 }

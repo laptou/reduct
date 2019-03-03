@@ -16,6 +16,7 @@ export default class TitleStage extends BaseStage {
         this.startGame = startGame;
         this.color = "#8ab7db";
 
+        //allocating title ID
         const title = gfx.layout.sticky(
             gfx.layout.ratioSizer(gfx.sprite({
                 image: Loader.images["reduct_title"],
@@ -29,6 +30,7 @@ export default class TitleStage extends BaseStage {
 
         const buttons = [];
 
+        //allocating shape, food, etc... IDs
         const shapeIds = [
             gfx.shapes.star(), gfx.shapes.triangle(),
         ].map(view => this.allocate(view));
@@ -109,6 +111,7 @@ export default class TitleStage extends BaseStage {
             )],
         ];
 
+        //allocating button ID
         for (const [ symbolFadeLevel, view ] of views) {
             const theme = this.allocate(view);
             const label = this.allocate(gfx.text("I like", {
@@ -138,6 +141,7 @@ export default class TitleStage extends BaseStage {
 
         this.buttons = buttons;
 
+        //allocating layout ID
         const layout = gfx.layout.sticky(gfx.layout.vbox(() => buttons, {
             subexpScale: 1.0,
             padding: {

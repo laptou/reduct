@@ -18,7 +18,9 @@ export function genericFlatten(nextId, subexpressions) {
         return result;
     };
 }
-
+/** Apply the function f to node [nodeId] and all of its
+* subexpressions.
+*/
 export function genericMap(subexpressions) {
     const innerMap = function(nodes, nodeId, f, filter=null, top=true) {
         let currentStore = nodes;
@@ -36,7 +38,7 @@ export function genericMap(subexpressions) {
                 n.set(field, newNode.get("id"));
             }
         });
-        // Function returns new node and new store
+        // Function returns [new node, new store]
         const result = f(currentStore.set(node.get("id"), node), node.get("id"));
         if (top) return [ result[0], result[1].asImmutable() ];
         return result;
@@ -44,6 +46,10 @@ export function genericMap(subexpressions) {
     return innerMap;
 }
 
+/** Given a [nodeId], returns the node
+* with the corresponding ID or its subexpressions
+* that return true when passed into the function f.
+*/
 export function genericSearch(subexpressions) {
     return function(nodes, nodeId, f) {
         const queue = [ nodeId ];
@@ -112,6 +118,11 @@ export function genericClone(nextId, subexpressions) {
 
 /**
  * A generic function to apply a list of arguments to an expression.
+ * returns [topNode, resultNodeIds, newNodes] where
+ * [topNode] = original lambda node
+ * [resultNodeIds] = IDs of the resulting node
+ * [newNodes] = All the new added nodes (includs the children of the parent node
+    as well.)
  */
 export function genericBetaReduce(semant, state, config) {
     const { topNode, targetNode, argIds } = config;
@@ -348,6 +359,7 @@ export function makeResult(sourceExpr, resultExpr, semant) {
     delete resultExpr.parent;
     delete resultExpr.parentField;
     console.log(`Making result for ${resultExpr.type}`);
+    //console.log(JSON.stringify(semant.flatten(resultExpr).map(immutable.Map)));
     const newNodes = semant.flatten(resultExpr).map(immutable.Map);
     console.log(`New nodes are ${newNodes}`);
     return [

@@ -9,13 +9,13 @@ import * as layout from "../ui/layout";
 export function startLevel(description, parse, store, stage) {
     animate.replaceDurationScales(description.animationScales);
 
+    console.log(description);
     const macros = Object.assign({}, description.macros);
     for (const macroName of Object.keys(macros)) {
         // Needs to be a thunk in order to allocate new ID each time
         const macro = macros[macroName];
         macros[macroName] = () => parse(macro, {});
     }
-
     // Parse the defined names carried over from previous levels, the
     // globals added for this level, and any definitions on the board.
 
@@ -50,11 +50,16 @@ export function startLevel(description, parse, store, stage) {
         macros[name] = expr;
     }
 
+
     // Actually parse the goal, board, and toolbox.
     const goal = description.goal.map(str => parse(str, macros));
+    console.log("parsing board now ...");
+    console.log(JSON.stringify(description.board));
     const board = description.board
           .map(str => parse(str, macros))
           .reduce((a, b) => (Array.isArray(b) ? a.concat(b) : a.concat([b])), []);
+    console.log("parsing board end...");
+    console.log(JSON.stringify(board));
     const toolbox = description.toolbox
           .map(str => parse(str, macros));
 
@@ -83,6 +88,8 @@ export function startLevel(description, parse, store, stage) {
     }
 
     // Update the store with the parsed data.
+
+    stage.getTests(description.input, description.output, description.numTests);
     store.dispatch(action.startLevel(stage, goal, board, toolbox, globals));
     stage.startLevel(description.textgoal, description.showConcreteGoal);
     stage.registerNewDefinedNames(newDefinedNames.map(elem => elem[0]));
@@ -97,6 +104,7 @@ export function startLevel(description, parse, store, stage) {
         w: stage.width - 60,
         h: (stage.height - (stage.toolbox.size.h) - 25 - 10 - 200),
     }, state.get("board").toArray().filter(id => nodes.get(id).get("type") !== "defineAttach"));
+
 
     if (positions !== null) {
         for (const [ id, pos ] of positions) {

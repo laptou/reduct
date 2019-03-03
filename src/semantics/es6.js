@@ -5,11 +5,14 @@ import { makeParser, makeUnparser } from "../syntax/es6";
 import transform from "./transform";
 
 import apply from "./es6/apply";
+import autograder from "./es6/autograder";
 import array from "./es6/array";
 import binop from "./es6/binop";
 import conditional from "./es6/conditional";
 import define from "./es6/define";
 import lambda from "./es6/lambda";
+import member from "./es6/member";
+import not from "./es6/not";
 import reference from "./es6/reference";
 import value from "./es6/value";
 
@@ -56,6 +59,7 @@ export default transform({
                         a.locked = false;
                         return a;
                     });
+
                     return semant.reference(expr.name, params, ...missing);
                 };
                 // Flag to the parser that this thunk can take arguments
@@ -117,7 +121,10 @@ export default transform({
         ...binop,
         ...conditional,
         ...define,
+        ...autograder,
         ...lambda,
+        ...member,
+        ...not,
         ...reference,
         ...value
     },

@@ -381,7 +381,10 @@ export default class BaseStage {
         const [ topNode, targetNode, fromToolbox ] = this.getNodeAtPos(pos);
         if (topNode === null) return null;
 
+
+
         const dragAnchor = this.computeDragAnchor(pos, topNode, targetNode);
+
 
         const touch = this._touches.get("mouse");
         touch.reset();
@@ -391,6 +394,8 @@ export default class BaseStage {
         touch.dragAnchor = dragAnchor;
         touch.dragStart = pos;
         this.updateCursor(touch);
+
+
         touch.onstart(pos);
 
         this.draw();
@@ -399,6 +404,7 @@ export default class BaseStage {
     }
 
     _mousemove(e) {
+
         const buttons = typeof e.buttons !== "undefined" ? e.buttons : e.which;
         const mouse = this._touches.get("mouse");
         mouse.onmove(buttons > 0, this.getMousePos(e));

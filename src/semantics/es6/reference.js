@@ -146,7 +146,7 @@ export default {
 
                 const name = expr.get("name");
 
-                if (builtins.has(name)) {
+               if (builtins.has(name)) {
                     const {impl} = builtins.get(name);
                     if (impl) {
                         let resultExpr = impl(expr, semant, state.get("nodes"));
@@ -170,6 +170,7 @@ export default {
                         "type",
                     ]) !== "missing")) {
                     const params = expr.get("params");
+                    console.log("reference-executing-via beta reduce");
                     const result = semant.interpreter.betaReduce(
                         stage,
                         state, res,

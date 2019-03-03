@@ -72,6 +72,7 @@ export default class TouchRecord extends BaseTouchRecord {
         const topNode = nodes.get(this.topNode);
         const highlightSidebar = topNode.get("type") === "define";
 
+        //sidebar highlighting for defines
         let sidebarScale = null;
         let sidebarHoverScale = null;
         if (highlightSidebar) {
@@ -88,6 +89,7 @@ export default class TouchRecord extends BaseTouchRecord {
             });
         }
 
+        //highlighting droppable targets for the topNode
         state.get("board").forEach((id) => {
             if (id === this.topNode) return;
 
@@ -158,7 +160,7 @@ export default class TouchRecord extends BaseTouchRecord {
 
         const referenceId = this.stage.getReferenceNameAtPos(mousePos);
         if (referenceId) {
-            this.stage.showReferenceDefinition(this.stage.getState(), referenceId);
+           this.stage.showReferenceDefinition(this.stage.getState(), referenceId);
         }
     }
 
@@ -179,6 +181,7 @@ export default class TouchRecord extends BaseTouchRecord {
             return;
         }
 
+        //case when moving a "normal" node
         if (mouseDown && this.topNode !== null && this.isExpr &&
             (!this.targetNode || !this.stage.isDetachable(this.targetNode))) {
             // Tolerance before a click becomes a drag
@@ -229,13 +232,13 @@ export default class TouchRecord extends BaseTouchRecord {
             }
         }
 
+        //case when we take a node out of a hole
         if (this.isExpr && mouseDown && this.targetNode &&
             gfxCore.distance(this.dragStart, mousePos) > 10) {
             const newSelected = this.stage.detachFromHole(this.topNode, this.targetNode);
             if (newSelected !== null) {
                 // Highlight droppable holes
                 this.startHighlight();
-
                 this.stage.views[this.topNode].opacity = 1.0;
                 this.topNode = newSelected;
                 this.dragAnchor = this.stage.computeDragAnchor(
@@ -370,6 +373,7 @@ export default class TouchRecord extends BaseTouchRecord {
     }
 
     onend(state, mousePos) {
+      debugger;
         this.stopHighlight();
         if (this.scaleAnimation) this.scaleAnimation.cancel();
 
@@ -395,7 +399,7 @@ export default class TouchRecord extends BaseTouchRecord {
         }
 
         if (this.isExpr && !this.dragged && this.topNode !== null && !this.fromToolbox) {
-            if (Date.now() - this.currTime < 1000) {
+            if (Date.now() - this.currTime < 10000) {
                 // Click on object to reduce; always targets toplevel node
                 if (this.stage.functionDef) {
                     this.stage.functionDef = null;
@@ -412,9 +416,9 @@ export default class TouchRecord extends BaseTouchRecord {
         else if (this.isExpr && this.dragged && this.hoverNode &&
                  this.stage.semantics.droppable(state, this.topNode, this.hoverNode) === "hole") {
             // Drag something into hole
-
             if (this.fromToolbox) this.useToolboxItem();
 
+            debugger;
             Audio.play("pop");
             this.stage.reductToolbar.update(null, this.topNode);
             this.stage.store.dispatch(action.fillHole(this.hoverNode, this.topNode));
@@ -422,6 +426,7 @@ export default class TouchRecord extends BaseTouchRecord {
         }
         else if (this.isExpr && this.dragged && this.hoverNode && this.topNode) {
             if (this.fromToolbox) this.useToolboxItem();
+
             // Clear application previews (otherwise they stick around
             // if beta-reduction is undone)
             this.stage.previewApplication(this.topNode, null, this.hoverNode);
@@ -451,6 +456,14 @@ export default class TouchRecord extends BaseTouchRecord {
                 Logging.log("toolbox-addback", this.stage.saveNode(this.topNode));
             }
         }
+        else if (this.isExpr && !this.dragged && this.topNode !== null && this.fromToolbox) {
+            const node = state.getIn(["nodes",this.topNode]);
+            if(node.get("name") == "Library") {
+              console.log("wow");
+              this.stage.library(state,this.topNode);
+            }
+        }
+
 
         // Bump items out of toolbox
         if (this.isExpr && this.topNode !== null) {

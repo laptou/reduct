@@ -2,7 +2,9 @@ import * as gfx from "../gfx/core";
 import * as animate from "../gfx/animate";
 import * as progression from "../game/progression";
 import Loader from "../loader";
-
+import * as action from "../reducer/action";
+import { nextId } from "../reducer/reducer";
+import * as immutable from "immutable";
 export default class SyntaxJournal {
     constructor(stage) {
         this.stage = stage;
@@ -33,21 +35,31 @@ export default class SyntaxJournal {
         }), "center"));
 
         this.next = stage.allocateInternal(gfx.layout.sticky(gfx.ui.imageButton({
-            normal: Loader.images["btn-next-default"],
-            hover: Loader.images["btn-next-hover"],
-            active: Loader.images["btn-next-down"],
+            normal: Loader.images["journal-default"],
+            hover: Loader.images["journal-hover"],
+            active: Loader.images["journal-mousedown"],
         }, {
-            click: () => this.currentSyntax++,
+            click: () => console.log("letsgo"),
         }), "center", {
             marginX: 270,
         }));
+
+        /*this.if_dog = stage.allocate(gfx.layout.sticky(gfx.ui.imageButton({
+          normal: Loader.images["animal_dog"],
+          hover: Loader.images["animal_ocra"],
+          active: Loader.images["animal_bear"],
+        }, {
+           click: () => console.log("Yay"),
+        }), "center", {
+          marginX: 0,
+        }));*/
 
         this.prev = stage.allocateInternal(gfx.layout.sticky(gfx.ui.imageButton({
             normal: Loader.images["btn-back-default"],
             hover: Loader.images["btn-back-hover"],
             active: Loader.images["btn-back-down"],
         }, {
-            click: () => this.currentSyntax--,
+            click: () => this.stage.syntaxJournal.showBox(),
         }), "center", {
             marginX: -250,
         }));
@@ -55,7 +67,7 @@ export default class SyntaxJournal {
         this.state = "closed";
 
         this.syntaxes = {};
-        this.currentSyntax = 0;
+        this.currentSyntax = 5;
     }
 
     getNodeAtPos(state, pos) {
@@ -116,13 +128,42 @@ export default class SyntaxJournal {
                 this.stage.drawInternalProjection(state, this.next, null, offset);
             }
 
-            let y = bg.pos.y + 40;
+            let y = bg.pos.y + 200;
+            let x = this.stage.width / 2;
+
+          /* for (const nodeId of state.get("toolbox")) {
+             const state = this.stage.getState();
+             const node = state.getIn([ "nodes", nodeId ]);
+             if (node.has("__meta") && node.get("__meta").toolbox.unlimited) {
+               const projection = this.stage.getView(nodeId);
+               projection.pos.x = this.stage.width / 2;
+               projection.pos.y = y;
+               projection.scale.x = 1;
+               projection.scale.y = 1;
+               projection.anchor = { x: 0, y: 0.5 };
+               animate
+                   .tween(projection, {
+                       pos: { x },
+                       scale: { x: 1, y: 1 },
+                   }, {
+                       easing: animate.Easing.Cubic.Out,
+                       duration: 400,
+                   })
+                   .delay(200 * Math.log(2 + 2));
+
+               projection.prepare(nodeId, nodeId, state, this.stage);
+               projection.draw(nodeId, nodeId, state, this.stage, this.stage.makeBaseOffset());
+             }
+         }*/
 
             const { ctx } = this.stage;
             ctx.save();
             ctx.globalCompositeOperation = "multiply";
 
             this.project();
+
+
+
             const syntax = progression.getLearnedSyntaxes()[this.currentSyntax];
 
             if (syntax) {
@@ -132,6 +173,8 @@ export default class SyntaxJournal {
                 y += view.size.h + 10;
                 this.stage.drawProjection(state, this.syntaxes[syntax], offset);
             }
+
+
 
             ctx.restore();
         }
@@ -233,4 +276,26 @@ export default class SyntaxJournal {
             }
         }
     }
+
+    showBox() {
+      const state = this.stage.getState();
+      const { ctx } = this.stage;
+      ctx.save();
+      const node = this.stage.semantics.bool(true);
+      node.id = nextId();
+      const addedNodes = this.stage.semantics.flatten(node).map(immutable.Map);
+
+      const tempNodes = state.get("nodes").withMutations((nodes) => {
+          for (const node of addedNodes) {
+              nodes.set(node.get("id"), node);
+          }
+      });
+
+      for(const nn of addedNodes) {
+        this.stage.views[nn.get("id")] = this.stage.semantics.project(this.stage,tempNodes,nn);
+      }
+      
+      this.stage.store.dispatch(action.addToolboxItem(addedNodes[0].get("id"), addedNodes));
+    }
+
 }

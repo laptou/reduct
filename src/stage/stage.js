@@ -60,6 +60,13 @@ export default class Stage extends BaseStage {
         // Track of which function names are newly defined so that we
         // big-step it during reduction.
         this.newDefinedNames = [];
+
+        // List of possible input values for autotesting
+        this.input = [];
+        // List of possible output values for autotesting
+        this.output = [];
+        //Number of tests to carry out
+        this.numTests = 0;
         // Keep track of the reduction mode.
         this.mode = "over";
     }
@@ -72,6 +79,9 @@ export default class Stage extends BaseStage {
         return this._width - this.sidebarWidth;
     }
 
+    /* Perhaps tests if the node/projection associated with
+       [curProjId] is located under [curPos].
+    */
     testNodeAtPos(state, curPos, curProjId, curExprId, curRoot, curOffset, targetable) {
         const projection = this.getView(curProjId);
         let res = null;
@@ -79,10 +89,12 @@ export default class Stage extends BaseStage {
         const topLeft = gfxCore.util.topLeftPos(projection, curOffset);
         if (projection.containsPoint(curPos, curOffset)) {
             if (curRoot === null) {
+              //if curRoot is NULL, set both TopNode and TargetNode
                 curRoot = curExprId;
                 res = curExprId;
             }
             else if (targetable(curProjId, curExprId)) {
+              //else, just set the targetNode
                 res = curExprId;
             }
 
@@ -116,6 +128,9 @@ export default class Stage extends BaseStage {
         return null;
     }
 
+    /* Perhaps tests if the node/projection associated with
+       [curProjId] is located under [curPos].
+    */
     testExprAtPos(state, curPos, curProjId, curExprId, curRoot, curOffset) {
         const curNode = state.getIn([ "nodes", curExprId ]);
         const projection = this.getView(curProjId);
@@ -124,10 +139,12 @@ export default class Stage extends BaseStage {
         const topLeft = gfxCore.util.topLeftPos(projection, curOffset);
         if (projection.containsPoint(curPos, curOffset)) {
             if (curRoot === null) {
+              //if curRoot is NULL, set both TopNode and TargetNode
                 curRoot = curExprId;
                 res = curExprId;
             }
             else if (curNode && this.semantics.targetable(state, curNode)) {
+              //else, just set the targetNode
                 res = curExprId;
             }
 
@@ -166,6 +183,9 @@ export default class Stage extends BaseStage {
         return null;
     }
 
+    /*Get all the nodes [topNode] and [targetNode] at the
+      current position [pos].
+    */
     getNodeAtPos(pos, selectedId=null) {
         if (this.alreadyWon) {
             // If already won or stuck, only allow interaction with navbar
@@ -217,6 +237,9 @@ export default class Stage extends BaseStage {
         return [ root, result, false ];
     }
 
+    /*Similar to testNodeAtPos or testExprAtPos but additionally,
+     also checks if the node is a reference (a function reference).
+    */
     getReferenceNameAtPos(pos) {
         const state = this.getState();
         const check = (curPos, curProjId, curExprId, curRoot, curOffset) => {
@@ -305,6 +328,9 @@ export default class Stage extends BaseStage {
         }
     }
 
+    /*Used for window resizing.
+      called in index.js
+    */
     resize() {
         super.resize();
         this.toolbox.resizeRows(this.getState());
@@ -318,6 +344,9 @@ export default class Stage extends BaseStage {
         }, 500);
     }
 
+    /* Initializing sidebar, goal and toolbox at the start
+      of a level. Called in level.js
+    */
     startLevel(textGoal, showConcreteGoal) {
         const state = this.getState();
 
@@ -334,6 +363,7 @@ export default class Stage extends BaseStage {
     }
 
     registerNewDefinedNames(names) {
+
         this.newDefinedNames = names;
     }
 
@@ -367,7 +397,7 @@ export default class Stage extends BaseStage {
         );
 
         this.toolbox.drawBase(state);
-        // this.syntaxJournal.drawBase(state);
+        //this.syntaxJournal.drawBase(state);
         this.goal.drawImpl(state);
 
         for (const fx of Object.values(this.effects)) {
@@ -382,11 +412,11 @@ export default class Stage extends BaseStage {
         }
 
         this.toolbox.drawImpl(state);
-        // this.syntaxJournal.drawImpl(state);
+         this.syntaxJournal.drawImpl(state);
 
-        for (const id of this._newSyntax) {
-            this.drawInternalProjection(state, id);
-        }
+        //for (const id of this._newSyntax) {
+          //  this.drawInternalProjection(state, id);
+        //}
         if (this.functionDef) {
             this.functionDef.drawImpl(state);
         }
@@ -419,16 +449,16 @@ export default class Stage extends BaseStage {
                 selectedNode,
                 state.get("nodes")
             );
+              // make clone include result in addedNodes
+            const allAddedNodes = addedNodes.concat([ clonedNode ]);
 
-            // TODO: make clone include result in addedNodes
             const tempNodes = state.get("nodes").withMutations((nodes) => {
-                for (const node of addedNodes) {
+                for (const node of allAddedNodes) {
                     nodes.set(node.get("id"), node);
                 }
-                nodes.set(clonedNode.get("id"), clonedNode);
             });
-            for (const node of addedNodes.concat([ clonedNode ])) {
-                this.views[node.get("id")] = this.semantics.project(this, tempNodes, node);
+            for (const node of allAddedNodes) {
+               this.views[node.get("id")] = this.semantics.project(this, tempNodes, node);
             }
             this.views[clonedNode.get("id")].pos.x = this.views[selectedNode].pos.x;
             this.views[clonedNode.get("id")].pos.y = this.views[selectedNode].pos.y;
@@ -438,13 +468,14 @@ export default class Stage extends BaseStage {
             this.store.dispatch(action.useToolbox(
                 selectedNode,
                 clonedNode.get("id"),
-                addedNodes.concat([ clonedNode ])
+                allAddedNodes
             ));
             return clonedNode.get("id");
         }
         return null;
     }
 
+    /** Check whether a node is detachable from its parent. */
     isDetachable(targetNode) {
         const state = this.getState();
         const target = state.getIn([ "nodes", targetNode ]);
@@ -699,6 +730,7 @@ export default class Stage extends BaseStage {
      * Helper that handles animation and updating the store for a small-step.
      */
     step(state, selectedNode, overrideMode=null, shouldStop=null) {
+      debugger;
         const nodes = state.get("nodes");
         const node = nodes.get(selectedNode);
 
@@ -841,9 +873,14 @@ export default class Stage extends BaseStage {
      * Helper that handles animation and updating the store for a beta reduction.
      */
     betaReduce(state, target, arg) {
+      debugger;
         const result = this.semantics.interpreter.betaReduce(this, state, target, [ arg ]);
         if (result) {
             const [ topNode, resultNodeIds, newNodes ] = result;
+            console.log("betaReduce results:");
+            console.log("topNode");console.log(JSON.stringify(topNode));
+            console.log("resultNodeIds:");console.log(JSON.stringify(resultNodeIds));
+            console.log("newNodes:");console.log(newNodes);
             const origExp = this.saveNode(topNode);
             const origArg = this.saveNode(arg);
             const tempNodes = state.get("nodes").withMutations((nodes) => {
@@ -1315,6 +1352,18 @@ export default class Stage extends BaseStage {
         ]).then(() => {
             this.removeEffect(fxId);
         });
+    }
+
+    library(state, topNode) {
+      console.log("In stage");
+      this.syntaxJournal.open();
+    }
+
+    getTests(inputList, outputList, numTests) {
+      this.input = inputList;
+      this.output = outputList;
+      this.numTests = numTests;
+      console.log("numtests_stage: " + numTests);
     }
 
     _mousedown(e) {

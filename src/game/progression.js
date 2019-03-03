@@ -1,18 +1,19 @@
 import VERSION from "../version";
 
-export const PROGRESSIONS = { 
-    "Elementary": { 
+export const PROGRESSIONS = {
+    "Elementary": {
         dir: "levels-progression/",
         digraph: {
             "functions": ["replication"],
             "replication": ["multiargument"],
-            "multiargument": ["booleans-intro"],  
+            "multiargument": ["booleans-intro"],
             "booleans-intro": ["application"],
 //            "functions-challenge": ["application"],
             "application": ["definition"],
             "definition": ["testing"],
             "testing": ["lists-intro"],
-            "lists-intro": ["booleans-definition"],
+            "lists-intro": ["array-booleans"],
+            "array-booleans" : ["booleans-definition"],
             "booleans-definition": ["weekdays"],
             "weekdays": ["higher-order-functions"],
             "higher-order-functions": ["define-challenges"],
@@ -38,6 +39,10 @@ let learnedSyntaxes = [];
 
 export function currentLevel() {
     return currentLevelIdx;
+}
+
+export function getLevel() {
+  return currentLevelIdx;
 }
 
 export function setLevel(idx) {

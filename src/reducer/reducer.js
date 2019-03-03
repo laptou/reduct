@@ -65,6 +65,7 @@ export function reduct(semantics, views, restorePos) {
                 const newBoard = board.filter(n => n !== act.nodeId).push(act.nodeId);
                 return state.set("board", newBoard);
             }
+
             return state;
         }
         case action.SMALL_STEP: {
@@ -82,23 +83,21 @@ export function reduct(semantics, views, restorePos) {
                 newBoard = newBoard.concat(act.newNodeIds);
             }
             else if (act.newNodeIds.length !== 1) {
-                throw "Cannot small-step a child expression to multiple new expressions.";
+                console.log("Cannot small-step a child expression to multiple new expressions.");
                 // TODO: handle this more gracefully? Create a vtuple?
             }
             else {
                 const parent = newNodes.get(oldNode.get("parent"))
                       .set(oldNode.get("parentField"), act.newNodeIds[0]);
-                // TODO: this could be done more efficiently
+
+                const child = newNodes.get(act.newNodeIds[0]).withMutations((nn) => {
+                    nn.set("parent", parent.get("id"));
+                    nn.set("parentField", oldNode.get("parentField"));
+                });
+
                 newNodes = newNodes.withMutations((n) => {
                     n.set(oldNode.get("parent"), parent);
-                    n.set(
-                        act.newNodeIds[0],
-                        newNodes.get(act.newNodeIds[0])
-                            .withMutations((nn) => {
-                                nn.set("parent", parent.get("id"));
-                                nn.set("parentField", oldNode.get("parentField"));
-                            })
-                    );
+                    n.set(act.newNodeIds[0], child);
                 });
             }
 
@@ -107,6 +106,42 @@ export function reduct(semantics, views, restorePos) {
             return state
                 .set("nodes", newNodes)
                 .set("board", newBoard);
+        }
+        case action.ADD_TOOLBOX_ITEM: {
+          let newNodes = state.get("nodes")
+              .withMutations((n) => {
+                  for (const node of act.addedNodes) {
+                      n.set(node.get("id"), node);
+                  }
+              });
+
+          let newToolbox = state.get("toolbox").push(act.newNodeId);
+
+          return state
+              .set("nodes", newNodes)
+              .set("toolbox", newToolbox);
+        }
+        case action.CHANGE_GOAL: {
+          console.log("ss");
+          let newNodes = state.get("nodes")
+              .withMutations((n) => {
+                  for (const node of act.addedNodes) {
+                      n.set(node.get("id"), node);
+                  }
+              });
+
+              const len = state.get("goal").size;
+
+              let newGoal = state.get("goal").withMutations((g) => {
+                for (var i =0;i<len;i++){
+                  g.pop();
+                }
+                g.push(act.newNodeId);
+              });
+
+          return state
+                  .set("nodes", newNodes)
+                  .set("goal", newGoal);
         }
         case action.UNFOLD: {
             const nodes = state.get("nodes");

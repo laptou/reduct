@@ -13,7 +13,8 @@ export const VICTORY = "victory";
 export const FADE = "fade";
 export const UNFADE = "unfade";
 export const DEFINE = "define";
-
+export const ADD_TOOLBOX_ITEM = "add-toolbox-item";
+export const CHANGE_GOAL = "change-goal";
 /**
  * Redux action to start a new level.
  *
@@ -45,7 +46,7 @@ export function startLevel(stage, goal, board, toolbox, globals) {
             _nodes[newExpr.id] = newExpr;
         }
         _goal.push(expr.id);
-    }
+        }
     for (const expr of board) {
         for (const newExpr of semantics.flatten(expr)) {
             _nodes[newExpr.id] = newExpr;
@@ -65,6 +66,7 @@ export function startLevel(stage, goal, board, toolbox, globals) {
         _globals[name] = expr.id;
     }
 
+
     ({
         nodes: _nodes,
         goal: _goal,
@@ -72,6 +74,11 @@ export function startLevel(stage, goal, board, toolbox, globals) {
         toolbox: _toolbox,
         globals: _globals,
     } = semantics.parser.postParse(_nodes, _goal, _board, _toolbox, _globals));
+
+    console.log("nodes after flattening:");
+    console.log(_nodes);
+    console.log("globals after flattening:");
+    console.log(_globals);
 
     const finalNodes = immutable.Map().withMutations((fn) => {
         for (const node of Object.values(_nodes)) {
@@ -82,7 +89,6 @@ export function startLevel(stage, goal, board, toolbox, globals) {
     finalNodes.forEach((node, nodeId) => {
         stage.views[nodeId] = semantics.project(stage, finalNodes, node);
     });
-
     return {
         type: START_LEVEL,
         nodes: finalNodes,
@@ -93,12 +99,30 @@ export function startLevel(stage, goal, board, toolbox, globals) {
     };
 }
 
+export function addToolboxItem(newNodeId, newNodes) {
+  return {
+    type: ADD_TOOLBOX_ITEM,
+    newNodeId: newNodeId,
+    addedNodes: newNodes,
+  };
+
+}
+
+export function changeGoal(newNodeId, newNodes) {
+  return {
+    type: CHANGE_GOAL,
+    newNodeId: newNodeId,
+    addedNodes: newNodes,
+  };
+}
+
 /**
  * Node ``nodeId`` took a small step to produce ``newNode`` which
  * contains ``newNodes`` as nested nodes. All of these are immutable
  * nodes.
  */
 export function smallStep(nodeId, newNodeIds, newNodes) {
+  console.log(JSON.stringify(newNodes));
     return {
         type: SMALL_STEP,
         topNodeId: nodeId,

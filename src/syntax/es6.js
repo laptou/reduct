@@ -1,4 +1,5 @@
 import * as esprima from "esprima";
+import * as progression from "../game/progression";
 
 function modifier(ast) {
     if (ast.body.length !== 2) return null;
@@ -22,7 +23,8 @@ function modifier(ast) {
 export function makeParser(jssemant) {
     return function parseES6(program, macros) {
         const ast = esprima.parse(program);
-
+        console.log("ast:" + program);
+        console.log(JSON.stringify(ast));
         const mod = modifier(ast);
 
         if (ast.body.length === 1) {
@@ -143,11 +145,21 @@ export function makeParser(jssemant) {
             return fail("Lambda expessions with more than one input are currently undefined.", node);
         }
 
+        case "UnaryExpression": {
+          return jssemant.not(parseNode(node.argument,macros));
+        }
+
         case "BinaryExpression":
-            // TODO: need ExprManager
-            return jssemant.binop(parseNode(node.left, macros),
-                                  jssemant.op(node.operator),
-                                  parseNode(node.right, macros));
+        // TODO: need ExprManager
+        return jssemant.binop(parseNode(node.left, macros),
+                              jssemant.op(node.operator),
+                              parseNode(node.right, macros));
+
+        case "LogicalExpression":
+        // TODO: need ExprManager
+        return jssemant.binop(parseNode(node.left, macros),
+                              jssemant.op(node.operator),
+                              parseNode(node.right, macros));
 
         case "CallExpression": {
             if (node.callee.type === "Identifier" && node.callee.name === "__tests") {
@@ -157,11 +169,16 @@ export function makeParser(jssemant) {
                 return jssemant.lambda(jssemant.lambdaArg(name, true), jssemant.vtuple(testCases));
             }
 
+            if(node.callee.type === "Identifier" && node.callee.name === "__autograder") {
+              return jssemant.autograder(progression.getLevel()+1,parseNode(node.arguments[0], macros));
+            }
+
             if (node.arguments.length === 0) {
                 return fail("Call expressions with zero arguments are currently unsupported", node);
             }
 
             // If the thunk can take arguments (i.e. it's a reference-with-holes), use that
+
             if (macros &&
                 node.callee.type === "Identifier" &&
                 macros[node.callee.name] &&
@@ -229,6 +246,11 @@ export function makeParser(jssemant) {
             return jssemant.array(...a);
         }
 
+        case "MemberExpression": {
+          return jssemant.member(parseNode(node.object,macros),
+            parseNode(node.property, macros));
+        }
+
         default: return fail(`parsers.es6: Unrecognized ES6 node type ${node.type}`, node);
         }
     }
@@ -274,6 +296,9 @@ export function makeUnparser(jssemant) {
         case "lambdaArg":
         case "lambdaVar": {
             return `${node.name}`;
+        }
+        case "not": {
+          return `!${node.value}`;
         }
         case "binop": {
             return `(${unparseES6(node.left)}) ${node.op.name} (${unparseES6(node.right)})`;
@@ -324,6 +349,12 @@ export function makeUnparser(jssemant) {
             }
             result += "]";
             return result;
+        }
+        case "member": {
+          return `${node.array}[${node.index}]`;
+        }
+        case "autograder": {
+          return `__autograder(_)`
         }
         default:
             console.error(`unparsers.es6: Unrecognized ES6 node type "${node.type}": `, node);
