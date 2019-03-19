@@ -165,6 +165,7 @@ export function genericBetaReduce(semant, state, config) {
         return null;
     }
 
+    debugger;
     if (argIds.length !== 1) {
         let curState = state;
         let curTopNode = topNode;
@@ -282,6 +283,7 @@ export function genericBetaReduce(semant, state, config) {
     newTop = newTop.delete("parent").delete("parentField");
 
     if (newTop.get("type") === "vtuple") {
+      console.log("yay vtuple");
         // Spill vtuple onto the board
         // TODO: should we delete parent/parentField?
         return [

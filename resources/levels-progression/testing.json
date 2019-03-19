@@ -74,18 +74,17 @@
             "animationScales": {},
             "board": [
                 "__argumentAnnotated; function threeify(x) { return _; }",
-                "__tests(testMe(1),testMe(2),testMe(3))"
+                "__autograder(_)"
             ],
             "defines": [
                 "function threeify(x) { return 3; }"
             ],
             "fade": {},
             "globals": {},
-            "goal": [
-                "3",
-                "3",
-                "3"
-            ],
+            "goal": [],
+            "input": ["1","2","3","4"],
+            "output":["3","3","3","3"],
+            "numTests": 3,
             "syntax": [],
             "textgoal": "Define a function that outputs 3",
             "toolbox": [

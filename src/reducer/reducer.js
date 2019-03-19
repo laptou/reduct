@@ -121,8 +121,22 @@ export function reduct(semantics, views, restorePos) {
               .set("nodes", newNodes)
               .set("toolbox", newToolbox);
         }
+        case action.ADD_BOARD_ITEM: {
+            let newNodes = state.get("nodes")
+              .withMutations((n) => {
+                for (const node of act.addedNodes) {
+                  n.set(node.get("id"), node);
+                }
+              });
+
+            let newBoard = state.get("board").concat(act.newNodeIds);
+
+            return state
+                .set("nodes", newNodes)
+                .set("board", newBoard);
+        }
         case action.CHANGE_GOAL: {
-          console.log("ss");
+          //console.log("ss");
           let newNodes = state.get("nodes")
               .withMutations((n) => {
                   for (const node of act.addedNodes) {
@@ -132,12 +146,8 @@ export function reduct(semantics, views, restorePos) {
 
               const len = state.get("goal").size;
 
-              let newGoal = state.get("goal").withMutations((g) => {
-                for (var i =0;i<len;i++){
-                  g.pop();
-                }
-                g.push(act.newNodeId);
-              });
+              let newGoal = state.get("goal").concat(act.newNodeIds);
+              console.log("newGoal" + JSON.stringify(newGoal));
 
           return state
                   .set("nodes", newNodes)
@@ -171,6 +181,7 @@ export function reduct(semantics, views, restorePos) {
             return newState;
         }
         case action.BETA_REDUCE: {
+          debugger;
             const queue = [ act.topNodeId, act.argNodeId ];
             const removedNodes = {};
 

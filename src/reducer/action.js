@@ -15,6 +15,7 @@ export const UNFADE = "unfade";
 export const DEFINE = "define";
 export const ADD_TOOLBOX_ITEM = "add-toolbox-item";
 export const CHANGE_GOAL = "change-goal";
+export const ADD_BOARD_ITEM = "add-board-item";
 /**
  * Redux action to start a new level.
  *
@@ -108,12 +109,20 @@ export function addToolboxItem(newNodeId, newNodes) {
 
 }
 
-export function changeGoal(newNodeId, newNodes) {
+export function changeGoal(newNodeIds, newNodes) {
   return {
     type: CHANGE_GOAL,
-    newNodeId: newNodeId,
+    newNodeIds: newNodeIds,
     addedNodes: newNodes,
   };
+}
+
+export function addBoardItem(newNodeIds, addedNodes) {
+  return {
+    type: ADD_BOARD_ITEM,
+    newNodeIds: newNodeIds,
+    addedNodes: addedNodes,
+  }
 }
 
 /**

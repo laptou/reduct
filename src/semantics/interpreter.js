@@ -21,6 +21,7 @@ export default function(module) {
     module.interpreter.smallStep = function smallStep(stage, state, expr) {
       debugger;
         console.log("inSmallStep");
+        console.log(JSON.stringify(expr));
         const type = expr.type || expr.get("type");
         const stepper = module.definitionOf(type).smallStep;
         console.log(module.definitionOf(type))
@@ -28,6 +29,7 @@ export default function(module) {
             const result = stepper(module, stage, state, expr);
             if (!result) return null;
 
+            console.log("getting here");
             if (Array.isArray(result)) {
             console.log ("result_of_smallStep:");
             console.log(result);
@@ -63,7 +65,7 @@ export default function(module) {
             console.warn(`Expression type ${target.get("type")} was beta-reduced, but has no reducer.`);
             return null;
         }
-
+        console.log("got the reducer");
         return reducer(module, stage, state, target, argIds);
     };
 

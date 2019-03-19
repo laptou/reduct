@@ -58,7 +58,7 @@ export default function transform(definition) {
      * onto the board when they are the top-level node.
      */
     module.vtuple = function vtuple(children) {
-        const result = { type: "vtuple", locked: true, numChildren: children.length };
+        const result = { type: "vtuple", kind: "expression", locked: true, numChildren: children.length };
         let i = 0;
         for (const child of children) {
             result[`child${i}`] = child;

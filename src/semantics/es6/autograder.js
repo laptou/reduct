@@ -2,6 +2,8 @@ import * as core from "../core";
 import { builtins, genericValidate } from "./builtins";
 import * as immutable from "immutable";
 import * as action from "../../reducer/action";
+import * as gfxCore from "../../gfx/core";
+
 
 export default {
   autograder: {
@@ -9,18 +11,23 @@ export default {
       fields: ["levelId"],
       subexpressions: ["result"],
       projection: {
-        type: "default",
-        shape: "[]",
-        color: "yellow",
-        fields: ["result","'ORACLE'"],
+        type: "hbox",
+        color: "#e95888",
         subexpScale: 0.9,
-        padding: {
-            left: 25,
-            right: 25,
-            inner: 10,
-            top: 0,
-            bottom: 0,
-        },
+        children:[
+          {
+            type: "default",
+            shape:  "none",
+            fields: ["result"],
+            subexpScale: 1.0,
+          },
+          {
+            type: "sprite",
+            image: "ship-large",
+            scale: 0.1,
+            subexpScale: 1.0
+          },
+        ],
       },
       validateStep: (semant, state, expr) =>{
 
@@ -37,7 +44,7 @@ export default {
         const fId = expr.get("result");
         //const f = semant.hydrate(nodes, nodes.get(expr.get("result")));
         let finalExpr = [];
-        let finalOutput = "[";
+        let finalOutput = [];
 
         for(let i=1;i<=k;i++) {
 
@@ -79,11 +86,7 @@ export default {
 
           /**Now generate expected output
           */
-          finalOutput = finalOutput  + allOutputs[r];
-
-          if(i != k) {
-            finalOutput = finalOutput + ",";
-          }
+          finalOutput.push(semant.parser.parse(allOutputs[r]));
 
           /** Generate new test cases from left over elements.
           */
@@ -97,10 +100,12 @@ export default {
         /**
         * Display expected output in the place of goal.
         */
-        finalOutput = finalOutput + "]";
-        const o = semant.parser.parse(finalOutput,[]);
-        const addedNodes = semant.flatten(o).map(immutable.Map);
-
+        let addedNodes = [];
+        let newNodeIds = [];
+        for(let j =0;j<finalOutput.length;j++){
+        const o = finalOutput[j];
+        addedNodes.push(...semant.flatten(o).map(immutable.Map));
+        }
         const tempNodes = state.get("nodes").withMutations((nodes) => {
             for (const node of addedNodes) {
                 nodes.set(node.get("id"), node);
@@ -108,17 +113,87 @@ export default {
         });
 
         for(const nn of addedNodes) {
+          newNodeIds.push(nn.get("id"));
           stage.views[nn.get("id")] = stage.semantics.project(stage,tempNodes,nn);
         }
 
-       stage.store.dispatch(action.changeGoal(addedNodes[0].get("id"), addedNodes));
+       stage.store.dispatch(action.changeGoal(newNodeIds, addedNodes));
 
+
+
+       // Assumes clicks always dispatched to top-level node
+       let origPos = {
+           x: gfxCore.centerPos(stage.getView(expr.get("id"))).x,
+           y: gfxCore.centerPos(stage.getView(expr.get("id"))).y,
+       };
+
+
+       for(let i=0;i<k;i++){
+        const f1 = finalExpr[i];
+        const addedTarget = semant.flatten(f1).map(immutable.Map);
+
+        const tmp2 = state.get("nodes").withMutations((nodes) => {
+          for (const node of addedTarget) {
+            nodes.set(node.get("id"), node);
+          }
+        })
+
+        let newNodeIds = [];
+        for(const aa of addedTarget) {
+          newNodeIds.push(aa.get("id"));
+          stage.views[aa.get("id")] = stage.semantics.project(stage,tmp2,aa);
+        }
+
+
+        stage.views[newNodeIds[0]].anchor.x = 0.5;
+        stage.views[newNodeIds[0]].anchor.y = 0.5;
+        stage.views[newNodeIds[0]].pos.x = origPos.x;
+        stage.views[newNodeIds[0]].pos.y = origPos.y - 45*i;
+
+        //console.log("Added Target: " + JSON.stringify(addedTarget));
+        if(i == 0){
+          stage.store.dispatch(action.smallStep(expr.get("id"),[newNodeIds[0]], addedTarget));
+        }
+        else {
+          stage.store.dispatch(action.addBoardItem([newNodeIds[0]], addedTarget));
+        }
+      }
+        return null;
 
         /** finally, display test expressions in an array
         */
-        const resultExpr =  semant.array(k,...finalExpr);
+        //const f1 = semant.vtuple(...finalExpr);
+        /*console.log("ssssssssssssssssss");
+        const f1 = semant.lambda(semant.lambdaArg("x"),semant.vtuple([...finalExpr]));
+        //console.log(JSON.stringify(f1));
+        const argExpr =semant.number(1);
+        const addedArg = semant.flatten(argExpr).map(immutable.Map);
+        const addedTarget = semant.flatten(f1).map(immutable.Map);
+        //console.log("arg Expr:" + JSON.stringify(addedTarget));
+
+        const tempNodes2 = state.get("nodes").withMutations((nodes) => {
+          for(const node of addedArg) {
+            nodes.set(node.get("id"), node);
+          }
+          for(const node of addedTarget) {
+            nodes.set(node.get("id"), node);
+          }
+        });
+
+        const newState = state.set("nodes", tempNodes2);
+        const [topNode, subExpr, newNodes] = semant.interpreter.betaReduce(stage, newState, addedTarget[0].get("id"), [addedArg[0].get("id")]);
+        console.log("r from betareduce:" + JSON.stringify([topNode, subExpr, newNodes]));
+        //console.log(JSON.stringify(tempNodes2));
+        //const resultExpr =  semant.array(k,...finalExpr);
+
+        for(const nn of newNodes){
+          stage.views[nn.get("id")] = stage.semantics.project(stage,tempNodes2,nn);
+        }
+
+        return [topNode, subExpr, newNodes];*/
+        //return f1;
         //console.log(JSON.stringify(resultExpr));
-        return core.makeResult(expr, resultExpr, semant);
+        //return core.makeResult(expr, resultExpr, semant);
 
       },
   }
