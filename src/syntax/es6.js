@@ -354,7 +354,10 @@ export function makeUnparser(jssemant) {
           return `${node.array}[${node.index}]`;
         }
         case "autograder": {
-          return `__autograder(_)`
+          return `__autograder(_)`;
+        }
+        case "vtuple": {
+          return;
         }
         default:
             console.error(`unparsers.es6: Unrecognized ES6 node type "${node.type}": `, node);
