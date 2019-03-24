@@ -109,9 +109,8 @@
         {
             "animationScales": {},
             "board": [
-                "function maybe () {return A;}",
                 "function countAboveTen(x) { return _; }",
-                "__tests(testMe(20), testMe(12), testMe(16))",
+                "__autograder(_)",
                 "_ == _",
                 "_ ? _ : _ ",
                 "10",
@@ -122,11 +121,9 @@
             ],
             "fade": {},
             "globals": {},
-            "goal": [
-                "6",
-                "2",
-                "10"
-            ],
+            "goal": [],
+            "input":["20","12","16"],
+            "ouput":["10","2","6"],
             "syntax": [],
             "textgoal": "Define a function that outputs the difference between x and 10",
             "toolbox": [
@@ -161,8 +158,8 @@
             "animationScales": {},
             "board": [
                 "function difference(x,y) { return _; }",
-                "__tests(testMe(20, 10), testMe(12,5), testMe(16,15))",
-                "_ == _",
+                "_ == _ ? _ : _",
+                "__autograder(_)",
                 "difference"
             ],
             "defines": [
@@ -170,11 +167,10 @@
             ],
             "fade": {},
             "globals": {},
-            "goal": [
-                "7",
-                "1",
-                "10"
-            ],
+            "goal": [],
+            "input":["(20, 10)", "(12, 5)", "(16, 15)"],
+            "output":["10", "7", "1"],
+            "numTests":3,
             "syntax": [],
             "textgoal": "Define a function that outputs the difference between two numbers",
             "toolbox": [

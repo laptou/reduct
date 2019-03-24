@@ -12,6 +12,8 @@ import Stage from "./stage/stage";
 import TutorialStage from "./stage/tutorial";
 import ChapterEndStage from "./stage/chapterend";
 import TitleStage from "./stage/title";
+import CompleteStage from "./stage/complete";
+import LevelStage from "./stage/lvlStage";
 import passwordPrompt from "./ui/instructor/password";
 import consent from "./consent";
 import tutorial from "./ui/instructor/tutorial";
@@ -385,6 +387,16 @@ function nextLevel(enableChallenge) {
     else {
         start(() => progression.nextLevel());
     }
+}
+
+window.lvlStage = function lvlStage(chapterName) {
+  stg = new LevelStage(startGame, chapterName, canvas, 800, 600, store, views, es6);
+  window.stage = stg;
+}
+
+window.init = function init() {
+  stg = new CompleteStage(startGame, canvas, 800, 600, store, views, es6);
+  window.stage = stg;
 }
 
 window.reset = function reset() {
