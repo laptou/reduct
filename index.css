@@ -358,6 +358,37 @@ span.spacer {
     left: 100px;
 }
 
+#add-node {
+  background-color: #fed;
+  border: 2px solid gray;
+  padding: 1em;
+  width: 30%;
+  height: 4em;
+  position: fixed;
+  top: 100px;
+  left: 100px;
+}
+
+#capture-state {
+  background-color: #fed;
+  border: 2px solid gray;
+  padding: 1em;
+  width: 30%;
+  height: 4em;
+  position: fixed;
+  top: 100px;
+  left: 100px;
+}
+
+#capture-state button {
+  font-size: 1em;
+  padding: 0.5em;
+  border-radius: 0;
+  border: 1px solid #000;
+  width: 4em;
+  height: 1em;
+}
+
 .error {
     font-style: italic;
     color: red

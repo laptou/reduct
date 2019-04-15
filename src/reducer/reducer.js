@@ -121,6 +121,20 @@ export function reduct(semantics, views, restorePos) {
               .set("nodes", newNodes)
               .set("toolbox", newToolbox);
         }
+        case action.ADD_GOAL_ITEM: {
+          let newNodes = state.get("nodes")
+              .withMutations((n) => {
+                  for (const node of act.addedNodes) {
+                      n.set(node.get("id"), node);
+                  }
+              });
+
+          let addedGoal = state.get("goal").push(act.newNodeId);
+
+          return state
+              .set("nodes", newNodes)
+              .set("goal", addedGoal);
+        }
         case action.ADD_BOARD_ITEM: {
             let newNodes = state.get("nodes")
               .withMutations((n) => {
@@ -130,6 +144,8 @@ export function reduct(semantics, views, restorePos) {
               });
 
             let newBoard = state.get("board").concat(act.newNodeIds);
+
+            act.newNodeIds.forEach(id => markDirty(newNodes, id));
 
             return state
                 .set("nodes", newNodes)
@@ -146,7 +162,9 @@ export function reduct(semantics, views, restorePos) {
 
               const len = state.get("goal").size;
 
-              let newGoal = state.get("goal").concat(act.newNodeIds);
+              //let newGoal = state.get("goal").concat(act.newNodeIds);
+              let newGoal = state.get("goal");
+              newGoal = newGoal.splice(act.goal_id,1,...act.newNodeIds);
               console.log("newGoal" + JSON.stringify(newGoal));
 
           return state

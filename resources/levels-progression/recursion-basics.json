@@ -6,13 +6,13 @@
         {
             "animationScales": {},
             "board": [
-                "5",
-                "function countDown(n) { return n == 0 ? n : countDown(n-1); }"
+                "15",
+                "function countDown(n) { return n == 10 ? n : countDown(n-1); }"
             ],
             "fade": {},
             "globals": {},
             "goal": [
-                "0"
+                "10"
             ],
             "syntax": [],
             "textgoal": "This function uses recursion to count down to 0",
@@ -89,28 +89,32 @@
                 "0",
                 "_ - 1",
                 "num",
-                "__autograder(_)"
+                "__autograder(0)",
+                "__autograder(1)",
+                "__autograder(2)",
+                "__autograder(3)"
             ],
             "defines": [
                 "function countToFive(x) { return x == 5 ? x : countToFive(x + 1); }"
             ],
             "fade": {},
             "globals": {},
-            "goal": [],
+            "goal": ["_","_","_","_"],
             "input":["10","15","13","11","7","5"],
             "output":["5","10","8","6","2","0"],
             "numTests":4,
             "syntax": [],
             "textgoal": "Define a function that outputs the difference between x and 5",
             "toolbox": [
-                "countAboveFive"
+                "__unlimited;countAboveFive"
             ]
         },
         {
             "animationScales": {},
             "board": [
                 "function countAboveTen(x) { return _; }",
-                "__autograder(_)",
+                "__autograder(0)",
+                "__autograder(1)",
                 "_ == _",
                 "_ ? _ : _ ",
                 "10",
@@ -121,14 +125,14 @@
             ],
             "fade": {},
             "globals": {},
-            "goal": [],
+            "goal": ["_","_"],
             "input":["20","12","16"],
-            "ouput":["10","2","6"],
+            "output":["10","2","6"],
             "syntax": [],
             "textgoal": "Define a function that outputs the difference between x and 10",
             "toolbox": [
                 "maybe",
-                "countAboveTen",
+                "__unlimited;countAboveTen",
                 "_ + 1",
                 "_ - 1",
                 "x",
@@ -140,18 +144,21 @@
             "animationScales": {},
             "board": [
                 "function difference(num, target){ return num == target ? 0 : difference(num - 1, target)  + 1;}",
-                "__autograder(_)"
+                "__autograder(1)",
+                "__autograder(0)",
+                "__autograder(2)"
+
             ],
             "fade": {},
             "globals": {},
-            "goal": [],
+            "goal": ["_","_","_"],
             "syntax": [],
             "input":["(5, 5)", "(57, 55)", "(59, 45)", "(239, 234)"],
             "output": ["0", "2", "14", "5"],
             "numTests":4,
             "textgoal": "Define a function that outputs the difference between two numbers",
             "toolbox": [
-                "difference"
+                "__unlimited;difference"
             ]
         },
         {
@@ -159,7 +166,7 @@
             "board": [
                 "function difference(x,y) { return _; }",
                 "_ == _ ? _ : _",
-                "__autograder(_)",
+                "__autograder(0)",
                 "difference"
             ],
             "defines": [
@@ -167,7 +174,7 @@
             ],
             "fade": {},
             "globals": {},
-            "goal": [],
+            "goal": ["_"],
             "input":["(20, 10)", "(12, 5)", "(16, 15)"],
             "output":["10", "7", "1"],
             "numTests":3,

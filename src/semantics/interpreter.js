@@ -24,7 +24,12 @@ export default function(module) {
         console.log(JSON.stringify(expr));
         const type = expr.type || expr.get("type");
         const stepper = module.definitionOf(type).smallStep;
-        console.log(module.definitionOf(type))
+        //console.log(module.definitionOf(type))
+        let is_goal = 0;
+        if(expr.get("goal")){
+          is_goal = 1;
+          const goal_field = expr.get("goal");
+        }
         if (stepper) {
             const result = stepper(module, stage, state, expr);
             if (!result) return null;
@@ -32,7 +37,7 @@ export default function(module) {
             console.log("getting here");
             if (Array.isArray(result)) {
             console.log ("result_of_smallStep:");
-            console.log(result);
+            console.log(JSON.stringify(result));
             return result;}
 
             if (immutable.Map.isMap(result)) {
@@ -124,9 +129,12 @@ export default function(module) {
             return [ "error", expr.get("id"), reason ];
         }
 
-        if (exprFilter === null) exprFilter = () => false;
+        console.log(`kind === expression`);
+        if (exprFilter === null) {console.log("exprFilter === null");exprFilter = () => false;}
         const substepFilter = module.interpreter.substepFilter(expr.get("type"));
 
+        console.log(exprFilter);
+        console.log("susbstep filter recieved");
         if (!exprFilter(state, expr)) {
             console.log("no expr filter")
             for (const field of module.subexpressions(expr)) {
@@ -181,6 +189,7 @@ export default function(module) {
             return [ "error", errorExpId, reason ];
         }
 
+        console.log("success in singlestep()");
         return [ "success", expr.get("id"), null ];
     };
 
@@ -236,7 +245,7 @@ export default function(module) {
         // Return true if we are at an apply expression where the
         // callee is a previously defined function
         const shouldStepOver = (state, expr) => {
-            if (expr.get("type") === "reference" && expr.get("params") && expr.get("params").length > 0 && !exp.get("params").includes("a")) {
+            if (expr.get("type") === "reference" && expr.get("params") && expr.get("params").length > 0){// && !exp.get("params").includes("a")) {
                 if (stage.newDefinedNames.includes(expr.get("name"))) {
                     return false;
                 }
@@ -292,6 +301,7 @@ export default function(module) {
             return true;
         };
 
+        console.log("over->singleStep");
         const [ result, exprId, reason ] = module.interpreter.singleStep(state, exp, shouldStepOver);
 
 

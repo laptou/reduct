@@ -44,6 +44,11 @@ function defaultProjector(definition) {
     }
 
     return function defaultProjectorFactory(stage, nodes, expr) {
+      if(typeof definition.projection.color !== "undefined"){
+        const colorDefn = definition.projection.color;
+        options.color = typeof colorDefn === "function" ? colorDefn(expr) : colorDefn;
+      }
+
         const subexprs = core.getField(definition, "subexpressions", null, immutable.Map(expr));
         let childrenFunc = (id, state) =>
             subexprs.map(field => state.getIn([ "nodes", id, field ]));
@@ -55,7 +60,9 @@ function defaultProjector(definition) {
                 if (typeof field === "object") {
                     // TODO: more extensible
                     const textOptions = {};
-                    if (field.color) textOptions.color = field.color;
+                    if (field.color) {
+                      textOptions.color = field.color;
+                    }
 
                     if (field.field) {
                         fields.push(stage.allocate(gfx.text(expr.get(field.field), textOptions)));
@@ -211,6 +218,11 @@ function hboxProjector(definition) {
     }
 
     return function hboxProjectorFactory(stage, nodes, expr) {
+      if(typeof definition.projection.color !== "undefined"){
+        const colorDefn = definition.projection.color;
+        options.color = typeof colorDefn === "function" ? colorDefn(expr) : colorDefn;
+      }
+
         const subprojections = [];
         for (const subproj of subprojectors) {
             subprojections.push(stage.allocate(subproj(stage, nodes, expr)));
@@ -236,6 +248,11 @@ function vboxProjector(definition) {
     }
 
     return function vboxProjectorFactory(stage, nodes, expr) {
+      if(typeof definition.projection.color !== "undefined"){
+        const colorDefn = definition.projection.color;
+        options.color = typeof colorDefn === "function" ? colorDefn(expr) : colorDefn;
+      }
+
         const subprojections = [];
         for (const subproj of subprojectors) {
             subprojections.push(stage.allocate(subproj(stage, nodes, expr)));
@@ -297,7 +314,13 @@ function genericProjector(definition) {
 
 function spriteProjector(definition) {
     return function spriteProjectorFactory(stage, nodes, expr) {
-        const image = Loader.images[definition.projection.image];
+
+
+      const imageDefn = definition.projection.image;
+      const InnerImage = typeof imageDefn === "function" ? imageDefn(expr) : imageDefn;
+
+
+        const image = Loader.images[InnerImage];
         let w = image.naturalWidth;
         let h = image.naturalHeight;
 

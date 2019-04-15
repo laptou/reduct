@@ -166,6 +166,7 @@ export function genericBetaReduce(semant, state, config) {
     }
 
     debugger;
+    console.log("okokoko");
     if (argIds.length !== 1) {
         let curState = state;
         let curTopNode = topNode;
@@ -215,6 +216,7 @@ export function genericBetaReduce(semant, state, config) {
             curTargetNode = curState.getIn([ "nodes", curTopNode.get("arg") ]);
         }
 
+        console.log("partial reduce?");
         return [ topNode, curResult, allAddedNodes ];
     }
 

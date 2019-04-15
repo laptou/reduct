@@ -19,7 +19,8 @@ export const PROGRESSIONS = {
             "higher-order-functions": ["define-challenges"],
             "define-challenges": ["recursion-basics"],
             "recursion-basics": ["recursion-higher-order"],
-            "recursion-higher-order": [],
+            "recursion-higher-order": ["play"],
+            "play": [],
         },
         settings: { // This sets global flags.
             "__ALLOW_PARTIAL_REPLICATION": false,

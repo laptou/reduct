@@ -6,6 +6,7 @@ import * as gfx from "../gfx/core";
 import * as animate from "../gfx/animate";
 import * as layout from "../ui/layout";
 
+export var MACROS;
 export function startLevel(description, parse, store, stage) {
     animate.replaceDurationScales(description.animationScales);
 
@@ -49,7 +50,7 @@ export function startLevel(description, parse, store, stage) {
          prevDefinedNames.concat(newDefinedNames).concat(globalDefinedNames)) {
         macros[name] = expr;
     }
-
+    MACROS = macros;
 
     // Actually parse the goal, board, and toolbox.
     const goal = description.goal.map(str => parse(str, macros));

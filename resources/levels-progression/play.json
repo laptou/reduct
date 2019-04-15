@@ -1,310 +1,25 @@
 {
-    "chapterName": "Function Definition",
-    "description": "Introduction to function definitions",
+    "chapterName": "Booleans and Arrays",
+    "description": "Booleans and Arrays",
     "language": "JavaScript",
     "levels": [
-        {
-            "animationScales": {},
-            "board": [
-                "function star() { return A; }"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "A"
-            ],
-            "syntax": [],
-            "textgoal": "Move the def block to the left box to define the word {star}!",
-            "toolbox": [
-                "star"
-            ],
-            "tutorialUrl": "resources/videos/defn-intro.mp4"
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function star() { return A; }",
-                "function rect() { return B; }"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "B",
-                "B",
-                "A"
-            ],
-            "syntax": [],
-            "textgoal": "Reach the goal by creating new definitions!",
-            "toolbox": [
-                "__unlimited;star",
-                "__unlimited;rect"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function makeStar(x) { return A; }",
-                "D",
-                "B",
-                "C"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "A",
-                "A",
-                "A"
-            ],
-            "syntax": [],
-            "textgoal": "Define a function which always outputs a {star}",
-            "toolbox": [
-                "__unlimited;makeStar"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function triangle() { return _; }",
-                "C"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "C",
-                "C",
-                "C"
-            ],
-            "syntax": [],
-            "textgoal": "Define the name \"triangle\" to be {a triangle}",
-            "toolbox": [
-                "__unlimited; triangle"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function trianglify(object) { return _; }",
-                "A",
-                "D",
-                "C"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "C",
-                "C"
-            ],
-            "syntax": [],
-            "textgoal": "Define a function that takes an input and outputs {a triangle}",
-            "toolbox": [
-                "__unlimited;trianglify"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "let squarify = _;",
-                "x => _",
-                "A",
-                "A",
-                "B",
-                "C"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "B",
-                "B",
-                "B"
-            ],
-            "syntax": [],
-            "textgoal": "Define a function that outputs {a square}",
-            "toolbox": [
-                "__unlimited;squarify"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function addOne(number) { return _; }",
-                "2",
-                "4"
-            ],
-            "defines": [
-                "function addOne(x) { return x + 1; }"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "3",
-                "6"
-            ],
-            "syntax": [],
-            "textgoal": "Define a function that computes x plus 1",
-            "toolbox": [
-                "__unlimited;addOne",
-                "number",
-                "_ + 1"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "3",
-                "7"
-            ],
-            "fade": {
-                "reference": 1
-            },
-            "globals": {},
-            "goal": [
-                "6",
-                "9"
-            ],
-            "syntax": [],
-            "toolbox": [
-                "__unlimited;addOne;"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "addOne(7)",
-                "addOne(_)"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "7",
-                "8"
-            ],
-            "syntax": [],
-            "toolbox": [
-                "1",
-                "2",
-                "3",
-                "4",
-                "5",
-                "6",
-                "7",
-                "8"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "__argumentAnnotated; function doNothing(x) { return _ }",
-                "_(7)",
-                "_(3)"
-            ],
-            "defines": [
-              "function doNothing(x) { return x; }",
-              "function makeStar () { return A; }",
-              "function map(f, a) { return 0; }"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "4",
-                "7"
-            ],
-            "syntax": [],
-            "textgoal": "Define a function that outputs the input it is given",
-            "toolbox": [
-                "__unlimited;addOne;",
-                "__unlimited; doNothing",
-                "x => _",
-                "x"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "_(3)",
-                "_(4)",
-                "_(8)",
-                "5"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "3",
-                "6",
-                "8"
-            ],
-            "input":["1","2","3"],
-            "output":["3","6","9"],
-            "syntax": [],
-            "toolbox": [
-                "__unlimited;addOne;",
-                "__unlimited;doNothing;",
-                "_(_)"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-              "function countAboveFive(num){ return num == 5 ? 0: countAboveFive(num - 1)  + 1;}",
-                "__autograder(0)"
-            ],
-            "defines": [
-                "function countToFive(x) { return x == 5 ? x : countToFive(x + 1); }"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [],
-            "syntax": [],
-            "input":["11","13","15","17","18","19"],
-            "output":["6","8","10","12","13","14"],
-            "numTests":3,
-            "textgoal": "Define a function that outputs the difference between x and 5",
-            "toolbox": [
-                "countAboveFive",
-                "1"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "_(3)",
-                "_(8)",
-                "addOne(_)"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "4",
-                "8"
-            ],
-            "syntax": [],
-            "toolbox": [
-                "__unlimited;addOne;",
-                "__unlimited;doNothing;"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "_(addOne(4))",
-                "_(_(1))",
-                "addOne(_(10))",
-                "4 == 5 ? addOne(1) : makeStar"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "2",
-                "6",
-                "11"
-            ],
-            "syntax": [],
-            "toolbox": [
-                "addOne",
-                "addOne",
-                "doNothing",
-                "doNothing"
-            ]
-        }
+      {
+          "animationScales": {},
+          "board": [
+              "function identity(x){ return x;}"
+          ],
+          "fade": {},
+          "globals": {},
+          "goal": [],
+          "syntax": [],
+          "input":["(5, 5)", "(57, 55)", "(59, 45)", "(239, 234)"],
+          "output": ["0", "2", "14", "5"],
+          "numTests":4,
+          "textgoal": "Make your level",
+          "toolbox": [
+            "countDown"
+          ]
+      }
     ],
     "macros": {
         "A": "'star'",
@@ -312,12 +27,18 @@
         "C": "'triangle'",
         "D": "'circle'"
     },
-    "password": "hopper",
+    "password": "3110",
     "resources": {
         "aliens": [
-            "alien-function-1",
-            "alien-function-2",
-            "alien-function-3"
+            "alien-boolean-1",
+            "alien-conditional-1",
+            "alien-boolean-2",
+            "alien-conditional-2",
+            "alien-boolean-3",
+            "alien-conditional-3",
+            "alien-boolean-4",
+            "alien-conditional-4",
+            "alien-boolean-5"
         ],
         "curve": [
             {

@@ -16,6 +16,7 @@ export const DEFINE = "define";
 export const ADD_TOOLBOX_ITEM = "add-toolbox-item";
 export const CHANGE_GOAL = "change-goal";
 export const ADD_BOARD_ITEM = "add-board-item";
+export const ADD_GOAL_ITEM = "add-goal-item";
 /**
  * Redux action to start a new level.
  *
@@ -109,9 +110,19 @@ export function addToolboxItem(newNodeId, newNodes) {
 
 }
 
-export function changeGoal(newNodeIds, newNodes) {
+export function addGoalItem(newNodeId, newNodes) {
+  return {
+    type: ADD_GOAL_ITEM,
+    newNodeId: newNodeId,
+    addedNodes: newNodes,
+  };
+
+}
+
+export function changeGoal(goal_id, newNodeIds, newNodes) {
   return {
     type: CHANGE_GOAL,
+    goal_id: goal_id,
     newNodeIds: newNodeIds,
     addedNodes: newNodes,
   };

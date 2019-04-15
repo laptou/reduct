@@ -412,14 +412,16 @@ export default class Stage extends BaseStage {
         }
 
         this.toolbox.drawImpl(state);
-         this.syntaxJournal.drawImpl(state);
+         //this.syntaxJournal.drawImpl(state);
 
-        //for (const id of this._newSyntax) {
-          //  this.drawInternalProjection(state, id);
-        //}
-        if (this.functionDef) {
-            this.functionDef.drawImpl(state);
+        for (const id of this._newSyntax) {
+            this.drawInternalProjection(state, id);
         }
+
+        //NOTE - why do we need this? --sameer
+        /*if (this.functionDef) {
+            this.functionDef.drawImpl(state);
+        }*/
 
         for (const fx of Object.values(this.effects)) {
             if (!fx.under) {

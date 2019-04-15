@@ -170,7 +170,25 @@ export function makeParser(jssemant) {
             }
 
             if(node.callee.type === "Identifier" && node.callee.name === "__autograder") {
-              return jssemant.autograder(progression.getLevel()+1,parseNode(node.arguments[0], macros));
+              /* Color for goals
+               */
+              const colors = ["#c0392b","#2980b9","#2ecc71","#8e44ad","#f39c12"];
+
+              /* Getting the alien index.
+               */
+              const chapter = progression.currentChapter();
+              const alienIndex = Math.floor(((progression.currentLevel() - chapter.startIdx) /
+                                             ((chapter.endIdx - chapter.startIdx) + 1)) *
+                                            chapter.resources.aliens.length);
+              const alienName = chapter.resources.aliens[alienIndex];
+
+              return jssemant.autograder(alienName, node.arguments[0].value,colors[node.arguments[0].value],jssemant.missing());
+            }
+
+            if(node.callee.type === "Identifier" && node.callee.name === "unsol") {
+              //NOTE - This should never be called externally
+              //only called within inside the autograder.
+              return jssemant.unsol("red",parseNode(node.arguments[0],[]));
             }
 
             if (node.arguments.length === 0) {
@@ -355,6 +373,9 @@ export function makeUnparser(jssemant) {
         }
         case "autograder": {
           return `__autograder(_)`;
+        }
+        case "unsol":{
+            return `${node.value}`;
         }
         case "vtuple": {
           return;
