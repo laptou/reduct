@@ -7,5 +7,5 @@ LEVELS = application.csv arithmetic.csv booleans-definition.csv               \
 VPATH = levels:
 
 levels_built: $(LEVELS)
-	build.sh levels
+	./build.sh levels
 	@touch levels_built

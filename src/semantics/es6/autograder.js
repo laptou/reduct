@@ -5,6 +5,7 @@ import * as immutable from "immutable";
 import * as action from "../../reducer/action";
 import * as gfxCore from "../../gfx/core";
 import * as animate from "../../gfx/animate";
+import * as level from "../../game/level";
 import Loader from "../../loader";
 
 export default {
@@ -34,7 +35,7 @@ export default {
         ],
       },
       validateStep: (semant, state, expr) =>{
-
+        console.log("hi");
         return null;
       },
       smallStep: (semant,stage,state,expr) => {
@@ -54,13 +55,36 @@ export default {
         const f_type = fExpr.get("type");
         let goal_id = expr.get("goalId");
         const color = expr.get("color");
-        //console.log("f_type: " + JSON.stringify(f_type));
+        console.log("f_type: " + JSON.stringify(f_type));
+
+        function extractAll(){
+          let funFinal = "";
+          for(const refStr of state.get("globals")){
+            const defId = state.getIn(["globals", refStr[0]]);
+            const defNode = nodes.get(defId);
+            const defStr = semant.parser.unparse(semant.hydrate(nodes, defNode));
+            //const funName = defStr.match(/function (?<name>[a-zA-Z]+)/).groups.name;
+            const funName = defStr.match(/function ([a-zA-Z]+)/)[1];
+            const funHalfBody = defStr.match(/>([^>]+)$/)[1];
+            const funBody = "{ t--; if(t < 0) return -100000;" + "return " + funHalfBody;
+            const funArgsRegx = /\(([a-zA-Z]+)\) =>/g;
+            let funArgs = "";
+            var match;
+            while (match = funArgsRegx.exec(defStr)) {
+                funArgs += match[1];
+                funArgs += ",";
+            }
+            funArgs = funArgs.slice(0,-1);
+            funFinal += "function " + funName + "(" + funArgs + ") " + funBody + "\n";
+          }
+          return funFinal;
+        }
 
 
         /**
         * Generate Input/Output ------------------------------------------------
         */
-        if(f_type == "reference"){
+        if(f_type == "reference" || f_type == "lambda"){
         //const f = semant.hydrate(nodes, nodes.get(expr.get("result")));
         let finalExpr = [];
         let finalOutput = [];
@@ -88,34 +112,38 @@ export default {
         if(goal_id == 0){
 
           //Generate function definition string
-          const refStr = semant.parser.unparse(f);
-          const defId = state.getIn(["globals", refStr]);
-          const defNode = nodes.get(defId);
-          const defStr = semant.parser.unparse(semant.hydrate(nodes, defNode));
-          const funName = defStr.match(/function (?<name>[a-zA-Z]+)/).groups.name;
-          const funHalfBody = defStr.match(/>(?<body>[^>]+)$/).groups.body;
-          const funBody = "{ " + "return " + funHalfBody;
-          const funArgsRegx = /\(([a-zA-Z]+)\) =>/g;
-          let funArgs = "";
-          var match;
-          while (match = funArgsRegx.exec(defStr)) {
-              funArgs += match[1];
-              funArgs += ",";
-          }
-          funArgs = funArgs.slice(0,-1);
-          let funFinal = "function " + funName + "(" + funArgs + ") " + funBody;
+          const funName = semant.parser.unparse(f);
+          let funFinal = extractAll();
+          //extractAll();
+
+          //setting the timer
+          funFinal = "let t = 100;\n" + funFinal;
 
           //Find an adversarial pair.
           let advIndex = null;
           for(let i = 0;i<allInputs.length;i++){
             let out = null;
+
+
             if(allInputs[i].includes(",")){
+              console.log(funFinal + funName + allInputs[i]);
+              console.log(eval(funFinal + funName + allInputs[i]));
                out = eval(funFinal + funName + allInputs[i]);
             }
             else {
+
+              console.log(funFinal + funName + "(" + allInputs[i] + ")");
+              console.log(eval(funFinal + funName + "(" + allInputs[i] + ")"));
               out = eval(funFinal + funName + "(" + allInputs[i] + ")");
             }
             if(out != allOutputs[i]){
+
+              if(out < 0){
+                animate.fx.error(this, stage.views[fExpr.get("id")]);
+                stage.feedback.update("#000", [ `The given function is non-terminating`]);
+                return null;
+              }
+
               advIndex = i;
               break;
             }
@@ -145,25 +173,24 @@ export default {
         * 2 argument function, etc.
         * NOTE - currently just works with numbers
         */
-        const args = s.match(/\d+/g);
+        const args = s.match(/[a-zA-Z0-9]+/g);
 
         /** Generate the result expression and push it in the list
         * of all input expressions created.
         */
-        let result = semant.apply(f, semant.parser.parse(args[0],[]));
+        let result = semant.apply(f, semant.parser.parse(args[0],level.MACROS));
         for (const a of args.slice(1)){
-          result = semant.apply(result, semant.parser.parse(a,[]));
+          result = semant.apply(result, semant.parser.parse(a,level.MACROS));
         }
 
         finalExpr.push(semant.autograder(expr.get("alienName"),goal_id,color,result));
         //console.log("Inoput generated");
 
         /**Now generate expected output
-
         if(goal_id % max_goals == 0){
           finalOutput.push(semant.unsol("red", semant.parser.parse(allOutputs[goal_id])));
         }*/
-        finalOutput.push(semant.unsol(color, semant.parser.parse(allOutputs[goal_id],[])));
+        finalOutput.push(semant.unsol(color, semant.parser.parse(allOutputs[goal_id],level.MACROS)));
 
 
 
@@ -240,11 +267,11 @@ export default {
       //}
     }
     else{
-      const finalGoal = semant.parser.parse(allOutputs[goal_id]);
+      const finalGoal = semant.parser.parse(allOutputs[goal_id], level.MACROS);
       //console.log("finalGoal: " + JSON.stringify(finalGoal.value));
       //console.log("givenGoal: " + JSON.stringify(fExpr.get("value")));
       if(finalGoal.value !== fExpr.get("value")){
-        animate.fx.error(this, stage.views[fExpr.get("id")]);
+        animate.fx.error(this, stage.views[expr.get("id")]);
         stage.feedback.update("#000", [ `This isn't the output I want! I want `+finalGoal.value ]);
         return null;
       }

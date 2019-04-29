@@ -6,18 +6,16 @@
       {
           "animationScales": {},
           "board": [
-              "function identity(x){ return x;}"
           ],
           "fade": {},
           "globals": {},
           "goal": [],
           "syntax": [],
-          "input":["(5, 5)", "(57, 55)", "(59, 45)", "(239, 234)"],
-          "output": ["0", "2", "14", "5"],
-          "numTests":4,
+          "input":[],
+          "output": [],
           "textgoal": "Make your level",
           "toolbox": [
-            "countDown"
+            "addOne"
           ]
       }
     ],

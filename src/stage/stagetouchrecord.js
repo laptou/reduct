@@ -398,8 +398,9 @@ export default class TouchRecord extends BaseTouchRecord {
             view.pos = cp;
         }
 
-        if (this.isExpr && !this.dragged && this.topNode !== null && !this.fromToolbox) {
+        if (this.isExpr && !this.dragged && this.topNode !== null && !this.fromToolbox && state.get("board").includes(this.topNode)) {
             if (Date.now() - this.currTime < 10000) {
+              //console.log("##########multiclicks############    " + this.topNode + "  board:" + state.get("board"));
                 // Click on object to reduce; always targets toplevel node
                 if (this.stage.functionDef) {
                     this.stage.functionDef = null;

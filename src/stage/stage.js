@@ -813,6 +813,7 @@ export default class Stage extends BaseStage {
                 this.views[newNodeIds[0]].pos.y = origPos.y;
 
                 let act = action.smallStep(topNodeId, newNodeIds, addedNodes);
+
                 Logging.log("reduction", {
                     before: this.saveNode(topNodeId),
                     after: newNodeIds.map(id => this.saveNode(id, tempNodes)),
@@ -821,6 +822,7 @@ export default class Stage extends BaseStage {
                     act = action.skipUndo(act);
                 }
                 this.store.dispatch(act);
+
 
                 for (const topViewId of this.getState().get("board")) {
                     // Make sure result stays on screen

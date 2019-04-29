@@ -403,6 +403,22 @@ function nextLevel(enableChallenge) {
     }
 }
 
+function extractFunction(str) {
+  const funName = str.match(/function ([a-zA-Z]+)/)[1];
+  const funHalfBody = str.match(/>([^>]+)$/)[1];
+  const funBody = "{ " + "return " + funHalfBody;
+  const funArgsRegx = /\(([a-zA-Z]+)\) =>/g;
+  let funArgs = "";
+  var match;
+  while (match = funArgsRegx.exec(str)) {
+      funArgs += match[1];
+      funArgs += ",";
+  }
+  funArgs = funArgs.slice(0,-1);
+  let funFinal = "function " + funName + "(" + funArgs + ") " + funBody;
+  return funFinal;
+}
+
 
 window.lvlStage = function lvlStage(chapterName) {
   stg = new LevelStage(startGame, chapterName, canvas, 800, 600, store, views, es6);
@@ -452,7 +468,7 @@ window.captureState = function () {
   const d = document.querySelector("#capture-state");
   d.classList.remove("visible");
 
-  const format = `board, goal, textgoal, toolbox, defines, globals, syntax, animationScales`;
+  const format = `board,goal,textgoal,toolbox,defines,globals,syntax,animationScales`;
 
   //storing current format for this session.
   const option1 = document.createElement("option");
@@ -480,7 +496,14 @@ window.captureState = function () {
         const lenArray = newLvl[f].length;
         for(const subField of newLvl[f]){
           newInput += "\'";
-          newInput += subField;
+
+          //reformatting functions
+          if(subField.includes("function")){
+            newInput += extractFunction(subField);
+          }else {
+            newInput += subField;
+          }
+
           newInput += "\'";
 
           if(curIndex < lenArray - 1) {
@@ -534,19 +557,6 @@ window.addNodeToBoard = function() {
     const option = document.createElement("option");
     option.setAttribute("value", ss);
     document.querySelector("#valueOptions").appendChild(option);
-
-    /*const newDefinedNames = description.board
-          .map(str => parse(str, macros))
-          .reduce((a, b) => (Array.isArray(b) ? a.concat(b) : a.concat([b])), [])
-          .map(expr => stage.semantics.parser.extractDefines(stage.semantics, expr))
-          .filter(name => name !== null);
-
-    // Turn these defines into "macros", so that the name resolution
-    // system can handle lookup.
-    for (const [ name, expr ] of
-         prevDefinedNames.concat(newDefinedNames).concat(globalDefinedNames)) {
-        macros[name] = expr;
-    }*/
 
     const newMacros = level.MACROS;
     const newNames = [ss].map(str => es6.parser.parse(str, newMacros))

@@ -319,7 +319,7 @@ export default function(module) {
             console.debug(`semant.interpreter.reducers.over: stepping over call to ${name}`);
             return module.interpreter.reducers.big(stage, state, exp, callbacks);
         }
-        console.log("ru");
+        //console.log("ru  " + exp.get("locked"));
         return module
             .interpreter.animateStep(stage, state, exp)
             .then(() => module.interpreter.smallStep(stage, state, exp))
@@ -327,7 +327,6 @@ export default function(module) {
             .then(([ topNodeId, newNodeIds, addedNodes ]) => {
                 callbacks.update(topNodeId, newNodeIds, addedNodes, recordUndo);
                 // TODO: handle multiple new nodes
-                console.log("iam");
                 return newNodeIds[0];
             });
     };

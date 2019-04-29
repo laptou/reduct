@@ -372,7 +372,7 @@ export function makeUnparser(jssemant) {
           return `${node.array}[${node.index}]`;
         }
         case "autograder": {
-          return `__autograder(_)`;
+          return `__autograder(${node.goalId})`;
         }
         case "unsol":{
             return `${node.value}`;

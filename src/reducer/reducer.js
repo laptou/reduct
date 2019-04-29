@@ -69,6 +69,7 @@ export function reduct(semantics, views, restorePos) {
             return state;
         }
         case action.SMALL_STEP: {
+            //console.log("@@SMALL_STEP_REDUCE@@");
             const oldNode = state.getIn([ "nodes", act.topNodeId ]);
 
             let newNodes = state.get("nodes")
@@ -102,7 +103,7 @@ export function reduct(semantics, views, restorePos) {
             }
 
             act.newNodeIds.forEach(id => markDirty(newNodes, id));
-
+            //console.log("@@SMALL_STEP_REDUCE - 2@@ " + newBoard);
             return state
                 .set("nodes", newNodes)
                 .set("board", newBoard);

@@ -50,7 +50,7 @@ export default {
         const index = nodes.get(expr.get("index"));
         const i = index.get("value");
         const res = nodes.get((array.get(`elem${i}`)));
-        return res;
+        return semant.number(res.get("value"));
       },
   }
 };
