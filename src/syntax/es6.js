@@ -23,8 +23,6 @@ function modifier(ast) {
 export function makeParser(jssemant) {
     return function parseES6(program, macros) {
         const ast = esprima.parse(program);
-        console.log("ast:" + program);
-        console.log(JSON.stringify(ast));
         const mod = modifier(ast);
 
         if (ast.body.length === 1) {

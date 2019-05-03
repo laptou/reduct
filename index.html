@@ -53,7 +53,7 @@
           <input name=targetLevel type="text" size=3 onchange="jumpToLevel(this.value)">
         </div>
 
-
+      
         <form target="remember" onsubmit="return addNodeToBoard()" method="get" action="about:blank" autocomplete="on">
           <div id="add-node" class="fade-container">
             Add node
@@ -70,15 +70,6 @@
             </div>
         </form>
 
-
-        <form target="remember" onsubmit="return captureState()" method="get" action="about:blank" autocomplete="on">
-          <div id="capture-state" class="fade-container">
-            Format:
-            <input id="newStateFormat" name=stateFormat list="formatOptions" type="text" size=3 required>
-            <datalist id="formatOptions"></datalist>
-            <input type="submit" style="display: none" />
-            </div>
-        </form>
 
 
         <div id="consent">

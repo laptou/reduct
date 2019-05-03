@@ -170,7 +170,6 @@ export default {
                         "type",
                     ]) !== "missing")) {
                     const params = expr.get("params");
-                    console.log("reference-executing-via beta reduce");
                     const result = semant.interpreter.betaReduce(
                         stage,
                         state, res,

@@ -19,12 +19,9 @@ export default function(module) {
      * IDs assigned and are immutable already).
      */
     module.interpreter.smallStep = function smallStep(stage, state, expr) {
-      debugger;
-        console.log("inSmallStep");
-        console.log(JSON.stringify(expr));
+      //debugger;
         const type = expr.type || expr.get("type");
         const stepper = module.definitionOf(type).smallStep;
-        //console.log(module.definitionOf(type))
         let is_goal = 0;
         if(expr.get("goal")){
           is_goal = 1;
@@ -34,16 +31,14 @@ export default function(module) {
             const result = stepper(module, stage, state, expr);
             if (!result) return null;
 
-            console.log("getting here");
             if (Array.isArray(result)) {
-            console.log ("result_of_smallStep:");
-            console.log(JSON.stringify(result));
+            //console.log ("result_of_smallStep:");
+            //console.log(JSON.stringify(result));
             return result;}
 
             if (immutable.Map.isMap(result)) {
                 // TODO: is this quite correct?
                 const res2 =  [ expr.get("id"), [ result.get("id") ], [ result ] ];
-                console.log("res2 : " +res2);
                 return res2;
             }
 
@@ -51,7 +46,6 @@ export default function(module) {
             result.id = nextId();
             const addedNodes = module.flatten(result).map(immutable.Map);
             const r3 = [ expr.get("id"), [ addedNodes[0].get("id") ], addedNodes ];
-            console.log("r3 : " + r3);
             return r3;
         }
         return null;
@@ -61,16 +55,14 @@ export default function(module) {
      * Apply a list of expressions to another expression.
      */
     module.interpreter.betaReduce = function(stage, state, exprId, argIds) {
-      debugger;
+      //debugger;
         const target = state.get("nodes").get(exprId);
-        console.log("in beta reduce");
-        console.log(JSON.stringify(target));
+        //console.log("in beta reduce");
         const reducer = module.definitionOf(target).betaReduce;
         if (!reducer) {
             console.warn(`Expression type ${target.get("type")} was beta-reduced, but has no reducer.`);
             return null;
         }
-        console.log("got the reducer");
         return reducer(module, stage, state, target, argIds);
     };
 
@@ -133,10 +125,8 @@ export default function(module) {
         if (exprFilter === null) {console.log("exprFilter === null");exprFilter = () => false;}
         const substepFilter = module.interpreter.substepFilter(expr.get("type"));
 
-        console.log(exprFilter);
-        console.log("susbstep filter recieved");
+
         if (!exprFilter(state, expr)) {
-            console.log("no expr filter")
             for (const field of module.subexpressions(expr)) {
                 console.log(`considering subexpression ${field}`)
                 const subexprId = expr.get(field);
@@ -228,9 +218,6 @@ export default function(module) {
             .then(() => module.interpreter.smallStep(stage, state, exp))
             .then(nullToError(exprId, callbacks.error))
             .then(([ topNodeId, newNodeIds, addedNodes ]) => {
-                console.log(JSON.stringify(topNodeId));
-                console.log(JSON.stringify(newNodeIds));
-                console.log(JSON.stringify(addedNodes));
                 callbacks.update(topNodeId, newNodeIds, addedNodes, recordUndo);
                 // TODO: handle multiple new nodes
                 return newNodeIds[0];
@@ -301,7 +288,6 @@ export default function(module) {
             return true;
         };
 
-        console.log("over->singleStep");
         const [ result, exprId, reason ] = module.interpreter.singleStep(state, exp, shouldStepOver);
 
 
@@ -335,13 +321,10 @@ export default function(module) {
         stage, state, exp, callbacks,
         animated=true, recordUndo=true
     ) {
-      debugger;
         let firstStep = true;
 
-        console.log("in multiStepReducer")
-
       const takeStep = (innerState, topExpr) => {
-            console.log(`in takeStep ${topExpr}`)
+            //console.log(`in takeStep ${topExpr}`)
             const [ result, exprId, reason ] = module.interpreter.singleStep(innerState, topExpr);
             if (result === "error") {
                 callbacks.error(exprId, reason);
@@ -350,10 +333,10 @@ export default function(module) {
 
             const innerExpr = innerState.get("nodes").get(exprId);
 
-            console.log(`successful result was ${innerExpr}`)
+            //console.log(`successful result was ${innerExpr}`)
 
             const nextStep = () => {
-                console.log(`in nextStep ${innerExpr}`)
+                //console.log(`in nextStep ${innerExpr}`)
                 const result = module.interpreter.smallStep(stage, innerState, innerExpr);
                 if (result === null) {
                     callbacks.error(exprId);
@@ -381,7 +364,6 @@ export default function(module) {
             };
 
             if (animated) {
-                console.log("starting animation")
                 return module.interpreter
                     .animateStep(stage, innerState, innerExpr)
                     .then(() => nextStep());
@@ -417,7 +399,6 @@ export default function(module) {
     module.interpreter.reducers.big = function bigStepReducer(stage, state, exp, callbacks) {
         // Only play animation if we actually take any sort of
         // small-step
-        debugger;
         let playedAnim = false;
         return module.interpreter.reducers.multi(
             stage, state, exp,
@@ -491,7 +472,6 @@ export default function(module) {
     };
 
     module.interpreter.reducers.hybrid = function multiStepReducer(stage, state, exp, callbacks) {
-      debugger;
         const takeStep = (innerState, topExpr) => {
           console.log(`in takeStep_hybrid ${topExpr}`)
             const [ result, exprId, reason ] = module.interpreter.singleStep(innerState, topExpr);
@@ -583,26 +563,26 @@ export default function(module) {
      * small-steps, etc. to allow fine-grained undo/redo.
      */
     module.interpreter.reduce = function reduce(stage, state, exp, mode, callbacks) {
-        console.log("step-reduce");
+        //console.log("step-reduce");
         switch (mode) {
         case "small":
-        console.log("step-reduce-small");
+        //console.log("step-reduce-small");
             return module.interpreter.reducers.single(stage, state, exp, callbacks);
         case "over":
-        console.log("step-reduce-over");
+        //console.log("step-reduce-over");
             return module.interpreter.reducers.over(stage, state, exp, callbacks);
         case "multi":
-        console.log("step-reduce-multi");
+        //console.log("step-reduce-multi");
             return module.interpreter.reducers.multi(stage, state, exp, callbacks);
         case "big":
-        console.log("step-reduce-big");
+        //console.log("step-reduce-big");
             return module.interpreter.reducers.big(stage, state, exp, callbacks);
         case "medium":
-        console.log("step-reduce-medium");
+        //console.log("step-reduce-medium");
             return module.interpreter.reducers.medium(stage, state, exp, callbacks);
         case "hybrid":
         default:
-          console.log("step-reduce-hybrid");
+        //console.log("step-reduce-hybrid");
             return module.interpreter.reducers.multi(stage, state, exp, callbacks);
         }
     };

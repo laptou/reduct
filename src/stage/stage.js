@@ -65,8 +65,6 @@ export default class Stage extends BaseStage {
         this.input = [];
         // List of possible output values for autotesting
         this.output = [];
-        //Number of tests to carry out
-        this.numTests = 0;
         // Keep track of the reduction mode.
         this.mode = "over";
     }
@@ -414,6 +412,7 @@ export default class Stage extends BaseStage {
         this.toolbox.drawImpl(state);
          //this.syntaxJournal.drawImpl(state);
 
+
         for (const id of this._newSyntax) {
             this.drawInternalProjection(state, id);
         }
@@ -732,7 +731,7 @@ export default class Stage extends BaseStage {
      * Helper that handles animation and updating the store for a small-step.
      */
     step(state, selectedNode, overrideMode=null, shouldStop=null) {
-      debugger;
+      //debugger;
         const nodes = state.get("nodes");
         const node = nodes.get(selectedNode);
 
@@ -877,14 +876,10 @@ export default class Stage extends BaseStage {
      * Helper that handles animation and updating the store for a beta reduction.
      */
     betaReduce(state, target, arg) {
-      debugger;
+      //debugger;
         const result = this.semantics.interpreter.betaReduce(this, state, target, [ arg ]);
         if (result) {
             const [ topNode, resultNodeIds, newNodes ] = result;
-            console.log("betaReduce results:");
-            console.log("topNode");console.log(JSON.stringify(topNode));
-            console.log("resultNodeIds:");console.log(JSON.stringify(resultNodeIds));
-            console.log("newNodes:");console.log(newNodes);
             const origExp = this.saveNode(topNode);
             const origArg = this.saveNode(arg);
             const tempNodes = state.get("nodes").withMutations((nodes) => {
@@ -1359,15 +1354,14 @@ export default class Stage extends BaseStage {
     }
 
     library(state, topNode) {
+      return; //unimplemented right now.
       console.log("In stage");
       this.syntaxJournal.open();
     }
 
-    getTests(inputList, outputList, numTests) {
+    getTests(inputList, outputList) {
       this.input = inputList;
       this.output = outputList;
-      this.numTests = numTests;
-      console.log("numtests_stage: " + numTests);
     }
 
     _mousedown(e) {

@@ -10,7 +10,7 @@ export var MACROS;
 export function startLevel(description, parse, store, stage) {
     animate.replaceDurationScales(description.animationScales);
 
-    console.log(description);
+    //console.log(description);
     const macros = Object.assign({}, description.macros);
     for (const macroName of Object.keys(macros)) {
         // Needs to be a thunk in order to allocate new ID each time
@@ -54,13 +54,13 @@ export function startLevel(description, parse, store, stage) {
 
     // Actually parse the goal, board, and toolbox.
     const goal = description.goal.map(str => parse(str, macros));
-    console.log("parsing board now ...");
-    console.log(JSON.stringify(description.board));
+    //console.log("parsing board now ...");
+    //console.log(JSON.stringify(description.board));
     const board = description.board
           .map(str => parse(str, macros))
           .reduce((a, b) => (Array.isArray(b) ? a.concat(b) : a.concat([b])), []);
-    console.log("parsing board end...");
-    console.log(JSON.stringify(board));
+    //console.log("parsing board end...");
+    //console.log(JSON.stringify(board));
     const toolbox = description.toolbox
           .map(str => parse(str, macros));
 
@@ -90,7 +90,7 @@ export function startLevel(description, parse, store, stage) {
 
     // Update the store with the parsed data.
 
-    stage.getTests(description.input, description.output, description.numTests);
+    stage.getTests(description.input, description.output);
     store.dispatch(action.startLevel(stage, goal, board, toolbox, globals));
     stage.startLevel(description.textgoal, description.showConcreteGoal);
     stage.registerNewDefinedNames(newDefinedNames.map(elem => elem[0]));

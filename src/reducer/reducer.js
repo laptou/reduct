@@ -153,7 +153,6 @@ export function reduct(semantics, views, restorePos) {
                 .set("board", newBoard);
         }
         case action.CHANGE_GOAL: {
-          //console.log("ss");
           let newNodes = state.get("nodes")
               .withMutations((n) => {
                   for (const node of act.addedNodes) {
@@ -163,10 +162,8 @@ export function reduct(semantics, views, restorePos) {
 
               const len = state.get("goal").size;
 
-              //let newGoal = state.get("goal").concat(act.newNodeIds);
               let newGoal = state.get("goal");
               newGoal = newGoal.splice(act.goal_id,1,...act.newNodeIds);
-              console.log("newGoal" + JSON.stringify(newGoal));
 
           return state
                   .set("nodes", newNodes)

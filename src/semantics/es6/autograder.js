@@ -35,17 +35,12 @@ export default {
         ],
       },
       validateStep: (semant, state, expr) =>{
-        console.log("hi");
         return null;
       },
       smallStep: (semant,stage,state,expr) => {
 
         const nodes = state.get("nodes");
         const max_goals = 5;
-
-        //const k = 1;
-        //console.log("numTests: " + stage.numTests);
-        //const max = stage.input.length;
 
         const allInputs = stage.input.slice();
         const allOutputs = stage.output.slice();
@@ -55,15 +50,15 @@ export default {
         const f_type = fExpr.get("type");
         let goal_id = expr.get("goalId");
         const color = expr.get("color");
-        console.log("f_type: " + JSON.stringify(f_type));
 
+        /* Function to convert game definition to JS definition.
+        */
         function extractAll(){
           let funFinal = "";
           for(const refStr of state.get("globals")){
             const defId = state.getIn(["globals", refStr[0]]);
             const defNode = nodes.get(defId);
             const defStr = semant.parser.unparse(semant.hydrate(nodes, defNode));
-            //const funName = defStr.match(/function (?<name>[a-zA-Z]+)/).groups.name;
             const funName = defStr.match(/function ([a-zA-Z]+)/)[1];
             const funHalfBody = defStr.match(/>([^>]+)$/)[1];
             const funBody = "{ t--; if(t < 0) return -100000;" + "return " + funHalfBody;
@@ -85,11 +80,9 @@ export default {
         * Generate Input/Output ------------------------------------------------
         */
         if(f_type == "reference" || f_type == "lambda"){
-        //const f = semant.hydrate(nodes, nodes.get(expr.get("result")));
         let finalExpr = [];
         let finalOutput = [];
 
-        //for(let i=1;i<=k;i++) {
 
         /** Cloning the "result" function [f] as it we want it to
         * be a new node. We need a new node so that it acts separatley
@@ -106,15 +99,14 @@ export default {
 
         /** Hydrate the function so as to make a new node out of it
         */
-
         const f = semant.hydrate(tempFuncNodes, cloned_f);
 
+        //for the "red" autograder
         if(goal_id == 0){
 
           //Generate function definition string
           const funName = semant.parser.unparse(f);
           let funFinal = extractAll();
-          //extractAll();
 
           //setting the timer
           funFinal = "let t = 100;\n" + funFinal;
@@ -126,14 +118,14 @@ export default {
 
 
             if(allInputs[i].includes(",")){
-              console.log(funFinal + funName + allInputs[i]);
-              console.log(eval(funFinal + funName + allInputs[i]));
+              //console.log(funFinal + funName + allInputs[i]);
+              //console.log(eval(funFinal + funName + allInputs[i]));
                out = eval(funFinal + funName + allInputs[i]);
             }
             else {
 
-              console.log(funFinal + funName + "(" + allInputs[i] + ")");
-              console.log(eval(funFinal + funName + "(" + allInputs[i] + ")"));
+              //console.log(funFinal + funName + "(" + allInputs[i] + ")");
+              //console.log(eval(funFinal + funName + "(" + allInputs[i] + ")"));
               out = eval(funFinal + funName + "(" + allInputs[i] + ")");
             }
             if(out != allOutputs[i]){
@@ -166,7 +158,6 @@ export default {
 
         /** Get the input
         */
-        //const r = Math.floor(Math.random() * (+max - i));
         const s = allInputs[goal_id];
 
         /** Each input may have several arguments -example:
@@ -184,34 +175,19 @@ export default {
         }
 
         finalExpr.push(semant.autograder(expr.get("alienName"),goal_id,color,result));
-        //console.log("Inoput generated");
 
         /**Now generate expected output
-        if(goal_id % max_goals == 0){
-          finalOutput.push(semant.unsol("red", semant.parser.parse(allOutputs[goal_id])));
-        }*/
+        */
         finalOutput.push(semant.unsol(color, semant.parser.parse(allOutputs[goal_id],level.MACROS)));
 
 
-
-        /** Generate new test cases from left over elements.
-        */
-        //allInputs.splice(r, 1);
-        //allOutputs.splice(r, 1);
-        //console.log("auto_res:");
-        //console.log(JSON.stringify(result));
-        //console.log("finalExpr: ");
-        //console.log(JSON.stringify(finalExpr.length));
-        //}
         /**
         * Display expected output in the place of goal--------------------------.
         */
         let addedOutput = [];
         let newOutputIds = [];
-        //for(let j =0;j<finalOutput.length;j++){
         const o = finalOutput[0];
         addedOutput.push(...semant.flatten(o).map(immutable.Map));
-        //}
 
         const tempOutputNodes = state.get("nodes").withMutations((nodes) => {
             for (const node of addedOutput) {
@@ -225,7 +201,6 @@ export default {
         }
 
        stage.store.dispatch(action.changeGoal(goal_id, [newOutputIds[0]], addedOutput));
-       //console.log("newthing: " + JSON.stringify(addedOutput));
 
        /* Displaying input------------------------------------------------------.
         */
@@ -237,12 +212,8 @@ export default {
 
 
        let newInputIds = [];
-       //for(let i=0;i<k;i++){
         const f1 = finalExpr[0];
-        //f1.goal = 1;
         const addedTarget = semant.flatten(f1).map(immutable.Map);
-
-        //console.log("newthing 2: " + JSON.stringify(addedTarget));
         const tempInputNodes = state.get("nodes").withMutations((nodes) => {
           for (const node of addedTarget) {
             nodes.set(node.get("id"), node);
@@ -260,11 +231,7 @@ export default {
         stage.views[newInputIds[0]].pos.x = origPos.x;
         stage.views[newInputIds[0]].pos.y = origPos.y;
 
-        //console.log("Added Target: " + JSON.stringify(addedTarget));
-        //if(i == 0){
         stage.store.dispatch(action.smallStep(expr.get("id"),[newInputIds[0]], addedTarget));
-        //}
-      //}
     }
     else{
       const finalGoal = semant.parser.parse(allOutputs[goal_id], level.MACROS);
@@ -298,9 +265,7 @@ export default {
 
        /* Return the final expression.
         */
-       //console.log("final_id:"+ finalGoal.id);
        const [cloned_fin, added_fin] = semant.clone(finalGoal.id, tempGoalNodes);
-       //console.log("cloned_fin:" + cloned_fin);
        const allAdded_fin = added_fin.concat([ cloned_fin ]);
 
        const tempFinalNodes= state.get("nodes").withMutations((nodes) => {
@@ -315,46 +280,8 @@ export default {
 
       return core.makeResult(expr, cloned_fin, semant);
       }
-      //stage.store.dispatch(action.changeGoal(goal_id, [newNodeIds[1]], addedNodes));
-      //return state.get("nodes").get(fId);
     }
 
-
-        /** finally, display test expressions in an array
-        */
-        //const f1 = semant.vtuple(...finalExpr);
-        /*console.log("ssssssssssssssssss");
-        const f1 = semant.lambda(semant.lambdaArg("x"),semant.vtuple([...finalExpr]));
-        //console.log(JSON.stringify(f1));
-        const argExpr =semant.number(1);
-        const addedArg = semant.flatten(argExpr).map(immutable.Map);
-        const addedTarget = semant.flatten(f1).map(immutable.Map);
-        //console.log("arg Expr:" + JSON.stringify(addedTarget));
-
-        const tempNodes2 = state.get("nodes").withMutations((nodes) => {
-          for(const node of addedArg) {
-            nodes.set(node.get("id"), node);
-          }
-          for(const node of addedTarget) {
-            nodes.set(node.get("id"), node);
-          }
-        });
-
-        const newState = state.set("nodes", tempNodes2);
-        const [topNode, subExpr, newNodes] = semant.interpreter.betaReduce(stage, newState, addedTarget[0].get("id"), [addedArg[0].get("id")]);
-        console.log("r from betareduce:" + JSON.stringify([topNode, subExpr, newNodes]));
-        //console.log(JSON.stringify(tempNodes2));
-        //const resultExpr =  semant.array(k,...finalExpr);
-
-        for(const nn of newNodes){
-          stage.views[nn.get("id")] = stage.semantics.project(stage,tempNodes2,nn);
-        }
-
-        return [topNode, subExpr, newNodes];*/
-        //return f1;
-        //console.log(JSON.stringify(resultExpr));
-        //return core.makeResult(expr, resultExpr, semant);
-
-      },
-  }
+  },
+ }
 };

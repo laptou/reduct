@@ -34,6 +34,7 @@ window.gfx = gfx;
 window.animate = animate;
 window.Logging = Logging;
 window.progression = progression;
+window.devMode = 1;
 
 // Load assets.
 Loader.loadAudioSprite("sounds", "resources/audio/output.json", "resources/audio/volumes.json", [
@@ -101,6 +102,7 @@ let stg;
 let canvas;
 
 function toggleDev() {
+    window.devMode = (window.devMode + 1)%2;
     const nav = document.querySelector("#nav");
     const devEls = document.querySelectorAll(".dev");
     if (nav.style.display === "none") {
@@ -254,8 +256,6 @@ function initialize() {
         window.updateStateGraph();
     });
     document.querySelector("#capture-graph").addEventListener("click", () => {
-      //console.log("capture now");
-      //document.querySelector("#capture-state").classList.add("visible");
       captureState();
     });
 
@@ -534,8 +534,6 @@ window.captureState = function () {
   }
 
   //Printing the result
-  //console.log("Captured Sate: ");
-  //console.log(newInput);
   const saveString = format + "\n" + newInput;
   const blob = new window.Blob([ saveString ], {
       type: "application/csv;charset=utf-8",

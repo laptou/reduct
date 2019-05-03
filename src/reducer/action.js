@@ -77,10 +77,12 @@ export function startLevel(stage, goal, board, toolbox, globals) {
         globals: _globals,
     } = semantics.parser.postParse(_nodes, _goal, _board, _toolbox, _globals));
 
+    /*for debugging
     console.log("nodes after flattening:");
     console.log(_nodes);
     console.log("globals after flattening:");
     console.log(_globals);
+    */
 
     const finalNodes = immutable.Map().withMutations((fn) => {
         for (const node of Object.values(_nodes)) {

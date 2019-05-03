@@ -351,7 +351,7 @@ span.spacer {
     background-color: #fed;
     border: 2px solid gray;
     padding: 1em;
-    width: 30%;
+    width: 8%;
     height: 4em;
     position: fixed;
     top: 10px;
@@ -366,7 +366,7 @@ span.spacer {
   height: 4em;
   position: fixed;
   top: 10px;
-  left: 100px;
+  left: 200px;
 }
 
 #capture-state {

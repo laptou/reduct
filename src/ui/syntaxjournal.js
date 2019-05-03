@@ -277,25 +277,6 @@ export default class SyntaxJournal {
         }
     }
 
-    showBox() {
-      const state = this.stage.getState();
-      const { ctx } = this.stage;
-      ctx.save();
-      const node = this.stage.semantics.bool(true);
-      node.id = nextId();
-      const addedNodes = this.stage.semantics.flatten(node).map(immutable.Map);
-
-      const tempNodes = state.get("nodes").withMutations((nodes) => {
-          for (const node of addedNodes) {
-              nodes.set(node.get("id"), node);
-          }
-      });
-
-      for(const nn of addedNodes) {
-        this.stage.views[nn.get("id")] = this.stage.semantics.project(this.stage,tempNodes,nn);
-      }
-      
-      this.stage.store.dispatch(action.addToolboxItem(addedNodes[0].get("id"), addedNodes));
-    }
+    showBox() {}
 
 }

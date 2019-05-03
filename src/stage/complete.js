@@ -9,6 +9,7 @@ import Loader from "../loader";
 import BaseStage from "./basestage";
 import BaseTouchRecord from "./touchrecord";
 
+
 export default class CompleteStage extends BaseStage {
     constructor(startGame, ...args) {
         super(...args);
@@ -101,7 +102,11 @@ export default class CompleteStage extends BaseStage {
                   y: 0,
               },
               subexpScale: 1,
-              click: () => {},
+              click: () => {
+                if(window.devMode){
+                  window.lvlStage(chapterName);
+                }
+              },
           });
           buttons.push(this.allocate(button));
         }
@@ -123,7 +128,7 @@ export default class CompleteStage extends BaseStage {
                 padding: {
                     inner: 20,
                     top: stage.height/2,
-                    left: stage.width/12 + numLayouts*200,
+                    left: (stage.width - 980)/2 + numLayouts*200,
                 },
             }, gfx.baseProjection);
 
@@ -140,7 +145,7 @@ export default class CompleteStage extends BaseStage {
                 padding: {
                     inner: 20,
                     top: stage.height/2,
-                    left: stage.width/12 + (numLayouts)*200,
+                    left: (stage.width - 980)/2 + (numLayouts)*200,
                 },
             }, gfx.baseProjection);
 
@@ -154,41 +159,7 @@ export default class CompleteStage extends BaseStage {
 
 
          genLayouts(this, buttons);
-
-
-
-      /*   const vlayout1 = gfx.layout.hbox(() =>buttons.slice(0,5), {
-            subexpScale: 1.0,
-            padding: {
-                inner: 20,
-                top: 500,
-                left: 200,
-            },
-        }, gfx.baseProjection);
-
-        vlayout1.opacity = 0.0;
-        this.vlayout1 = this.allocate(vlayout1);*/
-
-        //console.log("vlayout1: " + JSON.stringify(vlayout1));
-        //console.log("myLayouts0: " + JSON.stringify(myLayouts));
-        //console.log("promises: " + JSON.stringify(animatePromises));
-
-
-
-      /*  const vlayout2 = gfx.layout.hbox(() => buttons.slice(5,10), {
-          subexpScale: 1.0,
-          padding: {
-              inner: 20,
-              top: 600,
-              left: 200,
-          },
-        }, gfx.baseProjection);
-
-
-        vlayout2.opacity = 0.0;
-        this.vlayout2 = this.allocate(vlayout2);*/
-
-
+         console.log("Redux  x: " + stage.width);
 
 
         // ** Startup Animations ** //
@@ -351,51 +322,6 @@ export default class CompleteStage extends BaseStage {
            }
          }
 
-        /*for(let i=0;i<this.myLayouts.length;i++){
-          if(this.getView(this.myLayouts[i]).containsPoint(pos, offset)){
-            const topLeft = gfx.util.topLeftPos(this.getView(this.myLayouts[i]), offset);
-            const subpos = {
-              x: pos.x - topLeft.x,
-              y: pos.y - topLeft.y,
-            };
-
-            console.log(JSON.stringify(topLeft));
-          }
-        }*/
-
-        /*if (buttonLayout1.containsPoint(pos, offset)) {
-            const topLeft = gfx.util.topLeftPos(buttonLayout1, offset);
-            const subpos = {
-                x: pos.x - topLeft.x,
-                y: pos.y - topLeft.y,
-            };
-
-
-        for (const id of this.buttons.slice(0,5)) {
-            const button = this.getView(id);
-            //console.log(id + ":" + JSON.stringify(gfx.util.topLeftPos(button, offset)));
-            if (button.containsPoint(subpos, offset)) {
-                return [ id, id ];
-            }
-        }
-      }*/
-
-        /*if (buttonLayout2.containsPoint(pos, offset)) {
-            const topLeft = gfx.util.topLeftPos(buttonLayout2, offset);
-            const subpos = {
-                x: pos.x - topLeft.x,
-                y: pos.y - topLeft.y,
-            };
-
-
-        for (const id of this.buttons.slice(5,10)) {
-            const button = this.getView(id);
-            //console.log(id + ":" + JSON.stringify(gfx.util.topLeftPos(button, offset)));
-            if (button.containsPoint(subpos, offset)) {
-                return [ id, id ];
-            }
-        }
-      }*/
 
         return [ null, null ];
     }

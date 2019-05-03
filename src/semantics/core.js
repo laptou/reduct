@@ -165,8 +165,6 @@ export function genericBetaReduce(semant, state, config) {
         return null;
     }
 
-    debugger;
-    console.log("okokoko");
     if (argIds.length !== 1) {
         let curState = state;
         let curTopNode = topNode;
@@ -216,7 +214,6 @@ export function genericBetaReduce(semant, state, config) {
             curTargetNode = curState.getIn([ "nodes", curTopNode.get("arg") ]);
         }
 
-        console.log("partial reduce?");
         return [ topNode, curResult, allAddedNodes ];
     }
 
@@ -285,7 +282,6 @@ export function genericBetaReduce(semant, state, config) {
     newTop = newTop.delete("parent").delete("parentField");
 
     if (newTop.get("type") === "vtuple") {
-      console.log("yay vtuple");
         // Spill vtuple onto the board
         // TODO: should we delete parent/parentField?
         return [
@@ -362,10 +358,10 @@ export function makeResult(sourceExpr, resultExpr, semant) {
     resultExpr.locked = false;
     delete resultExpr.parent;
     delete resultExpr.parentField;
-    console.log(`Making result for ${resultExpr.type}`);
+    //console.log(`Making result for ${resultExpr.type}`);
     //console.log(JSON.stringify(semant.flatten(resultExpr).map(immutable.Map)));
     const newNodes = semant.flatten(resultExpr).map(immutable.Map);
-    console.log(`New nodes are ${newNodes}`);
+    //console.log(`New nodes are ${newNodes}`);
     return [
         sourceExpr.get("id"),
         [ newNodes[0].get("id") ],

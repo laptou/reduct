@@ -373,7 +373,6 @@ export default class TouchRecord extends BaseTouchRecord {
     }
 
     onend(state, mousePos) {
-      debugger;
         this.stopHighlight();
         if (this.scaleAnimation) this.scaleAnimation.cancel();
 
@@ -400,7 +399,6 @@ export default class TouchRecord extends BaseTouchRecord {
 
         if (this.isExpr && !this.dragged && this.topNode !== null && !this.fromToolbox && state.get("board").includes(this.topNode)) {
             if (Date.now() - this.currTime < 10000) {
-              //console.log("##########multiclicks############    " + this.topNode + "  board:" + state.get("board"));
                 // Click on object to reduce; always targets toplevel node
                 if (this.stage.functionDef) {
                     this.stage.functionDef = null;
@@ -419,7 +417,6 @@ export default class TouchRecord extends BaseTouchRecord {
             // Drag something into hole
             if (this.fromToolbox) this.useToolboxItem();
 
-            debugger;
             Audio.play("pop");
             this.stage.reductToolbar.update(null, this.topNode);
             this.stage.store.dispatch(action.fillHole(this.hoverNode, this.topNode));
@@ -458,9 +455,9 @@ export default class TouchRecord extends BaseTouchRecord {
             }
         }
         else if (this.isExpr && !this.dragged && this.topNode !== null && this.fromToolbox) {
+          return; //unimplemented
             const node = state.getIn(["nodes",this.topNode]);
             if(node.get("name") == "Library") {
-              console.log("wow");
               this.stage.library(state,this.topNode);
             }
         }
