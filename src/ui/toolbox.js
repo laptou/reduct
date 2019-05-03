@@ -115,6 +115,8 @@ export default class Toolbox {
         x = TOOLBOX_LEFT_MARGIN;
         let i = 0;
         for (const nodeId of state.get("toolbox")) {
+          const node = state.get("nodes").get(nodeId);
+        //  if (!(node.has("__meta") && node.get("__meta").toolbox.unlimited)) {
             const projection = this.stage.views[nodeId];
             if (x + projection.size.w >= this.stage.width - TOOLBOX_RIGHT_MARGIN) {
                 curRow += 1;
@@ -160,7 +162,7 @@ export default class Toolbox {
 
             projection.prepare(nodeId, nodeId, state, this.stage);
 
-            const node = state.get("nodes").get(nodeId);
+
             if (node.has("__meta") && node.get("__meta").toolbox.unlimited) {
                 projection.draw(nodeId, nodeId, state, this.stage, this.stage.makeBaseOffset({
                     x: 2,
@@ -176,6 +178,7 @@ export default class Toolbox {
                     y: -6,
                 }));
             }
+          //}
 
             i++;
         }

@@ -1,0 +1,35 @@
+Chapter 1: Clear
+Chapter 2: Clear
+Chapter 3: Clear
+Chapter 4: Clear
+Chapter 5: Clear
+Chapter 6: Clear
+Chapter 7: Clear
+Chapter 8: Clear
+Chapter 9: Clear
+Chapter 10: Clear
+Chapter 11: Clear
+Pause at Level 116
+
+Unsolvable stages: 
+1) Chapter 4, Level 38 - R
+2) Chapter 6, Level 63 - R
+3) Chapter 6, Level 66 - R
+4) Chapter 9, Level 84 (can't see the solution) - R
+5) Chapter 9, Level 85 (can't see the solution) - R
+6) Chapter 10, Level 93 - R
+
+Non-functional Autograder:
+1) Chapter 4, Level 46 - R
+2) Chapter 7, Level 71 - R
+1) Chapter 7, Level 73 - R
+
+Bugs: 
+1) Chapter 9, Level 83 (unclickable node) - R
+2) When evaluated fast enough, expressions can create duplicates of the end result. -R
+3) Functions get stuck sometimes when getting added to the definition - R
+
+Non-technical stuff:
+1) Need more introduction for array functions in Chapter 8
+2) Re-design Chapter 9
+3) Possible to combine Chapter 10 and 6 together

@@ -46,9 +46,20 @@ export default class Navbar {
             size: { w: 65, h: 65 },
         }));
 
-        this.buttons = [ this.undo, this.reset, this.redo ];
+        this.start = stage.allocate(gfx.ui.imageButton({
+          normal: Loader.images["btn-hamburger-default"],
+          hover: Loader.images["btn-hamburger-hover"],
+          active: Loader.images["btn-hamburger-down"],
+        }, {
+            click: () => {
+              window.lvlStage(progression.currentChapter().key);
+            },
+            size: { w: 65, h: 65},
+        }));
 
-        const topButtons = [ this.undo, this.reset, this.redo ];
+        this.buttons = [ this.undo, this.reset, this.redo, this.start ];
+
+        const topButtons = [ this.undo, this.reset, this.redo, this.start ];
 
         const topRow = stage.allocate(gfx.layout.hbox(
             () => topButtons,

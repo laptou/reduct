@@ -58,7 +58,7 @@ export default function transform(definition) {
      * onto the board when they are the top-level node.
      */
     module.vtuple = function vtuple(children) {
-        const result = { type: "vtuple", locked: true, numChildren: children.length };
+        const result = { type: "vtuple", kind: "expression", locked: true, numChildren: children.length };
         let i = 0;
         for (const child of children) {
             result[`child${i}`] = child;
@@ -301,6 +301,28 @@ export default function transform(definition) {
 
         return true;
     };
+
+    /** Check the equality of all subexpressions as well. */
+    module.deepEqual = function deepEqual(nodes,n1,n2){
+
+      if(!module.shallowEqual(n1,n2))
+        return false;
+
+      if(n1.get("type") === "array"){
+        if(n1.get("length") !== n2.get("length"))
+          return false;
+          debugger;
+        for(let i=0;i<n1.get("length");i++){
+          const e1 = nodes.get(n1.get(`elem${i}`));
+          const e2 = nodes.get(n2.get(`elem${i}`));
+
+          if(!deepEqual(nodes,e1,e2))
+            return false;
+        }
+      }
+
+      return true;
+    }
 
     /**
      * Can an expression have something dropped into it?

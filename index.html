@@ -24,6 +24,7 @@
 
             <button class="dev" id="download-log">Download Log JSON</button>
             <button class="dev" id="toggle-graph">Toggle State Graph</button>
+            <button class="dev" id="capture-graph">Capture State Graph </button>
             <a href="credits.html">Credits</a>
         </div>
 
@@ -51,6 +52,25 @@
           Jump to level
           <input name=targetLevel type="text" size=3 onchange="jumpToLevel(this.value)">
         </div>
+
+      
+        <form target="remember" onsubmit="return addNodeToBoard()" method="get" action="about:blank" autocomplete="on">
+          <div id="add-node" class="fade-container">
+            Add node
+            <input id="targetNodeToAdd" name=targetNode list="valueOptions" type="text" size=3 required>
+            <datalist id="valueOptions"></datalist>
+            Where?
+            <input id="targetPlace" name=targetPlace list="placeOptions" type="text" size=3 required>
+            <datalist id="placeOptions">
+              <option value="goal"/>
+              <option value="board"/>
+              <option value="toolbox"/>
+            </datalist>
+            <input type="submit" style="display: none" />
+            </div>
+        </form>
+
+
 
         <div id="consent">
             <div id="consent-inner">

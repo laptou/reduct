@@ -146,7 +146,7 @@ export default {
 
                 const name = expr.get("name");
 
-                if (builtins.has(name)) {
+               if (builtins.has(name)) {
                     const {impl} = builtins.get(name);
                     if (impl) {
                         let resultExpr = impl(expr, semant, state.get("nodes"));

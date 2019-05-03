@@ -49,7 +49,7 @@ function builtinLength(expr, semant, nodes) {
 }
 
 // Evaluate the "get" function. Return null if failure.
-// Requires call has already been validated. 
+// Requires call has already been validated.
 function builtinGet(expr, semant, nodes) {
     const arr = nodes.get(expr.get("arg_a"));
     const i = nodes.get(expr.get("arg_i"));
@@ -106,7 +106,7 @@ function validateSet(expr, semant, state) {
           i = nodes.get(expr.get("arg_i")),
           iv = i.get("value"),
           n = arr.get("length");
-    if (iv < 0 || iv >= n) 
+    if (iv < 0 || iv >= n)
         return { subexpr: "arg_i",
                  msg: `This array index must be between 0 and ${n-1}, because the array only has ${n} elements!`};
     return VALID;
@@ -115,7 +115,7 @@ function validateSet(expr, semant, state) {
 function builtinConcat(expr, semant, nodes) {
     const left = nodes.get(expr.get("arg_left")),
           right = nodes.get(expr.get("arg_right"));
-    
+
     if (left.get("type") !== "array") return null;
     if (right.get("type") !== "array") return null;
     const nl = left.get("length"),
@@ -178,7 +178,7 @@ function builtinFold(expr, semant, nodes) {
         fncall = semant.apply(semant.apply(f2, a.elem0), init);
     }
 
-    return semant.reference("fold", ["f", "a", "init"], 
+    return semant.reference("fold", ["f", "a", "init"],
         f1, a_tail, fncall);
 }
 
@@ -187,7 +187,7 @@ function builtinSlice(expr, semant, nodes) {
           b = nodes.get(expr.get("arg_begin")).get("value"),
           e = nodes.get(expr.get("arg_end")).get("value"),
           n = arr.get("length");
-    
+
     const slice = [];
     for (let i = b; i < e; i++) {
         slice.push(a[`elem${i}`]);
@@ -217,13 +217,13 @@ function validateSlice(expr, semant, state) {
 
 export const builtins =
     immutable.Map({
-        repeat: {params: [{n: 'number'}, {f: 'function'}], impl: builtinRepeat},
+        //repeat: {params: [{n: 'number'}, {f: 'function'}], impl: builtinRepeat},
         length: {params: [{a: 'array'}], impl: builtinLength},
         get: {params: [{a: 'array'}, {i: 'number'}], impl: builtinGet, validate: validateGet},
         set: {params: [{a: 'array'}, {i: 'number'}, {v: 'any'}], impl: builtinSet, validate: validateSet},
         map: {params: [{f: 'function'}, {a: 'array'}], impl: builtinMap},
         fold: {params: [{f: 'function'}, {a: 'array'}, {init: 'any'}], impl: builtinFold},
-        concat: {params: [{left:'array'}, {right:'array'}], impl: builtinConcat}, 
+        concat: {params: [{left:'array'}, {right:'array'}], impl: builtinConcat},
         slice: {params: [{array:'array'}, {begin: 'number'}, {end: 'number'}], impl: builtinSlice, validate: validateSlice}
     });
 

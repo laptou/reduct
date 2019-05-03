@@ -21,7 +21,9 @@ fieldnames = {
     "syntax": ast.literal_eval,
     "animationScales": ast.literal_eval,
     "fade": ast.literal_eval,
-    "tutorialUrl": str
+    "tutorialUrl": str,
+    "input": ast.literal_eval,
+    "output": ast.literal_eval
 }
 singleton_fields = {"textgoal", "globals", "animationScales", "tutorialUrl"}
 field_defaults = {
@@ -31,6 +33,8 @@ field_defaults = {
     "fade": {},
     "board": [],
     "goal": [],
+    "input": [],
+    "output": []
 }
 
 
@@ -78,7 +82,7 @@ def csv2json(infile, outfile):
                 skip_level = True
             except KeyError as ke:
                 {}
-                
+
             for field, converter in fieldnames.items():
                 try:
                     if field not in lvl:

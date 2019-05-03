@@ -139,6 +139,9 @@ export class LoaderClass {
                 else if (typeof lvl.defines === "string") lvl.defines = [lvl.defines];
                 if (!lvl.globals) lvl.globals = {};
                 if (!lvl.syntax) lvl.syntax = [];
+                if (!lvl.input) lvl.input = [];
+                if (!lvl.output) lvl.output = [];
+                if (!lvl.numTests) lvl.numTests = 0;
                 else if (typeof lvl.syntax === "string") lvl.syntax = [lvl.syntax];
 
                 if (!lvl.fade) lvl.fade = {};
@@ -159,6 +162,7 @@ export class LoaderClass {
 
     loadChapters(name, definition) {
         this.startLoad();
+        //Initilizing variables --s
         const progression = this.progressions[name] = {
             chapters: {},
             levels: [],
@@ -171,6 +175,8 @@ export class LoaderClass {
         let animationScales = {};
         let fade = {};
 
+        //counting dependencies for each chapter so
+        //as to sort the chapters in order --s
         Promise.all(filenames.map(
             (filename) => this.loadChapter(
                 name, filename,
@@ -202,6 +208,7 @@ export class LoaderClass {
 
                             // TODO: patch defines
                             for (const level of chapter.levels) {
+                                //setting animationScales
                                 const newScales = Object.assign(
                                     {},
                                     animationScales,
@@ -213,10 +220,13 @@ export class LoaderClass {
                                 );
                                 animationScales = newScales;
 
+                                //setting fade property
                                 const newFade = Object.assign({}, fade, level.fade);
                                 level.fade = Object.assign({}, fade, level.fade);
                                 fade = newFade;
 
+                                //setting extradefines - functions that show
+                                //on the sidebar
                                 level.extraDefines = extraDefines;
                                 extraDefines = extraDefines.concat(level.defines);
 

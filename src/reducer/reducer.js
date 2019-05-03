@@ -65,9 +65,11 @@ export function reduct(semantics, views, restorePos) {
                 const newBoard = board.filter(n => n !== act.nodeId).push(act.nodeId);
                 return state.set("board", newBoard);
             }
+
             return state;
         }
         case action.SMALL_STEP: {
+            //console.log("@@SMALL_STEP_REDUCE@@");
             const oldNode = state.getIn([ "nodes", act.topNodeId ]);
 
             let newNodes = state.get("nodes")
@@ -82,31 +84,90 @@ export function reduct(semantics, views, restorePos) {
                 newBoard = newBoard.concat(act.newNodeIds);
             }
             else if (act.newNodeIds.length !== 1) {
-                throw "Cannot small-step a child expression to multiple new expressions.";
+                console.log("Cannot small-step a child expression to multiple new expressions.");
                 // TODO: handle this more gracefully? Create a vtuple?
             }
             else {
                 const parent = newNodes.get(oldNode.get("parent"))
                       .set(oldNode.get("parentField"), act.newNodeIds[0]);
-                // TODO: this could be done more efficiently
+
+                const child = newNodes.get(act.newNodeIds[0]).withMutations((nn) => {
+                    nn.set("parent", parent.get("id"));
+                    nn.set("parentField", oldNode.get("parentField"));
+                });
+
                 newNodes = newNodes.withMutations((n) => {
                     n.set(oldNode.get("parent"), parent);
-                    n.set(
-                        act.newNodeIds[0],
-                        newNodes.get(act.newNodeIds[0])
-                            .withMutations((nn) => {
-                                nn.set("parent", parent.get("id"));
-                                nn.set("parentField", oldNode.get("parentField"));
-                            })
-                    );
+                    n.set(act.newNodeIds[0], child);
                 });
             }
+
+            act.newNodeIds.forEach(id => markDirty(newNodes, id));
+            //console.log("@@SMALL_STEP_REDUCE - 2@@ " + newBoard);
+            return state
+                .set("nodes", newNodes)
+                .set("board", newBoard);
+        }
+        case action.ADD_TOOLBOX_ITEM: {
+          let newNodes = state.get("nodes")
+              .withMutations((n) => {
+                  for (const node of act.addedNodes) {
+                      n.set(node.get("id"), node);
+                  }
+              });
+
+          let newToolbox = state.get("toolbox").push(act.newNodeId);
+
+          return state
+              .set("nodes", newNodes)
+              .set("toolbox", newToolbox);
+        }
+        case action.ADD_GOAL_ITEM: {
+          let newNodes = state.get("nodes")
+              .withMutations((n) => {
+                  for (const node of act.addedNodes) {
+                      n.set(node.get("id"), node);
+                  }
+              });
+
+          let addedGoal = state.get("goal").push(act.newNodeId);
+
+          return state
+              .set("nodes", newNodes)
+              .set("goal", addedGoal);
+        }
+        case action.ADD_BOARD_ITEM: {
+            let newNodes = state.get("nodes")
+              .withMutations((n) => {
+                for (const node of act.addedNodes) {
+                  n.set(node.get("id"), node);
+                }
+              });
+
+            let newBoard = state.get("board").concat(act.newNodeIds);
 
             act.newNodeIds.forEach(id => markDirty(newNodes, id));
 
             return state
                 .set("nodes", newNodes)
                 .set("board", newBoard);
+        }
+        case action.CHANGE_GOAL: {
+          let newNodes = state.get("nodes")
+              .withMutations((n) => {
+                  for (const node of act.addedNodes) {
+                      n.set(node.get("id"), node);
+                  }
+              });
+
+              const len = state.get("goal").size;
+
+              let newGoal = state.get("goal");
+              newGoal = newGoal.splice(act.goal_id,1,...act.newNodeIds);
+
+          return state
+                  .set("nodes", newNodes)
+                  .set("goal", newGoal);
         }
         case action.UNFOLD: {
             const nodes = state.get("nodes");
@@ -136,6 +197,7 @@ export function reduct(semantics, views, restorePos) {
             return newState;
         }
         case action.BETA_REDUCE: {
+          debugger;
             const queue = [ act.topNodeId, act.argNodeId ];
             const removedNodes = {};
 

@@ -2,16 +2,21 @@ import "babel-regenerator-runtime";
 import vis from "vis";
 import { createStore, applyMiddleware } from "redux";
 
+import fileSaver from "file-saver";
 import * as gfx from "./gfx/core";
 import * as animate from "./gfx/animate";
 import * as reducer from "./reducer/reducer";
 import * as level from "./game/level";
 import * as progression from "./game/progression";
+import * as immutable from "immutable";
+import * as action from "./reducer/action";
 import es6 from "./semantics/es6";
 import Stage from "./stage/stage";
 import TutorialStage from "./stage/tutorial";
 import ChapterEndStage from "./stage/chapterend";
 import TitleStage from "./stage/title";
+import CompleteStage from "./stage/complete";
+import LevelStage from "./stage/lvlStage";
 import passwordPrompt from "./ui/instructor/password";
 import consent from "./consent";
 import tutorial from "./ui/instructor/tutorial";
@@ -29,6 +34,7 @@ window.gfx = gfx;
 window.animate = animate;
 window.Logging = Logging;
 window.progression = progression;
+window.devMode = 1;
 
 // Load assets.
 Loader.loadAudioSprite("sounds", "resources/audio/output.json", "resources/audio/volumes.json", [
@@ -96,6 +102,7 @@ let stg;
 let canvas;
 
 function toggleDev() {
+    window.devMode = (window.devMode + 1)%2;
     const nav = document.querySelector("#nav");
     const devEls = document.querySelectorAll(".dev");
     if (nav.style.display === "none") {
@@ -138,6 +145,11 @@ function bindSpecialKeys() {
                     Logging.saveState();
                     e.preventDefault();
                     window.location.reload();
+                    break;
+                case "F11":
+                    document.querySelector("#add-node").classList.add("visible");
+                    document.querySelector("#add-node input").focus();
+                    e.preventDefault();
                     break;
             }
         }
@@ -243,6 +255,11 @@ function initialize() {
         Logging.toggleStateGraph();
         window.updateStateGraph();
     });
+    document.querySelector("#capture-graph").addEventListener("click", () => {
+      captureState();
+    });
+
+
     window.toggleStateGraph = function() {
         Logging.toggleStateGraph();
         window.updateStateGraph();
@@ -276,7 +293,6 @@ function persistGraph() {
 
     try {
         const graph = stg.stateGraph.serialize();
-
         // Up to 2000 characters, as per
         // https://stackoverflow.com/a/417184, minus some for other
         // parameters
@@ -342,6 +358,7 @@ function start(updateLevel, options={}) {
                 tutorial(levelDefinition.tutorialUrl);
             }
 
+
             level.startLevel(levelDefinition, es6.parser.parse, store, stg);
             stg.drawImpl();
 
@@ -386,6 +403,33 @@ function nextLevel(enableChallenge) {
     }
 }
 
+function extractFunction(str) {
+  const funName = str.match(/function ([a-zA-Z]+)/)[1];
+  const funHalfBody = str.match(/>([^>]+)$/)[1];
+  const funBody = "{ " + "return " + funHalfBody;
+  const funArgsRegx = /\(([a-zA-Z]+)\) =>/g;
+  let funArgs = "";
+  var match;
+  while (match = funArgsRegx.exec(str)) {
+      funArgs += match[1];
+      funArgs += ",";
+  }
+  funArgs = funArgs.slice(0,-1);
+  let funFinal = "function " + funName + "(" + funArgs + ") " + funBody;
+  return funFinal;
+}
+
+
+window.lvlStage = function lvlStage(chapterName) {
+  stg = new LevelStage(startGame, chapterName, canvas, 800, 600, store, views, es6);
+  window.stage = stg;
+}
+
+window.init = function init() {
+  stg = new CompleteStage(startGame, canvas, 800, 600, store, views, es6);
+  window.stage = stg;
+}
+
 window.reset = function reset() {
     if (stg.pushState) stg.pushState("reset");
     start();
@@ -420,6 +464,147 @@ window.jumpToLevel = function(lev) {
     window.prev();
 }
 
+window.captureState = function () {
+  const d = document.querySelector("#capture-state");
+  d.classList.remove("visible");
+
+  const format = `board,goal,textgoal,toolbox,defines,globals,syntax,animationScales`;
+
+  //storing current format for this session.
+  const option1 = document.createElement("option");
+  option1.setAttribute("value", format);
+  document.querySelector("#formatOptions").appendChild(option1);
+
+  const re = /\s*,\s*/;
+  const fields = format.split(re);
+
+  //getting current state
+  const lastNode = stg.stateGraph.lastNodeId;
+  const stateNodes = stg.stateGraph.serialize().nodes;
+  const curStateNode = stateNodes[lastNode];
+  const newLvl = curStateNode.data;
+
+  //forming new input string
+  let newInput = "";
+  const fieldsLen = fields.length;
+  let curField = 0;
+  for(const f of fields){
+    if(newLvl[f]){
+      if(Array.isArray(newLvl[f])){
+        newInput += "\"[";
+        let curIndex = 0;
+        const lenArray = newLvl[f].length;
+        for(const subField of newLvl[f]){
+          newInput += "\'";
+
+          //reformatting functions
+          if(subField.includes("function")){
+            newInput += extractFunction(subField);
+          }else {
+            newInput += subField;
+          }
+
+          newInput += "\'";
+
+          if(curIndex < lenArray - 1) {
+            newInput += ",";
+          }
+          curIndex++;
+        }
+        newInput += "]\"";
+      }
+      else {
+        newInput = newInput + newLvl[f];
+      }
+    }
+    else if (f == "textgoal"){
+      newInput += `"` + prompt("Type the value for " + f + ":") + `"`;
+    }
+    else if (f == "globals" || f == "animationScales"){
+      newInput += "{}";
+    }
+    else if(f == "syntax"){
+      newInput += "[]";
+    }
+
+    if(curField < fieldsLen - 1){
+      newInput += ",";
+    }
+    curField++;
+  }
+
+  //Printing the result
+  const saveString = format + "\n" + newInput;
+  const blob = new window.Blob([ saveString ], {
+      type: "application/csv;charset=utf-8",
+  });
+  fileSaver.saveAs(blob, `level_${progression.currentLevel()+1}.csv`);
+
+  //Preventing form to reload
+  return false;
+}
+
+window.addNodeToBoard = function() {
+    const d = document.querySelector("#add-node");
+    d.classList.remove("visible");
+
+    const ss = document.querySelector("#targetNodeToAdd").value;
+    const place = document.querySelector("#targetPlace").value;
+
+    //storing current value for this session.
+    const option = document.createElement("option");
+    option.setAttribute("value", ss);
+    document.querySelector("#valueOptions").appendChild(option);
+
+    const newMacros = level.MACROS;
+    const newNames = [ss].map(str => es6.parser.parse(str, newMacros))
+                         .reduce((a, b) => (Array.isArray(b) ? a.concat(b) : a.concat([b])), [])
+                         .map(expr => es6.parser.extractDefines(es6, expr))
+                         .filter(name => name !== null);
+
+    for(const [ name, expr ] of newNames) {
+      newMacros[name] = expr;
+    }
+
+    let newInputIds = [];
+    const st = stg.getState();
+    const parsed_s = es6.parser.parse(ss,newMacros);
+    const flattened_s = es6.flatten(parsed_s).map(immutable.Map);
+
+    //create temporary nodes
+    const tempNodes = st.get("nodes").withMutations((nodes) => {
+      for (const node of flattened_s) {
+        nodes.set(node.get("id"), node);
+      }
+    });
+
+    //define views
+    for(const aa of flattened_s) {
+      newInputIds.push(aa.get("id"));
+      views[aa.get("id")] = es6.project(stg,tempNodes,aa);
+    }
+
+    if(place === "board"){
+    //define location
+    stg.views[newInputIds[0]].anchor.x = 0.5;
+    stg.views[newInputIds[0]].anchor.y = 0.5;
+    stg.views[newInputIds[0]].pos.x = 300;
+    stg.views[newInputIds[0]].pos.y = 300;
+
+    //dispatch
+    stg.store.dispatch(action.addBoardItem([newInputIds[0]], flattened_s));
+  }
+  else if(place === "toolbox"){
+    stg.store.dispatch(action.addToolboxItem(newInputIds[0], flattened_s));
+  }
+  else if(place === "goal"){
+    stg.store.dispatch(action.addGoalItem(newInputIds[0], flattened_s));
+  }
+
+    //Preventing form to reload
+    return false;
+}
+
 window.updateStateGraph = function updateStateGraph(networkData) {
     if (!document.querySelector("#state-graph")) {
         const ctr = document.createElement("div");
@@ -427,6 +612,7 @@ window.updateStateGraph = function updateStateGraph(networkData) {
         document.body.appendChild(ctr);
     }
     const container = document.querySelector("#state-graph");
+
 
     if (!Logging.config("stateGraph")) {
         container.style.display = "none";

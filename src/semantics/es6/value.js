@@ -227,4 +227,15 @@ export default {
             },
         },
     },
+    unsol: {
+      kind: "value",
+      type: "unsol",
+      fields: ["color"],
+      subexpressions: ["value"],
+      projection: {
+        type: "default",
+        shape: "()",
+        color: (expr) => expr.get("color"),
+      },
+    },
 };

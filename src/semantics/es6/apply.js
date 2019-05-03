@@ -202,7 +202,9 @@ export default {
                 state, expr.get("callee"),
                 [ expr.get("argument") ]
             );
+
             return [ expr.get("id"), newNodeIds, addedNodes ];
+
         },
         substepFilter: (semant, state, expr, field) => {
             // Don't force evaluation of reference-with-holes that
