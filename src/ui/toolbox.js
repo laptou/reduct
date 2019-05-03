@@ -163,9 +163,6 @@ export default class Toolbox {
             projection.prepare(nodeId, nodeId, state, this.stage);
 
 
-            if(node.get("name") == "Library") {
-
-            }
             if (node.has("__meta") && node.get("__meta").toolbox.unlimited) {
                 projection.draw(nodeId, nodeId, state, this.stage, this.stage.makeBaseOffset({
                     x: 2,
