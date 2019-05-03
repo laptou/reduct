@@ -465,16 +465,9 @@ window.jumpToLevel = function(lev) {
 }
 
 window.captureState = function () {
-  const d = document.querySelector("#capture-state");
-  d.classList.remove("visible");
 
   const format = `board,goal,textgoal,toolbox,defines,globals,syntax,animationScales`;
-
-  //storing current format for this session.
-  const option1 = document.createElement("option");
-  option1.setAttribute("value", format);
-  document.querySelector("#formatOptions").appendChild(option1);
-
+  
   const re = /\s*,\s*/;
   const fields = format.split(re);
 
