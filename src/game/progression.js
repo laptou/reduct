@@ -13,7 +13,7 @@ export const PROGRESSIONS = {
             "definition": ["testing"],
             "testing": ["lists-intro"],
             "lists-intro": ["array-booleans"],
-            "array-booleans" : ["booleans-definition"],
+//          "array-booleans" : ["booleans-definition"],
             "booleans-definition": ["weekdays"],
             "weekdays": ["higher-order-functions"],
             "higher-order-functions": ["define-challenges"],
