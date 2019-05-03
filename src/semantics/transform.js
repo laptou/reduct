@@ -302,7 +302,7 @@ export default function transform(definition) {
         return true;
     };
 
-    /** CHeck equality of even the subexpressions. */
+    /** Check the equality of all subexpressions as well. */
     module.deepEqual = function deepEqual(nodes,n1,n2){
 
       if(!module.shallowEqual(n1,n2))
