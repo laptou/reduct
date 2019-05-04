@@ -3,9 +3,9 @@ import * as animate from "../gfx/animate";
 import * as progression from "../game/progression";
 import Audio from "../resource/audio";
 import Logging from "../logging/logging";
-
+import * as immutable from "immutable";
 import Loader from "../loader";
-
+import es6 from "../semantics/es6";
 import BaseStage from "./basestage";
 import BaseTouchRecord from "./touchrecord";
 
@@ -160,7 +160,51 @@ export default class LevelStage extends BaseStage {
 
          genLayouts(this, buttons);
 
+         /*
+         let newInputIds = [];
+         const ss = "57 + 1";
+         const st = stage.getState();
+         const parsed_s = es6.parser.parse(ss,[]);
+         const flattened_s = es6.flatten(parsed_s).map(immutable.Map);
 
+         //create temporary nodes
+         const tempNodes = st.get("nodes").withMutations((nodes) => {
+           for (const node of flattened_s) {
+             nodes.set(node.get("id"), node);
+           }
+         });
+
+         //define views
+         let nodezzz;
+         let myViews = [];
+         let i =0;
+         const newViews = [];
+         for(const aa of flattened_s) {
+           newInputIds.push(aa.get("id"));
+            myViews[i++] = es6.project(stage,tempNodes,aa);
+         }
+         for(let j = i-1;j >=0 ;j--){
+            newViews.push(this.allocate(myViews[j]));
+         }
+
+         this.newViews = newViews;
+
+         console.log(newViews);
+         nodezzz = gfx.layout.hbox(() => [newViews[i-1]], {
+             subexpScale: 1.0,
+             padding: {
+                 inner: 20,
+                 top: 250,
+                 left: 250,
+             },
+         }, gfx.baseProjection);
+
+        this.nodezzz = this.allocate(nodezzz);
+        nodezzz.opacity = 1.0;
+        nodezzz.pos.x = 300;
+        nodezzz.pos.y = 300;
+        console.log("parsed:s " + JSON.stringify(nodezzz));
+        */
 
         // ** Startup Animations ** //
 
@@ -229,6 +273,7 @@ export default class LevelStage extends BaseStage {
           this.getView(this.myLayouts[i]).opacity = 1.0;
         }
         this.getView(this.backButton).opacity = 1.0;
+
         }
 
         animateStart() {

@@ -467,7 +467,7 @@ window.jumpToLevel = function(lev) {
 window.captureState = function () {
 
   const format = `board,goal,textgoal,toolbox,defines,globals,syntax,animationScales`;
-  
+
   const re = /\s*,\s*/;
   const fields = format.split(re);
 
