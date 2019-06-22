@@ -48,7 +48,13 @@ fi
 for filepath in ${WORK_DIR}/*.csv; do
     filename=$(basename ${filepath})
     echo Importing ${filename%.*}
-    python chapterutil.py ${filepath} ../resources/levels-progression/${filename%.*}.json
+    outputfile=../resources/levels-progression/${filename%.*}.json
+    if [[ ! -r "$outputfile" ]]
+    then
+        echo "The output JSON file $outputfile must be created before the level can be built."
+        exit 1
+    fi
+    python chapterutil.py ${filepath} "$outputfile"
 done
 
 #cd "$WORK_DIR"
