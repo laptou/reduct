@@ -6,301 +6,301 @@
         {
             "animationScales": {},
             "board": [
-                "mon == mon",
-                "_ == tue"
-            ],
-            "globals": {},
-            "goal": [
-                "true",
-                "false"
-            ],
-            "syntax": [],
-            "toolbox": [
-                "tue",
-                "sat",
-                "sun"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function isSameDay(x, y) { return _; }",
-                "_ == _",
-                "__tests(testMe(sat, sat), testMe(mon, tue))"
-            ],
-            "globals": {},
-            "goal": [
-                "true",
-                "false"
-            ],
-            "syntax": [],
-            "textgoal": "Define a function that outputs true if the x and y are the same weekday, otherwise false",
-            "toolbox": [
-                "x",
-                "x",
-                "y",
-                "y",
-                "__unlimited; isSameDay;"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function isMonday(x) {return _; }",
-                "__tests(testMe(mon), testMe(tue))"
+                "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a));}",
+                "function count(a) {return (a == []) ? 0 : count(remove_first(a)) + 1;}",
+                "count",
+                [
+                    "star",
+                    "star",
+                    "star",
+                    "star"
+                ]
             ],
             "defines": [
-                "function isMonday(x) { return x == mon }"
+                "function count(a) {return (a == []) ? 0 : count(remove_first(a)) + 1}"
             ],
             "globals": {},
             "goal": [
-                "true",
-                "false"
+                "4"
             ],
+            "output": [],
             "syntax": [],
-            "textgoal": "Define a function that outputs true if x is Monday, otherwise false",
+            "textgoal": "This function can count the number of items in a list.",
             "toolbox": [
-                "x == _",
-                "mon",
-                "tue",
-                "__unlimited; isMonday;"
+                "__unlimited;removeFirst"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "function isFriday(x) {return _; }",
-                "__tests(testMe(mon), testMe(fri))"
+                "function count(a) {return (a == _) ? _ : count(remove_first(a)) + 1}"
+            ],
+            "globals": {},
+            "goal": [
+                "0"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Can you count a list of 0 items?",
+            "toolbox": [
+                "remove_first",
+                "count",
+                "0",
+                "[]",
+                "[]",
+                [
+                    "star"
+                ]
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "count",
+                "function count(a) {return (a == []) ? 0 : count(_ + _}"
+            ],
+            "globals": {},
+            "goal": [
+                "3"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Let's count 3 squares",
+            "toolbox": [
+                "remove_first(a)",
+                "1",
+                "count",
+                [
+                    "rect",
+                    "rect",
+                    "rect"
+                ]
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "count",
+                "function count(a) {return (a == _) ? _ : _ + _}"
+            ],
+            "globals": {},
+            "goal": [
+                "4"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Let's count a mixed list.",
+            "toolbox": [
+                "remove_first",
+                "1",
+                "count",
+                [
+                    "star",
+                    "rect",
+                    "star",
+                    "triangle"
+                ],
+                "a"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function count_target(a, target) {(a == []) ? 0 : (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a),target)}",
+                "count_target"
             ],
             "defines": [
-                "function isFriday(x) { return x == fri }"
+                "function count_target(a, target) {(a == []) ? 0 : (first(a) == target) ? count_target(remove_first(a), target) + 1:count_target(remove_first(a), target)}"
             ],
             "globals": {},
             "goal": [
-                "false",
-                "true"
+                "3"
             ],
+            "output": [],
             "syntax": [],
-            "textgoal": "Define a function that outputs true if x is Friday, otherwise false",
+            "textgoal": "Make this function only count the stars in the list.",
             "toolbox": [
-                "_ == _",
-                "x",
-                "mon",
-                "tue",
-                "fri",
-                "sat",
-                "__unlimited; isFriday;"
+                "star",
+                "rect",
+                [
+                    "star",
+                    "rect",
+                    "star",
+                    "star"
+                ]
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "function isMondayOrFriday(x) {return isMonday(_) ? true : _ ; }",
-                "x",
-                "isFriday(_)",
-                "__tests(testMe(mon), testMe(tue), testMe(fri), testMe(sun))"
+                "function count_target(a, target) {(_ == _) ? _ : (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a),target)}",
+                "count_target"
             ],
             "globals": {},
             "goal": [
-                "true",
-                "true",
-                "false",
-                "false"
+                "0"
             ],
+            "output": [],
             "syntax": [],
-            "textgoal": "Define a function that outputs true if x is Monday or Friday, otherwise false",
+            "textgoal": "Count a list of 0 items.",
             "toolbox": [
-                "mon",
-                "tue",
-                "true",
-                "false",
-                "x",
-                "__unlimited; isMondayOrFriday;"
+                "star",
+                "rect",
+                "0",
+                "1",
+                [],
+                [],
+                "a"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "function isMondayOrFriday(x) {return _; }",
-                "isFriday(_) ? _ : _",
-                "x",
-                "__tests(testMe(mon), testMe(tue), testMe(fri), testMe(sun))"
+                "function count_target(a, target) {(a == []) ? 0 : (_ == _) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a),target)}",
+                "count_target"
             ],
             "globals": {},
             "goal": [
-                "true",
-                "true",
-                "false",
-                "false"
+                "1"
             ],
+            "output": [],
             "syntax": [],
-            "textgoal": "Define a function that outputs true if x is Monday or Friday, otherwise false",
+            "textgoal": "Let's only count squares!",
             "toolbox": [
-                "isMonday",
-                "isFriday",
-                "mon",
-                "tue",
-                "true",
-                "false",
-                "x",
-                "__unlimited; isMondayOrFriday;"
+                "first",
+                "remove_first",
+                "a",
+                "target",
+                [
+                    "rect",
+                    "star",
+                    "star"
+                ],
+                "rect"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "function isWeekend(x) {return _; }",
-                "_ ? _ : _",
-                "x == _",
-                "__tests(testMe(sat), testMe(tue), testMe(mon), testMe(sun))"
-            ],
-            "defines": [
-                "function isWeekend(x) { return x == sat ? true : x == sun }"
+                "function count_target(a, target) {(a == []) ? 0 : (first(a) == target) ? _ + _ : count_target(remove_first(a), target)}",
+                [
+                    "star",
+                    "star",
+                    "star",
+                    "star"
+                ],
+                "star",
+                "count_target"
             ],
             "globals": {},
             "goal": [
-                "true",
-                "false",
-                "false",
-                "true"
+                "4"
             ],
+            "output": [],
             "syntax": [],
-            "textgoal": "Define a function that outputs true if x is the weekend, otherwise false",
+            "textgoal": "Can you count 4 stars?",
             "toolbox": [
-                "sat",
-                "sun",
-                "mon",
-                "tue",
-                "true",
-                "false",
-                "x",
-                "_ == _",
-                "__unlimited; isWeekend;"
+                "first",
+                "remove_first",
+                "0",
+                "1",
+                "a",
+                "target",
+                "count_target",
+                "target"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "function isWeekday(x) {return isWeekend ? false : _; }",
-                "__tests(testMe(sat), testMe(tue), testMe(mon), testMe(sun))"
+                "function count_target(a, target) {(a == []) ? 0 : (first(a) == target) ? count_target(remove_first(a), target) + 1: _}",
+                "count_target",
+                [
+                    "star",
+                    "rect",
+                    "star",
+                    "rect"
+                ],
+                "star"
             ],
             "globals": {},
             "goal": [
-                "false",
-                "true",
-                "true",
-                "false"
+                "2"
             ],
+            "output": [],
             "syntax": [],
-            "textgoal": "Define a function that outputs true if x is one of the weekdays, otherwise false",
+            "textgoal": "Can you count only stars? ",
             "toolbox": [
-                "isWeekend",
-                "sat",
-                "sun",
-                "mon",
-                "tue",
-                "true",
-                "false",
-                "x"
+                "0",
+                "1",
+                "target",
+                "a",
+                "target",
+                "remove_first",
+                "first",
+                "count_target"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "function isWeekday(x) {return _; }",
-                "_ ? _ : _",
-                "__tests(testMe(sat), testMe(tue), testMe(mon), testMe(sun))"
+                "function count_target(a, target) {(a == []) ? 0 : (_ == _) ? _ + _: _}",
+                "star",
+                [
+                    "star",
+                    "rect",
+                    "triangle",
+                    "rect"
+                ],
+                "count_target"
             ],
             "globals": {},
             "goal": [
-                "false",
-                "true",
-                "true",
-                "false"
+                "1"
             ],
+            "output": [],
             "syntax": [],
-            "textgoal": "Define a function that outputs true if x is one of the weekdays, otherwise false",
+            "textgoal": "Let's count a mixed list!",
             "toolbox": [
-                "isWeekend",
-                "sat",
-                "sun",
-                "mon",
-                "tue",
-                "true",
-                "false",
-                "x",
-                "_ == _",
-                "__unlimited; isWeekday;"
+                "0",
+                "1",
+                "__unlimited; target",
+                "__unlimited; remove_first",
+                "__unlimited; first",
+                "__unlimited; a",
+                "__unlimited; count_target"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "function tomorrow(day) {return _;}",
-                "{ day == mon ? tue : (day == tue ? wed : (day == wed ? thu : (day == thu ? fri : (day == fri ? sat : (day == sat ? sun : mon))))); }"
+                "function count_target(a, target) {(_ == _) ? _ : (_ == _) ? _ + _:_}",
+                "triangle",
+                [
+                    "triangle",
+                    "rect",
+                    "triangle",
+                    "star",
+                    "star"
+                ],
+                "count_target"
             ],
             "globals": {},
             "goal": [
-                "tue",
-                "sun"
+                "2"
             ],
+            "output": [],
             "syntax": [],
-            "textgoal": "Define the function tomorrow to compute the next day of any given day",
+            "textgoal": "Can you fill out the whole function?",
             "toolbox": [
-                "mon",
-                "wed",
-                "tue",
-                "thu",
-                "sat",
-                "__unlimited; tomorrow;"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function yesterday(day) {return _;}",
-                "{day == mon ? sun : (day == tue ? mon : (day == wed ? tue : (day == thu ? wed : (day == fri ? thu : (day == sat ? fri : sat))))); }"
-            ],
-            "globals": {},
-            "goal": [
-                "tue",
-                "sun"
-            ],
-            "syntax": [],
-            "textgoal": "Define the function yesterday to compute the previous day of any given day",
-            "toolbox": [
-                "mon",
-                "wed",
-                "tue",
-                "thu",
-                "sat",
-                "__unlimited; yesterday;"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "tomorrow(_)",
-                "yesterday(_)"
-            ],
-            "defines": [
-                "function tomorrow(x) { return x == mon ? tue : (x == tue ? wed : (x == wed ? thu : (x == thu ? fri : (x == fri ? sat : (x == sat ? sun : mon))))); }",
-                "function yesterday(x) { return x == mon ? sun : (x == tue ? mon : (x == wed ? tue : (x == thu ? wed : (x == fri ? thu : (x == sat ? fri : sat))))); }"
-            ],
-            "globals": {
-                "tomorrow": "function tomorrow(x) { return x == mon ? tue : (x == tue ? wed : (x == wed ? thu : (x == thu ? fri : (x == fri ? sat : (x == sat ? sun : mon))))); }",
-                "yesterday": "function yesterday(x) { return x == mon ? sun : (x == tue ? mon : (x == wed ? tue : (x == thu ? wed : (x == fri ? thu : (x == sat ? fri : sat))))); }"
-            },
-            "goal": [
-                "tue",
-                "tue"
-            ],
-            "syntax": [],
-            "toolbox": [
-                "mon",
-                "wed",
-                "tue",
-                "thu"
+                "0",
+                "1",
+                "__unlimited; target",
+                "__unlimited; remove_first",
+                "__unlimited; first",
+                "__unlimited; a",
+                "__unlimited; count_target",
+                "[]"
             ]
         }
     ],
