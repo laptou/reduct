@@ -1,5 +1,5 @@
 animationScales,syntax,globals,output,toolbox,defines,textgoal,goal,board,fade
-{},[],{},[],[ '__unlimited;removeFirst'],,This function can count the number of items in a list.,['4'],"['function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}', 'function count(a) {return (a == []) ? 0 : count(remove_first(a)) + 1}', '['star', 'star', 'star', 'star']', 'count']",[{}]
+{},[],{},[],[ '__unlimited;removeFirst'],['function count(a) {return (a == []) ? 0 : count(remove_first(a)) + 1}'],This function can count the number of items in a list.,['4'],"['function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}', 'function count(a) {return (a == []) ? 0 : count(remove_first(a)) + 1}', '['star', 'star', 'star', 'star']', 'count']",[{}]
 {},[],{},[],"['remove_first', 'count', '0', '[]', '[]', '['star']']",,Can you count a list of 0 items?,['0'],['function count(a) {return (a == _) ? _ : count(remove_first(a)) + 1}'],[{}]
 {},[],{},[],"['remove_first(a)', '1', 'count', '['rect', 'rect', 'rect']']",,Let's count 3 squares,['3'],"['count', 'function count(a) {return (a == []) ? 0 : count(_ + _}']",[{}]
 {},[],{},[],"['remove_first', '1', 'count', '['star', 'rect', 'star', 'triangle']', 'a']",,Let's count a mixed list.,['4'],"['count', 'function count(a) {return (a == _) ? _ : _ + _}']",[{}]
