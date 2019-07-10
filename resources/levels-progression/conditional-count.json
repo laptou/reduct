@@ -57,7 +57,7 @@
             "animationScales": {},
             "board": [
                 "count",
-                "function count(a) {return (a == []) ? 0 : count(_ + _}"
+                "function count(a) {return (a == []) ? 0 : count(_ + _)}"
             ],
             "globals": {},
             "goal": [
@@ -106,7 +106,7 @@
         {
             "animationScales": {},
             "board": [
-                "function count_target(a, target) {(a == []) ? 0 : (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a),target)}",
+                "function count_target(a, target) {(a == []) ? 0 : (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}",
                 "count_target"
             ],
             "defines": [
@@ -229,7 +229,7 @@
             ],
             "output": [],
             "syntax": [],
-            "textgoal": "Can you count only stars? ",
+            "textgoal": "Can you count only stars?",
             "toolbox": [
                 "0",
                 "1",
@@ -244,7 +244,7 @@
         {
             "animationScales": {},
             "board": [
-                "function count_target(a, target) {(a == []) ? 0 : (_ == _) ? _ + _: _}",
+                "function count_target(a, target) {(a == []) ? 0 : (_ == _) ? _ + _: _ }",
                 "star",
                 [
                     "star",
@@ -304,15 +304,7 @@
             ]
         }
     ],
-    "macros": {
-        "fri": "__variant_weekday_Friday",
-        "mon": "__variant_weekday_Monday",
-        "sat": "__variant_weekday_Saturday",
-        "sun": "__variant_weekday_Sunday",
-        "thu": "__variant_weekday_Thursday",
-        "tue": "__variant_weekday_Tuesday",
-        "wed": "__variant_weekday_Wednesday"
-    },
+   
     "password": "calendar",
     "resources": {
         "aliens": [
