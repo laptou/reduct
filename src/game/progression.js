@@ -20,7 +20,7 @@ export const PROGRESSIONS = {
             "define-challenges": ["recursion-basics"],
             "recursion-basics": ["recursion-higher-order"],
             "recursion-higher-order": ["play"],
-            //"conditional-count": ["play"],
+            "conditional-count": ["play"],
             "play": [],
         },
         settings: { // This sets global flags.
