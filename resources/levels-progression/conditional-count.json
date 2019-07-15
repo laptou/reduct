@@ -6,305 +6,197 @@
         {
             "animationScales": {},
             "board": [
-                "function isTriangle(x) { return x == 'triangle'; }",
-                "function count(a) { return (a == []) ? 0 : count(remove_first(a)) + 1; }",
-                "count",
-                [
-                    "star",
-                    "star",
-                    "star",
-                    "star"
-                ]
-            ],
-            "defines": [
-                "function count(a) { return (a == []) ? 0 : count(remove_first(a)) + 1 }"
-            ],
-            "globals": {},
-            "goal": [
-                "4"
-            ],
-            "output": [],
-            "syntax": [],
-            "textgoal": "This function can count the number of items in a list.",
-            "toolbox": [
-                "__unlimited;removeFirst"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function count(a) { return (a == _) ? _ : count(remove_first(a)) + 1 }"
-            ],
-            "globals": {},
-            "goal": [
-                "0"
-            ],
-            "output": [],
-            "syntax": [],
-            "textgoal": "Can you count a list of 0 items?",
-            "toolbox": [
-                "remove_first",
-                "count",
-                "0",
-                "[]",
-                "[]",
-                [
-                    "star"
-                ]
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "count",
-                "function count(a) { return (a == []) ? 0 : count(_ + _) }"
-            ],
-            "globals": {},
-            "goal": [
                 "3"
             ],
-            "output": [],
-            "syntax": [],
-            "textgoal": "Let's count 3 squares",
-            "toolbox": [
-                "remove_first(a)",
-                "1",
-                "count",
-                [
-                    "rect",
-                    "rect",
-                    "rect"
-                ]
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "count",
-                "function count(a) { return (a == _) ? _ : _ + _ }"
-            ],
-            "globals": {},
+            "fade": {},
+            "globals": {
+                "twice": "function twice(f) { return (x) => f(f(x)); }"
+            },
             "goal": [
-                "4"
+                "9"
             ],
-            "output": [],
             "syntax": [],
-            "textgoal": "Let's count a mixed list.",
             "toolbox": [
-                "remove_first",
-                "1",
-                "count",
-                [
-                    "star",
-                    "rect",
-                    "star",
-                    "triangle"
-                ],
-                "a"
+                "add",
+                "3",
+                "4",
+                "5",
+                "6"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "function count_target(a, target) {(a == []) ? 0 : (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}",
-                "count_target"
+                "__tests(testMe(3), testMe(4), testMe(7))"
+            ],
+            "fade": {},
+            "globals": {
+                "twice": "function twice(f) { return (x) => f(f(x)); }"
+            },
+            "goal": [
+                "10",
+                "11",
+                "14"
+            ],
+            "syntax": [],
+            "toolbox": [
+                "add",
+                "__unlimited; _(_)",
+                "5",
+                "6",
+                "7",
+                "8"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function addEight(x) { return _; }",
+                "__tests(testMe(1), testMe(4), testMe(7))"
             ],
             "defines": [
-                "function count_target(a, target) {(a == []) ? 0 : (first(a) == target) ? count_target(remove_first(a), target) + 1:count_target(remove_first(a), target)}"
+                "function addEight(x) { return add(8, x); }"
             ],
-            "globals": {},
+            "fade": {},
+            "globals": {
+                "twice": "function twice(f) { return (x) => f(f(x)); }"
+            },
             "goal": [
-                "3"
+                "9",
+                "12",
+                "15"
             ],
-            "output": [],
             "syntax": [],
-            "textgoal": "Make this function only count the stars in the list.",
+            "textgoal": "Define a function that outputs x plus 8",
             "toolbox": [
-                "star",
-                "rect",
-                [
-                    "star",
-                    "rect",
-                    "star",
-                    "star"
-                ]
+                "addEight",
+                "add",
+                "5",
+                "6",
+                "7",
+                "8",
+                "x",
+                "__unlimited;_(_)"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "function count_target(a, target) {(_ == _) ? _ : (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a),target)}",
-                "count_target"
-            ],
-            "globals": {},
-            "goal": [
-                "0"
-            ],
-            "output": [],
-            "syntax": [],
-            "textgoal": "Count a list of 0 items.",
-            "toolbox": [
-                "star",
-                "rect",
-                "0",
-                "1",
-                [],
-                [],
-                "a"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function count_target(a, target) {(a == []) ? 0 : (_ == _) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a),target)}",
-                "count_target"
-            ],
-            "globals": {},
-            "goal": [
-                "1"
-            ],
-            "output": [],
-            "syntax": [],
-            "textgoal": "Let's only count squares!",
-            "toolbox": [
-                "first",
-                "remove_first",
+                "function multiplyByFour(a) { return repeat(4, (x => add(_, x)))(0); }",
                 "a",
-                "target",
-                [
-                    "rect",
-                    "star",
-                    "star"
-                ],
-                "rect"
+                "__tests(testMe(8), testMe(6), testMe(5))"
+            ],
+            "fade": {},
+            "globals": {
+                "twice": "function twice(f) { return (x) => f(f(x)); }"
+            },
+            "goal": [
+                "32",
+                "24",
+                "20"
+            ],
+            "syntax": [],
+            "textgoal": "Using Repeat, define a function that multiplies a number by 4",
+            "toolbox": [
+                "__unlimited;_(_)",
+                "0",
+                "5",
+                "6",
+                "7",
+                "8",
+                "multiplyByFour"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "function count_target(a, target) {(a == []) ? 0 : (first(a) == target) ? _ + _ : count_target(remove_first(a), target)}",
-                [
-                    "star",
-                    "star",
-                    "star",
-                    "star"
-                ],
-                "star",
-                "count_target"
+                "function multiplyBySix(a) { return _; }",
+                "__tests(testMe(2), testMe(3), testMe(5))",
+                "_(0)",
+                "repeat",
+                "add"
             ],
-            "globals": {},
+            "defines": [
+                "function multiplyBySix(a) { return repeat(a, add(2), 0); }"
+            ],
+            "fade": {},
+            "globals": {
+                "twice": "function twice(f) { return (x) => f(f(x)); }"
+            },
             "goal": [
-                "4"
+                "12",
+                "18",
+                "30"
             ],
-            "output": [],
             "syntax": [],
-            "textgoal": "Can you count 4 stars?",
+            "textgoal": "Using Repeat, define a function that multiplies a number by 6",
             "toolbox": [
-                "first",
-                "remove_first",
-                "0",
-                "1",
+                "__unlimited;_(_)",
+                "x => _",
+                "x",
                 "a",
-                "target",
-                "count_target",
-                "target"
+                "0",
+                "5",
+                "6",
+                "7",
+                "8",
+                "multiplyBySix"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "function count_target(a, target) {(a == []) ? 0 : (first(a) == target) ? count_target(remove_first(a), target) + 1: _}",
-                "count_target",
-                [
-                    "star",
-                    "rect",
-                    "star",
-                    "rect"
-                ],
-                "star"
-            ],
-            "globals": {},
-            "goal": [
-                "2"
-            ],
-            "output": [],
-            "syntax": [],
-            "textgoal": "Can you count only stars?",
-            "toolbox": [
-                "0",
-                "1",
-                "target",
+                "function multiplyTogether(a, b) { return repeat(_, (x => add(_, x)))(0); }",
                 "a",
-                "target",
-                "remove_first",
-                "first",
-                "count_target"
+                "b",
+                "__tests(testMe(1, 3), testMe(2, 4), testMe(3, 3))"
+            ],
+            "fade": {},
+            "globals": {
+                "twice": "function twice(f) { return (x) => f(f(x)); }"
+            },
+            "goal": [
+                "3",
+                "8",
+                "9"
+            ],
+            "syntax": [],
+            "textgoal": "Define a function that computes the multiplication of a and b",
+            "toolbox": [
+                "__unlimited; _(_)",
+                "add",
+                "repeat",
+                "0",
+                "multiplyTogether"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "function count_target(a, target) {(a == []) ? 0 : (_ == _) ? _ + _: _ }",
-                "star",
-                [
-                    "star",
-                    "rect",
-                    "triangle",
-                    "rect"
-                ],
-                "count_target"
+                "function multiplyTogether(a, b) { return _; }",
+                "a",
+                "b",
+                "__tests(testMe(9, 7), testMe(12, 3))"
             ],
-            "globals": {},
+            "fade": {},
+            "globals": {
+                "twice": "function twice(f) { return (x) => f(f(x)); }"
+            },
             "goal": [
-                "1"
+                "63",
+                "36"
             ],
-            "output": [],
             "syntax": [],
-            "textgoal": "Let's count a mixed list!",
+            "textgoal": "Define a function that computes the multiplication of a and b",
             "toolbox": [
+                "__unlimited; _(_)",
+                "add",
+                "repeat",
                 "0",
-                "1",
-                "__unlimited; target",
-                "__unlimited; remove_first",
-                "__unlimited; first",
-                "__unlimited; a",
-                "__unlimited; count_target"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function count_target(a, target) {(_ == _) ? _ : (_ == _) ? _ + _:_}",
-                "triangle",
-                [
-                    "triangle",
-                    "rect",
-                    "triangle",
-                    "star",
-                    "star"
-                ],
-                "count_target"
-            ],
-            "globals": {},
-            "goal": [
-                "2"
-            ],
-            "output": [],
-            "syntax": [],
-            "textgoal": "Can you fill out the whole function?",
-            "toolbox": [
-                "0",
-                "1",
-                "__unlimited; target",
-                "__unlimited; remove_first",
-                "__unlimited; first",
-                "__unlimited; a",
-                "__unlimited; count_target",
-                "[]"
+                "multiplyTogether"
             ]
         }
     ],
-   
     "password": "calendar",
     "resources": {
         "aliens": [
