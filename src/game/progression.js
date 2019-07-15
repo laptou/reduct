@@ -19,8 +19,8 @@ export const PROGRESSIONS = {
             "higher-order-functions": ["define-challenges"],
             "define-challenges": ["recursion-basics"],
             "recursion-basics": ["recursion-higher-order"],
-            "recursion-higher-order": ["merge-sort"],
-            "merge-sort": ["play"],
+            "recursion-higher-order": ["conditional-count"],
+            "conditional-count": ["play"],
             "play": [],
         },
         settings: { // This sets global flags.
