@@ -312,6 +312,97 @@
                 "1",
                 "[A, B, [A, B]]"
             ]
+        },
+        {
+            "animationScales": {},
+            "defines": [
+                "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? remove_value(remove_first(a), target): concat([first(a)], remove_value(a), target))}"
+            ],
+            "globals": {},
+            "goal": [
+                "[A, A, A]"
+            ],
+            "syntax": [],
+            "textgoal": "Can you remove something from this list? ",
+            "toolbox": [
+                "remove_value",
+                "B",
+                "[A, B, A, A]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "globals": {},
+            "goal": [
+                "[]"
+            ],
+            "syntax": [],
+            "textgoal": "What happens when you put in an empty list? ",
+            "toolbox": [
+                "remove_value",
+                "_unlimited; []",
+                "0",
+                "1",
+                "a"
+            ]
+        },
+        {
+            "animationScales": {},
+            "globals": {},
+            "goal": [
+                "[B, B, B]"
+            ],
+            "syntax": [],
+            "textgoal": "What do you want to remove? ",
+            "toolbox": [
+                "remove_value",
+                "remove_first",
+                "first",
+                "a",
+                "target",
+                "A",
+                "B",
+                "[A, B, B, B]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "globals": {},
+            "goal": [
+                "[A, A]"
+            ],
+            "syntax": [],
+            "textgoal": "What happens your first item is the target? ",
+            "toolbox": [
+                "_unlimited; remove_value",
+                "remove_first",
+                "target",
+                "first",
+                "a",
+                "concat",
+                "B",
+                "[A, B, A, B]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "globals": {},
+            "goal": [
+                "[B, B]"
+            ],
+            "syntax": [],
+            "textgoal": "What happens when your first item isn't the target? ",
+            "toolbox": [
+                "concat",
+                "[first(a)]",
+                "first",
+                "_unlimited; a",
+                "_unlimited; remove_value",
+                "remove_first",
+                "target",
+                "A",
+                "[A, A, B, B]"
+            ]
         }
     ],
     "resources": {
