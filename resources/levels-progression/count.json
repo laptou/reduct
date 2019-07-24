@@ -126,7 +126,7 @@
             "animationScales": {},
             "globals": {},
             "goal": [
-                "4"
+                "1"
             ],
             "syntax": [],
             "textgoal": "Can we still count this list? ",
@@ -138,7 +138,10 @@
                 "a",
                 "target",
                 "count_target",
-                "target"
+                "target",
+                "a",
+                "A",
+                "[A, A, A]"
             ]
         },
         {
@@ -157,7 +160,157 @@
                 "target",
                 "remove_first",
                 "first",
-                "count_target"
+                "count_target",
+                "B",
+                "[B, A, B]",
+                "a"
+            ]
+        },
+        {
+            "animationScales": {},
+            "globals": {},
+            "goal": [
+                "3"
+            ],
+            "syntax": [],
+            "textgoal": "Can you fill out the whole thing? ",
+            "toolbox": [
+                "_unlimited; first",
+                "_unlimited; target",
+                "_unlimited; a",
+                "_unlimited; count_target",
+                "_unlimited; remove_first",
+                "_unlimited; 1",
+                "_unlimited; 0",
+                "B",
+                "[B, B, B, A]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "globals": {},
+            "goal": [
+                "2"
+            ],
+            "syntax": [],
+            "textgoal": "Let's fill out the whole function!",
+            "toolbox": [
+                "_unlimited; first",
+                "_unlimited; target",
+                "_unlimited; a",
+                "_unlimited; count_target",
+                "_unlimited; remove_first",
+                "_unlimited; 1",
+                "_unlimited; 0",
+                "A",
+                "B",
+                "[A, B, B, A]",
+                "_unlimited; []"
+            ]
+        },
+        {
+            "animationScales": {},
+            "defines": [
+                "function deep_count(a) {return (a == []) ? 0 : deep_count(remove_first(a)) + deep_count(first(a))}"
+            ],
+            "globals": {},
+            "goal": [
+                "4"
+            ],
+            "syntax": [],
+            "textgoal": "Let's count a list inside of a list!",
+            "toolbox": [
+                "deep_count",
+                "[A, B, [A, B]]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "globals": {},
+            "goal": [
+                "0"
+            ],
+            "syntax": [],
+            "textgoal": "Let's count an empty list!",
+            "toolbox": [
+                "deep_count",
+                "a",
+                "0",
+                "[]",
+                "1",
+                "[A]",
+                "[]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "globals": {},
+            "goal": [
+                "3"
+            ],
+            "syntax": [],
+            "textgoal": "Can you count this list? ",
+            "toolbox": [
+                "deep_count",
+                "remove_first",
+                "deep_count",
+                "first",
+                "a",
+                "[A, B, [A]]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "globals": {},
+            "goal": [
+                "2"
+            ],
+            "syntax": [],
+            "textgoal": "Let's count to 2!",
+            "toolbox": [
+                "deep_count",
+                "remove_first",
+                "deep_count",
+                "first",
+                "a",
+                "[A, [B]]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "globals": {},
+            "goal": [
+                "3"
+            ],
+            "syntax": [],
+            "textgoal": "Can you count to 3? ",
+            "toolbox": [
+                "_unlimited; deep_count",
+                "a",
+                "remove_first",
+                "first",
+                "a",
+                "[A, [B]]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "globals": {},
+            "goal": [
+                "4"
+            ],
+            "syntax": [],
+            "textgoal": "Can you fill out the whole thing? ",
+            "toolbox": [
+                "_unlimited; deep_count",
+                "_unlimited; a",
+                "remove_first",
+                "first",
+                "",
+                "[]",
+                "0",
+                "1",
+                "[A, B, [A, B]]"
             ]
         }
     ],
