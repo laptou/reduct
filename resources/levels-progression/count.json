@@ -403,6 +403,46 @@
                 "A",
                 "[A, A, B, B]"
             ]
+        },
+        {
+            "animationScales": {},
+            "globals": {},
+            "goal": [
+                "[A, A, A]"
+            ],
+            "syntax": [],
+            "textgoal": "Can you fill out the entire bottom part? ",
+            "toolbox": [
+                "_unlimited; concat",
+                "_unlimited; [first(a)]",
+                "_unlimited; first",
+                "_unlimited; a",
+                "_unlimited; remove_value",
+                "_unlimited; remove_first",
+                "_unlimited; target",
+                "A",
+                "[A, B, B, A, A]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "globals": {},
+            "goal": [
+                "[A, A, A]"
+            ],
+            "syntax": [],
+            "textgoal": "Can you fill out the whole thing? ",
+            "toolbox": [
+                "_unlimited; concat",
+                "_unlimited; [first(a)]",
+                "_unlimited; first",
+                "_unlimited; a",
+                "_unlimited; remove_value",
+                "_unlimited; remove_first",
+                "_unlimited; target",
+                "_unlimited; []",
+                "_unlimited; 0"
+            ]
         }
     ],
     "resources": {
