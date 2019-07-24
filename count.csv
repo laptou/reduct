@@ -1,2 +1,0 @@
-﻿board,goal,textgoal,toolbox,defines,globals,syntax,animationScales
-"['function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}', 'function count(a) {return (a == []) ? 0: count(remove_first(a)) + 1}', '[A, A, A, A]']",['4'],Let's count to 4,['count'],"['function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}']",[],[],{}
