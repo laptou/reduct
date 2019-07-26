@@ -186,7 +186,7 @@ function builtinSlice(expr, semant, nodes) {
     const a = hydrateInput(nodes.get(expr.get("arg_array")), semant, nodes),
           b = nodes.get(expr.get("arg_begin")).get("value"),
           e = nodes.get(expr.get("arg_end")).get("value"),
-          n = arr.get("length");
+          n = a.length;
 
     const slice = [];
     for (let i = b; i < e; i++) {
