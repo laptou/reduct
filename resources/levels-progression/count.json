@@ -27,10 +27,12 @@
         {
             "animationScales": {},
             "board": [
-                "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
                 "function count(a) {return (a == _) ? _: count(remove_first(a)) + 1}"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
                 "0"
             ],
@@ -52,7 +54,10 @@
                 "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}",
                 "function count(a) {return (a == []) ? 0: _ + _}"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
                 "3"
             ],
@@ -73,7 +78,10 @@
                 "function count(a) {return (a == _) ? _ : _ + _}",
                 "count"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
                 "4"
             ],
@@ -99,7 +107,10 @@
             "defines": [
                 "function count_target(a, target) {(a == []_ ? 0: (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
                 "3"
             ],
@@ -120,7 +131,10 @@
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
                 "function count_target(a, target) {(_ == _) ? _: (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
                 "0"
             ],
@@ -145,7 +159,10 @@
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
                 "function count_target(a, target) {(a == []) ? a: (_ == _) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
                 "1"
             ],
@@ -169,7 +186,10 @@
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
                 "function count_target(a, target) {(a == []) ? a: (first(a) == target) ? _ + _: count_target(remove_first(a), target)}"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
                 "1"
             ],
@@ -197,7 +217,10 @@
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
                 "function count_target(a, target) {(a == []) ? a: (first(a) == target) ? count_target(remove_first(a), target) + 1: _}"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
                 "2"
             ],
@@ -225,7 +248,10 @@
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
                 "function count_target(a, target) {(a == []) ? a: _ == _) ? _ + _: _}"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
                 "3"
             ],
@@ -251,7 +277,10 @@
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
                 "function count_target(a, target) {(a == []) ? a: _ == _) ? _ + _: _}"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
                 "2"
             ],
@@ -282,7 +311,10 @@
             "defines": [
                 "function deep_count(a) {return (a == []) ? 0 : deep_count(remove_first(a)) + deep_count(first(a))}"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
                 "4"
             ],
@@ -301,7 +333,10 @@
                 "function first(a) {return get(a,0)}",
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
                 "0"
             ],
@@ -325,7 +360,10 @@
                 "function first(a) {return get(a,0)}",
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
                 "3"
             ],
@@ -348,7 +386,10 @@
                 "function first(a) {return get(a,0)}",
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
                 "2"
             ],
@@ -371,7 +412,10 @@
                 "function first(a) {return get(a,0)}",
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
                 "3"
             ],
@@ -394,7 +438,10 @@
                 "function first(a) {return get(a,0)}",
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
                 "4"
             ],
@@ -423,7 +470,10 @@
             "defines": [
                 "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? remove_value(remove_first(a), target): concat([first(a)], remove_value(a), target))}"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
                 "[A, A, A]"
             ],
@@ -441,7 +491,10 @@
             "board": [
                 "function remove_value(a, target) {(_ == _) ? _: (first(a) == target) ? remove_value(remove_first(a), target): concat([first(a)], remove_value(a), target))}"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
                 "[]"
             ],
@@ -461,7 +514,10 @@
             "board": [
                 "function remove_value(a, target) {(a == []) ? []: (_ == _) ? remove_value(remove_first(a), target): concat([first(a)], remove_value(a), target))}"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
                 "[B, B, B]"
             ],
@@ -484,7 +540,10 @@
             "board": [
                 "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? _ : concat([first(a)], remove_value(a), target))}"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
                 "[A, A]"
             ],
@@ -507,7 +566,10 @@
             "board": [
                 "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? remove_value(remove_first(a), target): _ }"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
                 "[B, B]"
             ],
@@ -531,7 +593,10 @@
             "board": [
                 "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? _ : _}"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
                 "[A, A, A]"
             ],
@@ -557,7 +622,10 @@
                 "[A, B, A, A]",
                 "B"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
                 "[A, A, A]"
             ],
