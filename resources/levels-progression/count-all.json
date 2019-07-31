@@ -43,14 +43,16 @@
                 "0",
                 "[]",
                 "[]",
-                "[A]"
+                "[A]",
+                "a"
             ]
         },
         {
             "animationScales": {},
             "board": [
                 "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}",
-                "function count(a) {return (a == []) ? 0: _ + _}"
+                "function count(a) {return (a == []) ? 0: _ + _}",
+                "count"
             ],
             "globals": {},
             "goal": [
@@ -63,7 +65,9 @@
                 "count",
                 "remove_first",
                 "1",
-                "[B, B, B]"
+                "[B, B, B]",
+                "a",
+                "0"
             ]
         },
         {
@@ -73,20 +77,24 @@
                 "function count(a) {return (a == _) ? _ : _ + _}",
                 "count"
             ],
+            "defines": [
+                "function count_target(a, target) {(a == []_ ? 0: (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}"
+            ],
             "globals": {},
             "goal": [
                 "4"
             ],
             "output": [],
             "syntax": [],
-            "textgoal": "Can you count a mixed list",
+            "textgoal": "Can you count a mixed list?",
             "toolbox": [
                 "remove_first",
                 "count",
                 "0",
                 "1",
                 "a",
-                "[A, B, C, A]"
+                "[A, B, C, A]",
+                "[]"
             ]
         },
         {
@@ -108,9 +116,9 @@
             "textgoal": "Can you count only one type of object? ",
             "toolbox": [
                 "count_target",
-                "A",
-                "B",
-                "[A, B, A, A]"
+                "1",
+                "2",
+                "[1, 1, 2, 2]"
             ]
         },
         {
@@ -129,8 +137,8 @@
             "textgoal": "Let's count a list of 0!",
             "toolbox": [
                 "count_target",
-                "A",
-                "B",
+                "4",
+                "5",
                 "0",
                 "1",
                 "[]",
@@ -158,8 +166,8 @@
                 "remove_first",
                 "a",
                 "target",
-                "[B, A, A]",
-                "B"
+                "[4, 5, 5]",
+                "4"
             ]
         },
         {
@@ -186,8 +194,8 @@
                 "count_target",
                 "target",
                 "a",
-                "A",
-                "[A, A, A]"
+                "3",
+                "[3, 3, 3]"
             ]
         },
         {
@@ -213,8 +221,8 @@
                 "remove_first",
                 "first",
                 "count_target",
-                "B",
-                "[B, A, B]",
+                "2",
+                "[2, 1, 2]",
                 "a"
             ]
         },
@@ -240,8 +248,8 @@
                 "_unlimited; remove_first",
                 "_unlimited; 1",
                 "_unlimited; 0",
-                "B",
-                "[B, B, B, A]"
+                "3",
+                "[3, 3, 3, 4]"
             ]
         },
         {
@@ -266,9 +274,9 @@
                 "_unlimited; remove_first",
                 "_unlimited; 1",
                 "_unlimited; 0",
-                "A",
-                "B",
-                "[A, B, B, A]",
+                "2",
+                "3",
+                "[2, 3, 3, 2]",
                 "_unlimited; []"
             ]
         },
@@ -291,7 +299,7 @@
             "textgoal": "Let's count a list inside of a list!",
             "toolbox": [
                 "deep_count",
-                "[A, B, [A, B]]"
+                "[1, 2, [2, 1]]"
             ]
         },
         {
@@ -314,7 +322,7 @@
                 "0",
                 "[]",
                 "1",
-                "[A]",
+                "[2]",
                 "[]"
             ]
         },
@@ -361,7 +369,7 @@
                 "deep_count",
                 "first",
                 "a",
-                "[A, [B]]"
+                "[3, [4]]"
             ]
         },
         {
@@ -384,7 +392,7 @@
                 "remove_first",
                 "first",
                 "a",
-                "[A, [B]]"
+                "[3, [4]]"
             ]
         },
         {
@@ -410,7 +418,7 @@
                 "[]",
                 "0",
                 "1",
-                "[A, B, [A, B]]"
+                "[2, 3, [4, 5]]"
             ]
         }
     ],
