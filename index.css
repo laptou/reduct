@@ -393,3 +393,42 @@ span.spacer {
     font-style: italic;
     color: red
 }
+
+div#affect {
+    position: absolute;
+    left: 0px;
+    bottom: 50px;
+    width: 100%;
+}
+div#affect > div.frame {
+    padding: 1em 2em;
+    margin: 0 auto;
+    width: 550px;
+    background-color: white;
+    border: 2px solid black;
+    border-radius: 20px;
+    cursor: default;
+    display: none;
+}
+div#affect tr.single_elem {
+    text-align: center
+}
+
+div.oneaffect {
+    display: inline-block;
+}
+div.affect_desc {
+    display: inline-block;
+    text-align: left;
+}
+.main-affect, .minor-affect {
+    display: block
+}
+.minor-affect {
+    color: gray;
+    font-size: 90%;
+}
+
+img.affect {
+    width: 64px
+}

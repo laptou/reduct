@@ -19,6 +19,7 @@ import CompleteStage from "./stage/complete";
 import LevelStage from "./stage/lvlStage";
 import passwordPrompt from "./ui/instructor/password";
 import consent from "./consent";
+import affect from "./affect";
 import tutorial from "./ui/instructor/tutorial";
 
 import Loader from "./loader";
@@ -352,12 +353,13 @@ function start(updateLevel, options={}) {
     const levelDefinition = Loader.progressions["Elementary"].levels[progression.currentLevel()];
 
     Logging.transitionToTask(progression.currentLevel(), levelDefinition)
-        .finally(() => {
+        .then(() => {
             // Show tutorial if present
             if (levelDefinition.tutorialUrl) {
-                tutorial(levelDefinition.tutorialUrl);
+                tutorial(levelDefinition.tutorialUrl)
+                document.querySelector('div#affect > div.frame').style.display = "block"
             }
-
+        }).finally(() => {
 
             level.startLevel(levelDefinition, es6.parser.parse, store, stg);
             stg.drawImpl();
