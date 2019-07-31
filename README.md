@@ -16,7 +16,7 @@ First, install Yarn if necessary. On the Mac this can be done with `brew install
 yarn install     # install all required node modules in the node_modules directory
 mkdir dist
 # Symlink resources into the folder that our bundler serves
-ln -s $(pwd)/resources/ dist/resources
+ln -s "$(pwd)/resources/" dist/resources
 yarn serve
 open http://localhost:1234/index.html
 ```
@@ -30,7 +30,7 @@ NPM:
 npm install
 mkdir dist
 # Symlink resources into the folder that our bundler serves
-ln -s $(pwd)/resources/ dist/resources
+ln -s "$(pwd)/resources/" dist/resources
 npm run serve
 open http://localhost:1234/index.html
 ```
