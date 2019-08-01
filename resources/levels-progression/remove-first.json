@@ -1,6 +1,6 @@
 {
-    "chapterName": "Challenges Using Define",
-    "description": "Harder levels using define",
+    "chapterName": "Remove First",
+    "description": "Simple list function",
     "language": "JavaScript",
     "levels": [
         {
@@ -126,6 +126,12 @@
             ]
         }
     ],
+    "macros": {
+        "A": "'star'",
+        "B": "'rect'",
+        "C": "'triangle'",
+        "D": "'circle'"
+    },
     "resources": {
         "aliens": [
             "alien-function-1",
