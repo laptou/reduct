@@ -16,7 +16,7 @@ import * as ajax from "../util/ajax";
 import * as random from "../util/random";
 import VERSION_ID from "../version";
 
-const GAME_ID = 7017019;
+const GAME_ID = 7017020;
 const IS_LOCAL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
 
 const REMOTE_LOGGER_URL = "https://gdiac.cs.cornell.edu/research_games/php/reduct/";

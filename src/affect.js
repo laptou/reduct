@@ -12,6 +12,7 @@ affects.forEach(a => {
     const elem = document.getElementById(a);
     console.log(a + " " + elem)
     elem.addEventListener("click", (e) => {
-      alert(a);
+        console.log(a)
+        document.querySelector("#affect div.frame").style.display = "none"
     })
 });

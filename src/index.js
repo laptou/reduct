@@ -54,7 +54,7 @@ const fetchLevel = session_params => {
     const {user_id} = session_params;
     // console.log("Trying to fetch level for user ID " + JSON.stringify(user_id));
     const url = "https://gdiac.cs.cornell.edu/research_games/php/reduct/last_level.php";
-    const params = {game_id: 7017019, version_id: 6, user_id: user_id};
+    const params = {game_id: Logging.GAME_ID, version_id: 6, user_id: user_id};
     ajax.jsonp(url, params).then(
       result => {
         // console.log(`GDIAC server reports: ${JSON.stringify(result)}`);

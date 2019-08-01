@@ -22,6 +22,7 @@ export default function tutorial(url) {
             continueButton.style.display = "inline";
         }
         continueButton.onclick = () => {
+            video.pause();
             outerContainer.classList.remove("visible");
         };
         window.setTimeout(function() {
