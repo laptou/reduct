@@ -88,7 +88,7 @@ class Logger {
     clearStaticLog() {
         delete window.localStorage["static_log"];
         this.staticLog = [];
-        console.log("Cleared prior play data from localStorage.");
+        this.info("Cleared prior play data from localStorage.");
     }
 
     startSession() {
@@ -531,6 +531,7 @@ Logger.prototype.ACTIONS = {
     "define-failed": 115,
     "tutorial-skip": 116,
     "theme": 117,
+    "affect": 118,
 };
 
 const Logging = new Logger();

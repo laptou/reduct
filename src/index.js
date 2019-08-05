@@ -19,7 +19,7 @@ import CompleteStage from "./stage/complete";
 import LevelStage from "./stage/lvlStage";
 import passwordPrompt from "./ui/instructor/password";
 import consent from "./consent";
-import affect from "./affect";
+import { collectAffect } from "./affect";
 import tutorial from "./ui/instructor/tutorial";
 
 import Loader from "./loader";
@@ -88,7 +88,7 @@ window.startup = () => {
     .then(fetchLevel)
     .then(initialize)
     .catch((msg) => {
-        console.error(msg);
+        // console.error(msg);
         document.querySelector("#consent-id-error").style.display = "block";
         setTimeout(() => document.querySelector("#player_id").focus(), 250);
         window.startup(); // try again
@@ -232,8 +232,11 @@ function initialize() {
                         // num_of_moves: undefined,
                     });
 
-                    nextLevel();
-                });
+                })
+                .then(collectAffect)
+                .then(() => {
+                    nextLevel()
+                })
             }
             else if (stg.semantics &&
                      !stg.semantics.mightBeCompleted(state, s => level.checkVictory(s, es6))) {
@@ -357,7 +360,6 @@ function start(updateLevel, options={}) {
             // Show tutorial if present
             if (levelDefinition.tutorialUrl) {
                 tutorial(levelDefinition.tutorialUrl)
-                document.querySelector('div#affect > div.frame').style.display = "block"
             }
         }).finally(() => {
 
