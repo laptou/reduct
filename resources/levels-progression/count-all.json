@@ -18,7 +18,7 @@
             ],
             "output": [],
             "syntax": [],
-            "textgoal": "Let's count to 4",
+            "textgoal": "Let's count to 4!",
             "toolbox": [
                 "count",
                 "first"
@@ -45,16 +45,14 @@
                 "0",
                 "[]",
                 "[]",
-                "[A]",
-                "a"
+                "[A]"
             ]
         },
         {
             "animationScales": {},
             "board": [
                 "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}",
-                "function count(a) {return (a == []) ? 0: _ + _}",
-                "count"
+                "function count(a) {return (a == []) ? 0: _ + _}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -70,9 +68,7 @@
                 "count",
                 "remove_first",
                 "1",
-                "[B, B, B]",
-                "a",
-                "0"
+                "[B, B, B]"
             ]
         },
         {
@@ -98,8 +94,7 @@
                 "0",
                 "1",
                 "a",
-                "[A, B, C, A]",
-                "[]"
+                "[A, B, C, A]"
             ]
         },
         {
@@ -110,7 +105,7 @@
                 "function count_target(a, target) {(a == []) ? 0: (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}"
             ],
             "defines": [
-                "function count_target(a, target) {(a == []_ ? 0: (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}"
+                "function count_target(a, target) {(a == []) ? 0: (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -124,9 +119,9 @@
             "textgoal": "Can you count only one type of object? ",
             "toolbox": [
                 "count_target",
-                "1",
-                "2",
-                "[1, 1, 2, 2]"
+                "A",
+                "B",
+                "[A, B, A, A]"
             ]
         },
         {
@@ -148,13 +143,10 @@
             "textgoal": "Let's count a list of 0!",
             "toolbox": [
                 "count_target",
-                "4",
-                "5",
+                "A",
+                "B",
                 "0",
-                "1",
-                "[]",
-                "[]",
-                "a"
+                "1"
             ]
         },
         {
@@ -180,8 +172,8 @@
                 "remove_first",
                 "a",
                 "target",
-                "[4, 5, 5]",
-                "4"
+                "[B, A, A]",
+                "B"
             ]
         },
         {
@@ -211,8 +203,8 @@
                 "count_target",
                 "target",
                 "a",
-                "3",
-                "[3, 3, 3]"
+                "A",
+                "[A, A, A]"
             ]
         },
         {
@@ -241,8 +233,8 @@
                 "remove_first",
                 "first",
                 "count_target",
-                "2",
-                "[2, 1, 2]",
+                "B",
+                "[B, A, B]",
                 "a"
             ]
         },
@@ -264,15 +256,15 @@
             "syntax": [],
             "textgoal": "Can you fill out the whole thing? ",
             "toolbox": [
-                "_unlimited; first",
-                "_unlimited; target",
-                "_unlimited; a",
-                "_unlimited; count_target",
-                "_unlimited; remove_first",
-                "_unlimited; 1",
-                "_unlimited; 0",
-                "3",
-                "[3, 3, 3, 4]"
+                "first",
+                "target",
+                "a",
+                "count_target",
+                "remove_first",
+                "1",
+                "0",
+                "B",
+                "[B, B, B, A]"
             ]
         },
         {
@@ -293,17 +285,17 @@
             "syntax": [],
             "textgoal": "Let's fill out the whole function!",
             "toolbox": [
-                "_unlimited; first",
-                "_unlimited; target",
-                "_unlimited; a",
-                "_unlimited; count_target",
-                "_unlimited; remove_first",
-                "_unlimited; 1",
-                "_unlimited; 0",
-                "2",
-                "3",
-                "[2, 3, 3, 2]",
-                "_unlimited; []"
+                "first",
+                "target",
+                "a",
+                "count_target",
+                "remove_first",
+                "1",
+                "0",
+                "A",
+                "B",
+                "[A, B, B, A]",
+                "[]"
             ]
         },
         {
@@ -328,7 +320,7 @@
             "textgoal": "Let's count a list inside of a list!",
             "toolbox": [
                 "deep_count",
-                "[1, 2, [2, 1]]"
+                "[A, B, [A, B]]"
             ]
         },
         {
@@ -354,7 +346,7 @@
                 "0",
                 "[]",
                 "1",
-                "[2]",
+                "[A]",
                 "[]"
             ]
         },
@@ -407,7 +399,7 @@
                 "deep_count",
                 "first",
                 "a",
-                "[3, [4]]"
+                "[A, [B]]"
             ]
         },
         {
@@ -433,7 +425,7 @@
                 "remove_first",
                 "first",
                 "a",
-                "[3, [4]]"
+                "[A, [B]]"
             ]
         },
         {
@@ -462,7 +454,188 @@
                 "[]",
                 "0",
                 "1",
-                "[2, 3, [4, 5]]"
+                "[A, B, [A, B]]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? remove_value(remove_first(a), target): concat([first(a)], remove_value(a, target))}",
+                "function first(a) {return get(a, 0)}",
+                "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[A, A, A]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Can you remove something from this list? ",
+            "toolbox": [
+                "remove_value",
+                "B",
+                "[A, B, A, A]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function remove_value(a, target) {(_ == _) ? _: (first(a) == target) ? remove_value(remove_first(a), target): concat([first(a)], remove_value(a, target))}"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "What happens when you put in an empty list? ",
+            "toolbox": [
+                "remove_value",
+                "_unlimited; []",
+                "0",
+                "1",
+                "a"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function remove_value(a, target) {(a == []) ? []: (_ == _) ? remove_value(remove_first(a), target): concat([first(a)], remove_value(a, target))}"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[B, B, B"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "What do you want to remove? ",
+            "toolbox": [
+                "remove_value",
+                "remove_first",
+                "first",
+                "a",
+                "target",
+                "A",
+                "B",
+                "[A, B, B, B]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                " function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? _ : concat([first(a)], remove_value(a, target))}"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[A, A]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "What happens when your first item is the target? ",
+            "toolbox": [
+                "_unlimited; remove_value",
+                "remove_first",
+                "target",
+                "first",
+                "a",
+                "concat",
+                "B",
+                "[A, B, A, B]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? remove_value(remove_first(a, target), _ ):concat([first(a)], remove_value(a, target))}"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[B, B]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "What happens when your first item isn't the target? ",
+            "toolbox": [
+                "concat",
+                "[first(a)]",
+                "first",
+                "_unlimited; a",
+                "_unlimited; remove_value",
+                "remove_first",
+                "target",
+                "A",
+                "[A, A, B, B]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? _ : _}"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[A, A, A]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Can you fill out the entire bottom section? ",
+            "toolbox": [
+                "_unlimited; concat",
+                "_unlimited; [first(a)]",
+                "_unlimited; first",
+                "_unlimited; a",
+                "_unlimited; remove_value",
+                "_unlimited; remove_first",
+                "_unlimited; target",
+                "A",
+                "[A, B, B, A, A]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function remove_value(a, target) {(_ == _) ? _: (_ == _) ? _ : _}",
+                "[A, B, A, A]",
+                "B"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[A, A, A]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Can you fill out the whole thing? ",
+            "toolbox": [
+                "_unlimited; concat",
+                "_unlimited; [first(a)]",
+                "_unlimited; first",
+                "_unlimited; a",
+                "_unlimited; remove_value",
+                "_unlimited; remove_first",
+                "_unlimited; target",
+                "_unlimited; []",
+                "_unlimited; 0"
             ]
         }
     ],
