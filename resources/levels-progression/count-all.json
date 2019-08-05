@@ -1,6 +1,6 @@
 {
-    "chapterName": "Recursion",
-    "description": "Functions that call...themselves?",
+    "chapterName": "Count",
+    "description": "Harder levels using define",
     "language": "JavaScript",
     "levels": [
         {
@@ -87,7 +87,7 @@
             ],
             "output": [],
             "syntax": [],
-            "textgoal": "Can you count a mixed list?",
+            "textgoal": "Can you count a mixed list",
             "toolbox": [
                 "remove_first",
                 "count",
@@ -105,6 +105,28 @@
                 "function count_target(a, target) {(a == []) ? 0: (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}"
             ],
             "defines": [
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "3"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Can you count only one type of object? ",
+            "toolbox": [
+                "count_target",
+                "A",
+                "B",
+                "[A, B, A, A]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function first(a) {return get(a,0)}",
+                "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
                 "function count_target(a, target) {(a == []) ? 0: (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}"
             ],
             "globals": {
@@ -181,7 +203,7 @@
             "board": [
                 "function first(a) {return get(a,0)}",
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
-                "function count_target(a, target) {(a == []) ? a: (first(a) == target) ? _ + _: count_target(remove_first(a), target)}"
+                "function count_target(a, target) {((a == []) ? a: (first(a) == target) ? _ + _: count_target(remove_first(a), target)}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -212,7 +234,7 @@
             "board": [
                 "function first(a) {return get(a,0)}",
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
-                "function count_target(a, target) {(a == []) ? a: (first(a) == target) ? count_target(remove_first(a), target) + 1: _}"
+                "function count_target(a, target) {((a == []) ? a: (first(a) == target) ? count_target(remove_first(a), target) + 1: _}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -243,7 +265,7 @@
             "board": [
                 "function first(a) {return get(a,0)}",
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
-                "function count_target(a, target) {(a == []) ? a: _ == _) ? _ + _: _}"
+                "function count_target(a, target) {(a == []) ? a: (_ == _) ? _ + _: _}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -272,7 +294,7 @@
             "board": [
                 "function first(a) {return get(a,0)}",
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
-                "function count_target(a, target) {(a == []) ? a: _ == _) ? _ + _: _}"
+                "function count_target(a, target) {(a == []) ? a: (_ == _) ? _ + _: _}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -304,9 +326,6 @@
                 "function deep_count(a) {return (a == []) ? 0 : deep_count(remove_first(a)) + deep_count(first(a))}",
                 "function first(a) {return get(a,0)}",
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}"
-            ],
-            "defines": [
-                "function deep_count(a) {return (a == []) ? 0 : deep_count(remove_first(a)) + deep_count(first(a))}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -420,7 +439,7 @@
             "syntax": [],
             "textgoal": "Can you count to 3? ",
             "toolbox": [
-                "_unlimited; deep_count",
+                "__unlimited; deep_count",
                 "a",
                 "remove_first",
                 "first",
@@ -446,11 +465,10 @@
             "syntax": [],
             "textgoal": "Can you fill out the whole thing? ",
             "toolbox": [
-                "_unlimited; deep_count",
-                "_unlimited; a",
+                "__unlimited; deep_count",
+                "__unlimited; a",
                 "remove_first",
                 "first",
-                "",
                 "[]",
                 "0",
                 "1",
@@ -514,6 +532,7 @@
             },
             "goal": [
                 "[B, B, B"
+                "[B, B, B]"
             ],
             "output": [],
             "syntax": [],
@@ -533,6 +552,7 @@
             "animationScales": {},
             "board": [
                 " function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? _ : concat([first(a)], remove_value(a, target))}"
+                "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? _ : concat([first(a)], remove_value(a, target))}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -605,6 +625,17 @@
                 "_unlimited; remove_value",
                 "_unlimited; remove_first",
                 "_unlimited; target",
+=======
+            "textgoal": "Can you fill out the entire bottom part? ",
+            "toolbox": [
+                "__unlimited; concat",
+                "__unlimited; [first(a)]",
+                "__unlimited; first",
+                "__unlimited; a",
+                "__unlimited; remove_value",
+                "__unlimited; remove_first",
+                "__unlimited; target",
+>>>>>>> 076e55fbbad2548135222a4a504ee4a83f4a0a74
                 "A",
                 "[A, B, B, A, A]"
             ]
@@ -636,22 +667,28 @@
                 "_unlimited; target",
                 "_unlimited; []",
                 "_unlimited; 0"
+                "__unlimited; concat",
+                "__unlimited; [first(a)]",
+                "__unlimited; first",
+                "__unlimited; a",
+                "__unlimited; remove_value",
+                "__unlimited; remove_first",
+                "__unlimited; target",
+                "__unlimited; []",
+                "__unlimited; 0"
             ]
         }
     ],
     "macros": {
-        "fri": "__variant_weekday_fri",
-        "mon": "__variant_weekday_mon",
-        "sat": "__variant_weekday_sat",
-        "sun": "__variant_weekday_sun",
-        "thu": "__variant_weekday_thu",
-        "tue": "__variant_weekday_tue",
-        "wed": "__variant_weekday_wed"
+        "A": "'star'",
+        "B": "'rect'",
+        "C": "'triangle'",
+        "D": "'circle'"
     },
-    "password": "haskell",
     "resources": {
         "aliens": [
-            "alien-boolean-1",
+            "alien-function-1",
+            "alien-bag-1",
             "alien-conditional-1",
             "alien-boolean-2",
             "alien-conditional-2",
@@ -660,6 +697,10 @@
             "alien-boolean-4",
             "alien-conditional-4",
             "alien-boolean-5"
+            "alien-bag-2",
+            "alien-function-2",
+            "alien-bag-3",
+            "alien-function-3"
         ],
         "curve": [
             {

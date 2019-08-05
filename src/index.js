@@ -27,7 +27,7 @@ import * as ajax from "./util/ajax";
 import { TITLE_LEVEL_ID, DEVELOPMENT_BUILD } from "./logging/logging";
 
 // Whether the game will ask for (valid) user ids
-const USER_IDS = false;
+const USER_IDS = true;
 
 // Globals to help you debug
 window.gfx = gfx;
