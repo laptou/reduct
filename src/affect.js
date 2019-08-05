@@ -9,7 +9,7 @@ const affects =  [
 ];
 
 export function collectAffect() {
-    const p = new Promise(resolve => {
+    return new Promise(resolve => {
         document.querySelector('div#affect > div.frame').style.display = "block";
         affects.forEach(a => {
             const elem = document.getElementById(a);
@@ -20,5 +20,4 @@ export function collectAffect() {
             };
         });
     });
-    return p;
 }
