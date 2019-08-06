@@ -30,6 +30,9 @@ import { TITLE_LEVEL_ID, DEVELOPMENT_BUILD } from "./logging/logging";
 // Whether the game will ask for (valid) user ids
 const USER_IDS = true;
 
+// Whether the game will ask users for their feelings
+const COLLECT_AFFECT = true;
+
 // Globals to help you debug
 window.gfx = gfx;
 window.animate = animate;
@@ -233,7 +236,12 @@ function initialize() {
                     });
 
                 })
-                .then(collectAffect)
+                .then(() => {
+                    if (COLLECT_AFFECT)
+                        return collectAffect()
+                    else
+                        return Promise.resolve()
+                })
                 .then(nextLevel)
             }
             else if (stg.semantics &&
