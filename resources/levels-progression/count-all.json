@@ -18,7 +18,7 @@
             ],
             "output": [],
             "syntax": [],
-            "textgoal": "Let's count to 4",
+            "textgoal": "Let's count to 4!",
             "toolbox": [
                 "count",
                 "first"
@@ -87,7 +87,7 @@
             ],
             "output": [],
             "syntax": [],
-            "textgoal": "Can you count a mixed list",
+            "textgoal": "Can you count a mixed list?",
             "toolbox": [
                 "remove_first",
                 "count",
@@ -104,28 +104,7 @@
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
                 "function count_target(a, target) {(a == []) ? 0: (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}"
             ],
-            "globals": {
-                "first": "function first(a) {return get(a,0);}",
-                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
-            },
-            "goal": [
-                "3"
-            ],
-            "output": [],
-            "syntax": [],
-            "textgoal": "Can you count only one type of object? ",
-            "toolbox": [
-                "count_target",
-                "A",
-                "B",
-                "[A, B, A, A]"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function first(a) {return get(a,0)}",
-                "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
+            "defines": [
                 "function count_target(a, target) {(a == []) ? 0: (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}"
             ],
             "globals": {
@@ -202,7 +181,7 @@
             "board": [
                 "function first(a) {return get(a,0)}",
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
-                "function count_target(a, target) {((a == []) ? a: (first(a) == target) ? _ + _: count_target(remove_first(a), target)}"
+                "function count_target(a, target) {(a == []) ? a: (first(a) == target) ? _ + _: count_target(remove_first(a), target)}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -233,7 +212,7 @@
             "board": [
                 "function first(a) {return get(a,0)}",
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
-                "function count_target(a, target) {((a == []) ? a: (first(a) == target) ? count_target(remove_first(a), target) + 1: _}"
+                "function count_target(a, target) {(a == []) ? a: (first(a) == target) ? count_target(remove_first(a), target) + 1: _}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -264,7 +243,7 @@
             "board": [
                 "function first(a) {return get(a,0)}",
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
-                "function count_target(a, target) {(a == []) ? a: (_ == _) ? _ + _: _}"
+                "function count_target(a, target) {(a == []) ? a:( _ == _) ? _ + _: _}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -325,6 +304,9 @@
                 "function deep_count(a) {return (a == []) ? 0 : deep_count(remove_first(a)) + deep_count(first(a))}",
                 "function first(a) {return get(a,0)}",
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}"
+            ],
+            "defines": [
+                "function deep_count(a) {return (a == []) ? 0 : deep_count(remove_first(a)) + deep_count(first(a))}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -549,7 +531,7 @@
         {
             "animationScales": {},
             "board": [
-                "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? _ : concat([first(a)], remove_value(a, target))}"
+                " function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? _ : concat([first(a)], remove_value(a, target))}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -560,7 +542,7 @@
             ],
             "output": [],
             "syntax": [],
-            "textgoal": "What happens your first item is the target? ",
+            "textgoal": "What happens when your first item is the target? ",
             "toolbox": [
                 "__unlimited; remove_value",
                 "remove_first",
@@ -613,7 +595,7 @@
             ],
             "output": [],
             "syntax": [],
-            "textgoal": "Can you fill out the entire bottom part? ",
+            "textgoal": "Can you fill out the entire bottom section? ",
             "toolbox": [
                 "__unlimited; concat",
                 "__unlimited; [first(a)]",
@@ -667,10 +649,13 @@
             "alien-function-1",
             "alien-bag-1",
             "alien-conditional-1",
-            "alien-bag-2",
-            "alien-function-2",
-            "alien-bag-3",
-            "alien-function-3"
+            "alien-boolean-2",
+            "alien-conditional-2",
+            "alien-boolean-3",
+            "alien-conditional-3",
+            "alien-boolean-4",
+            "alien-conditional-4",
+            "alien-boolean-5"
         ],
         "curve": [
             {
