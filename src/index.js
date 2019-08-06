@@ -234,9 +234,7 @@ function initialize() {
 
                 })
                 .then(collectAffect)
-                .then(() => {
-                    nextLevel()
-                })
+                .then(nextLevel)
             }
             else if (stg.semantics &&
                      !stg.semantics.mightBeCompleted(state, s => level.checkVictory(s, es6))) {
