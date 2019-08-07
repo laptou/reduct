@@ -104,7 +104,9 @@
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
                 "function count_target(a, target) {(a == []) ? 0: (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}"
             ],
+<<<<<<< HEAD
             "defines": [
+=======
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -127,6 +129,7 @@
             "board": [
                 "function first(a) {return get(a,0)}",
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
+>>>>>>> 076e55fbbad2548135222a4a504ee4a83f4a0a74
                 "function count_target(a, target) {(a == []) ? 0: (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}"
             ],
             "globals": {
@@ -515,7 +518,11 @@
             "textgoal": "What happens when you put in an empty list? ",
             "toolbox": [
                 "remove_value",
+<<<<<<< HEAD
                 "_unlimited; []",
+=======
+                "__unlimited; []",
+>>>>>>> 076e55fbbad2548135222a4a504ee4a83f4a0a74
                 "0",
                 "1",
                 "a"
@@ -531,8 +538,11 @@
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
             },
             "goal": [
+<<<<<<< HEAD
                 "[B, B, B"
+=======
                 "[B, B, B]"
+>>>>>>> 076e55fbbad2548135222a4a504ee4a83f4a0a74
             ],
             "output": [],
             "syntax": [],
@@ -551,8 +561,11 @@
         {
             "animationScales": {},
             "board": [
+<<<<<<< HEAD
                 " function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? _ : concat([first(a)], remove_value(a, target))}"
+=======
                 "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? _ : concat([first(a)], remove_value(a, target))}"
+>>>>>>> 076e55fbbad2548135222a4a504ee4a83f4a0a74
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -563,9 +576,15 @@
             ],
             "output": [],
             "syntax": [],
+<<<<<<< HEAD
             "textgoal": "What happens when your first item is the target? ",
             "toolbox": [
                 "_unlimited; remove_value",
+=======
+            "textgoal": "What happens your first item is the target? ",
+            "toolbox": [
+                "__unlimited; remove_value",
+>>>>>>> 076e55fbbad2548135222a4a504ee4a83f4a0a74
                 "remove_first",
                 "target",
                 "first",
@@ -594,8 +613,13 @@
                 "concat",
                 "[first(a)]",
                 "first",
+<<<<<<< HEAD
                 "_unlimited; a",
                 "_unlimited; remove_value",
+=======
+                "__unlimited; a",
+                "__unlimited; remove_value",
+>>>>>>> 076e55fbbad2548135222a4a504ee4a83f4a0a74
                 "remove_first",
                 "target",
                 "A",
@@ -616,6 +640,7 @@
             ],
             "output": [],
             "syntax": [],
+<<<<<<< HEAD
             "textgoal": "Can you fill out the entire bottom section? ",
             "toolbox": [
                 "_unlimited; concat",
@@ -658,6 +683,7 @@
             "syntax": [],
             "textgoal": "Can you fill out the whole thing? ",
             "toolbox": [
+<<<<<<< HEAD
                 "_unlimited; concat",
                 "_unlimited; [first(a)]",
                 "_unlimited; first",
@@ -667,6 +693,7 @@
                 "_unlimited; target",
                 "_unlimited; []",
                 "_unlimited; 0"
+=======
                 "__unlimited; concat",
                 "__unlimited; [first(a)]",
                 "__unlimited; first",
@@ -676,6 +703,7 @@
                 "__unlimited; target",
                 "__unlimited; []",
                 "__unlimited; 0"
+>>>>>>> 076e55fbbad2548135222a4a504ee4a83f4a0a74
             ]
         }
     ],
@@ -690,13 +718,6 @@
             "alien-function-1",
             "alien-bag-1",
             "alien-conditional-1",
-            "alien-boolean-2",
-            "alien-conditional-2",
-            "alien-boolean-3",
-            "alien-conditional-3",
-            "alien-boolean-4",
-            "alien-conditional-4",
-            "alien-boolean-5"
             "alien-bag-2",
             "alien-function-2",
             "alien-bag-3",
