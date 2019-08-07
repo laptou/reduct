@@ -87,7 +87,7 @@
             ],
             "output": [],
             "syntax": [],
-            "textgoal": "Can you count a mixed list",
+            "textgoal": "Can you count a mixed list?",
             "toolbox": [
                 "remove_first",
                 "count",
@@ -106,6 +106,7 @@
             ],
 <<<<<<< HEAD
             "defines": [
+<<<<<<< HEAD
 =======
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -130,6 +131,8 @@
                 "function first(a) {return get(a,0)}",
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
 >>>>>>> 076e55fbbad2548135222a4a504ee4a83f4a0a74
+=======
+>>>>>>> dde9c45573a963d03d5357f7030b2981d538bba8
                 "function count_target(a, target) {(a == []) ? 0: (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}"
             ],
             "globals": {
@@ -206,7 +209,7 @@
             "board": [
                 "function first(a) {return get(a,0)}",
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
-                "function count_target(a, target) {((a == []) ? a: (first(a) == target) ? _ + _: count_target(remove_first(a), target)}"
+                "function count_target(a, target) {(a == []) ? a: (first(a) == target) ? _ + _: count_target(remove_first(a), target)}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -237,7 +240,7 @@
             "board": [
                 "function first(a) {return get(a,0)}",
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
-                "function count_target(a, target) {((a == []) ? a: (first(a) == target) ? count_target(remove_first(a), target) + 1: _}"
+                "function count_target(a, target) {(a == []) ? a: (first(a) == target) ? count_target(remove_first(a), target) + 1: _}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -268,7 +271,7 @@
             "board": [
                 "function first(a) {return get(a,0)}",
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
-                "function count_target(a, target) {(a == []) ? a: (_ == _) ? _ + _: _}"
+                "function count_target(a, target) {(a == []) ? a:( _ == _) ? _ + _: _}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -329,6 +332,9 @@
                 "function deep_count(a) {return (a == []) ? 0 : deep_count(remove_first(a)) + deep_count(first(a))}",
                 "function first(a) {return get(a,0)}",
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}"
+            ],
+            "defines": [
+                "function deep_count(a) {return (a == []) ? 0 : deep_count(remove_first(a)) + deep_count(first(a))}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -519,10 +525,14 @@
             "toolbox": [
                 "remove_value",
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "_unlimited; []",
 =======
                 "__unlimited; []",
 >>>>>>> 076e55fbbad2548135222a4a504ee4a83f4a0a74
+=======
+                "__unlimited; []",
+>>>>>>> dde9c45573a963d03d5357f7030b2981d538bba8
                 "0",
                 "1",
                 "a"
@@ -539,8 +549,11 @@
             },
             "goal": [
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "[B, B, B"
 =======
+=======
+>>>>>>> dde9c45573a963d03d5357f7030b2981d538bba8
                 "[B, B, B]"
 >>>>>>> 076e55fbbad2548135222a4a504ee4a83f4a0a74
             ],
@@ -563,9 +576,12 @@
             "board": [
 <<<<<<< HEAD
                 " function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? _ : concat([first(a)], remove_value(a, target))}"
+<<<<<<< HEAD
 =======
                 "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? _ : concat([first(a)], remove_value(a, target))}"
 >>>>>>> 076e55fbbad2548135222a4a504ee4a83f4a0a74
+=======
+>>>>>>> dde9c45573a963d03d5357f7030b2981d538bba8
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -579,12 +595,16 @@
 <<<<<<< HEAD
             "textgoal": "What happens when your first item is the target? ",
             "toolbox": [
+<<<<<<< HEAD
                 "_unlimited; remove_value",
 =======
             "textgoal": "What happens your first item is the target? ",
             "toolbox": [
                 "__unlimited; remove_value",
 >>>>>>> 076e55fbbad2548135222a4a504ee4a83f4a0a74
+=======
+                "__unlimited; remove_value",
+>>>>>>> dde9c45573a963d03d5357f7030b2981d538bba8
                 "remove_first",
                 "target",
                 "first",
@@ -614,12 +634,17 @@
                 "[first(a)]",
                 "first",
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "_unlimited; a",
                 "_unlimited; remove_value",
 =======
                 "__unlimited; a",
                 "__unlimited; remove_value",
 >>>>>>> 076e55fbbad2548135222a4a504ee4a83f4a0a74
+=======
+                "__unlimited; a",
+                "__unlimited; remove_value",
+>>>>>>> dde9c45573a963d03d5357f7030b2981d538bba8
                 "remove_first",
                 "target",
                 "A",
@@ -643,16 +668,6 @@
 <<<<<<< HEAD
             "textgoal": "Can you fill out the entire bottom section? ",
             "toolbox": [
-                "_unlimited; concat",
-                "_unlimited; [first(a)]",
-                "_unlimited; first",
-                "_unlimited; a",
-                "_unlimited; remove_value",
-                "_unlimited; remove_first",
-                "_unlimited; target",
-=======
-            "textgoal": "Can you fill out the entire bottom part? ",
-            "toolbox": [
                 "__unlimited; concat",
                 "__unlimited; [first(a)]",
                 "__unlimited; first",
@@ -660,7 +675,6 @@
                 "__unlimited; remove_value",
                 "__unlimited; remove_first",
                 "__unlimited; target",
->>>>>>> 076e55fbbad2548135222a4a504ee4a83f4a0a74
                 "A",
                 "[A, B, B, A, A]"
             ]
@@ -684,6 +698,7 @@
             "textgoal": "Can you fill out the whole thing? ",
             "toolbox": [
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "_unlimited; concat",
                 "_unlimited; [first(a)]",
                 "_unlimited; first",
@@ -694,6 +709,8 @@
                 "_unlimited; []",
                 "_unlimited; 0"
 =======
+=======
+>>>>>>> dde9c45573a963d03d5357f7030b2981d538bba8
                 "__unlimited; concat",
                 "__unlimited; [first(a)]",
                 "__unlimited; first",
@@ -718,10 +735,20 @@
             "alien-function-1",
             "alien-bag-1",
             "alien-conditional-1",
+<<<<<<< HEAD
             "alien-bag-2",
             "alien-function-2",
             "alien-bag-3",
             "alien-function-3"
+=======
+            "alien-boolean-2",
+            "alien-conditional-2",
+            "alien-boolean-3",
+            "alien-conditional-3",
+            "alien-boolean-4",
+            "alien-conditional-4",
+            "alien-boolean-5"
+>>>>>>> dde9c45573a963d03d5357f7030b2981d538bba8
         ],
         "curve": [
             {
