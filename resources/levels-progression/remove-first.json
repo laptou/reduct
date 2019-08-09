@@ -6,6 +6,25 @@
         {
             "animationScales": {},
             "board": [
+                "get(a, _)",
+                "[A, B, B]"
+            ],
+            "globals": {},
+            "goal": [
+                "A"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Just as a reminder, \"get\" gets an item from a list. Hint: the list starts at position 0. ",
+            "toolbox": [
+                "0",
+                "1",
+                "2"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
                 "function first(a) {return get(a,0);}",
                 "[A, B, C]"
             ],
@@ -29,9 +48,7 @@
                 "function first(a) {return _}",
                 "[B, A, A]"
             ],
-            "globals": {
-                "get": "function get(a, i) { return 0;}"
-            },
+            "globals": {},
             "goal": [
                 "B"
             ],
@@ -40,11 +57,10 @@
             "textgoal": "Can you get the first item from this list? ",
             "toolbox": [
                 "first",
-                "get",
-                "a",
-                "0",
+                "get(a,_)",
                 "1",
-                "A"
+                "A",
+                "0"
             ]
         },
         {
@@ -56,10 +72,7 @@
             "defines": [
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}"
             ],
-            "globals": {
-                "length": "function length(a) { return 0; }",
-                "slice": "function slice(array, begin, end) { return 0;}"
-            },
+            "globals": {},
             "goal": [
                 "[A, B, A]"
             ],
@@ -76,20 +89,17 @@
                 "function remove_first(a) {return _ < _ ? _: slice(a, 1, length(a))}",
                 "[A]"
             ],
-            "globals": {
-                "length": "function length(a) { return 0; }",
-                "slice": "function slice(array, begin, end) { return 0;}"
-            },
+            "globals": {},
             "goal": [
                 "[]"
             ],
             "output": [],
             "syntax": [],
-            "textgoal": "What happens when the list only has one item in it? ",
+            "textgoal": "What happens when the list only has one item in it? Hint: length allows you to find the length of a list and slice cuts up an array. ",
             "toolbox": [
                 "remove_first",
-                "length",
-                "slice",
+                "length(a)",
+                "slice(a, 1, length(a)",
                 "0",
                 "1",
                 "2",
@@ -104,10 +114,7 @@
                 "function remove_first(a) {return length(a) < 2 ? []: _}",
                 "[A, B, B, A]"
             ],
-            "globals": {
-                "length": "function length(a) { return 0; }",
-                "slice": "function slice(array, begin, end) { return 0;}"
-            },
+            "globals": {},
             "goal": [
                 "[B, B, A]"
             ],
@@ -116,8 +123,8 @@
             "textgoal": "What happens in a normal list? ",
             "toolbox": [
                 "remove_first",
-                "length",
-                "slice",
+                "length(a)",
+                "slice(a, 1, length(a)",
                 "a",
                 "0",
                 "1",

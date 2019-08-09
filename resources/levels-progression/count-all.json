@@ -234,7 +234,7 @@
         {
             "animationScales": {},
             "board": [
-                "function count_target(a, target) {(a == []) ? a:( _ == _) ? _ + _: _}"
+                "function count_target(a, target) {(a == []) ? 0:( _ == _) ? _ + _: _}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -261,7 +261,7 @@
         {
             "animationScales": {},
             "board": [
-                "function count_target(a, target) {(a == []) ? a: (_ == _) ? _ + _: _}"
+                "function count_target(a, target) {(a == []) ? 0: (_ == _) ? _ + _: _}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -291,167 +291,24 @@
         {
             "animationScales": {},
             "board": [
-                "function deep_count(a) {return (a == []) ? 0 : deep_count(remove_first(a)) + deep_count(first(a))}",
-                "function first(a) {return get(a,0)}",
-                "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}"
+                "concat"
             ],
-            "defines": [
-                "function deep_count(a) {return (a == []) ? 0 : deep_count(remove_first(a)) + deep_count(first(a))}"
-            ],
-            "globals": {
-                "first": "function first(a) {return get(a,0);}",
-                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
-            },
+            "globals": {},
             "goal": [
-                "4"
+                "[A, B, A]"
             ],
             "output": [],
             "syntax": [],
-            "textgoal": "Let's count a list inside of a list!",
+            "textgoal": "Just as a reminder, concat glues two arrays together. ",
             "toolbox": [
-                "deep_count",
-                "[A, B, [A, B]]"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function deep_count(a) {return (_ == _) ? _ : deep_count(remove_first(a)) + deep_count(first(a))}",
-                "function first(a) {return get(a,0)}",
-                "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}"
-            ],
-            "globals": {
-                "first": "function first(a) {return get(a,0);}",
-                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
-            },
-            "goal": [
-                "0"
-            ],
-            "output": [],
-            "syntax": [],
-            "textgoal": "Let's count an empty list!",
-            "toolbox": [
-                "deep_count",
-                "a",
-                "0",
-                "[]",
-                "1",
                 "[A]",
-                "[]"
+                "[B, A]"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "function deep_count(a) {return (a == []) ? 0 : _ + deep_count(first(a))}",
-                "function first(a) {return get(a,0)}",
-                "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}"
-            ],
-            "globals": {
-                "first": "function first(a) {return get(a,0);}",
-                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
-            },
-            "goal": [
-                "3"
-            ],
-            "output": [],
-            "syntax": [],
-            "textgoal": "Can you count this list? ",
-            "toolbox": [
-                "deep_count",
-                "remove_first",
-                "deep_count",
-                "first",
-                "a",
-                "[A, B, [A]]"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function deep_count(a) {return (a == []) ? 0 : deep_count(remove_first(a)) + _}",
-                "function first(a) {return get(a,0)}",
-                "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}"
-            ],
-            "globals": {
-                "first": "function first(a) {return get(a,0);}",
-                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
-            },
-            "goal": [
-                "2"
-            ],
-            "output": [],
-            "syntax": [],
-            "textgoal": "Let's count to 2!",
-            "toolbox": [
-                "deep_count",
-                "remove_first",
-                "deep_count",
-                "first",
-                "a",
-                "[A, [B]]"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function deep_count(a) {return (a == []) ? 0 : _ + _}",
-                "function first(a) {return get(a,0)}",
-                "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}"
-            ],
-            "globals": {
-                "first": "function first(a) {return get(a,0);}",
-                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
-            },
-            "goal": [
-                "3"
-            ],
-            "output": [],
-            "syntax": [],
-            "textgoal": "Can you count to 3? ",
-            "toolbox": [
-                "__unlimited; deep_count",
-                "a",
-                "remove_first",
-                "first",
-                "a",
-                "[A, [B]]"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function deep_count(a) {_ ? _ : _ + _}",
-                "function first(a) {return get(a,0)}",
-                "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}"
-            ],
-            "globals": {
-                "first": "function first(a) {return get(a,0);}",
-                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
-            },
-            "goal": [
-                "4"
-            ],
-            "output": [],
-            "syntax": [],
-            "textgoal": "Can you fill out the whole thing? ",
-            "toolbox": [
-                "__unlimited; deep_count",
-                "__unlimited; a",
-                "remove_first",
-                "first",
-                "[]",
-                "0",
-                "1",
-                "[A, B, [A, B]]"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? remove_value(remove_first(a), target): concat([first(a)], remove_value(a, target))}",
-                "function first(a) {return get(a, 0)}",
-                "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}"
+                "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? remove_value(remove_first(a), target): concat([first(a)], remove_value(a, target))}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
