@@ -60,7 +60,7 @@ const fetchLevel = session_params => {
     const params = {game_id: Logging.GAME_ID, version_id: 6, user_id: user_id};
     ajax.jsonp(url, params).then(
       result => {
-        // console.log(`GDIAC server reports: ${JSON.stringify(result)}`);
+        console.log(`GDIAC server reports: ${JSON.stringify(result)}`);
         const {message, level} = result;
         if (message == "success" && level > 0) {
             progression.setLevel(level);
