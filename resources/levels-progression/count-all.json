@@ -104,9 +104,6 @@
             "board": [
                 "function count_target(a, target) {(a == []) ? 0: (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}"
             ],
-            "defines": [
-                "function count_target(a, target) {(a == []) ? 0: (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}"
-            ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -308,7 +305,7 @@
         {
             "animationScales": {},
             "board": [
-                "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? remove_value(remove_first(a), target): concat([first(a)], remove_value(a, target))}"
+                "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? remove_value(remove_first(a), target): concat([first(a)], remove_value(remove_first(a), target))}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -329,7 +326,7 @@
         {
             "animationScales": {},
             "board": [
-                "function remove_value(a, target) {(_ == _) ? _: (first(a) == target) ? remove_value(remove_first(a), target): concat([first(a)], remove_value(a, target))}"
+                "function remove_value(a, target) {(_ == _) ? _: (first(a) == target) ? remove_value(remove_first(a), target): concat([first(a)], remove_value(remove_fisrt(a), target))}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -352,7 +349,7 @@
         {
             "animationScales": {},
             "board": [
-                "function remove_value(a, target) {(a == []) ? []: (_ == _) ? remove_value(remove_first(a), target): concat([first(a)], remove_value(a, target))}"
+                "function remove_value(a, target) {(a == []) ? []: (_ == _) ? remove_value(remove_first(a), target): concat([first(a)], remove_value(remove_first(a), target))}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -378,7 +375,7 @@
         {
             "animationScales": {},
             "board": [
-                "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? _ : concat([first(a)], remove_value(a, target))}"
+                "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? _ : concat([first(a)], remove_value(remove_first(a), target))}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -404,7 +401,7 @@
         {
             "animationScales": {},
             "board": [
-                "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? remove_value(remove_first(a, target), _ ):concat([first(a)], remove_value(a, target))}"
+                "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? remove_value(remove_first(a, target), _ ):concat([first(a)], remove_value(remove(first(a), target))}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -490,9 +487,6 @@
                 "function replace_value(a, target, replacement) {(a == []) ? [] : (first(a) == target) ? concat([replacement], replace_value(remove_first(a), target, replacement)): concat([first(a)],replace_value(remove_first(a), target, replacement))}",
                 "replace_value",
                 "[5, 6, 7]"
-            ],
-            "defines": [
-                "function replace_value(a, target, replacement) {(a == []) ? [] : (first(a) == target) ? concat([replacement], replace_value(remove_first(a), target, replacement)): concat([first(a)],replace_value(remove_first(a), target, replacement))}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
@@ -691,9 +685,6 @@
                 "function insert_in_order(a, target) {(a == []) ? [target] : (first(a) < target) ? concat([first(a)], insert_in_order(remove_first(a), target)): concat([target],a)}",
                 "insert_in_order",
                 "[10, 15, 18]"
-            ],
-            "defines": [
-                "function insert_in_order(a, target) {(a == []) ? [target] : (first(a) < target) ? concat([first(a)], insert_in_order(remove_first(a), target)): concat([target],a)}"
             ],
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
