@@ -432,3 +432,7 @@ div.affect_desc {
 img.affect {
     width: 64px
 }
+img.affect:hover {
+    filter: brightness(1.2);
+    cursor: pointer
+}
