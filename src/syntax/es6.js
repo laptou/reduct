@@ -128,6 +128,9 @@ export function makeParser(jssemant) {
                 return jssemant.symbol(node.value);
             }
 
+            // Interpreting strings after symbols so as to prevent the engine from
+            // treating the symbols as strings
+            if (typeof node.value === "string") return jssemant.string(node.value);
             return fail(`parsers.es6: Unrecognized value ${node.value}`, node);
         }
 
@@ -183,10 +186,10 @@ export function makeParser(jssemant) {
               return jssemant.autograder(alienName, node.arguments[0].value,colors[node.arguments[0].value],jssemant.missing());
             }
 
-            if(node.callee.type === "Identifier" && node.callee.name === "unsol") {
-              //NOTE - This should never be called externally
-              //only called within inside the autograder.
-              return jssemant.unsol("red",parseNode(node.arguments[0],[]));
+            if (node.callee.type === "Identifier" && node.callee.name === "unsol") {
+                // NOTE - This should never be called externally
+                // only called within inside the autograder.
+                return jssemant.unsol("red", parseNode(node.arguments[0], []));
             }
 
             if (node.arguments.length === 0) {
@@ -326,6 +329,9 @@ export function makeUnparser(jssemant) {
             return `${node.value}`;
         }
         case "bool": {
+            return `${node.value}`;
+        }
+        case "string": {
             return `${node.value}`;
         }
         case "dynamicVariant": {

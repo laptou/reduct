@@ -15,14 +15,12 @@ export default {
 
     dynamicVariant: {
         kind: "value",
-        type: (semant, state, types, expr) => {
-            return {
-                types: new Map([ [ expr.get("id"), expr.get("variant") ] ]),
-                // TODO: this isn't true if it's a variant with
-                // fields
-                complete: true,
-            };
-        },
+        type: (semant, state, types, expr) => ({
+            types: new Map([ [ expr.get("id"), expr.get("variant") ] ]),
+            // TODO: this isn't true if it's a variant with
+            // fields
+            complete: true,
+        }),
         fields: ["variant", "value"],
         subexpressions: [],
         projection: {
@@ -227,15 +225,27 @@ export default {
             },
         },
     },
+    string: {
+        kind: "value",
+        type: "string",
+        fields: ["value"],
+        subexpressions: [],
+        projection: {
+            type: "default",
+            shape: "()",
+            color: "lightgreen",
+            fields: ["value"],
+        },
+    },
     unsol: {
-      kind: "value",
-      type: "unsol",
-      fields: ["color"],
-      subexpressions: ["value"],
-      projection: {
-        type: "default",
-        shape: "()",
-        color: (expr) => expr.get("color"),
-      },
+        kind: "value",
+        type: "unsol",
+        fields: ["color"],
+        subexpressions: ["value"],
+        projection: {
+            type: "default",
+            shape: "()",
+            color: expr => expr.get("color"),
+        },
     },
 };

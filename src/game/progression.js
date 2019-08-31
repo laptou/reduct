@@ -22,9 +22,10 @@ export const PROGRESSIONS = {
             "recursion-basics": ["recursion-higher-order"],
             "recursion-higher-order": ["remove-first"],
             "remove-first": ["count-all"],
-            "count-all": ["play"],
-            "play": ["list-functions"],
-            "list-functions": []
+            "count-all": ["list-functions"],
+            "list-functions": ["strings"],
+            "strings": ["play"],
+            "play": []
         },
         settings: { // This sets global flags.
             "__ALLOW_PARTIAL_REPLICATION": false,
