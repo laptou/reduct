@@ -7,32 +7,32 @@
             "animationScales": {}, 
             "board": [
                 "function concatStrings(a,b) { return  (a) + (b); }", 
-                "'Computer'"
+                "\"Computer\""
             ], 
             "globals": {}, 
             "goal": [
-                "'ComputerScience'"
+                "\"ComputerScience\""
             ], 
             "syntax": [], 
             "textgoal": "Define a function to concatenate two strings", 
             "toolbox": [
                 "concatStrings", 
-                "'Science'"
+                "\"Science\""
             ]
         }, 
         {
             "animationScales": {}, 
             "board": [
-                "'coffee'", 
-                "'chocolates'", 
-                "function reverseString(str) {return str == '' ? '' : reverseString(slice(str,1, length(str))) + get(str,0);}"
+                "\"coffee\"", 
+                "\"chocolates\"", 
+                "function reverseString(str) {return str == \"\" ? \"\" : reverseString(slice(str,1, length(str))) + get(str,0);}"
             ], 
             "defines": [
-                "function reverseString(str) {return str == '' ? '' : (x => reverseString(slice(str,1, length(str))) + x)(get(str,0));}"
+                "function reverseString(str) {return str == \"\" ? \"\" : (x => reverseString(slice(str,1, length(str))) + x)(get(str,0));}"
             ], 
             "globals": {}, 
             "goal": [
-                "'eeffocsetalocohc'"
+                "\"eeffocsetalocohc\""
             ], 
             "syntax": [], 
             "textgoal": "Define a function that reverses a string", 
@@ -45,8 +45,8 @@
             "animationScales": {}, 
             "board": [
                 "function checkPalindrome(str) { return  ((str) == (_)) ? (true) : (false); }", 
-                "'ababa'", 
-                "'abcd'", 
+                "\"ababa\"", 
+                "\"abcd\"", 
                 "str"
             ], 
             "globals": {}, 
@@ -64,9 +64,9 @@
         {
             "animationScales": {}, 
             "board": [
-                "'ooooompalooooompa'", 
-                "'ooooompalooooompa'", 
-                "function countAs(str,char,counter) { return  ((str) == ('')) ? (counter) : (((get(str, 0)) == (char)) ? (countAs(slice(str, 1, length(str)), char, (counter) + (1))) : (countAs(slice(str, 1, length(str)), char, counter))); }"
+                "\"ooooompalooooompa\"", 
+                "\"ooooompalooooompa\"", 
+                "function countAs(str,char,counter) { return  ((str) == (\"\")) ? (counter) : (((get(str, 0)) == (char)) ? (countAs(slice(str, 1, length(str)), char, (counter) + (1))) : (countAs(slice(str, 1, length(str)), char, counter))); }"
             ], 
             "globals": {}, 
             "goal": [
@@ -79,11 +79,11 @@
                 "__unlimited;countAs", 
                 "__unlimited;0", 
                 "__unlimited;1", 
-                "'o'", 
-                "'m'", 
-                "'p'", 
-                "'a'", 
-                "'l'"
+                "\"o\"", 
+                "\"m\"", 
+                "\"p\"", 
+                "\"a\"", 
+                "\"l\""
             ]
         }
     ], 
