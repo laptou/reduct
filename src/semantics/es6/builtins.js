@@ -63,14 +63,16 @@ function validateGet(expr, semant, state) {
     if (gval) return gval;
 
     const nodes = state.get("nodes"),
-          arr = nodes.get(expr.get("arg_a")),
-          i = nodes.get(expr.get("arg_i")),
-          n = arr.get("length"),
-          iv = i.get("value");
+        arr = nodes.get(expr.get("arg_a")),
+        i = nodes.get(expr.get("arg_i")),
+        n = arr.get("length"),
+        iv = i.get("value");
 
     if (iv < 0 || iv >= n) {
-        return { subexpr: "arg_i",
-                 msg: `This array index must be between 0 and ${n-1}, because the array only has ${n} elements!`};
+        return {
+            subexpr: "arg_i",
+            msg: `This array index must be between 0 and ${n - 1}, because the array only has ${n} elements!`
+        };
     }
     return VALID;
 }
@@ -80,8 +82,8 @@ function validateGet(expr, semant, state) {
 // updates an array element. Return null if failure.
 function builtinSet(expr, semant, nodes) {
     const arr = nodes.get(expr.get("arg_a")),
-          i = nodes.get(expr.get("arg_i")),
-          v = nodes.get(expr.get("arg_v"));
+        i = nodes.get(expr.get("arg_i")),
+        v = nodes.get(expr.get("arg_v"));
     if (arr.get("type") !== "array") return null;
     if (i.get("type") !== "number") return null;
     const iv = i.get("value");
@@ -102,28 +104,30 @@ function validateSet(expr, semant, state) {
     if (gval) return gval;
 
     const nodes = state.get("nodes"),
-          arr = nodes.get(expr.get("arg_a")),
-          i = nodes.get(expr.get("arg_i")),
-          iv = i.get("value"),
-          n = arr.get("length");
+        arr = nodes.get(expr.get("arg_a")),
+        i = nodes.get(expr.get("arg_i")),
+        iv = i.get("value"),
+        n = arr.get("length");
     if (iv < 0 || iv >= n)
-        return { subexpr: "arg_i",
-                 msg: `This array index must be between 0 and ${n-1}, because the array only has ${n} elements!`};
+        return {
+            subexpr: "arg_i",
+            msg: `This array index must be between 0 and ${n - 1}, because the array only has ${n} elements!`
+        };
     return VALID;
 }
 
 function builtinConcat(expr, semant, nodes) {
     const left = nodes.get(expr.get("arg_left")),
-          right = nodes.get(expr.get("arg_right"));
+        right = nodes.get(expr.get("arg_right"));
 
     if (left.get("type") !== "array") return null;
     if (right.get("type") !== "array") return null;
     const nl = left.get("length"),
-          nr = right.get("length");
+        nr = right.get("length");
     const elems = [];
     for (let j = 0; j < nl + nr; j++) {
         const id = j < nl ? left.get(`elem${j}`)
-                          : right.get(`elem${j-nl}`)
+            : right.get(`elem${j - nl}`)
         const e = hydrateLocked(nodes.get(id), semant, nodes);
         e.locked = true;
         elems.push(e);
@@ -133,7 +137,7 @@ function builtinConcat(expr, semant, nodes) {
 
 function builtinMap(expr, semant, nodes) {
     const a = hydrateLocked(nodes.get(expr.get("arg_a")), semant, nodes),
-          n = a.length
+        n = a.length
 
     const elems = [];
     for (let j = 0; j < n; j++) {
@@ -156,11 +160,11 @@ function builtinMap(expr, semant, nodes) {
 // fold [] f init = init
 function builtinFold(expr, semant, nodes) {
     const a = hydrateInput(nodes.get(expr.get("arg_a")), semant, nodes),
-          n = a.length,
-          init = hydrateInput(nodes.get(expr.get("arg_init")), semant, nodes),
-          f = nodes.get(expr.get("arg_f")),
-          f1 = hydrateInput(f, semant, nodes),
-          f2 = hydrateInput(f, semant, nodes);
+        n = a.length,
+        init = hydrateInput(nodes.get(expr.get("arg_init")), semant, nodes),
+        f = nodes.get(expr.get("arg_f")),
+        f1 = hydrateInput(f, semant, nodes),
+        f2 = hydrateInput(f, semant, nodes);
 
     if (n == 0) return init;
 
@@ -168,7 +172,7 @@ function builtinFold(expr, semant, nodes) {
     for (let j = 1; j < n; j++) {
         tail.push(a[`elem${j}`]);
     }
-    const a_tail = semant.array(n-1, ...tail);
+    const a_tail = semant.array(n - 1, ...tail);
     let fncall;
     if (f2.type == "reference" && f2.params && f2.params.length >= 2) {
         fncall = f2;
@@ -184,9 +188,9 @@ function builtinFold(expr, semant, nodes) {
 
 function builtinSlice(expr, semant, nodes) {
     const a = hydrateInput(nodes.get(expr.get("arg_array")), semant, nodes),
-          b = nodes.get(expr.get("arg_begin")).get("value"),
-          e = nodes.get(expr.get("arg_end")).get("value"),
-          n = a.length; // arr.get("length");
+        b = nodes.get(expr.get("arg_begin")).get("value"),
+        e = nodes.get(expr.get("arg_end")).get("value"),
+        n = a.length; // arr.get("length");
 
     const slice = [];
     for (let i = b; i < e; i++) {
@@ -200,17 +204,21 @@ function validateSlice(expr, semant, state) {
     if (gval) return gval;
 
     const nodes = state.get("nodes"),
-          arr = nodes.get(expr.get("arg_array")),
-          b = nodes.get(expr.get("arg_begin")).get("value"),
-          e = nodes.get(expr.get("arg_end")).get("value"),
-          n = arr.get("length");
+        arr = nodes.get(expr.get("arg_array")),
+        b = nodes.get(expr.get("arg_begin")).get("value"),
+        e = nodes.get(expr.get("arg_end")).get("value"),
+        n = arr.get("length");
     if (b < 0 || b >= n) {
-        return { subexpr: "arg_begin",
-                 msg: `The array index of the beginning of the slice must be between 0 and ${n-1}, because the array only has ${n} elements!`};
+        return {
+            subexpr: "arg_begin",
+            msg: `The array index of the beginning of the slice must be between 0 and ${n - 1}, because the array only has ${n} elements!`
+        };
     }
     if (e < 0 || e > n) {
-        return { subexpr: "arg_begin",
-                 msg: `The end of the slice must be between 0 and ${n}, because the array only has ${n} elements!`};
+        return {
+            subexpr: "arg_begin",
+            msg: `The end of the slice must be between 0 and ${n}, because the array only has ${n} elements!`
+        };
     }
     return VALID;
 }
@@ -218,13 +226,13 @@ function validateSlice(expr, semant, state) {
 export const builtins =
     immutable.Map({
         //repeat: {params: [{n: 'number'}, {f: 'function'}], impl: builtinRepeat},
-        length: {params: [{a: 'array'}], impl: builtinLength},
-        get: {params: [{a: 'array'}, {i: 'number'}], impl: builtinGet, validate: validateGet},
-        set: {params: [{a: 'array'}, {i: 'number'}, {v: 'any'}], impl: builtinSet, validate: validateSet},
-        map: {params: [{f: 'function'}, {a: 'array'}], impl: builtinMap},
-        fold: {params: [{f: 'function'}, {a: 'array'}, {init: 'any'}], impl: builtinFold},
-        concat: {params: [{left:'array'}, {right:'array'}], impl: builtinConcat},
-        slice: {params: [{array:'array'}, {begin: 'number'}, {end: 'number'}], impl: builtinSlice, validate: validateSlice}
+        length: { params: [{ a: 'array' }], impl: builtinLength },
+        get: { params: [{ a: 'array' }, { i: 'number' }], impl: builtinGet, validate: validateGet },
+        set: { params: [{ a: 'array' }, { i: 'number' }, { v: 'any' }], impl: builtinSet, validate: validateSet },
+        map: { params: [{ f: 'function' }, { a: 'array' }], impl: builtinMap },
+        fold: { params: [{ f: 'function' }, { a: 'array' }, { init: 'any' }], impl: builtinFold },
+        concat: { params: [{ left: 'array' }, { right: 'array' }], impl: builtinConcat },
+        slice: { params: [{ array: 'array' }, { begin: 'number' }, { end: 'number' }], impl: builtinSlice, validate: validateSlice }
     });
 
 function nth(i) {
@@ -240,8 +248,8 @@ function nth(i) {
 
 function article(n) {
     return (n.match(/[aeio]/).index == 0)
-           ? `an ${n}`
-           : `a ${n}`;
+        ? `an ${n}`
+        : `a ${n}`;
 }
 
 function compatible(ty, expected) {
@@ -254,14 +262,14 @@ function compatible(ty, expected) {
 
 export function genericValidate(expr, semant, state) {
     const name = expr.get("name"),
-          sig = builtins.get(name),
-          params = sig.params,
-          nodes = state.get("nodes");
+        sig = builtins.get(name),
+        params = sig.params,
+        nodes = state.get("nodes");
 
     for (let i = 0; i < params.length; i++) {
         const n = Object.getOwnPropertyNames(params[i]),
-              expected = params[i][n],
-              actual = nodes.get(expr.get(`arg_${n}`));
+            expected = params[i][n],
+            actual = nodes.get(expr.get(`arg_${n}`));
         let ty = actual.get("type");
         if (ty == "reference") {
             const r = actual.get("name");
@@ -270,16 +278,20 @@ export function genericValidate(expr, semant, state) {
             } else {
                 const id = state.get("globals").get(r);
                 if (!id) {
-                    return { subexpr: `arg_${n}`,
-                             msg: `The name ${r} is not defined`};
+                    return {
+                        subexpr: `arg_${n}`,
+                        msg: `The name ${r} is not defined`
+                    };
                 }
                 const body = nodes.get(nodes.get(id).get("body"));
                 ty = body.get("type");
             }
         }
         if (!compatible(ty, expected)) {
-            return {subexpr: `arg_${n}`,
-                    msg: `The ${nth(i+1)} argument to \"${name}\" must be ${article(expected)}!`};
+            return {
+                subexpr: `arg_${n}`,
+                msg: `The ${nth(i + 1)} argument to \"${name}\" must be ${article(expected)}!`
+            };
         }
     }
     return null;

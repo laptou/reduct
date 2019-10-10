@@ -1,8 +1,390 @@
 {
-    "chapterName": "Booleans and Arrays",
-    "description": "Booleans and Arrays",
+    "chapterName": "Multi-Argument Functions",
+    "description": "Functions that take many things!",
     "language": "JavaScript",
     "levels": [
+        {
+            "animationScales": {},
+            "board": [
+                "function head(list) {return get(list, 0);}",
+                "function tail(list) {length(list) == 1 ? [] : slice(list, 1, length(list)); }"
+            ],
+            "defines": [
+                "function head(list) { return get(list, 0); }",
+                "function tail(list) {length(list) == 1 ? [] : slice(list, 1, length(list)); }"
+            ],
+            "globals": {},
+            "goal": [
+                "1",
+                "[2,4,6]"
+            ],
+            "syntax": [],
+            "textgoal": "Head and Tail Introduction",
+            "toolbox": [
+                "__unlimited; [1,2,4,6]",
+                "head",
+                "tail"
+            ],
+            "tutorialUrl": "None"
+        },
+        {
+            "animationScales": {},
+            "board": [],
+            "globals": {},
+            "goal": [
+                "0",
+                "1",
+                "2"
+            ],
+            "syntax": [],
+            "textgoal": "Access Elements",
+            "toolbox": [
+                "__unlimited; head",
+                "__unlimited; tail",
+                "__unlimited; [0,1,2,3]"
+            ],
+            "tutorialUrl": "None"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function cons(e,list) { return  concat([e], list); }",
+                "[]"
+            ],
+            "defines": [
+                "function cons(e,list) { return  concat([e], list); }"
+            ],
+            "globals": {},
+            "goal": [
+                "[1,2,3]"
+            ],
+            "syntax": [],
+            "textgoal": "Build List",
+            "toolbox": [
+                "__unlimited; cons",
+                "1",
+                "5",
+                "4",
+                "2",
+                "3"
+            ],
+            "tutorialUrl": "None"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function duplicate(list) { return concat(list, list); }",
+                "[1,2,3,4,5]"
+            ],
+            "defines": [
+                "function duplicate(list) { return concat(list, list); }"
+            ],
+            "globals": {},
+            "goal": [
+                "[1,2,3,4,5,1,2,3,4,5]"
+            ],
+            "syntax": [],
+            "textgoal": "Demonstrate Duplicate",
+            "toolbox": [
+                "duplicate"
+            ],
+            "tutorialUrl": "None"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function reverse(list) { (length(list) < 2) ? list : concat(reverse(tail(list)), [head(list)]) }"
+            ],
+            "defines": [
+                "function reverse(list) { (length(list) < 2) ? list : concat(reverse(tail(list)), [head(list)]) }"
+            ],
+            "globals": {},
+            "goal": [
+                "[4,3,2,1]"
+            ],
+            "syntax": [],
+            "textgoal": "Reverse List",
+            "toolbox": [
+                "[1,2,3,4]",
+                "reverse"
+            ],
+            "tutorialUrl": "None"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function count(list) {list == [] ? 0 : 1 + count(tail(list))}"
+            ],
+            "defines": [
+                "function count(list) {list == [] ? 0 : 1 + count(tail(list))}"
+            ],
+            "globals": {},
+            "goal": [
+                "1",
+                "3",
+                "0"
+            ],
+            "syntax": [],
+            "textgoal": "Counting Function",
+            "toolbox": [
+                "__unlimited; count",
+                "[1,3,5]",
+                "[]",
+                "[5]",
+                "[13,4,6,2]"
+            ],
+            "tutorialUrl": "None"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "count",
+                "count",
+                "count",
+                "[100]",
+                "[2,6,3]",
+                "[2,4]",
+                "[2,4,6,7]",
+                "[]",
+                "count",
+                "count"
+            ],
+            "globals": {},
+            "goal": [
+                "10"
+            ],
+            "syntax": [],
+            "textgoal": "Adding Count Results",
+            "toolbox": [
+                "__unlimited; add"
+            ],
+            "tutorialUrl": "None"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "[10]",
+                "[5,2]"
+            ],
+            "globals": {},
+            "goal": [
+                "[2,1]"
+            ],
+            "syntax": [],
+            "textgoal": "Count to Build",
+            "toolbox": [
+                "__unlimited; cons",
+                "[]",
+                "(_) + (_)",
+                "count",
+                "count"
+            ],
+            "tutorialUrl": "None"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "(_) < (_)",
+                "function smallList(list) { return  _; }"
+            ],
+            "globals": {},
+            "goal": [
+                "true",
+                "true",
+                "false"
+            ],
+            "syntax": [],
+            "textgoal": "Compare Sizes",
+            "toolbox": [
+                "count",
+                "[1,5]",
+                "3",
+                "[]",
+                "list",
+                "[1,2,4,3]",
+                "__unlimited; tooSmall"
+            ],
+            "tutorialUrl": "None"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "2",
+                "[]",
+                "cons"
+            ],
+            "globals": {},
+            "goal": [
+                "8"
+            ],
+            "syntax": [],
+            "textgoal": "Powers of Two",
+            "toolbox": [
+                "__unlimited; duplicate",
+                "count"
+            ],
+            "tutorialUrl": "None"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "[5,4,3,2,1]",
+                "(_) == (_)",
+                "[]",
+                "[1,2,3,4,5,6,7]",
+                "function my_count(list) { return  _; }",
+                "my_count",
+                "(_) ? (_) : (_)"
+            ],
+            "globals": {},
+            "goal": [
+                "5",
+                "7"
+            ],
+            "syntax": [],
+            "toolbox": [
+                "0",
+                "1",
+                "(_) == (_)",
+                "(_) + (_)",
+                "__unlimited; list",
+                "tail",
+                "__unlimited; my_count"
+            ],
+            "tutorialUrl": "None"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function filter(list,f) { return  ((list) == ([])) ? ([]) : ((((f)(head(list))) == (true)) ? (cons(head(list), filter(tail(list), f))) : (filter(tail(list), f))); }",
+                "(e) => (e) == (1)",
+                "(e) => (e) > (1)",
+                "(e) => (e) > (5)"
+            ],
+            "defines": [
+                "function filter(list,f) { return  ((list) == ([])) ? ([]) : ((((f)(head(list))) == (true)) ? (cons(head(list), filter(tail(list), f))) : (filter(tail(list), f))); }"
+            ],
+            "globals": {},
+            "goal": [
+                "[1]",
+                "[2,3,4]",
+                "[]"
+            ],
+            "syntax": [],
+            "textgoal": "Introducing Filter",
+            "toolbox": [
+                "__unlimited; [1,2,3,4]",
+                "__unlimited; filter"
+            ],
+            "tutorialUrl": "None"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "filter",
+                "filter",
+                "num",
+                "function biggerThanZero(num) { return  _; }"
+            ],
+            "globals": {},
+            "goal": [
+                "[]",
+                "[3,2,1]"
+            ],
+            "syntax": [],
+            "textgoal": "Remove Zeros in Lists",
+            "toolbox": [
+                "(_) > (0)",
+                "__unlimited; biggerThanZero",
+                "[0,3,2,1]",
+                "[0,0,0,0]"
+            ],
+            "tutorialUrl": "None"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function keepTrue(list) { return  _; }",
+                "(x) => _",
+                "[false,false,false,true]",
+                "[false,false,true,false]",
+                "[false]"
+            ],
+            "globals": {},
+            "goal": [
+                "[]",
+                "[true]",
+                "[true]"
+            ],
+            "syntax": [],
+            "textgoal": "Keep True Values in the Lists",
+            "toolbox": [
+                "x",
+                "filter",
+                "list",
+                "__unlimited; keepTrue",
+                "(_) == (true)"
+            ],
+            "tutorialUrl": "None"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function removeNumber(list,num){ return _;}",
+                "list",
+                "3",
+                "12",
+                "[12,3,3,3,12,12,3]"
+            ],
+            "globals": {},
+            "goal": [
+                "[]"
+            ],
+            "syntax": [],
+            "textgoal": "Remove a Specific Number from List",
+            "toolbox": [
+                "x",
+                "num",
+                "__unlimited; removeNumber",
+                "!(_ == _)",
+                "x => _",
+                "filter"
+            ],
+            "tutorialUrl": "None"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function my_filter(list,f) { return  _; }",
+                "[]",
+                "[]",
+                "cons",
+                "(_) ? (_) : (_)",
+                "my_filter",
+                "my_filter",
+                "(_) ? (_) : (_)",
+                "(f)(_)",
+                "(_) == (_)"
+            ],
+            "globals": {},
+            "goal": [
+                "[2]",
+                "[1,2,3]"
+            ],
+            "syntax": [],
+            "textgoal": "Build Filter",
+            "toolbox": [
+                "__unlimited; f",
+                "__unlimited; list",
+                "__unlimited; my_filter",
+                "(e) => (e) == (e)",
+                "(e) => (e) == (2)",
+                "__unlimited; head",
+                "__unlimited; tail",
+                "__unlimited; [1,2,3]"
+            ],
+            "tutorialUrl": "None"
+        },
         {
             "animationScales": {},
             "board": [],
@@ -15,7 +397,8 @@
             "textgoal": "play",
             "toolbox": [
                 "addOne"
-            ]
+            ],
+            "tutorialUrl": "None"
         }
     ],
     "macros": {
@@ -24,18 +407,10 @@
         "C": "'triangle'",
         "D": "'circle'"
     },
-    "password": "3110",
+    "password": "curry",
     "resources": {
         "aliens": [
-            "alien-boolean-1",
-            "alien-conditional-1",
-            "alien-boolean-2",
-            "alien-conditional-2",
-            "alien-boolean-3",
-            "alien-conditional-3",
-            "alien-boolean-4",
-            "alien-conditional-4",
-            "alien-boolean-5"
+            "alien-function-2"
         ],
         "curve": [
             {

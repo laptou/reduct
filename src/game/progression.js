@@ -8,7 +8,7 @@ export const PROGRESSIONS = {
             "replication": ["multiargument"],
             "multiargument": ["booleans-intro"],
             "booleans-intro": ["application"],
-//            "functions-challenge": ["application"],
+            //            "functions-challenge": ["application"],
             "application": ["definition"],
             "definition": ["testing"],
             "testing": ["lists-intro"],
@@ -23,7 +23,8 @@ export const PROGRESSIONS = {
             "recursion-higher-order": ["remove-first"],
             "remove-first": ["count-all"],
             "count-all": ["play"],
-            "play": [],
+            "play": ["list-functions"],
+            "list-functions": []
         },
         settings: { // This sets global flags.
             "__ALLOW_PARTIAL_REPLICATION": false,
@@ -46,7 +47,7 @@ export function currentLevel() {
 }
 
 export function getLevel() {
-  return currentLevelIdx;
+    return currentLevelIdx;
 }
 
 export function setLevel(idx) {
@@ -170,7 +171,7 @@ export function getSyntaxDefinition(name) {
 }
 
 const __fadeOverrides = {};
-export function getFadeLevel(exprType, level=null) {
+export function getFadeLevel(exprType, level = null) {
     level = level === null ? currentLevel() : level;
     const fadeLevels = ACTIVE_PROGRESSION_DEFINITION.progression.levels[level].fade;
     if (typeof __fadeOverrides[exprType] === "number") {
@@ -189,7 +190,7 @@ export function forceFadeLevel(exprType, level) {
 export function isFadeBorder(exprType) {
     return currentLevel() !== 0 &&
         (getFadeLevel(exprType, currentLevel()) !==
-         getFadeLevel(exprType, currentLevel() - 1));
+            getFadeLevel(exprType, currentLevel() - 1));
 }
 
 export function overrideFadeLevel(cb) {

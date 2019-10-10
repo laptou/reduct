@@ -541,15 +541,21 @@ window.addNodeToBoard = function() {
     const d = document.querySelector("#add-node");
     d.classList.remove("visible");
 
-    const ss = document.querySelector("#targetNodeToAdd").value;
+    const stringOfNodes = document.querySelector("#targetNodeToAdd").value;
     const place = document.querySelector("#targetPlace").value;
 
     //storing current value for this session.
     const option = document.createElement("option");
-    option.setAttribute("value", ss);
+    option.setAttribute("value", stringOfNodes);
     document.querySelector("#valueOptions").appendChild(option);
 
     const newMacros = level.MACROS;
+
+    const re = /\s*;;\s*/;
+    const nodesToAdd = stringOfNodes.split(re);
+    console.log(nodesToAdd);
+
+    for(const ss of nodesToAdd){
     const newNames = [ss].map(str => es6.parser.parse(str, newMacros))
                          .reduce((a, b) => (Array.isArray(b) ? a.concat(b) : a.concat([b])), [])
                          .map(expr => es6.parser.extractDefines(es6, expr))
@@ -593,6 +599,7 @@ window.addNodeToBoard = function() {
   else if(place === "goal"){
     stg.store.dispatch(action.addGoalItem(newInputIds[0], flattened_s));
   }
+}
 
     //Preventing form to reload
     return false;
