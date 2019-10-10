@@ -1,194 +1,869 @@
 {
-    "chapterName": "Arrays",
-    "description": "Arrays can hold many things.",
+    "chapterName": "Count",
+    "description": "Harder levels using define",
     "language": "JavaScript",
     "levels": [
         {
             "animationScales": {},
             "board": [
-                "[_, _, _]"
+                "function count(a) {return (a == []) ? 0: count(remove_first(a)) + 1}",
+                "[A, A, C, A]"
             ],
-            "defines": [
-                "function get(a, i) { return 0;}",
-                "function fold(f, a, init) { return 0;}",
-                "function slice(array, begin, end) { return 0;}",
-                "function set(a, i, value) { return 0;}"
-            ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
-                "[A, B, C]"
+                "4"
             ],
+            "output": [],
             "syntax": [],
-            "textgoal": "Make an array with three elements",
+            "textgoal": "Let's count to 4!",
             "toolbox": [
-                "A",
-                "B",
-                "C",
-                "D",
-                "9"
-            ],
-            "tutorialUrl": "resources/videos/array-intro.mp4"
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "get",
-                "[A, B, _, D]"
-            ],
-            "defines": [
-                "function map(f, a) { return a; }",
-                "function length(a) { return 0; }"
-            ],
-            "globals": {},
-            "goal": [
-                "C"
-            ],
-            "syntax": [],
-            "textgoal": "\"get\" can get an element from an array",
-            "toolbox": [
-                "0",
-                "1",
-                "2",
-                "3",
-                "4",
-                "C"
+                "count",
+                "first"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "map(addOne, [1, _, 4])"
+                "function count(a) {return (a == _) ? _: count(remove_first(a)) + 1}"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
-                "[2, 4, 5]"
-            ],
-            "syntax": [],
-            "textgoal": "\"map\" applies a function to every element",
-            "toolbox": [
-                "1",
-                "2",
-                "3",
-                "4",
-                "B"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "map(_, [1, 2, 4, 8])"
-            ],
-            "globals": {},
-            "goal": [
-                "[2, 4, 8, 16]"
-            ],
-            "syntax": [],
-            "toolbox": [
-                "x => x + _",
-                "y => y",
-                "1",
-                "2",
-                "x",
-                "16"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [],
-            "globals": {},
-            "goal": [
-                "3",
                 "0"
             ],
+            "output": [],
             "syntax": [],
-            "textgoal": "\"length\" gives the number of elements",
+            "textgoal": "Can you count a list with no items in it? ",
             "toolbox": [
-                "[1,2,3,4]",
-                "[A,B,C]",
+                "count",
+                "remove_first",
+                "0",
                 "[]",
-                "[true]",
-                "__unlimited; length"
+                "[]",
+                "[A]"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "map(length, _)",
-                "[[A], _, _]"
+                "function count(a) {return (a == []) ? 0: _ + _}",
+                "count"
             ],
-            "defines": [
-                "function concat(left,right) { return a; }"
-            ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
-                "[1, 0, 2]"
+                "3"
             ],
+            "output": [],
             "syntax": [],
-            "textgoal": "An array can hold other arrays",
+            "textgoal": "Let's count to 3!",
             "toolbox": [
+                "count",
+                "remove_first",
+                "1",
+                "[B, B, B]",
+                "a",
+                "0"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function count(a) {return (a == _) ? _ : _ + _}",
+                "count"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "4"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Can you count a mixed list?",
+            "toolbox": [
+                "remove_first",
+                "count",
                 "0",
-                "[A, B]",
+                "1",
+                "a",
+                "[A, B, C, A]",
                 "[]"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "[1]"
+                "function count_target(a, target) {(a == []) ? 0: (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
-                "[4,3,2,1]"
-            ],
-            "syntax": [],
-            "textgoal": "\"concat\" glues arrays together",
-            "toolbox": [
-                "__unlimited; concat",
-                "[4]",
-                "[_,2]",
-                "[4,3]",
-                "A",
                 "3"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Can you count only one type of object? ",
+            "toolbox": [
+                "count_target",
+                "A",
+                "B",
+                "[A, B, A, A]"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "get(_, 2)"
+                "function count_target(a, target) {(_ == _) ? _: (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "0"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Let's count a list of 0!",
+            "toolbox": [
+                "count_target",
+                "A",
+                "B",
+                "0",
+                "1",
+                "[]",
+                "[]",
+                "a"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function count_target(a, target) {(a == []) ? 0: (_ == _) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "1"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Can you count to 1? ",
+            "toolbox": [
+                "count_target",
+                "first",
+                "remove_first",
+                "a",
+                "target",
+                "[B, A, A]",
+                "B"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function count_target(a, target) {(a == []) ? 0: (first(a) == target) ? _ + _: count_target(remove_first(a), target)}"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "3"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Can we still count this list? ",
+            "toolbox": [
+                "first",
+                "remove_first",
+                "0",
+                "1",
+                "count_target",
+                "target",
+                "a",
+                "A",
+                "count_target",
+                "[A, A, A]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function count_target(a, target) {(a == []) ? 0: (first(a) == target) ? count_target(remove_first(a), target) + 1: _}"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "2"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Can you fill out the bottom part? ",
+            "toolbox": [
+                "0",
+                "1",
+                "target",
+                "remove_first",
+                "first",
+                "count_target",
+                "B",
+                "[B, A, B]",
+                "a",
+                "count_target"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function count_target(a, target) {(a == []) ? 0:( _ == _) ? _ + _: _}"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "3"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Can you fill out the whole thing? ",
+            "toolbox": [
+                "__unlimited; first",
+                "__unlimited; target",
+                "__unlimited; a",
+                "__unlimited; count_target",
+                "__unlimited; remove_first",
+                "1",
+                "0",
+                "B",
+                "[B, B, B, A]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function count_target(a, target) {(a == []) ? 0: (_ == _) ? _ + _: _}"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "2"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Let's fill out the whole function!",
+            "toolbox": [
+                "__unlimited; first",
+                "__unlimited; target",
+                "__unlimited; a",
+                "__unlimited; remove_first",
+                "__unlimited; count_target",
+                "__unlimited; 0",
+                "__unlimited; 1",
+                "__unlimited; []",
+                "A",
+                "B",
+                "[A, B, B, A]",
+                "[]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "concat"
             ],
             "globals": {},
             "goal": [
-                "C"
+                "[A, B, A]"
             ],
+            "output": [],
             "syntax": [],
+            "textgoal": "Just as a reminder, concat glues two arrays together. ",
+            "toolbox": [
+                "[A]",
+                "[B, A]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? remove_value(remove_first(a), target): concat([first(a)], remove_value(remove_first(a), target))}"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[A, A, A]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Can you remove something from this list? ",
+            "toolbox": [
+                "remove_value",
+                "B",
+                "[A, B, A, A]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function remove_value(a, target) {(_ == _) ? _: (first(a) == target) ? remove_value(remove_first(a), target): concat([first(a)], remove_value(remove_fisrt(a), target))}"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "What happens when you put in an empty list? ",
+            "toolbox": [
+                "remove_value",
+                "__unlimited; []",
+                "0",
+                "1",
+                "a"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function remove_value(a, target) {(a == []) ? []: (_ == _) ? remove_value(remove_first(a), target): concat([first(a)], remove_value(remove_first(a), target))}"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[B, B, B]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "What do you want to remove? ",
+            "toolbox": [
+                "remove_value",
+                "remove_first",
+                "first",
+                "a",
+                "target",
+                "A",
+                "B",
+                "[A, B, B, B]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? _ : concat([first(a)], remove_value(remove_first(a), target))}"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[A, A]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "What happens when your first item is the target? ",
+            "toolbox": [
+                "__unlimited; remove_value",
+                "remove_first",
+                "target",
+                "first",
+                "a",
+                "concat",
+                "B",
+                "[A, B, A, B]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? remove_value(remove_first(a, target), _ ):concat([first(a)], remove_value(remove(first(a), target))}"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[B, B]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "What happens when your first item isn't the target? ",
+            "toolbox": [
+                "concat",
+                "[first(a)]",
+                "first",
+                "__unlimited; a",
+                "__unlimited; remove_value",
+                "remove_first",
+                "target",
+                "A",
+                "[A, A, B, B]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? _ : _}"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[A, A, A]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Can you fill out the entire bottom section? ",
             "toolbox": [
                 "__unlimited; concat",
-                "[A]",
+                "__unlimited; [first(a)]",
+                "__unlimited; first",
+                "__unlimited; a",
+                "__unlimited; remove_value",
+                "__unlimited; remove_first",
+                "__unlimited; target",
                 "A",
-                "[C, B, A]",
-                "[]",
-                "[B]",
-                "D"
+                "[A, B, B, A, A]"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "map(_, [1, 2, 1, 4])"
+                "function remove_value(a, target) {(_ == _) ? _: (_ == _) ? _ : _}",
+                "[A, B, A, A]",
+                "B"
             ],
-            "globals": {},
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
             "goal": [
-                "[true, false, true, false]"
+                "[A, A, A]"
             ],
+            "output": [],
             "syntax": [],
-            "textgoal": "Make a function that sees if a number is 1",
+            "textgoal": "Can you fill out the whole thing? ",
             "toolbox": [
-                "a => _",
-                "_ == _",
-                "1",
-                "2",
-                "true",
-                "a"
+                "__unlimited; concat",
+                "__unlimited; [first(a)]",
+                "__unlimited; first",
+                "__unlimited; a",
+                "__unlimited; remove_value",
+                "__unlimited; remove_first",
+                "__unlimited; target",
+                "__unlimited; []",
+                "__unlimited; 0"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function replace_value(a, target, replacement) {(a == []) ? [] : (first(a) == target) ? concat([replacement], replace_value(remove_first(a), target, replacement)): concat([first(a)],replace_value(remove_first(a), target, replacement))}",
+                "replace_value",
+                "[5, 6, 7]"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[5, 8, 7]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Replace value allows you to replace one value for another. ",
+            "toolbox": [
+                "6",
+                "8",
+                "7"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function replace_value(a, target, replacement) {(_ == _) ? _ : (first(a) == target) ? concat([replacement], replace_value(remove_first(a), target, replacement)): concat([first(a)],replace_value(remove_first(a), target, replacement))}",
+                "replace_value",
+                "[5, 6, 7]"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "What happens when you have an empty list? ",
+            "toolbox": [
+                "0",
+                "a",
+                "__unlimited; []"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function replace_value(a, target, replacement) {(a == []) ? [] : (_ == _) ? concat([replacement], replace_value(remove_first(a), target, replacement)): concat([first(a)],replace_value(remove_first(a), target, replacement))}",
+                "replace_value",
+                "[4, 7, 8]",
+                "7",
+                "9"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[4, 9, 8]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "How can you make sure you are replacing the right value? ",
+            "toolbox": [
+                "first",
+                "a",
+                "target",
+                "replacement",
+                "remove_first"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function replace_value(a, target, replacement) {(a == []) ? [] : (first(a) == target) ?  _: concat([first(a)],replace_value(remove_first(a), target, replacement))}",
+                "replace_value",
+                "[6, 7, 11]",
+                "11",
+                "9"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[6, 7, 9]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "What happens when the first value is the target? ",
+            "toolbox": [
+                "concat",
+                "replacement",
+                "[replacement]",
+                "replace_value",
+                "first",
+                "a",
+                "remove_first",
+                "target"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function replace_value(a, target, replacement) {(a == []) ? [] : (first(a) == target) ? concat([replacement], replace_value(remove_first(a), target, replacement)): _}",
+                "replace_value",
+                "[3,4]",
+                "5",
+                "3"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[5, 4]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "What happens if the first value isn't the target? ",
+            "toolbox": [
+                "concat",
+                "first",
+                "[first]",
+                "a",
+                "replace_value",
+                "a",
+                "remove_first",
+                "target",
+                "replacement",
+                "[remove_first]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function replace_value(a, target, replacement) {(a == []) ? [] : (first(a) == target) ? _ : _}",
+                "replace_value",
+                "[7,9]",
+                "9",
+                "2"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[7, 2]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Let's fill out the bottom part!",
+            "toolbox": [
+                "__unlimited; concat",
+                "__unlimited; replacement",
+                "__unlimited; [replacement]",
+                "__unlimited; replace_value",
+                "__unlimited; remove_first",
+                "__unlimited; a",
+                "__unlimited; target",
+                "__unlimited; first",
+                "__unlimited; [first]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function replace_value(a, target, replacement) {(_ == _) ? _: (_ == _) ? _ : _}",
+                "replace_value",
+                "[12, 15, 21]",
+                "12",
+                "14"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[14, 15, 21]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Let's fill out the whole function!",
+            "toolbox": [
+                "__unlimited; concat",
+                "__unlimited; replacement",
+                "__unlimited; [replacement]",
+                "__unlimited; replace_value",
+                "__unlimited; remove_first",
+                "__unlimited; a",
+                "__unlimited; target",
+                "__unlimited; first",
+                "__unlimited; [first]",
+                "__unlimited; []"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function insert_in_order(a, target) {(a == []) ? [target] : (first(a) < target) ? concat([first(a)], insert_in_order(remove_first(a), target)): concat([target],a)}",
+                "insert_in_order",
+                "[10, 15, 18]"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[10, 14, 15, 18"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Insert in order inserts a number so the whole list is sorted. ",
+            "toolbox": [
+                "14"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function insert_in_order(a, target) {(_ == _) ? _ : (first(a) < target) ? concat([first(a)], insert_in_order(remove_first(a), target)): concat([target],a)}",
+                "insert_in_order",
+                "[]",
+                "2"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[2]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "What happens when you have an empty list? ",
+            "toolbox": [
+                "a",
+                "0",
+                "[]",
+                "target",
+                "[target]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function insert_in_order(a, target) {(a == []) ? [target] : (_ < _) ? concat([first(a)], insert_in_order(remove_first(a), target)): concat([target],a)}",
+                "insert_in_order",
+                "[1, 2, 3]",
+                "4"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[1, 2, 3, 4]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "How do you make sure you are inserting in the right place? ",
+            "toolbox": [
+                "first",
+                "a",
+                "target",
+                "remove_first",
+                "[target]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function insert_in_order(a, target) {(a == []) ? [target] : (first(a) < target) ? _: concat([target],a)}",
+                "insert_in_order",
+                "[5, 6]",
+                "7"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[5, 6, 7]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "What happens when your position value is less than the target? ",
+            "toolbox": [
+                "target",
+                "a",
+                "remove_first",
+                "[remove_first]",
+                "insert_in_order",
+                "[first]",
+                "a",
+                "first",
+                "concat"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function insert_in_order(a, target) {(a == []) ? [target] : (first(a) < target) ? concat([first(a)], insert_in_order(remove_first(a), target)): _}",
+                "insert_in_order",
+                "[6, 7, 8]",
+                "9"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[6, 7, 8, 9]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "What happens when your position value is more than the target? ",
+            "toolbox": [
+                "concat",
+                "a",
+                "target",
+                "[target]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function insert_in_order(a, target) {(a == []) ? [target] : (first(a) < target) ? _ : _}",
+                "insert_in_order",
+                "[10, 15, 23]",
+                "21"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[10, 15, 21, 23]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Let's fill out the bottom part!",
+            "toolbox": [
+                "__unlimited; concat",
+                "__unlimited; first",
+                "__unlimited; [first]",
+                "__unlimited; a",
+                "__unlimited; insert_in_order",
+                "__unlimited; remove_first",
+                "__unlimited; target",
+                "__unlimited; [target]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function insert_in_order(a, target) {(a == []) ? [target] : (first(a) < target) ? _ : _}",
+                "insert_in_order",
+                "[25, 29, 36]",
+                "21"
+            ],
+            "globals": {
+                "first": "function first(a) {return get(a,0);}",
+                "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
+            },
+            "goal": [
+                "[21, 25, 29, 36]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Let's fill out the whole function!",
+            "toolbox": [
+                "__unlimited; concat",
+                "__unlimited; first",
+                "__unlimited; [first]",
+                "__unlimited; a",
+                "__unlimited; insert_in_order",
+                "__unlimited; remove_first",
+                "__unlimited; target",
+                "__unlimited; [target]",
+                "__unlimited; []"
             ]
         }
     ],
@@ -198,12 +873,15 @@
         "C": "'triangle'",
         "D": "'circle'"
     },
-    "password": "clone",
     "resources": {
         "aliens": [
+            "alien-function-1",
+            "alien-bag-1",
+            "alien-conditional-1",
             "alien-bag-2",
+            "alien-function-2",
             "alien-bag-3",
-            "alien-bag-1"
+            "alien-function-3"
         ],
         "curve": [
             {

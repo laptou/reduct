@@ -61,18 +61,19 @@
         {
             "animationScales": {},
             "board": [
-                "(thing1) => (thing2) => thing1 == thing2",
-                "x => xx",
-                "1",
-                "2",
-                "2"
+                "false",
+                "_ == _",
+                "_ == 2"
             ],
             "globals": {},
             "goal": [
-                "true",
                 "false"
             ],
-            "syntax": []
+            "syntax": [],
+            "toolbox": [
+                "2",
+                "3"
+            ]
         },
         {
             "animationScales": {},
@@ -180,19 +181,125 @@
         {
             "animationScales": {},
             "board": [
-                "(oneThing) => (anotherThing) => oneThing== anotherThing",
-                "(x) => xx"
+                "(x) => _ == 'star' ? true : _",
+                "x"
             ],
             "globals": {},
             "goal": [
-                "false",
                 "true"
             ],
             "syntax": [],
             "toolbox": [
                 "'rect'",
+                "'rect'",
+                "'triangle'",
+                "_ == _"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "!true"
+            ],
+            "globals": {},
+            "goal": [
+                "false"
+            ],
+            "syntax": []
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "!_"
+            ],
+            "globals": {},
+            "goal": [
+                "false"
+            ],
+            "syntax": [],
+            "toolbox": [
+                "true",
+                "false"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "!_",
+                "_ == 'true'"
+            ],
+            "globals": {},
+            "goal": [
+                "true"
+            ],
+            "syntax": [],
+            "toolbox": [
+                "false"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "!_",
+                "_ == _ "
+            ],
+            "globals": {},
+            "goal": [
+                "false"
+            ],
+            "syntax": [],
+            "toolbox": [
+                "__unlimited;'star'",
+                "__unlimited;'triangle'"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "!_ ? 3 : 4"
+            ],
+            "globals": {},
+            "goal": [
+                "3"
+            ],
+            "syntax": [],
+            "toolbox": [
+                "true",
+                "false"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "_ ? 'star' : 'rect'",
+                "!_"
+            ],
+            "globals": {},
+            "goal": [
+                "'rect'"
+            ],
+            "syntax": [],
+            "toolbox": [
+                "true",
+                "false"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "_ ? _ : _",
+                "!_",
                 "'star'",
-                "'star'"
+                "'rect'"
+            ],
+            "globals": {},
+            "goal": [
+                "'rect'"
+            ],
+            "syntax": [],
+            "toolbox": [
+                "true",
+                "false"
             ]
         }
     ],

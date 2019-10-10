@@ -1,0 +1,7 @@
+﻿fade,board,goal,textgoal,toolbox,defines,output,globals,syntax,animationScales
+[{}],"['get(a, _)', '[A, B, B]']",['A'],"Just as a reminder, ""get"" gets an item from a list. Hint: the list starts at position 0. ","['0', '1', '2']",,[],{},[],{}
+[{}],"['function first(a) {return get(a,0);}', '[A, B, C]']",['A'],First allows you to get the first item in a list. ,['first'],"['function first(a) {return get(a,0);}']",[],{},[],{}
+[{}],"['function first(a) {return _}', '[B, A, A]']",['B'],Can you get the first item from this list? ,"['first', 'get(a,_)', '1', 'A', '0']",,[],{},[],{}
+[{}],"['function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}', '[A, A, B, A]']","['[A, B, A]']",Remove_first allows you to remove the first item in a list. ,['remove_first'],"['function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}']",[],{},[],{}
+[{}],"['function remove_first(a) {return _ < _ ? _: slice(a, 1, length(a))}', '[A]']",['[]'],What happens when the list only has one item in it? Hint: length allows you to find the length of a list and slice cuts up an array. ,"['remove_first', 'length(a)', 'slice(a, 1, length(a)', '0', '1', '2', '[]', 'a', 'A']",,[],{},[],{}
+[{}],"['function remove_first(a) {return length(a) < 2 ? []: _}', '[A, B, B, A]']","['[B, B, A]']",What happens in a normal list? ,"['remove_first', 'length(a)', 'slice(a, 1, length(a)','a', '0', '1', 'a', '2']",,[],{},[],{}

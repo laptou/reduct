@@ -6,189 +6,183 @@
         {
             "animationScales": {},
             "board": [
-                "[_, _, _]"
-            ],
-            "defines": [
-                "function get(a, i) { return 0;}",
-                "function fold(f, a, init) { return 0;}",
-                "function slice(array, begin, end) { return 0;}",
-                "function set(a, i, value) { return 0;}"
-            ],
-            "globals": {},
-            "goal": [
+                "function first(a) {return get(a,0);}",
                 "[A, B, C]"
             ],
-            "syntax": [],
-            "textgoal": "Make an array with three elements",
-            "toolbox": [
-                "A",
-                "B",
-                "C",
-                "D",
-                "9"
+            "defines": [
+                "function first(a) {return get(a,0);}"
             ],
-            "tutorialUrl": "resources/videos/array-intro.mp4"
+            "globals": {},
+            "goal": [
+                "A"
+            ],
+            "syntax": [],
+            "textgoal": "First allows you to get the first item in a list. "
         },
         {
             "animationScales": {},
             "board": [
-                "get",
-                "[A, B, _, D]"
+                "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
+                "[A, A, B, A]"
             ],
             "defines": [
-                "function map(f, a) { return a; }",
-                "function length(a) { return 0; }"
+                "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}"
             ],
             "globals": {},
             "goal": [
-                "C"
+                "[A, B, A]"
             ],
             "syntax": [],
-            "textgoal": "\"get\" can get an element from an array",
+            "textgoal": "Remove_first allows you to remove the first item in a list. ",
             "toolbox": [
-                "0",
-                "1",
-                "2",
-                "3",
-                "4",
-                "C"
+                "remove_first"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "map(addOne, [1, _, 4])"
-            ],
-            "globals": {},
-            "goal": [
-                "[2, 4, 5]"
-            ],
-            "syntax": [],
-            "textgoal": "\"map\" applies a function to every element",
-            "toolbox": [
-                "1",
-                "2",
-                "3",
-                "4",
-                "B"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "map(_, [1, 2, 4, 8])"
-            ],
-            "globals": {},
-            "goal": [
-                "[2, 4, 8, 16]"
-            ],
-            "syntax": [],
-            "toolbox": [
-                "x => x + _",
-                "y => y",
-                "1",
-                "2",
-                "x",
-                "16"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [],
-            "globals": {},
-            "goal": [
-                "3",
-                "0"
-            ],
-            "syntax": [],
-            "textgoal": "\"length\" gives the number of elements",
-            "toolbox": [
-                "[1,2,3,4]",
-                "[A,B,C]",
-                "[]",
-                "[true]",
-                "__unlimited; length"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "map(length, _)",
-                "[[A], _, _]"
+                "[1,3]",
+                "[1,3]",
+                "(firstNum) => (secondNum) => firstNum > secondNum ? firstNum : secondNum",
+                "x => xx"
             ],
             "defines": [
-                "function concat(left,right) { return a; }"
+                "function head(list) { return 0;}",
+                "function tail(list) {return 0;}"
             ],
             "globals": {},
             "goal": [
-                "[1, 0, 2]"
-            ],
-            "syntax": [],
-            "textgoal": "An array can hold other arrays",
-            "toolbox": [
-                "0",
-                "[A, B]",
-                "[]"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "[1]"
-            ],
-            "globals": {},
-            "goal": [
-                "[4,3,2,1]"
-            ],
-            "syntax": [],
-            "textgoal": "\"concat\" glues arrays together",
-            "toolbox": [
-                "__unlimited; concat",
-                "[4]",
-                "[_,2]",
-                "[4,3]",
-                "A",
                 "3"
+            ],
+            "syntax": [],
+            "textgoal": "Get the maximum number from the list",
+            "toolbox": [
+                "get",
+                "0",
+                "1"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "get(_, 2)"
+                "function max_num_list(list) { return list == [] ? 0 : (first( _ ) > max_num_list( _ )) ? first(list) : (max_num_list(remove_first(list))); }",
+                "max_num_list([1,3])"
+            ],
+            "defines": [
+                "function head(list) { return 0;}",
+                "function tail(list) {return 0;}"
             ],
             "globals": {},
             "goal": [
-                "C"
+                "3"
             ],
             "syntax": [],
+            "textgoal": "Define a function that returns the maximum number from the list. If the list is empty, return 0.",
             "toolbox": [
-                "__unlimited; concat",
-                "[A]",
-                "A",
-                "[C, B, A]",
-                "[]",
-                "[B]",
-                "D"
+                "list",
+                "list",
+                "first",
+                "remove_first"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "map(_, [1, 2, 1, 4])"
+                "[1,2,3,4,5]",
+                "function min_num_list(list) {return _; }",
+                "list == [] ? 100 : _",
+                "_ < min_num_list(_) ? first(list) : min_num_list(_) "
+            ],
+            "defines": [
+                "function head(list) { return 0;}",
+                "function tail(list) {return 0;}"
             ],
             "globals": {},
             "goal": [
-                "[true, false, true, false]"
+                "1"
             ],
             "syntax": [],
-            "textgoal": "Make a function that sees if a number is 1",
+            "textgoal": "Define a function that returns the minimum number of the list.",
             "toolbox": [
-                "a => _",
-                "_ == _",
+                "min_num_list",
+                "first",
+                "__unlimited; remove_first",
+                "__unlimited; list"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "[3,2,1,4,5]",
+                "function min_num_list(list) {return _; }",
+                "min_num_list",
+                "_ == [] ? 100 : _",
+                "_ < _ ? _ : _",
+                "min_num_list(_)"
+            ],
+            "defines": [
+                "function head(list) { return 0;}",
+                "function tail(list) {return 0;}"
+            ],
+            "globals": {},
+            "goal": [
+                "1"
+            ],
+            "syntax": [],
+            "textgoal": "Define a function that returns the minimum number of the list.",
+            "toolbox": [
+                "min_num_list",
+                "__unlimited; first",
+                "__unlimited; remove_first",
+                "__unlimited; list"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "['star', 'triangle', 'rect']",
+                "index_of(_, 'rect')",
+                "function index_of(list, value) { return first(list) == value ? 0 : (1 + index_of(remove_first(list) , _ )); }",
+                "value"
+            ],
+            "defines": [
+                "function head(list) { return 0;}",
+                "function tail(list) {return 0;}"
+            ],
+            "globals": {},
+            "goal": [
+                "2"
+            ],
+            "syntax": [],
+            "textgoal": "Define a function that returns the index of the item in the list."
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "['star', 'triangle', 'rect']",
+                "index_of(_, _)",
+                "function index_of(list, value) { return _ == _ ? _ : (_ + index_of(_ , value)); }",
+                "0",
                 "1",
-                "2",
-                "true",
-                "a"
+                "first",
+                "remove_first",
+                "value"
+            ],
+            "defines": [
+                "function head(list) { return 0;}",
+                "function tail(list) {return 0;}"
+            ],
+            "globals": {},
+            "goal": [
+                "1"
+            ],
+            "syntax": [],
+            "textgoal": "Define a function that returns the index of the item in the list.",
+            "toolbox": [
+                "'star'",
+                "'rect'",
+                "'triangle'",
+                "__unlimited; list"
             ]
         }
     ],

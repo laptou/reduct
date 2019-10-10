@@ -1,194 +1,135 @@
 {
-    "chapterName": "Arrays",
-    "description": "Arrays can hold many things.",
+    "chapterName": "Remove First",
+    "description": "Simple list function",
     "language": "JavaScript",
     "levels": [
         {
             "animationScales": {},
             "board": [
-                "[_, _, _]"
-            ],
-            "defines": [
-                "function get(a, i) { return 0;}",
-                "function fold(f, a, init) { return 0;}",
-                "function slice(array, begin, end) { return 0;}",
-                "function set(a, i, value) { return 0;}"
+                "get(a, _)",
+                "[A, B, B]"
             ],
             "globals": {},
             "goal": [
+                "A"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Just as a reminder, \"get\" gets an item from a list. Hint: the list starts at position 0. ",
+            "toolbox": [
+                "0",
+                "1",
+                "2"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function first(a) {return get(a,0);}",
                 "[A, B, C]"
             ],
-            "syntax": [],
-            "textgoal": "Make an array with three elements",
-            "toolbox": [
-                "A",
-                "B",
-                "C",
-                "D",
-                "9"
-            ],
-            "tutorialUrl": "resources/videos/array-intro.mp4"
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "get",
-                "[A, B, _, D]"
-            ],
             "defines": [
-                "function map(f, a) { return a; }",
-                "function length(a) { return 0; }"
+                "function first(a) {return get(a,0);}"
             ],
             "globals": {},
             "goal": [
-                "C"
+                "A"
             ],
+            "output": [],
             "syntax": [],
-            "textgoal": "\"get\" can get an element from an array",
+            "textgoal": "First allows you to get the first item in a list. ",
             "toolbox": [
-                "0",
-                "1",
-                "2",
-                "3",
-                "4",
-                "C"
+                "first"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "map(addOne, [1, _, 4])"
+                "function first(a) {return _}",
+                "[B, A, A]"
             ],
             "globals": {},
             "goal": [
-                "[2, 4, 5]"
-            ],
-            "syntax": [],
-            "textgoal": "\"map\" applies a function to every element",
-            "toolbox": [
-                "1",
-                "2",
-                "3",
-                "4",
                 "B"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "map(_, [1, 2, 4, 8])"
             ],
-            "globals": {},
-            "goal": [
-                "[2, 4, 8, 16]"
-            ],
+            "output": [],
             "syntax": [],
+            "textgoal": "Can you get the first item from this list? ",
             "toolbox": [
-                "x => x + _",
-                "y => y",
+                "first",
+                "get(a,_)",
                 "1",
-                "2",
-                "x",
-                "16"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [],
-            "globals": {},
-            "goal": [
-                "3",
+                "A",
                 "0"
-            ],
-            "syntax": [],
-            "textgoal": "\"length\" gives the number of elements",
-            "toolbox": [
-                "[1,2,3,4]",
-                "[A,B,C]",
-                "[]",
-                "[true]",
-                "__unlimited; length"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "map(length, _)",
-                "[[A], _, _]"
+                "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}",
+                "[A, A, B, A]"
             ],
             "defines": [
-                "function concat(left,right) { return a; }"
+                "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}"
             ],
             "globals": {},
             "goal": [
-                "[1, 0, 2]"
+                "[A, B, A]"
             ],
+            "output": [],
             "syntax": [],
-            "textgoal": "An array can hold other arrays",
+            "textgoal": "Remove_first allows you to remove the first item in a list. ",
             "toolbox": [
-                "0",
-                "[A, B]",
+                "remove_first"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function remove_first(a) {return _ < _ ? _: slice(a, 1, length(a))}",
+                "[A]"
+            ],
+            "globals": {},
+            "goal": [
                 "[]"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "[1]"
             ],
-            "globals": {},
-            "goal": [
-                "[4,3,2,1]"
-            ],
+            "output": [],
             "syntax": [],
-            "textgoal": "\"concat\" glues arrays together",
+            "textgoal": "What happens when the list only has one item in it? Hint: length allows you to find the length of a list and slice cuts up an array. ",
             "toolbox": [
-                "__unlimited; concat",
-                "[4]",
-                "[_,2]",
-                "[4,3]",
-                "A",
-                "3"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "get(_, 2)"
-            ],
-            "globals": {},
-            "goal": [
-                "C"
-            ],
-            "syntax": [],
-            "toolbox": [
-                "__unlimited; concat",
-                "[A]",
-                "A",
-                "[C, B, A]",
-                "[]",
-                "[B]",
-                "D"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "map(_, [1, 2, 1, 4])"
-            ],
-            "globals": {},
-            "goal": [
-                "[true, false, true, false]"
-            ],
-            "syntax": [],
-            "textgoal": "Make a function that sees if a number is 1",
-            "toolbox": [
-                "a => _",
-                "_ == _",
+                "remove_first",
+                "length(a)",
+                "slice(a, 1, length(a)",
+                "0",
                 "1",
                 "2",
-                "true",
-                "a"
+                "[]",
+                "a",
+                "A"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function remove_first(a) {return length(a) < 2 ? []: _}",
+                "[A, B, B, A]"
+            ],
+            "globals": {},
+            "goal": [
+                "[B, B, A]"
+            ],
+            "output": [],
+            "syntax": [],
+            "textgoal": "What happens in a normal list? ",
+            "toolbox": [
+                "remove_first",
+                "length(a)",
+                "slice(a, 1, length(a)",
+                "a",
+                "0",
+                "1",
+                "a",
+                "2"
             ]
         }
     ],
@@ -198,12 +139,15 @@
         "C": "'triangle'",
         "D": "'circle'"
     },
-    "password": "clone",
     "resources": {
         "aliens": [
+            "alien-function-1",
+            "alien-bag-1",
+            "alien-conditional-1",
             "alien-bag-2",
+            "alien-function-2",
             "alien-bag-3",
-            "alien-bag-1"
+            "alien-function-3"
         ],
         "curve": [
             {

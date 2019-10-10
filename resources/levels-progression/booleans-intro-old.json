@@ -1,209 +1,206 @@
 {
-    "chapterName": "Arrays",
-    "description": "Arrays can hold many things.",
+    "chapterName": "Booleans",
+    "description": "Tests of equality and typing operators",
     "language": "JavaScript",
     "levels": [
         {
             "animationScales": {},
             "board": [
-                "[_, _, _]"
-            ],
-            "defines": [
-                "function get(a, i) { return 0;}",
-                "function fold(f, a, init) { return 0;}",
-                "function slice(array, begin, end) { return 0;}",
-                "function set(a, i, value) { return 0;}"
+                "'triangle' == 'star'",
+                "_ == 'star'"
             ],
             "globals": {},
             "goal": [
-                "[A, B, C]"
+                "true",
+                "false"
             ],
             "syntax": [],
-            "textgoal": "Make an array with three elements",
             "toolbox": [
-                "A",
-                "B",
-                "C",
-                "D",
-                "9"
-            ],
-            "tutorialUrl": "resources/videos/array-intro.mp4"
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "get",
-                "[A, B, _, D]"
-            ],
-            "defines": [
-                "function map(f, a) { return a; }",
-                "function length(a) { return 0; }"
-            ],
-            "globals": {},
-            "goal": [
-                "C"
-            ],
-            "syntax": [],
-            "textgoal": "\"get\" can get an element from an array",
-            "toolbox": [
-                "0",
-                "1",
-                "2",
-                "3",
-                "4",
-                "C"
+                "'star'",
+                "'triangle'",
+                "'rect'"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "map(addOne, [1, _, 4])"
+                "(x) => x == 1",
+                "(number) => 2 == number",
+                "2"
             ],
             "globals": {},
             "goal": [
-                "[2, 4, 5]"
+                "true",
+                "false"
             ],
             "syntax": [],
-            "textgoal": "\"map\" applies a function to every element",
             "toolbox": [
                 "1",
-                "2",
                 "3",
-                "4",
-                "B"
+                "4"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "map(_, [1, 2, 4, 8])"
+                "(isTwo) => 2 == isTwo",
+                "(x) => xx"
             ],
             "globals": {},
             "goal": [
-                "[2, 4, 8, 16]"
+                "false",
+                "true"
             ],
             "syntax": [],
             "toolbox": [
-                "x => x + _",
-                "y => y",
+                "2",
+                "3",
+                "2"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "(thing1) => (thing2) => thing1 == thing2",
+                "x => xx",
                 "1",
                 "2",
-                "x",
-                "16"
+                "2"
+            ],
+            "globals": {},
+            "goal": [
+                "true",
+                "false"
+            ],
+            "syntax": []
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "true ? (1 + 2) : (5 + 6)"
+            ],
+            "globals": {},
+            "goal": [
+                "3"
+            ],
+            "syntax": [],
+            "tutorialUrl": "resources/videos/conditional.mp4"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "_ ? 'rect' : _"
+            ],
+            "globals": {},
+            "goal": [
+                "'star'"
+            ],
+            "syntax": [],
+            "toolbox": [
+                "false",
+                "true",
+                "'triangle'",
+                "'star'",
+                "'rect'"
             ]
         },
         {
             "animationScales": {},
-            "board": [],
+            "board": [
+                "(truth) => truth ? 'triangle' : 'rect'",
+                "(trueOrFalse) => trueOrFalse ? 'rect' : 'star'"
+            ],
             "globals": {},
             "goal": [
+                "'triangle'",
+                "'star'"
+            ],
+            "syntax": [],
+            "toolbox": [
+                "true",
+                "false",
+                "true",
+                "false"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "(z) => z == _ ? 4 : z"
+            ],
+            "globals": {},
+            "goal": [
+                "3"
+            ],
+            "syntax": [],
+            "toolbox": [
+                "1",
                 "3",
-                "0"
-            ],
-            "syntax": [],
-            "textgoal": "\"length\" gives the number of elements",
-            "toolbox": [
-                "[1,2,3,4]",
-                "[A,B,C]",
-                "[]",
-                "[true]",
-                "__unlimited; length"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "map(length, _)",
-                "[[A], _, _]"
-            ],
-            "defines": [
-                "function concat(left,right) { return a; }"
-            ],
-            "globals": {},
-            "goal": [
-                "[1, 0, 2]"
-            ],
-            "syntax": [],
-            "textgoal": "An array can hold other arrays",
-            "toolbox": [
-                "0",
-                "[A, B]",
-                "[]"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "[1]"
-            ],
-            "globals": {},
-            "goal": [
-                "[4,3,2,1]"
-            ],
-            "syntax": [],
-            "textgoal": "\"concat\" glues arrays together",
-            "toolbox": [
-                "__unlimited; concat",
-                "[4]",
-                "[_,2]",
-                "[4,3]",
-                "A",
                 "3"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "get(_, 2)"
+                "(x) => x == _ ? 4 : x",
+                "(y) => _ == y ? 5 : y"
             ],
             "globals": {},
             "goal": [
-                "C"
+                "5"
             ],
             "syntax": [],
             "toolbox": [
-                "__unlimited; concat",
-                "[A]",
-                "A",
-                "[C, B, A]",
-                "[]",
-                "[B]",
-                "D"
+                "1",
+                "2",
+                "3",
+                "1",
+                "4"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "map(_, [1, 2, 1, 4])"
+                "(thing1) => (thing2) => thing1 == thing2 ? 1 : 2",
+                "x => xx"
             ],
             "globals": {},
             "goal": [
-                "[true, false, true, false]"
+                "1",
+                "2"
             ],
             "syntax": [],
-            "textgoal": "Make a function that sees if a number is 1",
             "toolbox": [
-                "a => _",
-                "_ == _",
-                "1",
+                "3",
                 "2",
-                "true",
-                "a"
+                "3",
+                "4"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "(oneThing) => (anotherThing) => oneThing== anotherThing",
+                "(x) => xx"
+            ],
+            "globals": {},
+            "goal": [
+                "false",
+                "true"
+            ],
+            "syntax": [],
+            "toolbox": [
+                "'rect'",
+                "'star'",
+                "'star'"
             ]
         }
     ],
-    "macros": {
-        "A": "'star'",
-        "B": "'rect'",
-        "C": "'triangle'",
-        "D": "'circle'"
-    },
-    "password": "clone",
+    "password": "boole",
     "resources": {
         "aliens": [
-            "alien-bag-2",
-            "alien-bag-3",
-            "alien-bag-1"
+            "alien-boolean-1",
+            "alien-boolean-3"
         ],
         "curve": [
             {

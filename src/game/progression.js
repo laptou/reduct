@@ -12,16 +12,29 @@ export const PROGRESSIONS = {
             "application": ["definition"],
             "definition": ["testing"],
             "testing": ["lists-intro"],
+<<<<<<< HEAD
             "lists-intro": ["booleans-definition"],
             //          "array-booleans" : ["booleans-definition"],
+=======
+            "lists-intro": ["lists-query"],
+            "lists-query": ["booleans-definition"],
+//          "array-booleans" : ["booleans-definition"],
+>>>>>>> origin/aishwarya
             "booleans-definition": ["weekdays"],
             "weekdays": ["higher-order-functions"],
             "higher-order-functions": ["define-challenges"],
             "define-challenges": ["recursion-basics"],
             "recursion-basics": ["recursion-higher-order"],
+<<<<<<< HEAD
             "recursion-higher-order": ["play"],
             "play": ["list-functions"],
             "list-functions": []
+=======
+            "recursion-higher-order": ["remove-first"],
+            "remove-first": ["count-all"],
+            "count-all": ["play"],
+            "play": [],
+>>>>>>> origin/aishwarya
         },
         settings: { // This sets global flags.
             "__ALLOW_PARTIAL_REPLICATION": false,
