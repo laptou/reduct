@@ -6,24 +6,76 @@
         {
             "animationScales": {},
             "board": [
-                "function head(list) {return get(list, 0);}",
-                "function tail(list) {length(list) == 1 ? [] : slice(list, 1, length(list)); }"
+                "function isEmpty(list) { return  (length(list)) == (0); }"
             ],
             "defines": [
-                "function head(list) { return get(list, 0); }",
-                "function tail(list) {length(list) == 1 ? [] : slice(list, 1, length(list)); }"
+                "function isEmpty(list) { return  (length(list)) == (0); }"
+            ],
+            "globals": {},
+            "goal": [
+                "false",
+                "true",
+                "true"
+            ],
+            "syntax": [],
+            "textgoal": "We can easily see if a list has no items with the isEmpty() function.",
+            "toolbox": [
+                "[]",
+                "[]",
+                "[0,1,2,3]",
+                "__unlimited; isEmpty"
+            ],
+            "tutorialUrl": "None"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function head(list) { return  get(list, 0); }"
+            ],
+            "defines": [
+                "function head(list) { return get(list, 0); }"
             ],
             "globals": {},
             "goal": [
                 "1",
-                "[2,4,6]"
+                "1",
+                "1",
+                "2"
             ],
             "syntax": [],
-            "textgoal": "Head and Tail Introduction",
+            "textgoal": "We can use the head() function to get the first item in a list.",
             "toolbox": [
-                "__unlimited; [1,2,4,6]",
-                "head",
-                "tail"
+                "[1]",
+                "[2]",
+                "[1,2]",
+                "[1,2,3,4]",
+                "__unlimited; head"
+            ],
+            "tutorialUrl": "None"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function tail(list) {length(list) == 1 ? [] : slice(list, 1, length(list)); }"
+            ],
+            "defines": [
+                "function tail(list) {length(list) == 1 ? [] : slice(list, 1, length(list)); }"
+            ],
+            "globals": {},
+            "goal": [
+                "[]",
+                "[]",
+                "[2]",
+                "[2,3,4]"
+            ],
+            "syntax": [],
+            "textgoal": " \"We can use the tail() function to get everything except the head.\"",
+            "toolbox": [
+                "[1]",
+                "[2]",
+                "[1,2]",
+                "[1,2,3,4]",
+                "__unlimited; tail"
             ],
             "tutorialUrl": "None"
         },
@@ -34,10 +86,11 @@
             "goal": [
                 "0",
                 "1",
-                "2"
+                "2",
+                "3"
             ],
             "syntax": [],
-            "textgoal": "Access Elements",
+            "textgoal": "We can access every item in a list by using only head and tail functions.",
             "toolbox": [
                 "__unlimited; head",
                 "__unlimited; tail",
@@ -48,25 +101,21 @@
         {
             "animationScales": {},
             "board": [
-                "function cons(e,list) { return concat([e], list); }",
-                "[]"
+                "function cons(item,list) { return concat([item], list); }",
+                "[2,3]"
             ],
             "defines": [
-                "function cons(e,list) { return  concat([e], list); }"
+                "function cons(item,list) { return  concat([item], list); }"
             ],
             "globals": {},
             "goal": [
                 "[1,2,3]"
             ],
             "syntax": [],
-            "textgoal": "Build List",
+            "textgoal": "We can add new items into an old list using the cons() function to build a new list. Try building the list below.",
             "toolbox": [
                 "__unlimited; cons",
-                "1",
-                "5",
-                "4",
-                "2",
-                "3"
+                "1"
             ],
             "tutorialUrl": "None"
         },
@@ -80,7 +129,7 @@
                 "[1,9,5]"
             ],
             "syntax": [],
-            "textgoal": "Cons adds an element to the head position of a list.",
+            "textgoal": "Cons adds an element to the head position of a list. Try to build the list below.",
             "toolbox": [
                 "[9,5]",
                 "cons",
@@ -104,12 +153,12 @@
                 "[1,1,3,0,7]"
             ],
             "syntax": [],
-            "textgoal": "Build a list starting from the empty list using cons.",
+            "textgoal": "Build a the list below starting with an empty list using the cons() function.",
             "toolbox": [
-                "cons",
+                "__unlimited; cons",
                 "[]",
-                "head",
-                "tail"
+                "__unlimited; head",
+                "__unlimited; tail"
             ],
             "tutorialUrl": "None"
         },
@@ -127,7 +176,7 @@
                 "[1,2,3,4,5,1,2,3,4,5]"
             ],
             "syntax": [],
-            "textgoal": "Let's try duplicating a list",
+            "textgoal": "Let's try duplicating a list and make it twice its size.",
             "toolbox": [
                 "duplicate"
             ],
@@ -146,7 +195,7 @@
                 "[4,3,2,1]"
             ],
             "syntax": [],
-            "textgoal": "Reverse List",
+            "textgoal": "We can reverse a list using the reverse() function.",
             "toolbox": [
                 "[1,2,3,4]",
                 "reverse"
@@ -164,11 +213,33 @@
                 "[1,2,3,10]"
             ],
             "syntax": [],
-            "textgoal": "Add a value to the end of a list using reverse and cons.",
+            "textgoal": "We can add a value to the end of a list by using reverse() and cons().",
             "toolbox": [
                 "reverse",
                 "reverse",
                 "cons"
+            ],
+            "tutorialUrl": "None"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function addToEnd(item, list) { return  _; }"
+            ],
+            "globals": {},
+            "goal": [
+                "[1,2,3,4,5]"
+            ],
+            "syntax": [],
+            "textgoal": "Great! Now that we can add an item to the end of a list, let's wrap that up as a function called addToEnd().",
+            "toolbox": [
+                "__unlimited; reverse",
+                "cons",
+                "item",
+                "list",
+                "addToEnd",
+                "5",
+                "[1,2,3,4]"
             ],
             "tutorialUrl": "None"
         },
@@ -196,7 +267,7 @@
         {
             "animationScales": {},
             "board": [
-                "function count(list) {list == [] ? 0 : 1 + count(tail(list))}"
+                "function count(list) {isEmpty(list) ? 0 : 1 + count(tail(list))}"
             ],
             "defines": [
                 "function count(list) {list == [] ? 0 : 1 + count(tail(list))}"
@@ -205,16 +276,56 @@
             "goal": [
                 "1",
                 "3",
-                "0"
+                "0",
+                "4"
             ],
             "syntax": [],
-            "textgoal": "Counting Function",
+            "textgoal": "The function count() is the number of items in a list. Don't worry. We'll go over the details one step at a time.",
             "toolbox": [
                 "__unlimited; count",
                 "[1,3,5]",
                 "[]",
                 "[5]",
                 "[13,4,6,2]"
+            ],
+            "tutorialUrl": "None"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "(_) ? (_) : (_)"
+            ],
+            "globals": {},
+            "goal": [
+                "0"
+            ],
+            "syntax": [],
+            "textgoal": "If a list is empty, then there are 0 items. Otherwise, there are more than 0 items.",
+            "toolbox": [
+                "isEmpty",
+                "(_) == (_)",
+                "0",
+                "1",
+                "[]"
+            ],
+            "tutorialUrl": "None"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "[1,2,3,4]",
+                "count(tail)",
+                "(_) + (_)"
+            ],
+            "globals": {},
+            "goal": [
+                "4"
+            ],
+            "syntax": [],
+            "textgoal": "When the isn't empty, then there's 1 item for the head of the list. Afterward, we add 1 to the number of items in the tail of the list.",
+            "toolbox": [
+                "0",
+                "1"
             ],
             "tutorialUrl": "None"
         },
@@ -230,36 +341,11 @@
                 "103"
             ],
             "syntax": [],
-            "textgoal": "Reach the goal using Count.",
+            "textgoal": "Reach the goal using the count() function.",
             "toolbox": [
                 "head",
                 "tail",
                 "count"
-            ],
-            "tutorialUrl": "None"
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "count",
-                "count",
-                "count",
-                "[100]",
-                "[2,6,3]",
-                "[2,4]",
-                "[2,4,6,7]",
-                "[]",
-                "count",
-                "count"
-            ],
-            "globals": {},
-            "goal": [
-                "10"
-            ],
-            "syntax": [],
-            "textgoal": "Adding thee Results of Count",
-            "toolbox": [
-                "__unlimited; add"
             ],
             "tutorialUrl": "None"
         },
