@@ -1,5 +1,6 @@
 export default {
     // let expressions: let variable = e1 in e2
+    // syntax for defining this node: variable = e1 in e2
     letExpr: {
         kind: "expression",
         fields: ["variable"],
