@@ -147,10 +147,17 @@ export function makeParser(jssemant) {
         }
 
         case "AssignmentExpression": {
+            const name = jssemant.parser.templatizeName(node.left.name);
+
+            const argName = node.left.name;
+            const newMacros = {};
+            newMacros[argName] = () => jssemant.lambdaVar(argName);
+            const body = parseNode(node.right.right, Object.assign(macros, newMacros));
+
             return jssemant.letExpr(
-                parseNode(node.left, macros),
-                parseNode(node.right.left, macros),
-                parseNode(node.right.right, macros)
+                name,
+                parseNode(node.right.left, newMacros),
+                jssemant.lambda(jssemant.lambdaArg(argName), body)
             );
         }
 

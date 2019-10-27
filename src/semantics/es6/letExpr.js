@@ -1,36 +1,70 @@
 export default {
     letExpr: {
         kind: "expression",
-        fields: [],
-        subexpressions: ["variable", "e1", "e2"],
+        fields: ["variable"],
+        subexpressions: ["e1", "e2"],
         projection: {
-            type: "default",
+            type: "hbox",
             shape: "()",
-            color: "#3dfff3",
-            fields: ["'let'", "variable", "'='", "e1", "'in'", "e2"],
-            subexpScale: 0.9,
+            subexpScale: 1.0,
+            color: "salmon",
             padding: {
-                left: 25,
-                right: 25,
-                inner: 10,
-                top: 0,
-                bottom: 0,
+                top: 10,
+                left: 15,
+                inner: 5,
+                right: 10,
+                bottom: 10,
             },
+            children: [
+                {
+                    type: "text",
+                    text: "let ",
+                },
+                {
+                    type: "text",
+                    text: "{variable}",
+                },
+                {
+                    type: "text",
+                    text: "="
+                },
+                {
+                    type: "default",
+                    shape: "none",
+                    fields: ["e1"],
+                    subexpScale: 1.0,
+                },
+                {
+                    type: "text",
+                    text: "in"
+                },
+                {
+                    type: "default",
+                    shape: "none",
+                    fields: ["e2"],
+                    subexpScale: 1.0,
+                },
+            ]
         },
         validateStep: (semant, state, expr) =>{
-            const nodes = state.get("nodes");
-            const valueId = expr.get("value");
-            const valueExpr = nodes.get(valueId);
-
-            if(valueExpr.get("type") !== "bool") {
-                return [valueId, `! can only NOT booleans`];
+            const callee = state.getIn([ "nodes", expr.get("e2") ]);
+            const kind = semant.kind(state, callee);
+            if (kind === "value" &&
+                callee.get("type") !== "lambda" &&
+                callee.get("type") !== "reference") {
+                return [ expr.get("callee"), "We can only apply functions!" ];
             }
-
             return null;
         },
         smallStep: (semant,stage,state,expr) => {
-            const nodes = state.get("nodes");
-            return semant.bool(!nodes.get(expr.get("value")).get("value"));
+            const [ topNodeId, newNodeIds, addedNodes ] = semant.interpreter.betaReduce(
+                stage,
+                state, expr.get("e2"),
+                [ expr.get("e1") ]
+            );
+
+            return [ expr.get("id"), newNodeIds, addedNodes ];
+
         },
     }
 };
