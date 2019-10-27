@@ -146,6 +146,14 @@ export function makeParser(jssemant) {
             return fail("Lambda expessions with more than one input are currently undefined.", node);
         }
 
+        case "AssignmentExpression": {
+            return jssemant.letExpr(
+                parseNode(node.left, macros),
+                parseNode(node.right.left, macros),
+                parseNode(node.right.right, macros)
+            );
+        }
+
         case "UnaryExpression": {
           return jssemant.not(parseNode(node.argument,macros));
         }
