@@ -234,7 +234,7 @@ export default {
             type: "default",
             shape: "()",
             color: "lightgreen",
-            fields: ["value"],
+            fields: ["'\"'", "value", "'\"'"],
         },
     },
     unsol: {
