@@ -18,7 +18,7 @@
                 "true"
             ],
             "syntax": [],
-            "textgoal": "We can easily see if a list has no items with the isEmpty() function.",
+            "textgoal": "We can see if a list has no items with the isEmpty function.",
             "toolbox": [
                 "[]",
                 "[]",
@@ -43,7 +43,7 @@
                 "2"
             ],
             "syntax": [],
-            "textgoal": "We can use the head() function to get the first item in a list.",
+            "textgoal": "We can use the head function to get the first item in a list.",
             "toolbox": [
                 "[1]",
                 "[2]",
@@ -69,7 +69,7 @@
                 "[2,3,4]"
             ],
             "syntax": [],
-            "textgoal": " \"We can use the tail() function to get everything except the head.\"",
+            "textgoal": " \"We can use the tail function to get everything except the head.\"",
             "toolbox": [
                 "[1]",
                 "[2]",
@@ -90,7 +90,7 @@
                 "3"
             ],
             "syntax": [],
-            "textgoal": "We can access every item in a list by using only head and tail functions.",
+            "textgoal": "We can access every item in a list by using just the head and tail functions.",
             "toolbox": [
                 "__unlimited; head",
                 "__unlimited; tail",
@@ -112,7 +112,7 @@
                 "[1,2,3]"
             ],
             "syntax": [],
-            "textgoal": "We can add new items into an old list using the cons() function to build a new list. Try building the list below.",
+            "textgoal": "We can add new items into an old list using the cons function to build a new list. Try building the list below.",
             "toolbox": [
                 "__unlimited; cons",
                 "1"
@@ -153,32 +153,12 @@
                 "[1,1,3,0,7]"
             ],
             "syntax": [],
-            "textgoal": "Build a the list below starting with an empty list using the cons() function.",
+            "textgoal": "Build a the list below starting with an empty list using the cons function.",
             "toolbox": [
                 "__unlimited; cons",
                 "[]",
                 "__unlimited; head",
                 "__unlimited; tail"
-            ],
-            "tutorialUrl": "None"
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function duplicate(list) { return concat(list, list); }",
-                "[1,2,3,4,5]"
-            ],
-            "defines": [
-                "function duplicate(list) { return concat(list, list); }"
-            ],
-            "globals": {},
-            "goal": [
-                "[1,2,3,4,5,1,2,3,4,5]"
-            ],
-            "syntax": [],
-            "textgoal": "Let's try duplicating a list and make it twice its size.",
-            "toolbox": [
-                "duplicate"
             ],
             "tutorialUrl": "None"
         },
@@ -247,7 +227,8 @@
             "animationScales": {},
             "board": [
                 "reverse",
-                "[4,2,7]"
+                "[4,2,7]",
+                "[4,2]"
             ],
             "globals": {},
             "goal": [
@@ -256,10 +237,10 @@
             "syntax": [],
             "textgoal": "Let's try out the functions you've now seen to reach the goal.",
             "toolbox": [
-                "duplicate",
                 "tail",
                 "head",
-                "5",
+                "4",
+                "cons",
                 "cons"
             ],
             "tutorialUrl": "None"
@@ -303,7 +284,6 @@
             "textgoal": "If a list is empty, then there are 0 items. Otherwise, there are more than 0 items.",
             "toolbox": [
                 "isEmpty",
-                "(_) == (_)",
                 "0",
                 "1",
                 "[]"
@@ -322,7 +302,7 @@
                 "4"
             ],
             "syntax": [],
-            "textgoal": "When the isn't empty, then there's 1 item for the head of the list. Afterward, we add 1 to the number of items in the tail of the list.",
+            "textgoal": "When the isn't empty, then there's 1 item for the head of the list. Afterward, we also add the number of items in the tail of the list.",
             "toolbox": [
                 "0",
                 "1"
@@ -341,7 +321,7 @@
                 "103"
             ],
             "syntax": [],
-            "textgoal": "Reach the goal using the count() function.",
+            "textgoal": "Reach the goal using the functions in the toolbox.",
             "toolbox": [
                 "head",
                 "tail",
@@ -360,7 +340,7 @@
                 "[2,1]"
             ],
             "syntax": [],
-            "textgoal": "Use Count to Build a List",
+            "textgoal": "Use count function to create numbers and build a List",
             "toolbox": [
                 "__unlimited; cons",
                 "[]",
@@ -383,7 +363,7 @@
                 "false"
             ],
             "syntax": [],
-            "textgoal": "Compare the sizes of lists",
+            "textgoal": "Build the smallList function to count how many items are smaller than 3.",
             "toolbox": [
                 "count",
                 "[1,5]",
@@ -391,26 +371,7 @@
                 "[]",
                 "list",
                 "[1,2,4,3]",
-                "__unlimited; tooSmall"
-            ],
-            "tutorialUrl": "None"
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "2",
-                "[]",
-                "cons"
-            ],
-            "globals": {},
-            "goal": [
-                "8"
-            ],
-            "syntax": [],
-            "textgoal": "Powers of Twos",
-            "toolbox": [
-                "__unlimited; duplicate",
-                "count"
+                "__unlimited; smallList"
             ],
             "tutorialUrl": "None"
         },
@@ -418,8 +379,6 @@
             "animationScales": {},
             "board": [
                 "[5,4,3,2,1]",
-                "(_) == (_)",
-                "[]",
                 "[1,2,3,4,5,6,7]",
                 "function my_count(list) { return  _; }",
                 "my_count",
@@ -431,7 +390,9 @@
                 "7"
             ],
             "syntax": [],
+            "textgoal": "Using all that you've seen, let's try building our own count function.",
             "toolbox": [
+                "isEmpty",
                 "0",
                 "1",
                 "(_) == (_)",
@@ -445,19 +406,36 @@
         {
             "animationScales": {},
             "board": [
+                "[1,0,0]",
+                "(x) => (x) == 0",
+                "function checkFirst(list,condition) { return  _; }",
+                "(condition(_)) ? (cons) : (_)"
+            ],
+            "globals": {},
+            "goal": [
+                "[0, 0]"
+            ],
+            "syntax": [],
+            "textgoal": "We can test a condition on the first item of a list. Let's try that. If the condition is true, return the original list. If false, return only the tail of that list.",
+            "toolbox": [
+                "checkFirst",
+                "__unlimited; head(list)",
+                "__unlimited; tail(list)"
+            ],
+            "tutorialUrl": "None"
+        },
+        {
+            "animationScales": {},
+            "board": [
                 "function countCondition(list,cond) { return  _; }",
-                "(_) == (_)",
-                "countCondition",
-                "countCondition",
-                "(_) ? (_) : (_)",
-                "(_) ? (_) : (_)",
-                "[]",
-                "(cond)(_)",
+                "countCondition(_, cond)",
+                "countCondition(_, cond)",
+                "(_) ? (_) : ((_) ? (_) : (_))",
                 "countCondition([0,0,0,3,2], x => x == 0)",
                 "countCondition([3,6,8,9],x => x > 5)"
             ],
             "defines": [
-                "function countCondition(list, cond) { head(list) == [] ? 0 : (cond(head(list))) ? 1 + countCondition(tail(list), cond) : countCondition(tail(list), cond) }"
+                "function countCondition(list, cond) { isEmpty(list) ? 0 : (cond(head(list))) ? 1 + countCondition(tail(list), cond) : countCondition(tail(list), cond) }"
             ],
             "globals": {},
             "goal": [
@@ -465,12 +443,13 @@
                 "3"
             ],
             "syntax": [],
-            "textgoal": "We can count only when a condition is true too. Let's build that function.",
+            "textgoal": "We can count an item in a list only when a condition is true too. Let's build that function.",
             "toolbox": [
-                "__unlimited; list",
-                "__unlimited; head",
-                "__unlimited; cond",
-                "__unlimited; tail",
+                "isEmpty",
+                "list",
+                "__unlimited; head(list)",
+                "(cond)(_)",
+                "__unlimited; tail(list)",
                 "0",
                 "0",
                 "1",
@@ -486,15 +465,14 @@
             ],
             "globals": {},
             "goal": [
-                "3"
+                "2"
             ],
             "syntax": [],
             "textgoal": "Use the functions on lists to reach the goal.",
             "toolbox": [
-                "[0,4,5,0]",
+                "[0,4,5,0,0]",
                 "cons",
                 "head",
-                "duplicate",
                 "tail"
             ],
             "tutorialUrl": "None"
@@ -517,7 +495,7 @@
                 "[]"
             ],
             "syntax": [],
-            "textgoal": "Introducing Filter",
+            "textgoal": "We can use a filter function that only keeps items that makes a condition true. Check it out!",
             "toolbox": [
                 "__unlimited; [1,2,3,4]",
                 "__unlimited; filter"
@@ -538,7 +516,7 @@
                 "[3,2,1]"
             ],
             "syntax": [],
-            "textgoal": "Remove Zeros in Lists",
+            "textgoal": "Let's try keeping all the items that are bigger than zero in the Lists",
             "toolbox": [
                 "(_) > (0)",
                 "__unlimited; biggerThanZero",
@@ -563,7 +541,7 @@
                 "[true]"
             ],
             "syntax": [],
-            "textgoal": "Keep True Values in the Lists",
+            "textgoal": "Like before, let's keep only the True items in the Lists. Can you build a new function that uses filter?",
             "toolbox": [
                 "x",
                 "filter",
@@ -587,7 +565,7 @@
                 "[]"
             ],
             "syntax": [],
-            "textgoal": "Remove a Specific Number from List",
+            "textgoal": "We can also use filter to remove a specific number from the List",
             "toolbox": [
                 "x",
                 "num",
@@ -603,14 +581,12 @@
             "board": [
                 "function my_filter(list,f) { return  _; }",
                 "[]",
-                "[]",
                 "cons",
-                "(_) ? (_) : (_)",
-                "my_filter",
-                "my_filter",
-                "(_) ? (_) : (_)",
+                "my_filter(_, f)",
+                "my_filter(_, f)",
+                "(_) ? (_) : ((_) ? (_) : (_))",
                 "(f)(_)",
-                "(_) == (_)"
+                "isEmpty(list)"
             ],
             "globals": {},
             "goal": [
@@ -618,15 +594,13 @@
                 "[1,2,3]"
             ],
             "syntax": [],
-            "textgoal": "Build Filter",
+            "textgoal": "Now, let's trying building our own filter function.",
             "toolbox": [
-                "__unlimited; f",
-                "__unlimited; list",
                 "__unlimited; my_filter",
                 "(e) => (e) == (e)",
                 "(e) => (e) == (2)",
-                "__unlimited; head",
-                "__unlimited; tail",
+                "__unlimited; head(list)",
+                "__unlimited; tail(list)",
                 "__unlimited; [1,2,3]"
             ],
             "tutorialUrl": "None"
