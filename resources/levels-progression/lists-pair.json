@@ -16,7 +16,8 @@
             "textgoal": "A Pair has two elements. We call the first one key, the second one value.",
             "toolbox": [
                 "'star'",
-                "1"
+                "1",
+                "\"\"string\"\""
             ]
         },
         {
@@ -101,7 +102,7 @@
                 "function findKey(list, value) {return _ == _ ? _ : findKey(_, _);}",
                 "getValue(_)",
                 "[['star', 5], ['rect', 4], ['triangle', 3]]",
-                "findValue(_, _)"
+                "findKey(_, _)"
             ],
             "defines": [
                 "function findKey(list, value) {return 0;}"
@@ -113,9 +114,9 @@
             "syntax": [],
             "textgoal": "Define a function that finds the key given the value.",
             "toolbox": [
-                "'star'",
-                "'rect'",
-                "'triangle'",
+                "5",
+                "4",
+                "3",
                 "__unlimited; list",
                 "__unlimited; first",
                 "__unlimited; remove_first",
@@ -175,26 +176,7 @@
         {
             "animationScales": {},
             "board": [
-                "[\"star\", \"star\", \"rect\", \"star\"]",
-                "createPair",
-                "x => x == _"
-            ],
-            "globals": {},
-            "goal": [
-                "[\"star\", 3]"
-            ],
-            "syntax": [],
-            "textgoal": "How many 'star' are there in the list?",
-            "toolbox": [
-                "countCondition",
-                "unlimited; 'star'",
-                "'rect'"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "[[\"\"Amy\"\", \"\"happy\"\"], [\"\"Tony\"\", \"\"sad\"\"], [\"\"Eric\"\", \"\"happy\"\"], [\"\"Michelle\"\", \"\"sad\"\"]]",
+                "[['Amy', 'happy'], ['Tony', 'sad'], ['Eric', 'happy'], ['Michelle', 'sad']]",
                 "getValue",
                 "function countHappy(list) {return list == [] ? 0 : _;}",
                 "countHappy(_)",
@@ -209,9 +191,9 @@
             "syntax": [],
             "textgoal": "How many people are happy?",
             "toolbox": [
-                "unlimited; head",
-                "unlimited; list",
-                "unlimited; tail",
+                "__unlimited; head",
+                "__unlimited; list",
+                "__unlimited; tail",
                 "1",
                 "0"
             ]
@@ -219,7 +201,7 @@
         {
             "animationScales": {},
             "board": [
-                "[[\"\"Amy\"\", \"\"happy\"\"], [\"\"Tony\"\", \"\"sad\"\"], [\"\"Eric\"\", \"\"happy\"\"], [\"\"Michelle\"\", \"\"sad\"\"]]",
+                "[['Amy', 'happy'], ['Tony', 'sad'], ['Eric', 'happy'], ['Michelle', 'sad']]",
                 "function countHappy(list) {return _;}",
                 "countCondition",
                 "x => _ == _",
@@ -242,21 +224,21 @@
         {
             "animationScales": {},
             "board": [
-                "[[\"\"Amy\"\", \"\"happy\"\"], [\"\"Tony\"\", \"\"sad\"\"], [\"\"Eric\"\", \"\"happy\"\"], [\"\"Michelle\"\", \"\"sad\"\"]]",
+                "[['Amy', 'happy'], ['Tony', 'sad'], ['Eric', 'happy'], ['Michelle', 'sad']]",
                 "function getSad(list) {return _ == [] ? [] : (getValue(head(list)) == \"\"sad\"\" ? cons(_, getSad(_)) : _);}",
                 "getSad",
                 "getSad"
             ],
             "globals": {},
             "goal": [
-                "[\"\"Tony\"\", \"\"Michelle\"\"]"
+                "['Tony', 'Michelle']"
             ],
             "syntax": [],
             "textgoal": "Get a list of all the people who are sad",
             "toolbox": [
-                "unlimited; head",
-                "unlimited; tail",
-                "unlimited; list",
+                "__unlimited; head",
+                "__unlimited; tail",
+                "__unlimited; list",
                 "getValue",
                 "happyToExcited",
                 "getKey"
@@ -265,7 +247,7 @@
         {
             "animationScales": {},
             "board": [
-                "[[\"\"Amy\"\", \"\"happy\"\"], [\"\"Tony\"\", \"\"sad\"\"], [\"\"Eric\"\", \"\"happy\"\"], [\"\"Michelle\"\", \"\"sad\"\"]]",
+                "[['Amy', 'happy'], ['Tony', 'sad'], ['Eric', 'happy'], ['Michelle', 'sad']]",
                 "function happyToExcited(list) {return _ == [] ? _ : (_ == \"\"happy\"\" ? cons(_, \"\"excited\"\"), happyToExcited(_)) : cons(_, _));}",
                 "getValue",
                 "updatePair",
@@ -273,14 +255,14 @@
             ],
             "globals": {},
             "goal": [
-                "[[\"\"Amy\"\", \"\"excited\"\"], [\"\"Tony\"\", \"\"sad\"\"], [\"\"Eric\"\", \"\"excited\"\"], [\"\"Michelle\"\", \"\"sad\"\"]]"
+                "[['Amy', 'excited'], ['Tony', 'sad'], ['Eric', 'excited'], ['Michelle', 'sad']]"
             ],
             "syntax": [],
             "textgoal": "The happy people are now excited. Update the list!",
             "toolbox": [
-                "unlimited; head",
-                "unlimited; tail",
-                "unlimited; list",
+                "__unlimited; head",
+                "__unlimited; tail",
+                "__unlimited; list",
                 "getKey",
                 "getSad",
                 "[]"
