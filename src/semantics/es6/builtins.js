@@ -44,8 +44,15 @@ function builtinRepeat(expr, semant, nodes) {
 // Evaluate the "length" function. Return null if failure.
 function builtinLength(expr, semant, nodes) {
     const arr = nodes.get(expr.get("arg_a"));
-    if (arr.get("type") !== "array") console.error("Bad call to length")
-    return semant.number(arr.get("length"));
+    if (arr.get("type") === "array") {
+        return semant.number(arr.get("length"));
+    }
+    else if (arr.get("type") === "string") {
+        return semant.number(arr.get("value").length);
+    }
+    else {
+        console.error("Bad call to length");
+    }
 }
 
 // Evaluate the "get" function. Return null if failure.
@@ -55,7 +62,13 @@ function builtinGet(expr, semant, nodes) {
     const i = nodes.get(expr.get("arg_i"));
     const iv = i.get("value");
     const n = arr.get("length");
-    return hydrateLocked(nodes.get(arr.get(`elem${iv}`)), semant, nodes);
+    if (arr.get("type") === "string") {
+        return semant.string(arr.get("value")[iv]);
+    }
+    else if (arr.get("type") === "array") {
+        return hydrateLocked(nodes.get(arr.get(`elem${iv}`)), semant, nodes);
+    }
+
 }
 
 function validateGet(expr, semant, state) {
@@ -192,11 +205,16 @@ function builtinSlice(expr, semant, nodes) {
         e = nodes.get(expr.get("arg_end")).get("value"),
         n = a.length; // arr.get("length");
 
-    const slice = [];
-    for (let i = b; i < e; i++) {
-        slice.push(a[`elem${i}`]);
+    if (a.type === "array") {
+        const slice = [];
+        for (let i = b; i < e; i++) {
+            slice.push(a[`elem${i}`]);
+        }
+        return semant.array(e - b, ...slice);
     }
-    return semant.array(e - b, ...slice);
+    else if (a.type === "string") {
+        return semant.string(a.value.slice(b, e));
+    }
 }
 
 function validateSlice(expr, semant, state) {
@@ -226,13 +244,13 @@ function validateSlice(expr, semant, state) {
 export const builtins =
     immutable.Map({
         //repeat: {params: [{n: 'number'}, {f: 'function'}], impl: builtinRepeat},
-        length: { params: [{ a: 'array' }], impl: builtinLength },
-        get: { params: [{ a: 'array' }, { i: 'number' }], impl: builtinGet, validate: validateGet },
-        set: { params: [{ a: 'array' }, { i: 'number' }, { v: 'any' }], impl: builtinSet, validate: validateSet },
-        map: { params: [{ f: 'function' }, { a: 'array' }], impl: builtinMap },
-        fold: { params: [{ f: 'function' }, { a: 'array' }, { init: 'any' }], impl: builtinFold },
-        concat: { params: [{ left: 'array' }, { right: 'array' }], impl: builtinConcat },
-        slice: { params: [{ array: 'array' }, { begin: 'number' }, { end: 'number' }], impl: builtinSlice, validate: validateSlice }
+        length: {params: [{a: 'any'}], impl: builtinLength},
+        get: {params: [{a: 'any'}, {i: 'number'}], impl: builtinGet, validate: validateGet},
+        set: {params: [{a: 'array'}, {i: 'number'}, {v: 'any'}], impl: builtinSet, validate: validateSet},
+        map: {params: [{f: 'function'}, {a: 'array'}], impl: builtinMap},
+        fold: {params: [{f: 'function'}, {a: 'array'}, {init: 'any'}], impl: builtinFold},
+        concat: {params: [{left:'array'}, {right:'array'}], impl: builtinConcat},
+        slice: {params: [{array:'any'}, {begin: 'number'}, {end: 'number'}], impl: builtinSlice, validate: validateSlice}
     });
 
 function nth(i) {
