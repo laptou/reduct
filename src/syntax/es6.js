@@ -320,6 +320,9 @@ export function makeUnparser(jssemant) {
             }
             return `(${unparseES6(node.arg)}) => ${unparseES6(node.body)}`;
         }
+        case "letExpr": {
+           return `${node.variable} = ${unparseES6(node.e1)} in (${unparseES6(node.e2.body)})`
+        }
         case "reference": {
             if (node.params && node.params.some(name => node[`arg_${name}`].type !== "missing")) {
                 const args = node.params.map(name => unparseES6(node[`arg_${name}`])).join(", ");
