@@ -1,129 +1,154 @@
 {
-    "chapterName": "Arrays",
-    "description": "Arrays can hold many things.",
+    "chapterName": "Multi-Argument Functions",
+    "description": "Functions that take many things!",
     "language": "JavaScript",
     "levels": [
         {
             "animationScales": {},
             "board": [
-                "[1,3]",
-                "[1,3]",
-                "(headNum) => (secondNum) => headNum > secondNum ? headNum : secondNum",
-                "x => xx"
+                "[[\"Amy\", \"happy\"], [\"Tony\", \"sad\"], [\"Eric\", \"happy\"], [\"Michelle\", \"sad\"]]",
+                "function updateExcited(pair) {return _;}",
+                "function makeAllExcited(list) {return list == [] ? [] : _;}",
+                "makeAllExcited",
+                "updatePair",
+                "\"excited\"",
+                "pair"
             ],
             "globals": {},
             "goal": [
-                "3"
+                "[[\"Amy\", \"excited\"], [\"Tony\", \"excited\"], [\"Eric\", \"excited\"], [\"Michelle\", \"excited\"]]"
             ],
             "syntax": [],
-            "textgoal": "Get the maximum number from the list",
+            "textgoal": "Make EVERYONE excited. Update the list!",
             "toolbox": [
-                "get",
-                "0",
-                "1"
+                "cons",
+                "updateExcited",
+                "__unlimted; tail",
+                "__unlimited; head",
+                "__unlimited; list"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "function max_num_list(list) { return list == [] ? 0 : (head( _ ) > max_num_list( _ )) ? head(list) : (max_num_list(tail(list))); }",
-                "max_num_list([1,3])"
+                "[[\"Amy\", \"happy\"], [\"Tony\", \"sad\"], [\"Eric\", \"happy\"], [\"Michelle\", \"sad\"]]",
+                "function updateExcited(pair) {return updatePair(pair, \"excited\");}",
+                "map(updateExcited, _)"
+            ],
+            "defines": [
+                "function updateExcited(pair) {return updatePair(pair, \"excited\");}"
             ],
             "globals": {},
             "goal": [
-                "3"
+                "[[\"Amy\", \"excited\"], [\"Tony\", \"excited\"], [\"Eric\", \"excited\"], [\"Michelle\", \"excited\"]]"
             ],
             "syntax": [],
-            "textgoal": "Define a function that returns the maximum number from the list. If the list is empty, return 0.",
-            "toolbox": [
-                "list",
-                "list",
-                "head",
-                "tail"
-            ]
+            "textgoal": "Make everyone excited. Even faster!"
         },
         {
             "animationScales": {},
             "board": [
                 "[1,2,3,4,5]",
-                "function min_num_list(list) {return _; }",
-                "list == [] ? 100 : _",
-                "_ < min_num_list(_) ? head(list) : min_num_list(_) "
+                "map",
+                "addOne"
             ],
             "globals": {},
             "goal": [
-                "1"
+                "[2,3,4,5,6]"
             ],
             "syntax": [],
-            "textgoal": "Define a function that returns the minimum number of the list.",
+            "textgoal": "Map takes in a function, and applies it to every element in the list. Try it!"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "[[\"Amy\", \"happy\"], [\"Tony\", \"sad\"], [\"Eric\", \"happy\"], [\"Michelle\", \"sad\"]]",
+                "function makeAllExcited(list) {return _;}",
+                "map"
+            ],
+            "globals": {},
+            "goal": [
+                "[[\"Amy\", \"excited\"], [\"Tony\", \"excited\"], [\"Eric\", \"excited\"], [\"Michelle\", \"excited\"]]"
+            ],
+            "syntax": [],
+            "textgoal": "Now, let's make everyone excited using map!",
             "toolbox": [
-                "min_num_list",
-                "head",
-                "__unlimited; tail",
-                "__unlimited; list"
+                "updatePair",
+                "updateExcited",
+                "\"excited\""
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "[3,2,1,4,5]",
-                "function min_num_list(list) {return _; }",
-                "min_num_list",
-                "_ == [] ? 100 : _",
-                "_ < _ ? _ : _",
-                "min_num_list(_)"
+                "[[\"Amy\", \"happy\"], [\"Tony\", \"sad\"], [\"Eric\", \"happy\"], [\"Michelle\", \"sad\"]]",
+                "function updateHappy(pair) {return updatePair(_, _);}",
+                "function makeAllExcited(list) {return _ == _? _ : _;}",
+                "pair",
+                "\"happy\"",
+                "updateHappy",
+                "makeAllExcited",
+                "makeAllExcited"
             ],
             "globals": {},
             "goal": [
-                "1"
+                "[[\"Amy\", \"happy\"], [\"Tony\", \"happy\"], [\"Eric\", \"happy\"], [\"Michelle\", \"happy\"]]"
             ],
             "syntax": [],
-            "textgoal": "Define a function that returns the minimum number of the list.",
+            "textgoal": "Try and cheer up everyone to be happy!",
             "toolbox": [
-                "min_num_list",
+                "__unlimited; []",
+                "__unlimited; list",
+                "cons",
                 "__unlimited; head",
+                "__unlimited; tail"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "[[\"Amy\", \"happy\"], [\"Tony\", \"sad\"], [\"Eric\", \"happy\"], [\"Michelle\", \"sad\"]]",
+                "function sadToExcited(pair) {return _ == _ ? _ : _;}",
+                "map",
+                "sadToExcited"
+            ],
+            "globals": {},
+            "goal": [
+                "[[\"Amy\", \"happy\"], [\"Tony\", \"excited\"], [\"Eric\", \"happy\"], [\"Michelle\", \"excited\"]]"
+            ],
+            "syntax": [],
+            "textgoal": "Make the sad people excited!",
+            "toolbox": [
+                "__unlimited; updatePair",
+                "\"excited\"",
+                "\"sad\"",
+                "\"happy\"",
                 "__unlimited; tail",
+                "__unlimited; head",
+                "__unlimited; pair",
                 "__unlimited; list"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "['star', 'triangle', 'rect']",
-                "index_of(_, 'rect')",
-                "function index_of(list, value) { return head(list) == value ? 0 : (1 + index_of(tail(list) , _ )); }",
-                "value"
+                "[\"Amy\", \"Tony\",\"Eric\", \"Michelle\"]",
+                "createPair(_, _)",
+                "\"happy\"",
+                "function assignHappy(name) {return _;}",
+                "map",
+                "assignHappy",
+                "name"
             ],
             "globals": {},
             "goal": [
-                "2"
+                "[[\"Amy\", \"happy\"], [\"Tony\", \"happy\"], [\"Eric\", \"happy\"], [\"Michelle\", \"happy\"]]"
             ],
             "syntax": [],
-            "textgoal": "Define a function that returns the index of the item in the list."
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "['star', 'triangle', 'rect']",
-                "index_of(_, _)",
-                "function index_of(list, value) { return _ == _ ? _ : (_ + index_of(_ , value)); }",
-                "0",
-                "1",
-                "head",
-                "tail",
-                "value"
-            ],
-            "globals": {},
-            "goal": [
-                "1"
-            ],
-            "syntax": [],
-            "textgoal": "Define a function that returns the index of the item in the list.",
+            "textgoal": "Use map to create a list of pairs!",
             "toolbox": [
-                "'star'",
-                "'rect'",
-                "'triangle'",
-                "__unlimited; list"
+                "__unlimited; list",
+                "key"
             ]
         }
     ],
@@ -133,12 +158,10 @@
         "C": "'triangle'",
         "D": "'circle'"
     },
-    "password": "clone",
+    "password": "curry",
     "resources": {
         "aliens": [
-            "alien-bag-2",
-            "alien-bag-3",
-            "alien-bag-1"
+            "alien-function-2"
         ],
         "curve": [
             {
