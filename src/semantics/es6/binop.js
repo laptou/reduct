@@ -95,10 +95,19 @@ export default {
             if (op === "==" || op === "||" || op === "&&") {
                 result.set(id, "boolean");
 
-                if(op === "||" || op === "&&"){
-                result.set(expr.get("left"), "boolean");
-                result.set(expr.get("right"), "boolean");
-              }
+                if (op === "||" || op === "&&") {
+                    result.set(expr.get("left"), "boolean");
+                    result.set(expr.get("right"), "boolean");
+                }
+            }
+            else if (op === "+") {
+                // Not setting a type for '+',
+                // thereby keeping it undefined. This
+                // is necessary for concatenation of strings to work in an if else block.
+                // If we do not keep it undefined, then the types of the first and second slots
+                // in the if block do not match.
+                // TODO: (sameer) perhaps can be resolved by creating a new union type for
+                //  strings and numbers?
             }
             else {
                 result.set(id, "number");
@@ -126,7 +135,22 @@ export default {
             const rightExpr = nodes.get(right);
             const op = nodes.get(expr.get("op")).get("name");
 
-            if (op === "+" || op === "-" || op === ">" || op === "<") {
+            if (op === "+") {
+                if (leftExpr.get("ty") !== "number" && leftExpr.get("type") !== "string") {
+                    return [left, "+ can only add numbers or strings"];
+                }
+                else if (rightExpr.get("ty") !== "number" && rightExpr.get("type") !== "string") {
+                    return [right, "+ can only add numbers or strings"];
+                }
+                else if (leftExpr.get("ty") === "number" && rightExpr.get("type") === "string") {
+                    return [right, "cannot add a number and a string"];
+                }
+                else if (leftExpr.get("type") === "string" && rightExpr.get("ty") === "number") {
+                    return [right, "cannot add a number and a string"];
+                }
+            }
+
+            if (op === "-" || op === ">" || op === "<") {
                 if (leftExpr.get("ty") !== "number") {
                     return [ left, `${op} can only ${op === "+" ? "add" : "subtract"} numbers!` ];
                 }
@@ -155,8 +179,14 @@ export default {
             const nodes = state.get("nodes");
             const op = nodes.get(expr.get("op")).get("name");
             if (op === "+") {
-                return semant.number(nodes.get(expr.get("left")).get("value") +
-                                     nodes.get(expr.get("right")).get("value"));
+                if (nodes.get(expr.get("left")).get("type") === "number") {
+                    return semant.number(nodes.get(expr.get("left")).get("value") +
+                        nodes.get(expr.get("right")).get("value"));
+                }
+                else {
+                    return semant.string(nodes.get(expr.get("left")).get("value") +
+                        nodes.get(expr.get("right")).get("value"));
+                }
             }
             else if (op === "-") {
                 return semant.number(nodes.get(expr.get("left")).get("value") -
