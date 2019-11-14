@@ -5,40 +5,19 @@ export default {
         kind: "expression",
         fields: ["variable"],
         subexpressions: ["e1", "e2"],
+
         projection: {
-            type: "hbox",
-            shape: "()",
-            subexpScale: 1.0,
+            type: "vbox",
+            horizontalAlign: 0.0,
             color: "salmon",
-            padding: {
-                top: 10,
-                left: 15,
-                inner: 5,
-                right: 10,
-                bottom: 10,
-            },
-            children: [
-                {
-                    type: "text",
-                    text: "let ",
-                },
-                {
-                    type: "text",
-                    text: "{variable}",
-                },
-                {
-                    type: "text",
-                    text: "="
-                },
+            subexpScale: 1.0,
+            ellipsize: true,
+            rows: [
                 {
                     type: "default",
                     shape: "none",
-                    fields: ["e1"],
+                    fields: ["'let'", "variable", "'='", "e1", "'in'"],
                     subexpScale: 1.0,
-                },
-                {
-                    type: "text",
-                    text: "in"
                 },
                 {
                     type: "default",
@@ -46,7 +25,7 @@ export default {
                     fields: ["e2"],
                     subexpScale: 1.0,
                 },
-            ]
+            ],
         },
         validateStep: (semant, state, expr) =>{
             const callee = state.getIn([ "nodes", expr.get("e2") ]);
