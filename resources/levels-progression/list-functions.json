@@ -24,8 +24,7 @@
                 "[]",
                 "[0,1,2,3]",
                 "__unlimited; isEmpty"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
@@ -50,8 +49,7 @@
                 "[1,2]",
                 "[1,2,3,4]",
                 "__unlimited; head"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
@@ -76,8 +74,7 @@
                 "[1,2]",
                 "[1,2,3,4]",
                 "__unlimited; tail"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
@@ -95,8 +92,7 @@
                 "__unlimited; head",
                 "__unlimited; tail",
                 "__unlimited; [0,1,2,3]"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
@@ -116,8 +112,7 @@
             "toolbox": [
                 "__unlimited; cons",
                 "1"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
@@ -136,8 +131,7 @@
                 "tail",
                 "head",
                 "[5,9]"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
@@ -159,8 +153,7 @@
                 "[]",
                 "__unlimited; head",
                 "__unlimited; tail"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
@@ -179,8 +172,7 @@
             "toolbox": [
                 "[1,2,3,4]",
                 "reverse"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
@@ -198,8 +190,7 @@
                 "reverse",
                 "reverse",
                 "cons"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
@@ -220,8 +211,7 @@
                 "addToEnd",
                 "5",
                 "[1,2,3,4]"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
@@ -242,8 +232,7 @@
                 "4",
                 "cons",
                 "cons"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
@@ -268,46 +257,65 @@
                 "[]",
                 "[5]",
                 "[13,4,6,2]"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
             "board": [
-                "(_) ? (_) : (_)"
+                "count"
             ],
             "globals": {},
             "goal": [
-                "0"
+                "3"
             ],
             "syntax": [],
-            "textgoal": "If a list is empty, then there are 0 items. Otherwise, there are more than 0 items.",
+            "textgoal": "Which list will result in 3?",
             "toolbox": [
-                "isEmpty",
-                "0",
-                "1",
-                "[]"
-            ],
-            "tutorialUrl": "None"
+                "[]",
+                "[\"star\"]",
+                "[\"star\",\"rect\"]",
+                "[\"star\",\"triangle\",\"rect\"]"
+            ]
         },
         {
             "animationScales": {},
             "board": [
-                "[1,2,3,4]",
-                "count(tail)",
-                "(_) + (_)"
+                "[\"list\",\"of\",\"words\"]",
+                "[\"list\",\"of\",\"words\"]"
             ],
             "globals": {},
             "goal": [
+                "2",
                 "4"
             ],
             "syntax": [],
-            "textgoal": "When the isn't empty, then there's 1 item for the head of the list. Afterward, we also add the number of items in the tail of the list.",
+            "textgoal": "Let's change the sizes of our lists.",
             "toolbox": [
-                "0",
-                "1"
+                "cons",
+                "tail",
+                "count",
+                "count",
+                "\"anything\""
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "count(tail(list))",
+                "count([head(list)])",
+                "list => _",
+                "(_)(_)"
             ],
-            "tutorialUrl": "None"
+            "globals": {},
+            "goal": [
+                "2"
+            ],
+            "syntax": [],
+            "textgoal": "Let's get the size of our list.",
+            "toolbox": [
+                "(_) + (_)",
+                "[\"head\",\"tail\"]"
+            ]
         },
         {
             "animationScales": {},
@@ -326,8 +334,7 @@
                 "head",
                 "tail",
                 "count"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
@@ -347,8 +354,7 @@
                 "(_) + (_)",
                 "count",
                 "count"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
@@ -372,8 +378,7 @@
                 "list",
                 "[1,2,4,3]",
                 "__unlimited; smallList"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
@@ -400,8 +405,7 @@
                 "__unlimited; list",
                 "tail",
                 "__unlimited; my_count"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
@@ -421,8 +425,7 @@
                 "checkFirst",
                 "__unlimited; head(list)",
                 "__unlimited; tail(list)"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
@@ -454,8 +457,7 @@
                 "0",
                 "1",
                 "(_) + (_)"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
@@ -474,8 +476,7 @@
                 "cons",
                 "head",
                 "tail"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
@@ -499,8 +500,7 @@
             "toolbox": [
                 "__unlimited; [1,2,3,4]",
                 "__unlimited; filter"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
@@ -522,8 +522,7 @@
                 "__unlimited; biggerThanZero",
                 "[0,3,2,1]",
                 "[0,0,0,0]"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
@@ -548,8 +547,7 @@
                 "list",
                 "__unlimited; keepTrue",
                 "(_) == (true)"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
@@ -573,8 +571,7 @@
                 "!(_ == _)",
                 "x => _",
                 "filter"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
@@ -602,8 +599,7 @@
                 "__unlimited; head(list)",
                 "__unlimited; tail(list)",
                 "__unlimited; [1,2,3]"
-            ],
-            "tutorialUrl": "None"
+            ]
         },
         {
             "animationScales": {},
@@ -617,8 +613,7 @@
             "textgoal": "play",
             "toolbox": [
                 "addOne"
-            ],
-            "tutorialUrl": "None"
+            ]
         }
     ],
     "macros": {
