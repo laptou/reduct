@@ -83,54 +83,37 @@
             "goal": [
                 "0",
                 "1",
-                "2",
-                "3"
+                "2"
             ],
             "syntax": [],
             "textgoal": "We can access every item in a list by using just the head and tail functions.",
             "toolbox": [
                 "__unlimited; head",
                 "__unlimited; tail",
-                "__unlimited; [0,1,2,3]"
+                "__unlimited; [0,1,2]"
             ]
         },
         {
             "animationScales": {},
             "board": [
                 "function cons(item,list) { return concat([item], list); }",
-                "[2,3]"
+                "[2,3]",
+                "[\"rect\"]"
             ],
             "defines": [
                 "function cons(item,list) { return  concat([item], list); }"
             ],
             "globals": {},
             "goal": [
-                "[1,2,3]"
+                "[1,2,3]",
+                "[\"star\", \"rect\"]"
             ],
             "syntax": [],
-            "textgoal": "We can add new items into an old list using the cons function to build a new list. Try building the list below.",
+            "textgoal": "We can add new items into an old list using the cons function to build a new list. Try building the lists below.",
             "toolbox": [
                 "__unlimited; cons",
-                "1"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "[1,4,2]"
-            ],
-            "globals": {},
-            "goal": [
-                "[1,9,5]"
-            ],
-            "syntax": [],
-            "textgoal": "Cons adds an element to the head position of a list. Try to build the list below.",
-            "toolbox": [
-                "[9,5]",
-                "cons",
-                "tail",
-                "head",
-                "[5,9]"
+                "1",
+                "\"star\""
             ]
         },
         {
@@ -139,12 +122,11 @@
                 "1",
                 "7",
                 "0",
-                "3",
-                "1"
+                "3"
             ],
             "globals": {},
             "goal": [
-                "[1,1,3,0,7]"
+                "[1,3,0,7]"
             ],
             "syntax": [],
             "textgoal": "Build a the list below starting with an empty list using the cons function.",
@@ -158,6 +140,25 @@
         {
             "animationScales": {},
             "board": [
+                "[1,4,2]"
+            ],
+            "globals": {},
+            "goal": [
+                "[1,9,5]"
+            ],
+            "syntax": [],
+            "textgoal": "Try to build the list below.",
+            "toolbox": [
+                "[9,5]",
+                "cons",
+                "tail",
+                "head",
+                "[5,9]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
                 "function reverse(list) { (length(list) < 2) ? list : concat(reverse(tail(list)), [head(list)]) }"
             ],
             "defines": [
@@ -165,13 +166,16 @@
             ],
             "globals": {},
             "goal": [
-                "[4,3,2,1]"
+                "[4,3,2,1]",
+                "[\"\ud83c\udf7d\",\"\ud83d\udebd\",\"\ud83d\udca9\"]"
             ],
             "syntax": [],
-            "textgoal": "We can reverse a list using the reverse() function.",
+            "textgoal": "We can reverse lists using the reverse() function.",
             "toolbox": [
                 "[1,2,3,4]",
-                "reverse"
+                "reverse",
+                "reverse",
+                "[\"\ud83d\udca9\",\"\ud83d\udebd\",\"\ud83c\udf7d\"]"
             ]
         },
         {
@@ -250,7 +254,7 @@
                 "4"
             ],
             "syntax": [],
-            "textgoal": "The function count() is the number of items in a list. Don't worry. We'll go over the details one step at a time.",
+            "textgoal": "The count() function counts the number of items in a list.",
             "toolbox": [
                 "__unlimited; count",
                 "[1,3,5]",
@@ -262,14 +266,16 @@
         {
             "animationScales": {},
             "board": [
+                "count",
                 "count"
             ],
             "globals": {},
             "goal": [
-                "3"
+                "3",
+                "2"
             ],
             "syntax": [],
-            "textgoal": "Which list will result in 3?",
+            "textgoal": "Which lists will give 3 and 2?",
             "toolbox": [
                 "[]",
                 "[\"star\"]",
@@ -303,8 +309,7 @@
             "board": [
                 "count(tail(list))",
                 "count([head(list)])",
-                "list => _",
-                "(_)(_)"
+                "(list => (_ + _))(_)"
             ],
             "globals": {},
             "goal": [
@@ -313,7 +318,6 @@
             "syntax": [],
             "textgoal": "Let's get the size of our list.",
             "toolbox": [
-                "(_) + (_)",
                 "[\"head\",\"tail\"]"
             ]
         },
@@ -347,7 +351,7 @@
                 "[2,1]"
             ],
             "syntax": [],
-            "textgoal": "Use count function to create numbers and build a List",
+            "textgoal": "Use count function to create new numbers and build a list",
             "toolbox": [
                 "__unlimited; cons",
                 "[]",
@@ -360,7 +364,7 @@
             "animationScales": {},
             "board": [
                 "(_) < (_)",
-                "function smallList(list) { return  _; }"
+                "function isASmallList(list) { return  _; }"
             ],
             "globals": {},
             "goal": [
@@ -377,7 +381,7 @@
                 "[]",
                 "list",
                 "[1,2,4,3]",
-                "__unlimited; smallList"
+                "__unlimited; isASmallList"
             ]
         },
         {
@@ -410,53 +414,99 @@
         {
             "animationScales": {},
             "board": [
-                "[1,0,0]",
-                "(x) => (x) == 0",
-                "function checkFirst(list,condition) { return  _; }",
-                "(condition(_)) ? (cons) : (_)"
+                "function countStars(list) { return  _; }",
+                "(isEmpty) ? (_) : (((head) == (\"star\")) ? ((_) + (countStars(tail(_)))) : (countStars(tail(_))))"
             ],
             "globals": {},
             "goal": [
-                "[0, 0]"
+                "1",
+                "1",
+                "2"
             ],
             "syntax": [],
-            "textgoal": "We can test a condition on the first item of a list. Let's try that. If the condition is true, return the original list. If false, return only the tail of that list.",
+            "textgoal": "Let's only count how many specific items are in a list.",
             "toolbox": [
-                "checkFirst",
-                "__unlimited; head(list)",
-                "__unlimited; tail(list)"
+                "0",
+                "1",
+                "__unlimited; list",
+                "[\"star\"]",
+                "[\"star\",\"rect\",\"triangle\"]",
+                "[\"star\",\"rect\",\"star\"]",
+                "__unlimited; countStars"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "function countCondition(list,cond) { return  _; }",
-                "countCondition(_, cond)",
-                "countCondition(_, cond)",
-                "(_) ? (_) : ((_) ? (_) : (_))",
-                "countCondition([0,0,0,3,2], x => x == 0)",
-                "countCondition([3,6,8,9],x => x > 5)"
+                "function countHappy(list) { return  _; }",
+                "(isEmpty) ? (_) : (((head) == (\"\ud83d\ude03\")) ? ((_) + (countHappy(tail(_)))) : (countHappy(tail(_))))"
+            ],
+            "globals": {},
+            "goal": [
+                "0",
+                "1",
+                "3"
+            ],
+            "syntax": [],
+            "textgoal": "Let's only count how happy faces are in a list.",
+            "toolbox": [
+                "0",
+                "1",
+                "__unlimited; list",
+                "[\"\ud83d\ude21\"]",
+                "[\"\ud83d\ude03\",\"\ud83d\ude3f\",\"\ud83e\udd76\"]",
+                "[\"\ud83d\ude03\",\"\ud83d\ude03\",\"\ud83d\ude03\"]",
+                "__unlimited; countHappy"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function countMonkeys(list) { return  _; }",
+                "(isEmpty) ? (_) : (((head) == (\"\ud83d\udc12\")) ? ((_) + (countMonkeys(tail(_)))) : (countMonkeys(tail(_))))"
+            ],
+            "globals": {},
+            "goal": [
+                "0",
+                "1",
+                "0"
+            ],
+            "syntax": [],
+            "textgoal": "Let's only count how monkeys are in a list.",
+            "toolbox": [
+                "0",
+                "1",
+                "__unlimited; list",
+                "[\"\ud83e\udd86\"]",
+                "[\"\ud83d\udc2b\",\"\ud83d\udc33\",\"\ud83d\udc12\"]",
+                "[\"\ud83d\udc27\",\"\ud83e\udd81\",\"\ud83d\udc36\"]",
+                "__unlimited; countMonkeys"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function countCondition(list,cond) { return  (isEmpty) ? (_) : (((cond)(_)) ? ((_) + (countCondition(_, cond))) : countCondition(_, cond)); }",
+                "countCondition([\"\ud83d\ude03\",\"\ud83d\ude21\",\"\ud83d\ude03\"], (x) => (x) == (\"\ud83d\ude03\"))",
+                "countCondition([\"\ud83d\udc2b\",\"\ud83d\udc33\",\"\ud83d\udc12\"], (x) => (x) == (\"\ud83d\udc12\"))"
             ],
             "defines": [
                 "function countCondition(list, cond) { isEmpty(list) ? 0 : (cond(head(list))) ? 1 + countCondition(tail(list), cond) : countCondition(tail(list), cond) }"
             ],
             "globals": {},
             "goal": [
-                "3",
-                "3"
+                "1",
+                "2"
             ],
             "syntax": [],
-            "textgoal": "We can count an item in a list only when a condition is true too. Let's build that function.",
+            "textgoal": "Let's wrapped what we've done in a single function. We can count an item in a list only when a condition is true.",
             "toolbox": [
-                "isEmpty",
                 "list",
-                "__unlimited; head(list)",
-                "(cond)(_)",
+                "head(list)",
                 "__unlimited; tail(list)",
                 "0",
                 "0",
-                "1",
-                "(_) + (_)"
+                "1"
             ]
         },
         {
@@ -481,7 +531,7 @@
         {
             "animationScales": {},
             "board": [
-                "function filter(list,f) { return  ((list) == ([])) ? ([]) : ((((f)(head(list))) == (true)) ? (cons(head(list), filter(tail(list), f))) : (filter(tail(list), f))); }",
+                "function filter(list,f) { return  (isEmpty(list)) ? ([]) : ((((f)(head(list))) == (true)) ? (cons(head(list), filter(tail(list), f))) : (filter(tail(list), f))); }",
                 "(e) => (e) == (1)",
                 "(e) => (e) > (1)",
                 "(e) => (e) > (5)"
@@ -552,24 +602,22 @@
         {
             "animationScales": {},
             "board": [
-                "function removeNumber(list,num){ return _;}",
+                "function removeFace(list,face){ return _;}",
                 "list",
-                "3",
-                "12",
-                "[12,3,3,3,12,12,3]"
+                "\"\ud83d\ude2d\"",
+                "\"\ud83d\ude01\"",
+                "[\"\ud83d\ude01\",\"\ud83d\ude2d\",\"\ud83d\ude2d\",\"\ud83d\ude01\",\"\ud83d\ude01\",\"\ud83d\ude2d\"]"
             ],
             "globals": {},
             "goal": [
                 "[]"
             ],
             "syntax": [],
-            "textgoal": "We can also use filter to remove a specific number from the List",
+            "textgoal": "We can also use filter to remove a specific item from the list",
             "toolbox": [
-                "x",
-                "num",
-                "__unlimited; removeNumber",
-                "!(_ == _)",
-                "x => _",
+                "face",
+                "__unlimited; removeFace",
+                "x => !(x == _)",
                 "filter"
             ]
         },
@@ -578,27 +626,20 @@
             "board": [
                 "function my_filter(list,f) { return  _; }",
                 "[]",
-                "cons",
-                "my_filter(_, f)",
-                "my_filter(_, f)",
-                "(_) ? (_) : ((_) ? (_) : (_))",
-                "(f)(_)",
-                "isEmpty(list)"
+                "(isEmpty(list)) ? (_) : (((f)(_)) ? (cons(_, my_filter(_, f))) : (my_filter(_, f)))"
             ],
             "globals": {},
             "goal": [
-                "[2]",
-                "[1,2,3]"
+                "[2]"
             ],
             "syntax": [],
-            "textgoal": "Now, let's trying building our own filter function.",
+            "textgoal": "Now, let's trying completing our own filter function.",
             "toolbox": [
                 "__unlimited; my_filter",
-                "(e) => (e) == (e)",
                 "(e) => (e) == (2)",
                 "__unlimited; head(list)",
                 "__unlimited; tail(list)",
-                "__unlimited; [1,2,3]"
+                "[1,2,3]"
             ]
         },
         {
