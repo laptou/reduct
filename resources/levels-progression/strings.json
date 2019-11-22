@@ -13,6 +13,7 @@
             "goal": [
                 "\"ComputerScience\""
             ], 
+            "hideGlobals": [], 
             "syntax": [], 
             "textgoal": "Define a function to concatenate two strings", 
             "toolbox": [
@@ -34,6 +35,7 @@
             "goal": [
                 "\"eeffocsetalocohc\""
             ], 
+            "hideGlobals": [], 
             "syntax": [], 
             "textgoal": "Define a function that reverses a string", 
             "toolbox": [
@@ -54,6 +56,9 @@
                 "true", 
                 "false"
             ], 
+            "hideGlobals": [
+                "reverseString"
+            ], 
             "syntax": [], 
             "textgoal": "Define a function that checks if  string is a palindrome", 
             "toolbox": [
@@ -73,6 +78,7 @@
                 "10", 
                 "2"
             ], 
+            "hideGlobals": [], 
             "syntax": [], 
             "textgoal": "Define a function that counts the occurences of a given character", 
             "toolbox": [
