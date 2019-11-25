@@ -66,7 +66,7 @@ export default class Sidebar {
         indicator.padding.bottom = 0;
     }
 
-    startLevel(state) {
+    startLevel(state, hideGlobals = []) {
         // Only show globals if they have a reference on the board
         const nodes = state.get("nodes");
         const globals = state.get("globals");
@@ -76,7 +76,7 @@ export default class Sidebar {
         for (const id of state.get("toolbox").concat(state.get("board"))) {
             this.stage.semantics.search(nodes, id, (_, nid) => {
                 const expr = nodes.get(nid);
-                if (expr.get("type") === "reference" && globals.has(expr.get("name"))) {
+                if (expr.get("type") === "reference" && globals.has(expr.get("name")) && !hideGlobals.includes(expr.get("name"))) {
                     names.add(expr.get("name"));
                 }
             });
@@ -92,7 +92,7 @@ export default class Sidebar {
                 const id = state.get("globals").get(name);
                 this.stage.semantics.search(nodes, id, (_, nid) => {
                     const expr = nodes.get(nid);
-                    if (expr.get("type") === "reference" && globals.has(expr.get("name"))) {
+                    if (expr.get("type") === "reference" && globals.has(expr.get("name"))  && !hideGlobals.includes(expr.get("name"))) {
                         const name = expr.get("name");
                         if (!names.has(name)) {
                             names.add(name);

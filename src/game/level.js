@@ -92,7 +92,7 @@ export function startLevel(description, parse, store, stage) {
 
     stage.getTests(description.input, description.output);
     store.dispatch(action.startLevel(stage, goal, board, toolbox, globals));
-    stage.startLevel(description.textgoal, description.showConcreteGoal);
+    stage.startLevel(description.textgoal, description.showConcreteGoal, description.hideGlobals);
     stage.registerNewDefinedNames(newDefinedNames.map(elem => elem[0]));
 
     const state = stage.getState();
