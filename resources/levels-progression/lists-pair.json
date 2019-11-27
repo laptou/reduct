@@ -71,6 +71,26 @@
         {
             "animationScales": {},
             "board": [
+                "[[\"star\", 5], [\"rect\", 4], [\"triangle\", 3]]",
+                "get"
+            ],
+            "globals": {},
+            "goal": [
+                "4"
+            ],
+            "syntax": [],
+            "textgoal": "Get the pair first, then get the value.",
+            "toolbox": [
+                "getValue",
+                "getKey",
+                "0",
+                "1",
+                "2"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
                 "function findValue(list, key) {return getKey(_) == key ? _ : findValue(_, key);}",
                 "[[\"star\", 5], [\"rect\", 4], [\"triangle\", 3]]",
                 "findValue(_, _)"

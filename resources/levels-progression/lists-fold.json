@@ -6,504 +6,96 @@
         {
             "animationScales": {},
             "board": [
-                "function isEmpty(list) { return  (length(list)) == (0); }"
-            ],
-            "defines": [
-                "function isEmpty(list) { return  (length(list)) == (0); }"
-            ],
-            "globals": {},
-            "goal": [
-                "false",
-                "true",
-                "true"
-            ],
-            "syntax": [],
-            "textgoal": "We can see if a list has no items with the isEmpty function.",
-            "toolbox": [
-                "[]",
-                "[]",
-                "[0,1,2,3]",
-                "__unlimited; isEmpty"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function head(list) { return  get(list, 0); }"
-            ],
-            "defines": [
-                "function head(list) { return get(list, 0); }"
-            ],
-            "globals": {},
-            "goal": [
-                "1",
-                "1",
-                "1",
-                "2"
-            ],
-            "syntax": [],
-            "textgoal": "We can use the head function to get the first item in a list.",
-            "toolbox": [
-                "[1]",
-                "[2]",
-                "[1,2]",
-                "[1,2,3,4]",
-                "__unlimited; head"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function tail(list) {length(list) == 1 ? [] : slice(list, 1, length(list)); }"
-            ],
-            "defines": [
-                "function tail(list) {length(list) == 1 ? [] : slice(list, 1, length(list)); }"
-            ],
-            "globals": {},
-            "goal": [
-                "[]",
-                "[]",
-                "[2]",
-                "[2,3,4]"
-            ],
-            "syntax": [],
-            "textgoal": " \"We can use the tail function to get everything except the head.\"",
-            "toolbox": [
-                "[1]",
-                "[2]",
-                "[1,2]",
-                "[1,2,3,4]",
-                "__unlimited; tail"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [],
-            "globals": {},
-            "goal": [
-                "0",
-                "1",
-                "2"
-            ],
-            "syntax": [],
-            "textgoal": "We can access every item in a list by using just the head and tail functions.",
-            "toolbox": [
-                "__unlimited; head",
-                "__unlimited; tail",
-                "__unlimited; [0,1,2]"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function cons(item,list) { return concat([item], list); }",
-                "[2,3]",
-                "[\"rect\"]"
-            ],
-            "defines": [
-                "function cons(item,list) { return  concat([item], list); }"
-            ],
-            "globals": {},
-            "goal": [
-                "[1,2,3]",
-                "[\"star\", \"rect\"]"
-            ],
-            "syntax": [],
-            "textgoal": "We can add new items into an old list using the cons function to build a new list. Try building the lists below.",
-            "toolbox": [
-                "__unlimited; cons",
-                "1",
-                "\"star\""
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "1",
-                "7",
-                "0",
-                "3"
-            ],
-            "globals": {},
-            "goal": [
-                "[1,3,0,7]"
-            ],
-            "syntax": [],
-            "textgoal": "Build a the list below starting with an empty list using the cons function.",
-            "toolbox": [
-                "__unlimited; cons",
-                "[]",
-                "__unlimited; head",
-                "__unlimited; tail"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "[1,4,2]"
-            ],
-            "globals": {},
-            "goal": [
-                "[1,9,5]"
-            ],
-            "syntax": [],
-            "textgoal": "Try to build the list below.",
-            "toolbox": [
-                "[9,5]",
-                "cons",
-                "tail",
-                "head",
-                "[5,9]"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function reverse(list) { (length(list) < 2) ? list : concat(reverse(tail(list)), [head(list)]) }"
-            ],
-            "defines": [
-                "function reverse(list) { (length(list) < 2) ? list : concat(reverse(tail(list)), [head(list)]) }"
-            ],
-            "globals": {},
-            "goal": [
-                "[4,3,2,1]",
-                "[\"\ud83c\udf7d\",\"\ud83d\udebd\",\"\ud83d\udca9\"]"
-            ],
-            "syntax": [],
-            "textgoal": "We can reverse lists using the reverse() function.",
-            "toolbox": [
-                "[1,2,3,4]",
-                "reverse",
-                "reverse",
-                "[\"\ud83d\udca9\",\"\ud83d\udebd\",\"\ud83c\udf7d\"]"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "[1,2,3]",
-                "10"
-            ],
-            "globals": {},
-            "goal": [
-                "[1,2,3,10]"
-            ],
-            "syntax": [],
-            "textgoal": "We can add a value to the end of a list by using reverse() and cons().",
-            "toolbox": [
-                "reverse",
-                "reverse",
-                "cons"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function addToEnd(item, list) { return  _; }"
-            ],
-            "globals": {},
-            "goal": [
-                "[1,2,3,4,5]"
-            ],
-            "syntax": [],
-            "textgoal": "Great! Now that we can add an item to the end of a list, let's wrap that up as a function called addToEnd().",
-            "toolbox": [
-                "__unlimited; reverse",
-                "cons",
-                "item",
-                "list",
-                "addToEnd",
-                "5",
-                "[1,2,3,4]"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "reverse",
-                "[4,2,7]",
-                "[4,2]"
-            ],
-            "globals": {},
-            "goal": [
-                "[2,4,7,2,4]"
-            ],
-            "syntax": [],
-            "textgoal": "Let's try out the functions you've now seen to reach the goal.",
-            "toolbox": [
-                "tail",
-                "head",
-                "4",
-                "cons",
-                "cons"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function count(list) {isEmpty(list) ? 0 : 1 + count(tail(list))}"
-            ],
-            "defines": [
-                "function count(list) {list == [] ? 0 : 1 + count(tail(list))}"
-            ],
-            "globals": {},
-            "goal": [
-                "1",
-                "3",
-                "0",
-                "4"
-            ],
-            "syntax": [],
-            "textgoal": "The count() function counts the number of items in a list.",
-            "toolbox": [
-                "__unlimited; count",
                 "[1,3,5]",
-                "[]",
-                "[5]",
-                "[13,4,6,2]"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "count",
-                "count"
-            ],
-            "globals": {},
-            "goal": [
-                "3",
-                "2"
-            ],
-            "syntax": [],
-            "textgoal": "Which lists will give 3 and 2?",
-            "toolbox": [
-                "[]",
-                "[\"star\"]",
-                "[\"star\",\"rect\"]",
-                "[\"star\",\"triangle\",\"rect\"]"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "[\"list\",\"of\",\"words\"]",
-                "[\"list\",\"of\",\"words\"]"
-            ],
-            "globals": {},
-            "goal": [
-                "2",
-                "4"
-            ],
-            "syntax": [],
-            "textgoal": "Let's change the sizes of our lists.",
-            "toolbox": [
-                "cons",
-                "tail",
-                "count",
-                "count",
-                "\"anything\""
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "count(tail(list))",
-                "count([head(list)])",
-                "(list => (_ + _))(_)"
-            ],
-            "globals": {},
-            "goal": [
-                "2"
-            ],
-            "syntax": [],
-            "textgoal": "Let's get the size of our list.",
-            "toolbox": [
-                "[\"head\",\"tail\"]"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "[true,false,false,true]",
-                "[100,4,6,2]",
-                "(_) + (_)"
-            ],
-            "globals": {},
-            "goal": [
-                "103"
-            ],
-            "syntax": [],
-            "textgoal": "Reach the goal using the functions in the toolbox.",
-            "toolbox": [
-                "head",
-                "tail",
-                "count"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "[10]",
-                "[5,2]"
-            ],
-            "globals": {},
-            "goal": [
-                "[2,1]"
-            ],
-            "syntax": [],
-            "textgoal": "Use count function to create new numbers and build a list",
-            "toolbox": [
-                "__unlimited; cons",
-                "[]",
-                "(_) + (_)",
-                "count",
-                "count"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "(_) < (_)",
-                "function isASmallList(list) { return  _; }"
-            ],
-            "globals": {},
-            "goal": [
-                "true",
-                "true",
-                "false"
-            ],
-            "syntax": [],
-            "textgoal": "Build the smallList function to count how many items are smaller than 3.",
-            "toolbox": [
-                "count",
-                "[1,5]",
-                "3",
-                "[]",
-                "list",
-                "[1,2,4,3]",
-                "__unlimited; isASmallList"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "[5,4,3,2,1]",
-                "[1,2,3,4,5,6,7]",
-                "function my_count(list) { return  _; }",
-                "my_count",
-                "(_) ? (_) : (_)"
-            ],
-            "globals": {},
-            "goal": [
-                "5",
-                "7"
-            ],
-            "syntax": [],
-            "textgoal": "Using all that you've seen, let's try building our own count function.",
-            "toolbox": [
-                "isEmpty",
-                "0",
-                "1",
-                "(_) == (_)",
-                "(_) + (_)",
-                "__unlimited; list",
-                "tail",
-                "__unlimited; my_count"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function countStars(list) { return  _; }",
-                "(isEmpty) ? (_) : (((head) == (\"star\")) ? ((_) + (countStars(tail(_)))) : (countStars(tail(_))))"
-            ],
-            "globals": {},
-            "goal": [
-                "1",
-                "1",
-                "2"
-            ],
-            "syntax": [],
-            "textgoal": "Let's only count how many specific items are in a list.",
-            "toolbox": [
-                "0",
-                "1",
-                "__unlimited; list",
-                "[\"star\"]",
-                "[\"star\",\"rect\",\"triangle\"]",
-                "[\"star\",\"rect\",\"star\"]",
-                "__unlimited; countStars"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function countHappy(list) { return  _; }",
-                "(isEmpty) ? (_) : (((head) == (\"\ud83d\ude03\")) ? ((_) + (countHappy(tail(_)))) : (countHappy(tail(_))))"
-            ],
-            "globals": {},
-            "goal": [
-                "0",
-                "1",
-                "3"
-            ],
-            "syntax": [],
-            "textgoal": "Let's only count how happy faces are in a list.",
-            "toolbox": [
-                "0",
-                "1",
-                "__unlimited; list",
-                "[\"\ud83d\ude21\"]",
-                "[\"\ud83d\ude03\",\"\ud83d\ude3f\",\"\ud83e\udd76\"]",
-                "[\"\ud83d\ude03\",\"\ud83d\ude03\",\"\ud83d\ude03\"]",
-                "__unlimited; countHappy"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function countMonkeys(list) { return  _; }",
-                "(isEmpty) ? (_) : (((head) == (\"\ud83d\udc12\")) ? ((_) + (countMonkeys(tail(_)))) : (countMonkeys(tail(_))))"
-            ],
-            "globals": {},
-            "goal": [
-                "0",
-                "1",
-                "0"
-            ],
-            "syntax": [],
-            "textgoal": "Let's only count how monkeys are in a list.",
-            "toolbox": [
-                "0",
-                "1",
-                "__unlimited; list",
-                "[\"\ud83e\udd86\"]",
-                "[\"\ud83d\udc2b\",\"\ud83d\udc33\",\"\ud83d\udc12\"]",
-                "[\"\ud83d\udc27\",\"\ud83e\udd81\",\"\ud83d\udc36\"]",
-                "__unlimited; countMonkeys"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function countCondition(list,cond) { return  (isEmpty) ? (_) : (((cond)(_)) ? ((_) + (countCondition(_, cond))) : countCondition(_, cond)); }",
-                "countCondition([\"\ud83d\ude03\",\"\ud83d\ude21\",\"\ud83d\ude03\"], (x) => (x) == (\"\ud83d\ude03\"))",
-                "countCondition([\"\ud83d\udc2b\",\"\ud83d\udc33\",\"\ud83d\udc12\"], (x) => (x) == (\"\ud83d\udc12\"))"
+                "function add(a,b) {return a+b;}",
+                "fold(add, _, 0)"
             ],
             "defines": [
-                "function countCondition(list, cond) { isEmpty(list) ? 0 : (cond(head(list))) ? 1 + countCondition(tail(list), cond) : countCondition(tail(list), cond) }"
+                "function add(a,b) {return a+b;}"
             ],
             "globals": {},
             "goal": [
-                "1",
-                "2"
+                "9"
             ],
             "syntax": [],
-            "textgoal": "Let's wrapped what we've done in a single function. We can count an item in a list only when a condition is true.",
+            "textgoal": "Fold applies a function to every element in the list while 'combining' the results"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function myfold(func, list, accumulator) { return list == [] ? accumulator : (myfold(func, tail(list), ((func)(head(list), accumulator)) )) ;}",
+                "myfold(add, [1,2,3], 0)"
+            ],
+            "globals": {},
+            "goal": [
+                "6"
+            ],
+            "syntax": [],
+            "textgoal": "Let's dig into the body of the function fold"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function myfold(func, list, accumulator) { return _ == _ ? _ : (myfold(func, _, ((func)(_, _)) )) ;}",
+                "[]",
+                "accumulator",
+                "[1,2,3]",
+                "myfold(add, _, 0)",
+                "accumulator"
+            ],
+            "defines": [
+                "function myfold(func, list, accumulator) { return list == [] ? accumulator : (myfold(func, tail(list), ((func)(head(list), accumulator)) )) ;}"
+            ],
+            "globals": {},
+            "goal": [
+                "6"
+            ],
+            "syntax": [],
+            "textgoal": "Now, let's try and build fold ourselves!",
             "toolbox": [
-                "list",
-                "head(list)",
-                "__unlimited; tail(list)",
+                "__unlimited; list",
+                "__unlimited; head",
+                "__unlimited; tail"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "[[\"Lebron James\", [25, 20, 28]], [\"Anthony Davis\", [34, 32, 31]], [\"Kyle Kuzuma\", [8, 23, 17]], [\"JaVale McGee\", [10, 15, 14]], [\"Danny Green\", [11, 14, 19]]]",
+                "myfold(addFirstScore, _, _)",
+                "function addFirstScore(playerPair, acc) {return _ + get(_, _);}",
+                "getValue",
+                "playerPair",
+                "acc"
+            ],
+            "globals": {},
+            "goal": [
+                "88"
+            ],
+            "syntax": [],
+            "textgoal": "The list contains the points each player gained during the first 3 games (in order). Use fold and calculate how many points they gained in total for the first game.",
+            "toolbox": [
+                "__unlimited; 0"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "[[\"Lebron James\", [25, 20, 28]], [\"Anthony Davis\", [34, 32, 31]], [\"Kyle Kuzuma\", [8, 23, 17]], [\"JaVale McGee\", [10, 15, 14]], [\"Danny Green\", [11, 14, 19]]]",
+                "myfold(add, _, _)",
+                "map(getSecondScore, _)",
+                "function getSecondScore(playerPair) {return _;}",
+                "get",
+                "getValue",
+                "playerPair"
+            ],
+            "globals": {},
+            "goal": [
+                "104"
+            ],
+            "syntax": [],
+            "textgoal": "We can also use map to extract all the scores first, then apply fold.",
+            "toolbox": [
                 "0",
                 "1"
             ]
@@ -511,148 +103,26 @@
         {
             "animationScales": {},
             "board": [
-                "(x) => (x) == (0)",
-                "countCondition"
+                "[[\"Lebron James\", [25, 20, 28]], [\"Anthony Davis\", [34, 32, 31]], [\"Kyle Kuzuma\", [8, 23, 17]], [\"JaVale McGee\", [10, 15, 14]], [\"Danny Green\", [11, 14, 19]]]",
+                "map(getPoints, _)",
+                "function getPoints(playerPair) {return _;}",
+                "function getGameScore(gameIndex, list) {return myfold(add, _, _);}",
+                "get",
+                "getValue",
+                "playerPair"
             ],
             "globals": {},
             "goal": [
-                "2"
+                "109"
             ],
             "syntax": [],
-            "textgoal": "Use the functions on lists to reach the goal.",
+            "textgoal": "Try and generalize so that the user can pick which game to sum the points up.",
             "toolbox": [
-                "[0,4,5,0,0]",
-                "cons",
-                "head",
-                "tail"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function filter(list,f) { return  (isEmpty(list)) ? ([]) : ((((f)(head(list))) == (true)) ? (cons(head(list), filter(tail(list), f))) : (filter(tail(list), f))); }",
-                "(e) => (e) == (1)",
-                "(e) => (e) > (1)",
-                "(e) => (e) > (5)"
-            ],
-            "defines": [
-                "function filter(list,f) { return  ((list) == ([])) ? ([]) : ((((f)(head(list))) == (true)) ? (cons(head(list), filter(tail(list), f))) : (filter(tail(list), f))); }"
-            ],
-            "globals": {},
-            "goal": [
-                "[1]",
-                "[2,3,4]",
-                "[]"
-            ],
-            "syntax": [],
-            "textgoal": "We can use a filter function that only keeps items that makes a condition true. Check it out!",
-            "toolbox": [
-                "__unlimited; [1,2,3,4]",
-                "__unlimited; filter"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "filter",
-                "filter",
-                "num",
-                "function biggerThanZero(num) { return  _; }"
-            ],
-            "globals": {},
-            "goal": [
-                "[]",
-                "[3,2,1]"
-            ],
-            "syntax": [],
-            "textgoal": "Let's try keeping all the items that are bigger than zero in the Lists",
-            "toolbox": [
-                "(_) > (0)",
-                "__unlimited; biggerThanZero",
-                "[0,3,2,1]",
-                "[0,0,0,0]"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function keepTrue(list) { return  _; }",
-                "(x) => _",
-                "[false,false,false,true]",
-                "[false,false,true,false]",
-                "[false]"
-            ],
-            "globals": {},
-            "goal": [
-                "[]",
-                "[true]",
-                "[true]"
-            ],
-            "syntax": [],
-            "textgoal": "Like before, let's keep only the True items in the Lists. Can you build a new function that uses filter?",
-            "toolbox": [
-                "x",
-                "filter",
-                "list",
-                "__unlimited; keepTrue",
-                "(_) == (true)"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function removeFace(list,face){ return _;}",
-                "list",
-                "\"\ud83d\ude2d\"",
-                "\"\ud83d\ude01\"",
-                "[\"\ud83d\ude01\",\"\ud83d\ude2d\",\"\ud83d\ude2d\",\"\ud83d\ude01\",\"\ud83d\ude01\",\"\ud83d\ude2d\"]"
-            ],
-            "globals": {},
-            "goal": [
-                "[]"
-            ],
-            "syntax": [],
-            "textgoal": "We can also use filter to remove a specific item from the list",
-            "toolbox": [
-                "face",
-                "__unlimited; removeFace",
-                "x => !(x == _)",
-                "filter"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function my_filter(list,f) { return  _; }",
-                "[]",
-                "(isEmpty(list)) ? (_) : (((f)(_)) ? (cons(_, my_filter(_, f))) : (my_filter(_, f)))"
-            ],
-            "globals": {},
-            "goal": [
-                "[2]"
-            ],
-            "syntax": [],
-            "textgoal": "Now, let's trying completing our own filter function.",
-            "toolbox": [
-                "__unlimited; my_filter",
-                "(e) => (e) == (2)",
-                "__unlimited; head(list)",
-                "__unlimited; tail(list)",
-                "[1,2,3]"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [],
-            "defines": [
-                "function fold(f, a, i) { return 0;}"
-            ],
-            "globals": {},
-            "goal": [],
-            "syntax": [],
-            "textgoal": "play",
-            "toolbox": [
-                "addOne"
+                "0",
+                "2",
+                "__unlimited; gameIndex",
+                "getGameScore",
+                "__unlimited; list"
             ]
         }
     ],

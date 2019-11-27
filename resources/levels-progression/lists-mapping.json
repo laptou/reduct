@@ -7,8 +7,8 @@
             "animationScales": {},
             "board": [
                 "[[\"Amy\", \"happy\"], [\"Tony\", \"sad\"], [\"Eric\", \"happy\"], [\"Michelle\", \"sad\"]]",
-                "function updateExcited(pair) {return _;}",
-                "function makeAllExcited(list) {return list == [] ? [] : _;}",
+                "function updateExcited(pair) { return  _; }",
+                "function makeAllExcited(list) { return  ((list) == ([])) ? ([]) : (_); }",
                 "makeAllExcited",
                 "updatePair",
                 "\"excited\"",
@@ -21,11 +21,11 @@
             "syntax": [],
             "textgoal": "Make EVERYONE excited. Update the list!",
             "toolbox": [
-                "cons",
-                "updateExcited",
-                "__unlimted; tail",
+                "__unlimited; tail",
                 "__unlimited; head",
-                "__unlimited; list"
+                "__unlimited; list",
+                "cons",
+                "updateExcited"
             ]
         },
         {
@@ -64,7 +64,9 @@
             "board": [
                 "[[\"Amy\", \"happy\"], [\"Tony\", \"sad\"], [\"Eric\", \"happy\"], [\"Michelle\", \"sad\"]]",
                 "function makeAllExcited(list) {return _;}",
-                "map"
+                "map",
+                "makeAllExcited",
+                "list"
             ],
             "globals": {},
             "goal": [
@@ -76,32 +78,6 @@
                 "updatePair",
                 "updateExcited",
                 "\"excited\""
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "[[\"Amy\", \"happy\"], [\"Tony\", \"sad\"], [\"Eric\", \"happy\"], [\"Michelle\", \"sad\"]]",
-                "function updateHappy(pair) {return updatePair(_, _);}",
-                "function makeAllExcited(list) {return _ == _? _ : _;}",
-                "pair",
-                "\"happy\"",
-                "updateHappy",
-                "makeAllExcited",
-                "makeAllExcited"
-            ],
-            "globals": {},
-            "goal": [
-                "[[\"Amy\", \"happy\"], [\"Tony\", \"happy\"], [\"Eric\", \"happy\"], [\"Michelle\", \"happy\"]]"
-            ],
-            "syntax": [],
-            "textgoal": "Try and cheer up everyone to be happy!",
-            "toolbox": [
-                "__unlimited; []",
-                "__unlimited; list",
-                "cons",
-                "__unlimited; head",
-                "__unlimited; tail"
             ]
         },
         {
@@ -126,7 +102,8 @@
                 "__unlimited; tail",
                 "__unlimited; head",
                 "__unlimited; pair",
-                "__unlimited; list"
+                "__unlimited; list",
+                "getValue"
             ]
         },
         {
@@ -149,6 +126,250 @@
             "toolbox": [
                 "__unlimited; list",
                 "key"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "[[\"Amy\", \"happy\"], [\"Tony\", \"sad\"], [\"Eric\", \"happy\"], [\"Michelle\", \"sad\"]]",
+                "function pairToSentence(pair) {return _ + \" is \" + getValue(_);}",
+                "function makeSentence(list) {return _;}",
+                "pair",
+                "pair",
+                "makeSentence",
+                "map",
+                "pairToSentence",
+                "list"
+            ],
+            "globals": {},
+            "goal": [
+                "[\"Amy is happy\", \"Tony is sad\", \"Eric is happy\", \"Michelle is sad\"]"
+            ],
+            "syntax": [],
+            "textgoal": "Write full sentences with the info you know.",
+            "toolbox": [
+                "getKey",
+                "getValue"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function myMap(func, list) {return list == [] ? [] : cons(func(_), myMap(func, _) );}",
+                "[1,2,3,4,5]",
+                "myMap",
+                "addOne",
+                "head",
+                "tail"
+            ],
+            "globals": {},
+            "goal": [
+                "[2,3,4,5,6]"
+            ],
+            "syntax": [],
+            "textgoal": "Let's challenge ourselves to build the body of map!",
+            "toolbox": [
+                "__unlimited; list"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function myMap(func, list) {return _ ? _ : _;}",
+                "[1,2,3,4,5]",
+                "myMap",
+                "addOne",
+                "_==_",
+                "cons(_, myMap(func, _) )",
+                "func(_)"
+            ],
+            "defines": [
+                "function reduce(func, list) {return list == [] ? 0 : (func(head(list), reduce(func, tail(list))) );}"
+            ],
+            "globals": {},
+            "goal": [
+                "[2,3,4,5,6]"
+            ],
+            "syntax": [],
+            "textgoal": "Let's challenge ourselves to build the body of map!",
+            "toolbox": [
+                "__unlimited; list",
+                "[]",
+                "[]",
+                "head",
+                "tail",
+                "__unlimited; func"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "[1,3,5]",
+                "function add(a,b) {return a+b;}",
+                "reduce(add, _)"
+            ],
+            "defines": [
+                "function add(a,b) {return a+b;}"
+            ],
+            "globals": {},
+            "goal": [
+                "9"
+            ],
+            "syntax": [],
+            "textgoal": "Reduce applies a function to every item in the list while 'combining' the results"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "[1,2,3,4,5]",
+                "function countHelper(headItem, tailValue) {return _ + tailValue; }",
+                "1"
+            ],
+            "globals": {},
+            "goal": [
+                "5"
+            ],
+            "syntax": [],
+            "textgoal": "Let's try and use reduce to count the length of a list",
+            "toolbox": [
+                "reduce",
+                "countHelper"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "[[\"Amy\", \"happy\"], [\"Tony\", \"sad\"], [\"Eric\", \"happy\"], [\"Michelle\", \"sad\"]]",
+                "function countHelper(headItem, tailValue) {return _ == \"happy\" ? (_+_) : (_+_);}",
+                "headItem",
+                "1",
+                "0",
+                "tailValue",
+                "tailValue",
+                "function reduceCountHappy(list) {return reduce(_, list);}"
+            ],
+            "globals": {},
+            "goal": [
+                "2"
+            ],
+            "syntax": [],
+            "textgoal": "Let's use reduce to count the number of happy people",
+            "toolbox": [
+                "getValue",
+                "countHelper",
+                "reduceCountHappy"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function myReduce(func, list) {return _ == [] ? 0 : (func(_, myReduce(_, _)) );}",
+                "myReduce(add, [1,2,3])",
+                "func"
+            ],
+            "globals": {},
+            "goal": [
+                "6"
+            ],
+            "syntax": [],
+            "textgoal": "Now, let's build reduce!",
+            "toolbox": [
+                "__unlimited; list",
+                "__unlimited; head",
+                "tail"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "[[\"Lebron James\", 25], [\"Anthony Davis\", 34], [\"Kyle Kuzuma\", 8], [\"JaVale McGee\", 10], [\"Danny Green\", 11]]",
+                "function addPoints(list) {return list == [] ? _ : _;}",
+                "addPoints",
+                "_+_"
+            ],
+            "globals": {},
+            "goal": [
+                "88"
+            ],
+            "syntax": [],
+            "textgoal": "The given lists show how many points each player scored during their first game. How many points did the team score in total?",
+            "toolbox": [
+                "0",
+                "getValue",
+                "__unlimited; list",
+                "__unlimited; head",
+                "tail",
+                "addPoints"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "[[\"Lebron James\", 25], [\"Anthony Davis\", 34], [\"Kyle Kuzuma\", 8], [\"JaVale McGee\", 10], [\"Danny Green\", 11]]",
+                "function helperFunc(headItem, tailValue) {return _ + _;}",
+                "function addPoints(list) {return reduce(helperFunc, _);}",
+                "getValue",
+                "headItem",
+                "tailValue",
+                "list"
+            ],
+            "globals": {},
+            "goal": [
+                "88"
+            ],
+            "syntax": [],
+            "textgoal": "Using reduce, how many points did the team score in total?",
+            "toolbox": [
+                "addPoints"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "[[\"Lebron James\", [25, 20, 28]], [\"Anthony Davis\", [34, 32, 31]], [\"Kyle Kuzuma\", [8, 23, 17]], [\"JaVale McGee\", [10, 15, 14]], [\"Danny Green\", [11, 14, 19]]]",
+                "function secondGamePoints(list) {return reduce(helper, _);}",
+                "function helper(headItem, tailValue) {return get(_) +_;}",
+                "headItem",
+                "tailValue"
+            ],
+            "globals": {},
+            "goal": [
+                "104"
+            ],
+            "syntax": [],
+            "textgoal": "The list now shows points for the first 3 games for each player. How many points did the team get in game 2?",
+            "toolbox": [
+                "1",
+                "__unlimited; list",
+                "getValue",
+                "secondGamePoints"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "[[\"Lebron James\", [25, 20, 28]], [\"Anthony Davis\", [34, 32, 31]], [\"Kyle Kuzuma\", [8, 23, 17]], [\"JaVale McGee\", [10, 15, 14]], [\"Danny Green\", [11, 14, 19]]]",
+                "function thirdGamePoints(list) {return reduce(_, _);}",
+                "function helper(headItem, tailValue) {return _;}",
+                "headItem",
+                "tailValue",
+                "_+_",
+                "get"
+            ],
+            "globals": {},
+            "goal": [
+                "109"
+            ],
+            "syntax": [],
+            "textgoal": "Sum up the third game!",
+            "toolbox": [
+                "0",
+                "1",
+                "2",
+                "helper",
+                "__unlimited; list",
+                "getValue",
+                "thirdGamePoints"
             ]
         }
     ],
