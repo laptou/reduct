@@ -1,10 +1,8 @@
 number,board,goal,textgoal,toolbox,defines,globals,syntax,animationScales,tutorialUrl
-71,"['[_, _, _]']","['[A, B, C]']",Make an array with three elements,"['A', 'B', 'C', 'D', '9']","['function get(a, i) { return 0;}','function fold(f, a, init) { return 0;}','function slice(array, begin, end) { return 0;}','function set(a, i, value) { return 0;}']",{},[],{},resources/videos/array-intro.mp4
-72,"['get', '[A, B, _, D]']",['C'],"""get"" can get an element from an array","['0', '1', '2', '3', '4', 'C']","['function map(f, a) { return a; }', 'function length(a) { return 0; }']",{},[],{},
-73,"['map(addOne, [1, _, 4])']","['[2, 4, 5]']","""map"" applies a function to every element","['1', '2', '3', '4', 'B']",,{},[],{},
-74,"['map(_, [1, 2, 4, 8])']","['[2, 4, 8, 16]']",,"['x => x + _', 'y => y', '1', '2', 'x', '16']",,{},[],{},
-75,[],"['3', '0']","""length"" gives the number of elements","['[1,2,3,4]', '[A,B,C]', '[]', '[true]', '__unlimited; length']",,{},[],{},
-76,"['map(length, _)', '[[A], _, _]']","['[1, 0, 2]']",An array can hold other arrays,"['0', '[A, B]', '[]']","['function concat(left,right) { return a; }']",{},[],{},
-77,['[1]'],"['[4,3,2,1]']","""concat"" glues arrays together","['__unlimited; concat', '[4]', '[_,2]', '[4,3]', 'A', '3']",,{},[],{},
-78,"['get(_, 2)']",['C'],,"['__unlimited; concat', '[A]', 'A', '[C, B, A]', '[]', '[B]', 'D']",,{},[],{},
-79,"['map(_, [1, 2, 1, 4])']","['[true, false, true, false]']",Make a function that sees if a number is 1,"['a => _', '_ == _', '1', '2', 'true', 'a']",,{},[],{},
+71,"['[_, _, _]']","['[A, B, C]']",Make a list with three elements,"['A', 'B', 'C', 'D', '9']","['function get(a, i) { return 0;}','function fold(f, a, init) { return 0;}','function slice(array, begin, end) { return 0;}','function set(a, i, value) { return 0;}']",{},[],{},resources/videos/array-intro.mp4
+73,"['get([A, B, C],_)']",['A'],"""get"" can get an element from a list","['0', '1', '2', '3']",,{},[],{},
+72,"['get', '[A, B, _, D]']",['C'],,"['0', '1', '2', '3', '4', 'C']","['function map(f, a) { return a; }', 'function length(a) { return 0; }']",{},[],{},
+74,[],"['3', '1']","""length"" gives the number of elements","['[1,2,3,4]', '[A,B,C]', '[]', '[true]', '__unlimited; length']",,{},[],{},
+75,"['A', 'B', 'C', '[_,_,_]']","['[[A], [B], [C]]']",lists can have lists as elements,['__unlimited; [_]'],,{},[],{},
+76,['length'],['0'],lists can also have zero elements,"['[]', '[_]', '0', '[A]']",,{},[],{},
+77,"['[[], [A], [B,C]]']",['2'],,"['length', 'get', '0', '1', '2', '3']",,{},[],{},
