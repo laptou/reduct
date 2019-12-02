@@ -3,7 +3,7 @@ LEVELS = application.csv arithmetic.csv booleans-definition.csv               \
     functions-challenge.csv functions.csv higher-order-functions.csv          \
     multiargument.csv recursion-basics.csv recursion-higher-order.csv         \
     replication.csv testing.csv weekdays.csv lists-intro.csv lists-query.csv  \
-    list-functions.csv strings.csv play.csv
+    list-functions.csv strings.csv letExpr.csv play.csv
 
 VPATH = levels:
 

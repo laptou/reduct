@@ -24,7 +24,8 @@ export const PROGRESSIONS = {
             "remove-first": ["count-all"],
             "count-all": ["list-functions"],
             "list-functions": ["strings"],
-            "strings": ["play"],
+            "strings": ["letExpr"],
+            "letExpr": ["play"],
             "play": []
         },
         settings: { // This sets global flags.
