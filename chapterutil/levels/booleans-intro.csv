@@ -12,7 +12,7 @@ board,goal,textgoal,toolbox,defines,globals,syntax,animationScales,,tutorialUrl,
 "[""(x) => _ == 'star' ? true : _"", 'x']",['true'],,"[""'rect'"", ""'rect'"", ""'triangle'"", ""_ == _""]",,{},[],{},,,     
 "[""!true""]",['false'],,[],,{},[],{},,,introduce not
 "[""!_""]",['false'],,"['true', 'false']",,{},[],{},,,
-"[""!_"", ""_ == 'true'""]",['true'],,['false'],,{},[],{},,,
+"[""!_"", '_ == true']",['true'],,['false'],,{},[],{},,,
 "[""!_"", ""_ == _ ""]",['false'],,"[""__unlimited;'star'"",""__unlimited;'triangle'""]",,{},[],{},,,
 ['!_ ? 3 : 4'],['3'],,"['true', 'false']",,{},[],{},,,
 "[""_ ? 'star' : 'rect'"", ""!_""]","[""'rect'""]",,"['true', 'false']",,{},[],{},,,
