@@ -505,7 +505,6 @@
                 "head(list)",
                 "__unlimited; tail(list)",
                 "0",
-                "0",
                 "1"
             ]
         },

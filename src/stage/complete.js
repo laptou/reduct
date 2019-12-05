@@ -128,7 +128,7 @@ export default class CompleteStage extends BaseStage {
                 padding: {
                     inner: 20,
                     top: stage.height/2,
-                    left: (stage.width - 980)/2 + numLayouts*200,
+                    left: 100 + numLayouts*200,
                 },
             }, gfx.baseProjection);
 
@@ -145,7 +145,7 @@ export default class CompleteStage extends BaseStage {
                 padding: {
                     inner: 20,
                     top: stage.height/2,
-                    left: (stage.width - 980)/2 + (numLayouts)*200,
+                    left: 100 + (numLayouts)*200,
                 },
             }, gfx.baseProjection);
 

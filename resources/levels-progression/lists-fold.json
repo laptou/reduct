@@ -1,134 +1,127 @@
 {
-    "chapterName": "Arrays",
-    "description": "Arrays can hold many things.",
+    "chapterName": "Multi-Argument Functions",
+    "description": "Functions that take many things!",
     "language": "JavaScript",
     "levels": [
         {
             "animationScales": {},
             "board": [
-                "[1,3]",
-                "[1,3]",
-                "(headNum) => (secondNum) => headNum > secondNum ? headNum : secondNum",
-                "x => xx"
-            ],
-            "globals": {},
-            "goal": [
-                "3"
-            ],
-            "syntax": [],
-            "textgoal": "Get the maximum number from the list",
-            "toolbox": [
-                "get",
-                "0",
-                "1"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function max_num_list(list) { return list == [] ? 0 : (head( _ ) > max_num_list( _ )) ? head(list) : (max_num_list(tail(list))); }",
-                "max_num_list([1,3])"
+                "[1,3,5]",
+                "function add(a,b) {return a+b;}",
+                "fold(add, _, 0)"
             ],
             "defines": [
-                "function max_num_list(list) { return list == [] ? 0 : (head(list) > max_num_list(tail(list))) ? head(list) : (max_num_list(tail(list))); }"
+                "function add(a,b) {return a+b;}"
             ],
             "globals": {},
             "goal": [
-                "3"
+                "9"
             ],
             "syntax": [],
-            "textgoal": "Define a function that returns the maximum number from the list. If the list is empty, return 0.",
-            "toolbox": [
-                "list",
-                "list",
-                "head",
-                "tail"
-            ]
+            "textgoal": "Fold applies a function to every element in the list while 'combining' the results"
         },
         {
             "animationScales": {},
             "board": [
-                "[1,2,3,4,5]",
-                "function min_num_list(list) {return _; }",
-                "list == [] ? 100 : _",
-                "_ < min_num_list(_) ? head(list) : min_num_list(_) "
+                "function myfold(func, list, accumulator) { return list == [] ? accumulator : (myfold(func, tail(list), ((func)(head(list), accumulator)) )) ;}",
+                "myfold(add, [1,2,3], 0)"
             ],
             "globals": {},
             "goal": [
-                "1"
+                "6"
             ],
             "syntax": [],
-            "textgoal": "Define a function that returns the minimum number of the list.",
-            "toolbox": [
-                "min_num_list",
-                "head",
-                "__unlimited; tail",
-                "__unlimited; list"
-            ]
+            "textgoal": "Let's dig into the body of the function fold"
         },
         {
             "animationScales": {},
             "board": [
-                "[3,2,1,4,5]",
-                "function min_num_list(list) {return _; }",
-                "min_num_list",
-                "_ == [] ? 100 : _",
-                "_ < _ ? _ : _",
-                "min_num_list(_)"
+                "function myfold(func, list, accumulator) { return _ == _ ? _ : (myfold(func, _, ((func)(_, _)) )) ;}",
+                "[]",
+                "accumulator",
+                "[1,2,3]",
+                "myfold(add, _, 0)",
+                "accumulator"
             ],
             "defines": [
-                "function min_num_list(list) { return  ((list) == ([])) ? (100) : (((head(list)) < (min_num_list(tail(list)))) ? (head(list)) : (min_num_list(tail(list)))); }"
+                "function myfold(func, list, accumulator) { return list == [] ? accumulator : (myfold(func, tail(list), ((func)(head(list), accumulator)) )) ;}"
             ],
             "globals": {},
             "goal": [
-                "1"
+                "6"
             ],
             "syntax": [],
-            "textgoal": "Define a function that returns the minimum number of the list.",
+            "textgoal": "Now, let's try and build fold ourselves!",
             "toolbox": [
-                "min_num_list",
+                "__unlimited; list",
                 "__unlimited; head",
-                "__unlimited; tail",
-                "__unlimited; list"
+                "__unlimited; tail"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "['star', 'triangle', 'rect']",
-                "index_of(_, 'rect')",
-                "function index_of(list, value) { return head(list) == value ? 0 : (1 + index_of(tail(list) , _ )); }",
-                "value"
+                "[[\"Lebron James\", [25, 20, 28]], [\"Anthony Davis\", [34, 32, 31]], [\"Kyle Kuzuma\", [8, 23, 17]], [\"JaVale McGee\", [10, 15, 14]], [\"Danny Green\", [11, 14, 19]]]",
+                "myfold(addFirstScore, _, _)",
+                "function addFirstScore(playerPair, acc) {return _ + get(_, _);}",
+                "getValue",
+                "playerPair",
+                "acc"
             ],
             "globals": {},
             "goal": [
-                "2"
+                "88"
             ],
             "syntax": [],
-            "textgoal": "Define a function that returns the index of the item in the list."
+            "textgoal": "The list contains the points each player gained during the first 3 games (in order). Use fold and calculate how many points they gained in total for the first game.",
+            "toolbox": [
+                "__unlimited; 0"
+            ]
         },
         {
             "animationScales": {},
             "board": [
-                "['star', 'triangle', 'rect']",
-                "index_of(_, _)",
-                "function index_of(list, value) { return _ == _ ? _ : (_ + index_of(_ , value)); }",
-                "0",
-                "1",
-                "head",
-                "tail",
-                "value"
+                "[[\"Lebron James\", [25, 20, 28]], [\"Anthony Davis\", [34, 32, 31]], [\"Kyle Kuzuma\", [8, 23, 17]], [\"JaVale McGee\", [10, 15, 14]], [\"Danny Green\", [11, 14, 19]]]",
+                "myfold(add, _, _)",
+                "map(getSecondScore, _)",
+                "function getSecondScore(playerPair) {return _;}",
+                "get",
+                "getValue",
+                "playerPair"
             ],
             "globals": {},
             "goal": [
-                "1"
+                "104"
             ],
             "syntax": [],
-            "textgoal": "Define a function that returns the index of the item in the list.",
+            "textgoal": "We can also use map to extract all the scores first, then apply fold.",
             "toolbox": [
-                "'star'",
-                "'rect'",
-                "'triangle'",
+                "0",
+                "1"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "[[\"Lebron James\", [25, 20, 28]], [\"Anthony Davis\", [34, 32, 31]], [\"Kyle Kuzuma\", [8, 23, 17]], [\"JaVale McGee\", [10, 15, 14]], [\"Danny Green\", [11, 14, 19]]]",
+                "map(getPoints, _)",
+                "function getPoints(playerPair) {return _;}",
+                "function getGameScore(gameIndex, list) {return myfold(add, _, _);}",
+                "get",
+                "getValue",
+                "playerPair"
+            ],
+            "globals": {},
+            "goal": [
+                "109"
+            ],
+            "syntax": [],
+            "textgoal": "Try and generalize so that the user can pick which game to sum the points up.",
+            "toolbox": [
+                "0",
+                "2",
+                "__unlimited; gameIndex",
+                "getGameScore",
                 "__unlimited; list"
             ]
         }
@@ -139,12 +132,10 @@
         "C": "'triangle'",
         "D": "'circle'"
     },
-    "password": "clone",
+    "password": "curry",
     "resources": {
         "aliens": [
-            "alien-bag-2",
-            "alien-bag-3",
-            "alien-bag-1"
+            "alien-function-2"
         ],
         "curve": [
             {
