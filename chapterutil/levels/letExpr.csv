@@ -1,4 +1,4 @@
 board,goal,textgoal,toolbox,defines,globals,syntax,animationScales
-"['x = _ in ((x) + (x))']","['4']","let expressions","['2','3','5']",,{},[],{}
-"['x = _ in (x = (x) + (x) in ((x) + (x)))']","['4']","scoping x","['1','2','3','4']",,{},[],{}
-"['f = _ in ((((f)(3))(4)) + (((f)(4))(3)))']","['0']","functions in let","['(x) => (y) => (x) + (y)','(x) => (y) => (x) - (y)',]",,{},[],{}
+"['x = _ in ((x) + (x))']","['4']","We can also write a let expressions, which lets us use variables in our code block.","['2','3','5']",,{},[],{}
+"['x = _ in (x = (x) + (x) in ((x) + (x)))']","['4']","Choose the number that makes this expression equal to 4.","['1','2','3','4']",,{},[],{}
+"['f = _ in ((((f)(3))(4)) + (((f)(4))(3)))']","['0']","Functions can also be assigned as a variable name using let.","['(x) => (y) => (x) + (y)','(x) => (y) => (x) - (y)',]",,{},[],{}
