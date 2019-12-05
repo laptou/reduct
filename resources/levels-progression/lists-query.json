@@ -29,6 +29,9 @@
                 "function max_num_list(list) { return list == [] ? 0 : (head( _ ) > max_num_list( _ )) ? head(list) : (max_num_list(tail(list))); }",
                 "max_num_list([1,3])"
             ],
+            "defines": [
+                "function max_num_list(list) { return list == [] ? 0 : (head(list) > max_num_list(tail(list))) ? head(list) : (max_num_list(tail(list))); }"
+            ],
             "globals": {},
             "goal": [
                 "3"
@@ -72,6 +75,9 @@
                 "_ == [] ? 100 : _",
                 "_ < _ ? _ : _",
                 "min_num_list(_)"
+            ],
+            "defines": [
+                "function min_num_list(list) { return  ((list) == ([])) ? (100) : (((head(list)) < (min_num_list(tail(list)))) ? (head(list)) : (min_num_list(tail(list)))); }"
             ],
             "globals": {},
             "goal": [

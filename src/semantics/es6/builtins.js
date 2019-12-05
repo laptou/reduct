@@ -244,13 +244,13 @@ function validateSlice(expr, semant, state) {
 export const builtins =
     immutable.Map({
         //repeat: {params: [{n: 'number'}, {f: 'function'}], impl: builtinRepeat},
-        length: {params: [{a: 'any'}], impl: builtinLength},
-        get: {params: [{a: 'any'}, {i: 'number'}], impl: builtinGet, validate: validateGet},
-        set: {params: [{a: 'array'}, {i: 'number'}, {v: 'any'}], impl: builtinSet, validate: validateSet},
-        map: {params: [{f: 'function'}, {a: 'array'}], impl: builtinMap},
-        fold: {params: [{f: 'function'}, {a: 'array'}, {init: 'any'}], impl: builtinFold},
-        concat: {params: [{left:'array'}, {right:'array'}], impl: builtinConcat},
-        slice: {params: [{array:'any'}, {begin: 'number'}, {end: 'number'}], impl: builtinSlice, validate: validateSlice}
+        length: { params: [{ a: 'any' }], impl: builtinLength },
+        get: { params: [{ a: 'any' }, { i: 'number' }], impl: builtinGet, validate: validateGet },
+        set: { params: [{ a: 'array' }, { i: 'number' }, { v: 'any' }], impl: builtinSet, validate: validateSet },
+        map: { params: [{ f: 'function' }, { a: 'array' }], impl: builtinMap },
+        fold: { params: [{ f: 'function' }, { a: 'array' }, { init: 'any' }], impl: builtinFold },
+        concat: { params: [{ left: 'array' }, { right: 'array' }], impl: builtinConcat },
+        slice: { params: [{ array: 'any' }, { begin: 'number' }, { end: 'number' }], impl: builtinSlice, validate: validateSlice }
     });
 
 function nth(i) {
