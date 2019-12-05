@@ -5,4 +5,4 @@ number,board,goal,textgoal,toolbox,defines,globals,syntax,animationScales,tutori
 74,[],"['3', '1']","""length"" gives the number of elements","['[1,2,3,4]', '[A,B,C]', '[]', '[true]', '__unlimited; length']",,{},[],{},
 75,"['A', 'B', 'C', '[_,_,_]']","['[[A], [B], [C]]']",lists can have lists as elements,['__unlimited; [_]'],,{},[],{},
 76,['length'],['0'],lists can also have zero elements,"['[]', '[_]', '0', '[A]']",,{},[],{},
-77,"['[[], [A], [B,C]]']",['2'],,"['length', 'get', '0', '1', '2', '3']",,{},[],{},
+77,"['[[], [A], [B,C]]']",['2'],,"['length', 'get', '0', '1', '2', '3']","['function concat(left,right) { return a; }']",{},[],{},
