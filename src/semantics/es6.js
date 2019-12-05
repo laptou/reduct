@@ -11,6 +11,7 @@ import binop from "./es6/binop";
 import conditional from "./es6/conditional";
 import define from "./es6/define";
 import lambda from "./es6/lambda";
+import letExpr from "./es6/letExpr";
 import member from "./es6/member";
 import not from "./es6/not";
 import reference from "./es6/reference";
@@ -123,6 +124,7 @@ export default transform({
         ...define,
         ...autograder,
         ...lambda,
+        ...letExpr,
         ...member,
         ...not,
         ...reference,

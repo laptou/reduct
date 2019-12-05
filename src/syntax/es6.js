@@ -146,6 +146,21 @@ export function makeParser(jssemant) {
             return fail("Lambda expessions with more than one input are currently undefined.", node);
         }
 
+        case "AssignmentExpression": {
+            const name = jssemant.parser.templatizeName(node.left.name);
+
+            const argName = node.left.name;
+            const newMacros = {};
+            newMacros[argName] = () => jssemant.lambdaVar(argName);
+            const body = parseNode(node.right.right, Object.assign(macros, newMacros));
+
+            return jssemant.letExpr(
+                name,
+                parseNode(node.right.left, newMacros),
+                jssemant.lambda(jssemant.lambdaArg(argName), body)
+            );
+        }
+
         case "UnaryExpression": {
           return jssemant.not(parseNode(node.argument,macros));
         }
@@ -304,6 +319,9 @@ export function makeUnparser(jssemant) {
                 }
             }
             return `(${unparseES6(node.arg)}) => ${unparseES6(node.body)}`;
+        }
+        case "letExpr": {
+           return `${node.variable} = ${unparseES6(node.e1)} in (${unparseES6(node.e2.body)})`
         }
         case "reference": {
             if (node.params && node.params.some(name => node[`arg_${name}`].type !== "missing")) {
