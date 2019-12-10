@@ -9,7 +9,8 @@
                 "[1,3]",
                 "[1,3]",
                 "(headNum) => (secondNum) => headNum > secondNum ? headNum : secondNum",
-                "x => xx"
+                "get",
+                "get"
             ],
             "globals": {},
             "goal": [
@@ -18,7 +19,6 @@
             "syntax": [],
             "textgoal": "Get the maximum number from the list",
             "toolbox": [
-                "get",
                 "0",
                 "1"
             ]
@@ -27,13 +27,15 @@
             "animationScales": {},
             "board": [
                 "function max_num_list(list) { return list == [] ? 0 : (head( _ ) > max_num_list( _ )) ? head(list) : (max_num_list(tail(list))); }",
-                "max_num_list([1,3])"
+                "max_num_list([1,3])",
+                "max_num_list([3,1])"
             ],
             "defines": [
                 "function max_num_list(list) { return list == [] ? 0 : (head(list) > max_num_list(tail(list))) ? head(list) : (max_num_list(tail(list))); }"
             ],
             "globals": {},
             "goal": [
+                "3",
                 "3"
             ],
             "syntax": [],
@@ -58,7 +60,7 @@
                 "1"
             ],
             "syntax": [],
-            "textgoal": "Define a function that returns the minimum number of the list.",
+            "textgoal": "Define a function that returns the minimum number of the list (return 100 if list is empty).",
             "toolbox": [
                 "min_num_list",
                 "head",
@@ -84,12 +86,111 @@
                 "1"
             ],
             "syntax": [],
-            "textgoal": "Define a function that returns the minimum number of the list.",
+            "textgoal": "Define a function that returns the minimum number of the list (return 100 if list is empty).",
             "toolbox": [
                 "min_num_list",
                 "__unlimited; head",
                 "__unlimited; tail",
                 "__unlimited; list"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function getIndexZero(list) {return _;}",
+                "head(list)",
+                "[A,B,C]"
+            ],
+            "globals": {},
+            "goal": [
+                "A"
+            ],
+            "syntax": [],
+            "textgoal": "Index zero of the list corresponds to the first item. Try it!",
+            "toolbox": [
+                "getIndexZero"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function getIndexOne(list) {return _;}",
+                "head",
+                "tail",
+                "list",
+                "[A,B,C]"
+            ],
+            "globals": {},
+            "goal": [
+                "B"
+            ],
+            "syntax": [],
+            "textgoal": "Get the item at the first index.",
+            "toolbox": [
+                "getIndexOne"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function getNth(list, index) {return index == 0 ? _ : getNth(_, (index-1));}",
+                "[A,B,C]",
+                "head(list)",
+                "tail(list)"
+            ],
+            "globals": {},
+            "goal": [
+                "C"
+            ],
+            "syntax": [],
+            "textgoal": "Now, let's build a general function that gets the nth index.",
+            "toolbox": [
+                "getNth",
+                "2"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "function getNth(list, index) {return _ == _ ? _ : getNth(_, _);}",
+                "[A,B,C]",
+                "index",
+                "index",
+                "_-_"
+            ],
+            "globals": {},
+            "goal": [
+                "C"
+            ],
+            "syntax": [],
+            "textgoal": "Now, let's build a general function that gets the nth index.",
+            "toolbox": [
+                "getNth",
+                "0",
+                "1",
+                "2",
+                "__unlimited; head",
+                "__unlimited; tail",
+                "__unlimited; list"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "get",
+                "[A,B,C]"
+            ],
+            "globals": {},
+            "goal": [
+                "B"
+            ],
+            "syntax": [],
+            "textgoal": "The built in get function does the same thing as getNth. Try it!",
+            "toolbox": [
+                "0",
+                "1",
+                "2",
+                "3"
             ]
         },
         {

@@ -219,6 +219,25 @@
             "animationScales": {},
             "board": [
                 "_(3)",
+                "_(8)",
+                "addOne(_)"
+            ],
+            "fade": {},
+            "globals": {},
+            "goal": [
+                "4",
+                "8"
+            ],
+            "syntax": [],
+            "toolbox": [
+                "__unlimited;addOne;",
+                "__unlimited;doNothing;"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "_(3)",
                 "_(4)",
                 "_(8)"
             ],
@@ -234,25 +253,6 @@
                 "__unlimited;addOne;",
                 "__unlimited;doNothing;",
                 "_(_)"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "_(3)",
-                "_(8)",
-                "addOne(_)"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "4",
-                "8"
-            ],
-            "syntax": [],
-            "toolbox": [
-                "__unlimited;addOne;",
-                "__unlimited;doNothing;"
             ]
         },
         {

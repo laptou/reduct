@@ -138,7 +138,7 @@
                 "false"
             ],
             "syntax": [],
-            "textgoal": "Build the smallList function to count how many items are smaller than 3.",
+            "textgoal": "Build the smallList function that checks if a list has less than 3 items.",
             "toolbox": [
                 "count",
                 "[1,5]",
@@ -147,6 +147,29 @@
                 "list",
                 "[1,2,4,3]",
                 "__unlimited; isASmallList"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "[5,2,1]",
+                "[1,2,6,7]",
+                "function my_count(list) { return  (isEmpty(_)) ? (_) : (_ + my_count(_)); }"
+            ],
+            "globals": {},
+            "goal": [
+                "3",
+                "4"
+            ],
+            "syntax": [],
+            "textgoal": "Let's fill in some of the pieces of our own count function.",
+            "toolbox": [
+                "0",
+                "1",
+                "(_) == (_)",
+                "__unlimited; list",
+                "tail",
+                "__unlimited; my_count"
             ]
         },
         {
@@ -179,8 +202,7 @@
         {
             "animationScales": {},
             "board": [
-                "function countStars(list) { return  _; }",
-                "(isEmpty) ? (_) : (((head) == (\"star\")) ? ((_) + (countStars(tail(_)))) : (countStars(tail(_))))"
+                "function countStars(list) { return  (isEmpty) ? (_) : (((head) == (\"star\")) ? ((_) + (countStars(tail(_)))) : (countStars(tail(_)))); }"
             ],
             "globals": {},
             "goal": [
@@ -203,8 +225,7 @@
         {
             "animationScales": {},
             "board": [
-                "function countHappy(list) { return  _; }",
-                "(isEmpty) ? (_) : (((head) == (\"\ud83d\ude03\")) ? ((_) + (countHappy(tail(_)))) : (countHappy(tail(_))))"
+                "function countHappy(list) { return  (isEmpty) ? (_) : (((head) == (\"\ud83d\ude03\")) ? ((_) + (countHappy(tail(_)))) : (countHappy(tail(_)))); }"
             ],
             "globals": {},
             "goal": [
@@ -227,8 +248,7 @@
         {
             "animationScales": {},
             "board": [
-                "function countMonkeys(list) { return  _; }",
-                "(isEmpty) ? (_) : (((head) == (\"\ud83d\udc12\")) ? ((_) + (countMonkeys(tail(_)))) : (countMonkeys(tail(_))))"
+                "function countMonkeys(list) { return  (isEmpty) ? (_) : (((head) == (\"\ud83d\udc12\")) ? ((_) + (countMonkeys(tail(_)))) : (countMonkeys(tail(_)))); }"
             ],
             "globals": {},
             "goal": [
@@ -264,7 +284,7 @@
                 "2"
             ],
             "syntax": [],
-            "textgoal": "Let's wrapped what we've done in a single function. We can count an item in a list only when a condition is true.",
+            "textgoal": "Have the previous levels felt repetitive? Let's wrap those count levels in a single function. We can count an item in a list only when a condition is true.",
             "toolbox": [
                 "list",
                 "head(list)",

@@ -13,7 +13,7 @@
                 "[\"star\", 1]"
             ],
             "syntax": [],
-            "textgoal": "A Pair has two elements. We call the first one key, the second one value.",
+            "textgoal": "A Pair has two elements. We call the head one key, the second one value.",
             "toolbox": [
                 "'star'",
                 "1"
@@ -76,7 +76,7 @@
             ],
             "globals": {},
             "goal": [
-                "4"
+                "3"
             ],
             "syntax": [],
             "textgoal": "Get the pair first, then get the value.",
@@ -96,7 +96,7 @@
                 "findValue(_, _)"
             ],
             "defines": [
-                "function findValue(list, key) {return getKey(first(list)) == key ? getValue(first(list)) : findValue(remove_first(list), key);}"
+                "function findValue(list, key) {return getKey(head(list)) == key ? getValue(head(list)) : findValue(tail(list), key);}"
             ],
             "globals": {},
             "goal": [
@@ -109,8 +109,8 @@
                 "'rect'",
                 "'triangle'",
                 "__unlimited; list",
-                "__unlimited; first",
-                "__unlimited; remove_first",
+                "__unlimited; head",
+                "__unlimited; tail",
                 "getValue",
                 "getKey"
             ]
@@ -137,8 +137,8 @@
                 "4",
                 "3",
                 "__unlimited; list",
-                "__unlimited; first",
-                "__unlimited; remove_first",
+                "__unlimited; head",
+                "__unlimited; tail",
                 "__unlimited; value",
                 "getValue",
                 "getKey"
@@ -195,12 +195,11 @@
         {
             "animationScales": {},
             "board": [
-                "[[\"Amy\", \"happy\"], [\"Tony\", \"sad\"], [\"Eric\", \"happy\"], [\"Michelle\", \"sad\"]]",
+                "[[\"Amy\", \"\ud83d\ude42\"], [\"Tony\", \"\ud83d\ude41\"], [\"Eric\", \"\ud83d\ude42\"], [\"Michelle\", \"\ud83d\ude41\"]]",
                 "getValue",
                 "function countHappy(list) {return list == [] ? 0 : _;}",
                 "countHappy(_)",
-                "_ == \"happy\" ? _ + countHappy(_) : _",
-                "_ + _",
+                "_ == \"\ud83d\ude42\" ? _ + countHappy(_) : _",
                 "countHappy"
             ],
             "globals": {},
@@ -214,18 +213,19 @@
                 "__unlimited; list",
                 "__unlimited; tail",
                 "1",
-                "0"
+                "0",
+                "_+_"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "[[\"Amy\", \"happy\"], [\"Tony\", \"sad\"], [\"Eric\", \"happy\"], [\"Michelle\", \"sad\"]]",
+                "[[\"Amy\", \"\ud83d\ude42\"], [\"Tony\", \"\ud83d\ude41\"], [\"Eric\", \"\ud83d\ude42\"], [\"Michelle\", \"\ud83d\ude41\"]]",
                 "function countHappy(list) {return _;}",
                 "countCondition",
                 "x => _ == _",
                 "x",
-                "\"happy\"",
+                "\"\ud83d\ude42\"",
                 "list",
                 "countHappy"
             ],
@@ -244,8 +244,8 @@
         {
             "animationScales": {},
             "board": [
-                "[[\"Amy\", \"happy\"], [\"Tony\", \"sad\"], [\"Eric\", \"happy\"], [\"Michelle\", \"sad\"]]",
-                "function getSad(list) {return _ == [] ? [] : (getValue(head(list)) == \"sad\" ? cons(_, getSad(_)) : _);}",
+                "[[\"Amy\", \"\ud83d\ude42\"], [\"Tony\", \"\ud83d\ude41\"], [\"Eric\", \"\ud83d\ude42\"], [\"Michelle\", \"\ud83d\ude41\"]]",
+                "function getSad(list) {return _ == [] ? [] : (getValue(head(list)) == \"\ud83d\ude41\" ? cons(_, getSad(_)) : _);}",
                 "getSad",
                 "getSad"
             ],
@@ -267,16 +267,16 @@
         {
             "animationScales": {},
             "board": [
-                "[[\"Amy\", \"happy\"], [\"Tony\", \"sad\"], [\"Eric\", \"happy\"], [\"Michelle\", \"sad\"]]",
-                "function happyToExcited(list) {return _ == [] ? _ : (_ == \"happy\" ? cons(_,  happyToExcited(_)) : cons(_, _));}",
+                "[[\"Amy\", \"\ud83d\ude42\"], [\"Tony\", \"\ud83d\ude41\"], [\"Eric\", \"\ud83d\ude42\"], [\"Michelle\", \"\ud83d\ude41\"]]",
+                "function happyToExcited(list) {return _ == [] ? _ : (_ == \"\ud83d\ude42\" ? cons(_,  happyToExcited(_)) : cons(_, _));}",
                 "getValue",
                 "updatePair",
                 "happyToExcited",
-                "\"excited\""
+                "\"\ud83d\ude06\""
             ],
             "globals": {},
             "goal": [
-                "[[\"Amy\", \"excited\"], [\"Tony\", \"sad\"], [\"Eric\", \"excited\"], [\"Michelle\", \"sad\"]]"
+                "[[\"Amy\", \"\ud83d\ude06\"], [\"Tony\", \"\ud83d\ude41\"], [\"Eric\", \"\ud83d\ude06\"], [\"Michelle\", \"\ud83d\ude41\"]]"
             ],
             "syntax": [],
             "textgoal": "The happy people are now excited. Update the list!",
