@@ -226,7 +226,7 @@
             "animationScales": {},
             "board": [
                 "!_",
-                "_ == 'true'"
+                "_ == true"
             ],
             "globals": {},
             "goal": [

@@ -19,7 +19,7 @@
                 "[A, B, C]"
             ],
             "syntax": [],
-            "textgoal": "Make an array with three elements",
+            "textgoal": "Make a list with three elements",
             "toolbox": [
                 "A",
                 "B",
@@ -28,6 +28,24 @@
                 "9"
             ],
             "tutorialUrl": "resources/videos/array-intro.mp4"
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "get([A, B, C],_)"
+            ],
+            "globals": {},
+            "goal": [
+                "A"
+            ],
+            "syntax": [],
+            "textgoal": "\"get\" can get an element from a list",
+            "toolbox": [
+                "0",
+                "1",
+                "2",
+                "3"
+            ]
         },
         {
             "animationScales": {},
@@ -44,7 +62,6 @@
                 "C"
             ],
             "syntax": [],
-            "textgoal": "\"get\" can get an element from an array",
             "toolbox": [
                 "0",
                 "1",
@@ -56,49 +73,11 @@
         },
         {
             "animationScales": {},
-            "board": [
-                "map(addOne, [1, _, 4])"
-            ],
-            "globals": {},
-            "goal": [
-                "[2, 4, 5]"
-            ],
-            "syntax": [],
-            "textgoal": "\"map\" applies a function to every element",
-            "toolbox": [
-                "1",
-                "2",
-                "3",
-                "4",
-                "B"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "map(_, [1, 2, 4, 8])"
-            ],
-            "globals": {},
-            "goal": [
-                "[2, 4, 8, 16]"
-            ],
-            "syntax": [],
-            "toolbox": [
-                "x => x + _",
-                "y => y",
-                "1",
-                "2",
-                "x",
-                "16"
-            ]
-        },
-        {
-            "animationScales": {},
             "board": [],
             "globals": {},
             "goal": [
                 "3",
-                "0"
+                "1"
             ],
             "syntax": [],
             "textgoal": "\"length\" gives the number of elements",
@@ -113,82 +92,59 @@
         {
             "animationScales": {},
             "board": [
-                "map(length, _)",
-                "[[A], _, _]"
+                "A",
+                "B",
+                "C",
+                "[_,_,_]"
+            ],
+            "globals": {},
+            "goal": [
+                "[[A], [B], [C]]"
+            ],
+            "syntax": [],
+            "textgoal": "lists can have lists as elements",
+            "toolbox": [
+                "__unlimited; [_]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "length"
+            ],
+            "globals": {},
+            "goal": [
+                "0"
+            ],
+            "syntax": [],
+            "textgoal": "lists can also have zero elements",
+            "toolbox": [
+                "[]",
+                "[_]",
+                "0",
+                "[A]"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "[[], [A], [B,C]]"
             ],
             "defines": [
                 "function concat(left,right) { return a; }"
             ],
             "globals": {},
             "goal": [
-                "[1, 0, 2]"
+                "2"
             ],
             "syntax": [],
-            "textgoal": "An array can hold other arrays",
             "toolbox": [
+                "length",
+                "get",
                 "0",
-                "[A, B]",
-                "[]"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "[1]"
-            ],
-            "globals": {},
-            "goal": [
-                "[4,3,2,1]"
-            ],
-            "syntax": [],
-            "textgoal": "\"concat\" glues arrays together",
-            "toolbox": [
-                "__unlimited; concat",
-                "[4]",
-                "[_,2]",
-                "[4,3]",
-                "A",
-                "3"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "get(_, 2)"
-            ],
-            "globals": {},
-            "goal": [
-                "C"
-            ],
-            "syntax": [],
-            "toolbox": [
-                "__unlimited; concat",
-                "[A]",
-                "A",
-                "[C, B, A]",
-                "[]",
-                "[B]",
-                "D"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "map(_, [1, 2, 1, 4])"
-            ],
-            "globals": {},
-            "goal": [
-                "[true, false, true, false]"
-            ],
-            "syntax": [],
-            "textgoal": "Make a function that sees if a number is 1",
-            "toolbox": [
-                "a => _",
-                "_ == _",
                 "1",
                 "2",
-                "true",
-                "a"
+                "3"
             ]
         }
     ],
