@@ -1,4 +1,7 @@
 board,goal,textgoal,toolbox,defines,globals,syntax,animationScales
-"['x = _ in ((x) + (x))']","['4']","We can also write a let expressions, which lets us use variables in our code block.","['2','3','5']",,{},[],{}
-"['x = _ in (x = (x) + (x) in ((x) + (x)))']","['4']","Choose the number that makes this expression equal to 4.","['1','2','3','4']",,{},[],{}
-"['f = _ in ((((f)(3))(4)) + (((f)(4))(3)))']","['0']","Functions can also be assigned as a variable name using let.","['(x) => (y) => (x) + (y)','(x) => (y) => (x) - (y)',]",,{},[],{}
+['x = _ in ((x) + (x))'],['4'],"Let expressions allow us to assign values to variables, and use it in later code blocks.","['2','3','5']",,{},[],{}
+['x = _ in (y = (x) + (x) in ((y) + (y)))'],['4'],Choose the number that makes this expression equal to 4.,"['1','2','3','4']",,{},[],{}
+"['function swap(pair) {return oldkey = _ in (oldvalue = _ in (createPair(_, _)));}', 'oldvalue', 'oldkey', '[A, 5]', 'getKey(pair)', 'getValue(pair)']","['[5,A]']",Define a function that swaps the key and value of a pair,['swap'],,{},[],{}
+['f = _ in ((((f)(3))(4)) + (((f)(4))(3)))'],['0'],Functions can also be assigned as a variable name using let.,"['(x) => (y) => (x) + (y)','(x) => (y) => (x) - (y)',]",,{},[],{}
+"['[[""Lebron James"", [25, 20, 28]], [""Anthony Davis"", [34, 32, 31]], [""Kyle Kuzuma"", [8, 23, 17]], [""JaVale McGee"", [10, 15, 14]], [""Danny Green"", [11, 14, 19]]]', 'function gamePoints(list, gameIndex) {return helper = ((headItem) => (tailValue) => _) in (reduce(_,list));}', 'gameIndex', 'helper', 'get(getValue(headItem), _) + tailValue']",['88'],Remember summing up the points for different games? Let's try to write a generalized the function!,"['gamePoints', '0']",,{},[],{}
+"['[[""Lebron James"", [25, 20, 28]], [""Anthony Davis"", [34, 32, 31]], [""Kyle Kuzuma"", [8, 23, 17]], [""JaVale McGee"", [10, 15, 14]], [""Danny Green"", [11, 14, 19]]]', 'function gamePoints(list, gameIndex) {return helper = ((headItem) => (tailValue) => _) in (_);}', 'gameIndex', 'helper', 'get(_, _) + _', 'getValue', 'headItem', 'tailValue', 'reduce', 'list']",['104'],,"['gamePoints', '1']",,{},[],{}
