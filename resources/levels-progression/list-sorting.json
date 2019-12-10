@@ -126,6 +126,9 @@
                 "function my_isSorted(list) { return (_) < (_) ? (true) : (first = _ in (second = _ in (((_) < (_)) ? (false) : (_)))); }",
                 "my_isSorted(_)"
             ],
+            "defines": [
+                "function remove(list,value) { return  (isEmpty(list)) ? ([]) : (((head(list)) == (value)) ? (tail(list)) : (cons(head(list), remove(tail(list), value)))); }"
+            ],
             "globals": {},
             "goal": [
                 "true",
@@ -154,29 +157,27 @@
         },
         {
             "animationScales": {},
-            "board": [
-                "function remove(list,value) { return  (isEmpty(list)) ? ([]) : (((head(list)) == (value)) ? (tail(list)) : (cons(head(list), remove(tail(list), value)))); }"
-            ],
+            "board": [],
             "defines": [
                 "function remove(list,value) { return  (isEmpty(list)) ? ([]) : (((head(list)) == (value)) ? (tail(list)) : (cons(head(list), remove(tail(list), value)))); }",
                 "function sort(list) {return isSorted(list) ? list : (cons(min_num_list(list), sort(remove(list, min_num_list(list))))) }"
             ],
             "globals": {},
             "goal": [
-                "[4,6]",
+                "[4,2]",
                 "[0,5]",
                 "[13]"
             ],
             "syntax": [],
-            "textgoal": "Before we look at how to sort a list, we need one more function. This remove function removes one item from a list.",
+            "textgoal": "Before we look at how to sort a list, we need one more function. This remove function removes one item from a list. If the value is not in it, then we get back the original list.",
             "toolbox": [
                 "__unlimited; remove",
-                "[4,6,2]",
-                "[0,5,2]",
+                "[4,32,2]",
+                "[0,5,32]",
                 "[13]",
-                "2",
-                "2",
-                "2"
+                "32",
+                "32",
+                "32"
             ]
         },
         {
