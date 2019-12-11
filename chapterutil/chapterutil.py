@@ -18,6 +18,7 @@ fieldnames = {
     "toolbox": ast.literal_eval,
     "defines": lambda x: ast.literal_eval(x) if x else None,
     "globals": ast.literal_eval,
+    "hideGlobals": ast.literal_eval,
     "syntax": ast.literal_eval,
     "animationScales": ast.literal_eval,
     "fade": ast.literal_eval,
@@ -29,6 +30,7 @@ singleton_fields = {"textgoal", "globals", "animationScales", "tutorialUrl"}
 field_defaults = {
     "animationScales": {},
     "globals": {},
+    "hideGlobals": [],
     "syntax": [],
     "fade": {},
     "board": [],

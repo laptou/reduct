@@ -11,6 +11,9 @@
             ],
             "globals": {},
             "goal": [],
+            "hideGlobals": [
+                "addOne"
+            ],
             "syntax": [],
             "textgoal": "play",
             "toolbox": [

@@ -139,6 +139,9 @@ export class LoaderClass {
                 else if (typeof lvl.defines === "string") lvl.defines = [lvl.defines];
                 if (!lvl.globals) lvl.globals = {};
                 if (!lvl.syntax) lvl.syntax = [];
+                // used for hiding definitions on the sidebar
+                if (!lvl.hideGlobals) lvl.hideGlobals = [];
+                // used for autograder tests
                 if (!lvl.input) lvl.input = [];
                 if (!lvl.output) lvl.output = [];
                 if (!lvl.numTests) lvl.numTests = 0;
