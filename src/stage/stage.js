@@ -345,10 +345,10 @@ export default class Stage extends BaseStage {
     /* Initializing sidebar, goal and toolbox at the start
       of a level. Called in level.js
     */
-    startLevel(textGoal, showConcreteGoal) {
+    startLevel(textGoal, showConcreteGoal, hideGlobals = []) {
         const state = this.getState();
 
-        const showSidebar = this.sidebar.startLevel(state);
+        const showSidebar = this.sidebar.startLevel(state, hideGlobals);
         if (showSidebar) {
             this.sidebarWidth = 200;
         }
