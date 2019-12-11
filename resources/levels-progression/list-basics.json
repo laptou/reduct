@@ -85,7 +85,9 @@
                 "1",
                 "2"
             ],
-            "hideGlobals": [],
+            "hideGlobals": [
+                "head"
+            ],
             "syntax": [],
             "textgoal": "We can use the head function to get the first item in a list.",
             "toolbox": [
@@ -108,7 +110,9 @@
                 "[2]",
                 "[2,3,4]"
             ],
-            "hideGlobals": [],
+            "hideGlobals": [
+                "tail"
+            ],
             "syntax": [],
             "textgoal": " \"We can use the tail function to get everything except the head.\"",
             "toolbox": [
@@ -127,7 +131,10 @@
                 "1",
                 "2"
             ],
-            "hideGlobals": [],
+            "hideGlobals": [
+                "head",
+                "tail"
+            ],
             "syntax": [],
             "textgoal": "We can access every item in a list by using just the head and tail functions.",
             "toolbox": [
@@ -149,7 +156,9 @@
                 "[1,2,3]",
                 "[\"star\", \"rect\"]"
             ],
-            "hideGlobals": [],
+            "hideGlobals": [
+                "cons"
+            ],
             "syntax": [],
             "textgoal": "We can add new items into an old list using the cons function to build a new list. Try building the lists below.",
             "toolbox": [
@@ -169,7 +178,11 @@
             "goal": [
                 "[1,3,0,7]"
             ],
-            "hideGlobals": [],
+            "hideGlobals": [
+                "head",
+                "tail",
+                "cons"
+            ],
             "syntax": [],
             "textgoal": "Build a the list below starting with an empty list using the cons function.",
             "toolbox": [
@@ -187,7 +200,11 @@
             "goal": [
                 "[1,9,5]"
             ],
-            "hideGlobals": [],
+            "hideGlobals": [
+                "head",
+                "tail",
+                "cons"
+            ],
             "syntax": [],
             "textgoal": "Try to build the list below.",
             "toolbox": [
@@ -208,7 +225,12 @@
                 "[4,3,2,1]",
                 "[\"\ud83c\udf7d\",\"\ud83d\udebd\",\"\ud83d\udca9\"]"
             ],
-            "hideGlobals": [],
+            "hideGlobals": [
+                "head",
+                "tail",
+                "cons",
+                "reverse"
+            ],
             "syntax": [],
             "textgoal": "We can reverse lists using the reverse() function.",
             "toolbox": [
@@ -227,7 +249,10 @@
             "goal": [
                 "[1,2,3,10]"
             ],
-            "hideGlobals": [],
+            "hideGlobals": [
+                "cons",
+                "reverse"
+            ],
             "syntax": [],
             "textgoal": "We can add a value to the end of a list by using reverse() and cons().",
             "toolbox": [
@@ -244,7 +269,12 @@
             "goal": [
                 "[1,2,3,4,5]"
             ],
-            "hideGlobals": [],
+            "hideGlobals": [
+                "head",
+                "reverse",
+                "tail",
+                "cons"
+            ],
             "syntax": [],
             "textgoal": "Great! Now that we can add an item to the end of a list, let's wrap that up as a function called addToEnd().",
             "toolbox": [
@@ -267,7 +297,12 @@
             "goal": [
                 "[2,4,7,2,4]"
             ],
-            "hideGlobals": [],
+            "hideGlobals": [
+                "head",
+                "tail",
+                "cons",
+                "reverse"
+            ],
             "syntax": [],
             "textgoal": "Let's try out the functions you've now seen to reach the goal.",
             "toolbox": [
