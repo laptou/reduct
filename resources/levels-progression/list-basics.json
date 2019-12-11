@@ -20,6 +20,7 @@
             "goal": [
                 "[A, B, C]"
             ],
+            "hideGlobals": [],
             "syntax": [],
             "textgoal": "Make a list with three elements",
             "toolbox": [
@@ -41,6 +42,7 @@
             "goal": [
                 "[[A], [B], [C]]"
             ],
+            "hideGlobals": [],
             "syntax": [],
             "textgoal": "lists can have lists as elements",
             "toolbox": [
@@ -64,6 +66,7 @@
                 "true",
                 "true"
             ],
+            "hideGlobals": [],
             "syntax": [],
             "textgoal": "We can see if a list has no items with the isEmpty function.",
             "toolbox": [
@@ -81,6 +84,9 @@
                 "1",
                 "1",
                 "2"
+            ],
+            "hideGlobals": [
+                "head"
             ],
             "syntax": [],
             "textgoal": "We can use the head function to get the first item in a list.",
@@ -104,6 +110,9 @@
                 "[2]",
                 "[2,3,4]"
             ],
+            "hideGlobals": [
+                "tail"
+            ],
             "syntax": [],
             "textgoal": " \"We can use the tail function to get everything except the head.\"",
             "toolbox": [
@@ -121,6 +130,10 @@
                 "0",
                 "1",
                 "2"
+            ],
+            "hideGlobals": [
+                "head",
+                "tail"
             ],
             "syntax": [],
             "textgoal": "We can access every item in a list by using just the head and tail functions.",
@@ -143,6 +156,9 @@
                 "[1,2,3]",
                 "[\"star\", \"rect\"]"
             ],
+            "hideGlobals": [
+                "cons"
+            ],
             "syntax": [],
             "textgoal": "We can add new items into an old list using the cons function to build a new list. Try building the lists below.",
             "toolbox": [
@@ -162,6 +178,11 @@
             "goal": [
                 "[1,3,0,7]"
             ],
+            "hideGlobals": [
+                "head",
+                "tail",
+                "cons"
+            ],
             "syntax": [],
             "textgoal": "Build a the list below starting with an empty list using the cons function.",
             "toolbox": [
@@ -178,6 +199,11 @@
             "globals": {},
             "goal": [
                 "[1,9,5]"
+            ],
+            "hideGlobals": [
+                "head",
+                "tail",
+                "cons"
             ],
             "syntax": [],
             "textgoal": "Try to build the list below.",
@@ -199,6 +225,12 @@
                 "[4,3,2,1]",
                 "[\"\ud83c\udf7d\",\"\ud83d\udebd\",\"\ud83d\udca9\"]"
             ],
+            "hideGlobals": [
+                "head",
+                "tail",
+                "cons",
+                "reverse"
+            ],
             "syntax": [],
             "textgoal": "We can reverse lists using the reverse() function.",
             "toolbox": [
@@ -217,6 +249,10 @@
             "goal": [
                 "[1,2,3,10]"
             ],
+            "hideGlobals": [
+                "cons",
+                "reverse"
+            ],
             "syntax": [],
             "textgoal": "We can add a value to the end of a list by using reverse() and cons().",
             "toolbox": [
@@ -232,6 +268,12 @@
             "globals": {},
             "goal": [
                 "[1,2,3,4,5]"
+            ],
+            "hideGlobals": [
+                "head",
+                "reverse",
+                "tail",
+                "cons"
             ],
             "syntax": [],
             "textgoal": "Great! Now that we can add an item to the end of a list, let's wrap that up as a function called addToEnd().",
@@ -254,6 +296,12 @@
             "globals": {},
             "goal": [
                 "[2,4,7,2,4]"
+            ],
+            "hideGlobals": [
+                "head",
+                "tail",
+                "cons",
+                "reverse"
             ],
             "syntax": [],
             "textgoal": "Let's try out the functions you've now seen to reach the goal.",
