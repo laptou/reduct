@@ -22,7 +22,7 @@ import consent from "./consent";
 import tutorial from "./ui/instructor/tutorial";
 
 import Loader from "./loader";
-import { TITLE_LEVEL_ID, DEVELOPMENT_BUILD } from Logging from "./logging/logging";
+import Logging, { TITLE_LEVEL_ID, DEVELOPMENT_BUILD } from "./logging/logging";
 import * as ajax from "./util/ajax";
 
 

@@ -6,7 +6,7 @@ import * as gfx from "../gfx/core";
 import * as animate from "../gfx/animate";
 import * as layout from "../ui/layout";
 
-export var MACROS;
+export let MACROS;
 export function startLevel(description, parse, store, stage) {
     animate.replaceDurationScales(description.animationScales);
 
