@@ -20,7 +20,7 @@ function getImage(path) {
 export class LoaderClass {
     constructor(root) {
         this.rootPath = root;
-        this.graphicsPath = root + "/graphics/";
+        this.graphicsPath = `${root}/graphics/`;
         this.pending = this.loaded = 0;
 
         this._promise = new Promise((resolve, reject) => {
@@ -88,9 +88,9 @@ export class LoaderClass {
                 },
             });
         })
-        .catch(err =>  {
-            console.log("Could not load audio sprites. Is resources/ directory available/symlinked?");
-        });
+            .catch((err) => {
+                console.log("Could not load audio sprites. Is resources/ directory available/symlinked?");
+            });
     }
 
     loadSyntax(progression, name, path) {
@@ -110,8 +110,8 @@ export class LoaderClass {
             // Copy the planet's aliens to the individual level
             // definitions, so that buildLevel has access to
             // them. Provide a default alien when not specified.
-            const aliens = (json.resources && json.resources.aliens) ?
-                json.resources.aliens : ["alien-function-1"];
+            const aliens = (json.resources && json.resources.aliens)
+                ? json.resources.aliens : ["alien-function-1"];
             for (const level of json.levels) {
                 level.resources = level.resources || { aliens };
             }
@@ -165,7 +165,7 @@ export class LoaderClass {
 
     loadChapters(name, definition) {
         this.startLoad();
-        //Initilizing variables --s
+        // Initilizing variables --s
         const progression = this.progressions[name] = {
             chapters: {},
             levels: [],
@@ -178,12 +178,14 @@ export class LoaderClass {
         let animationScales = {};
         let fade = {};
 
-        //counting dependencies for each chapter so
-        //as to sort the chapters in order --s
+        // counting dependencies for each chapter so
+        // as to sort the chapters in order --s
         Promise.all(filenames.map(
             (filename) => this.loadChapter(
                 name, filename,
-                `${definition.dir}/${filename}.json`)))
+                `${definition.dir}/${filename}.json`,
+            ),
+        ))
             .then(() => {
                 for (const chapter of filenames) {
                     progression.chapters[chapter].transitions = definition.digraph[chapter];
@@ -199,7 +201,7 @@ export class LoaderClass {
                 outerLoop:
                 while (remaining > 0) {
                     for (const [chapterName, chapter] of Object.entries(progression.chapters)) {
-                        if (chapter.dependencies.every(dep => marked[dep]) && !marked[chapterName]) {
+                        if (chapter.dependencies.every((dep) => marked[dep]) && !marked[chapterName]) {
                             marked[chapterName] = true;
                             progression.linearChapters.push(chapterName);
 
@@ -211,25 +213,25 @@ export class LoaderClass {
 
                             // TODO: patch defines
                             for (const level of chapter.levels) {
-                                //setting animationScales
-                                const newScales = Object.assign(
-                                    {},
-                                    animationScales,
-                                    level.animationScales
-                                );
+                                // setting animationScales
+                                const newScales = {
+
+                                    ...animationScales,
+                                    ...level.animationScales,
+                                };
                                 level.animationScales = Object.assign(
                                     animationScales,
-                                    level.animationScales
+                                    level.animationScales,
                                 );
                                 animationScales = newScales;
 
-                                //setting fade property
-                                const newFade = Object.assign({}, fade, level.fade);
-                                level.fade = Object.assign({}, fade, level.fade);
+                                // setting fade property
+                                const newFade = { ...fade, ...level.fade };
+                                level.fade = { ...fade, ...level.fade };
                                 fade = newFade;
 
-                                //setting extradefines - functions that show
-                                //on the sidebar
+                                // setting extradefines - functions that show
+                                // on the sidebar
                                 level.extraDefines = extraDefines;
                                 extraDefines = extraDefines.concat(level.defines);
 
@@ -256,7 +258,7 @@ export class LoaderClass {
 
     waitForFonts(fonts) {
         this.startLoad();
-        Promise.all(fonts.map(name => new FontFaceObserver(name).load(null, 5000))).then(() => {
+        Promise.all(fonts.map((name) => new FontFaceObserver(name).load(null, 5000))).then(() => {
             this.finishLoad();
         });
     }

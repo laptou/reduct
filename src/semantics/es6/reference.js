@@ -47,10 +47,10 @@ const baseReference = {
         const name = expr.get("name");
         if (!builtins.has(name)) return null;
 
-        const {validate} = builtins.get(name),
-              val = validate
-                    ? validate(expr, semant, state)
-                    : genericValidate(expr, semant, state);
+        const { validate } = builtins.get(name);
+        const val = validate
+            ? validate(expr, semant, state)
+            : genericValidate(expr, semant, state);
         if (!val) return null; // VALID
         return [ expr.get(val.subexpr), val.msg ];
     },
@@ -98,11 +98,12 @@ const baseReference = {
 export default {
     reference: [
         baseReference,
-        Object.assign({}, baseReference, {
+        {
+            ...baseReference,
             fields: ["name", "params"],
             subexpressions: (semant, expr) => {
                 const params = (expr.get ? expr.get("params") : expr.params) || [];
-                return params.map(name => `arg_${name}`);
+                return params.map((name) => `arg_${name}`);
             },
             /* The kind of a ref with or without params:
              *  f           : expr
@@ -116,12 +117,12 @@ export default {
                 const params = ref.get("params");
                 const nparams = params ? params.length : 0;
                 const builtin = builtins.has(ref.get("name"));
-                let incomplete = false,
-                    args = false;
+                let incomplete = false;
+                let args = false;
                 for (let i = 0; i < nparams; i++) {
-                    const p = params[i],
-                          arg = nodes.get(ref.get(`arg_${p}`)),
-                          hole = (arg.get("type") == "missing");
+                    const p = params[i];
+                    const arg = nodes.get(ref.get(`arg_${p}`));
+                    const hole = (arg.get("type") == "missing");
                     incomplete |= hole;
                     args |= !hole;
                     if (!incomplete && semant.kind(state, arg) === "expression") {
@@ -130,7 +131,7 @@ export default {
                     if (incomplete && !hole) return "expression"; // topexpr?
                 }
                 if (!incomplete) return "expression";
-                if (!args) return "value";                        // topexpr. Or do we let substepFilter handle this?
+                if (!args) return "value"; // topexpr. Or do we let substepFilter handle this?
                 return "value"; // treat builtins and user definitions the same way - desirable?
                 // return builtin ? "value" : "expression";
             },
@@ -146,25 +147,24 @@ export default {
 
                 const name = expr.get("name");
 
-               if (builtins.has(name)) {
-                    const {impl} = builtins.get(name);
+                if (builtins.has(name)) {
+                    const { impl } = builtins.get(name);
                     if (impl) {
-                        let resultExpr = impl(expr, semant, state.get("nodes"));
+                        const resultExpr = impl(expr, semant, state.get("nodes"));
                         if (resultExpr == null) {
                             console.error(`Small step on ${expr.type} failed`);
                             return null;
                         }
                         return core.makeResult(expr, resultExpr, semant);
                         // return resultExpr;
-                    } else {
-                        console.error(`Undefined builtin implementation: ${name}`);
                     }
+                    console.error(`Undefined builtin implementation: ${name}`);
                 }
 
-                if (!(expr.has("parent") && state.getIn([ "nodes", expr.get("parent"), "type"]) === "define") &&
-                    expr.get("params") &&
-                    expr.get("params").length > 0 &&
-                    expr.get("params").some(field => state.getIn([
+                if (!(expr.has("parent") && state.getIn([ "nodes", expr.get("parent"), "type"]) === "define")
+                    && expr.get("params")
+                    && expr.get("params").length > 0
+                    && expr.get("params").some((field) => state.getIn([
                         "nodes",
                         expr.get(`arg_${field}`),
                         "type",
@@ -173,7 +173,7 @@ export default {
                     const result = semant.interpreter.betaReduce(
                         stage,
                         state, res,
-                        params.map(name => expr.get(`arg_${name}`)),
+                        params.map((name) => expr.get(`arg_${name}`)),
                     );
                     if (result) {
                         const [ _, newNodeIds, addedNodes ] = result;
@@ -198,13 +198,14 @@ export default {
                     return true;
                 }
 
-                return !params.every(p => state.getIn([ "nodes", expr.get(`arg_${p}`), "type" ]) === "missing");
+                return !params.every((p) => state.getIn([ "nodes", expr.get(`arg_${p}`), "type" ]) === "missing");
             },
             betaReduce: (semant, stage, state, expr, argIds) => {
-                const nodes = state.get("nodes"),
-                      result = semant.hydrate(nodes, expr),
-                      np = result.params ? result.params.length : 0;
-                let nmissing = 0, i = 0, j = 0;
+                const nodes = state.get("nodes");
+                const result = semant.hydrate(nodes, expr);
+                const np = result.params ? result.params.length : 0;
+                const nmissing = 0; let i = 0; let
+                    j = 0;
                 for (; i < argIds.length && j < np; i++) {
                     let param = null;
                     for (; j < np; j++) {
@@ -269,6 +270,6 @@ export default {
                     },
                 },
             },
-        })
+        },
     ],
 };

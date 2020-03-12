@@ -49,10 +49,9 @@ export default {
         type: (semant, state, types, expr) => {
             const result = new Map();
             const positiveTy = types.get(expr.get("positive"));
-            const branchesMatch =
-                  positiveTy === types.get(expr.get("negative")) &&
-                  positiveTy !== null &&
-                  typeof positiveTy !== "undefined";
+            const branchesMatch = positiveTy === types.get(expr.get("negative"))
+                  && positiveTy !== null
+                  && typeof positiveTy !== "undefined";
             if (branchesMatch) {
                 result.set(expr.get("id"), types.get(expr.get("positive")));
             }
@@ -178,7 +177,7 @@ export default {
                 .then(() => {
                     view.stroke = null;
                     branch.stroke = null;
-                    reset.forEach(tween => tween.undo());
+                    reset.forEach((tween) => tween.undo());
                 });
         },
     },

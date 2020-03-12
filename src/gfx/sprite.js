@@ -6,7 +6,7 @@ import * as util from "./util";
  * @class
  * @alias gfx.sprite
  */
-export function sprite(options={}) {
+export function sprite(options = {}) {
     const projection = baseProjection(options);
     projection.type = "sprite";
     projection.size.w = (options.size && options.size.w) ? options.size.w : 50;
@@ -14,7 +14,7 @@ export function sprite(options={}) {
 
     projection.prepare = function(id, exprId, state, stage) {};
     projection.draw = function(id, exprId, state, stage, offset) {
-        const ctx = stage.ctx;
+        const { ctx } = stage;
         ctx.save();
 
         const [ sx, sy ] = util.absoluteScale(this, offset);
@@ -27,7 +27,7 @@ export function sprite(options={}) {
             offset.x + ((this.pos.x * offset.sx) - (this.anchor.x * width)),
             offset.y + ((this.pos.y * offset.sy) - (this.anchor.y * height)),
             width,
-            height
+            height,
         );
 
         debugDraw(ctx, this, offset);
@@ -77,7 +77,7 @@ export function exprify(projection) {
                 x, y - 2,
                 w, h + 8,
                 sx * 22,
-                true, stage.isHovered(exprId), null
+                true, stage.isHovered(exprId), null,
             );
             ctx.fillStyle = "#555";
             primitive.roundRect(
@@ -85,7 +85,7 @@ export function exprify(projection) {
                 x, y - 4,
                 w, h + 8,
                 sx * 22,
-                true, stage.isHovered(exprId), null
+                true, stage.isHovered(exprId), null,
             );
         }
         else if ((!hasParent || !locked) && stage.isHovered(exprId)) {
@@ -129,7 +129,7 @@ export function exprify(projection) {
  * @class
  * @alias gfx.patch3
  */
-export function patch3(childFunc, options={}) {
+export function patch3(childFunc, options = {}) {
     const projection = baseProjection();
     projection.type = "3patch";
 
@@ -154,8 +154,7 @@ export function patch3(childFunc, options={}) {
         this.middleSegments = Math.ceil(contentWidth / midStripWidth);
         const middleWidth = this.middleSegments * midStripWidth;
         childProjection.pos.x = leftWidth + ((middleWidth - childProjection.size.w) / 2);
-        childProjection.pos.y =
-            ((options.middle.naturalHeight * this.imageScale) - childProjection.size.h) / 2;
+        childProjection.pos.y = ((options.middle.naturalHeight * this.imageScale) - childProjection.size.h) / 2;
         childProjection.parent = this;
 
         this.size.w = middleWidth + leftWidth + rightWidth;
@@ -178,7 +177,7 @@ export function patch3(childFunc, options={}) {
             offset.x + (this.pos.x * offset.sx),
             topY,
             sx * options.left.naturalWidth,
-            sy * options.left.naturalHeight
+            sy * options.left.naturalHeight,
         );
 
         let x = offset.x + (this.pos.x * offset.sx) + (sx * options.left.naturalWidth);
@@ -193,17 +192,18 @@ export function patch3(childFunc, options={}) {
         options.right.draw(
             ctx, x - 1, topY,
             sx * options.right.naturalWidth,
-            sy * options.right.naturalHeight
+            sy * options.right.naturalHeight,
         );
 
         const childId = childFunc(id, state);
-        const subOffset = Object.assign({}, offset, {
+        const subOffset = {
+            ...offset,
             x: offset.x + (this.pos.x * offset.sx),
             y: offset.y + (this.pos.y * offset.sy),
             sx: offset.sx * this.scale.x,
             sy: offset.sy * this.scale.y,
             opacity: this.opacity,
-        });
+        };
         stage.views[childId].draw(childId, exprId, state, stage, subOffset);
 
         debugDraw(ctx, this, offset);

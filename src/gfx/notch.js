@@ -9,13 +9,13 @@ export class NotchSet {
 
     drawSequence(ctx, side, x, y, len) {
         const notches = this.notches
-              .filter(n => n.side === side)
-              .sort((a, b) => a.relpos - b.relpos);
+            .filter((n) => n.side === side)
+            .sort((a, b) => a.relpos - b.relpos);
         if (side === "left" || side === "right") {
-            notches.forEach(n => n.drawVertical(ctx, x, y, len));
+            notches.forEach((n) => n.drawVertical(ctx, x, y, len));
         }
         else {
-            notches.forEach(n => n.drawHorizontal(ctx, x, y, len));
+            notches.forEach((n) => n.drawHorizontal(ctx, x, y, len));
         }
     }
 }
@@ -37,19 +37,19 @@ export class Notch {
         return 1;
     }
 
-    drawVertical(ctx, x, y, h, dir=null) {
+    drawVertical(ctx, x, y, h, dir = null) {
         if (!dir) dir = this.direction;
-        const relpos = this.relpos;
+        const { relpos } = this;
         const facing = this.inner ? 1 : -1;
         ctx.lineTo(x, y + dir * (h * relpos - this.width));
         ctx.lineTo(x - facing * dir * this.depth, y + dir * h * relpos);
         ctx.lineTo(x, y + dir * (h * relpos + this.width));
     }
 
-    drawHorizontal(ctx, x, y, w, dir=null) {
+    drawHorizontal(ctx, x, y, w, dir = null) {
         if (!dir) dir = this.direction;
-        let relpos = this.relpos;
-        let facing = this.inner ? 1 : -1;
+        const { relpos } = this;
+        const facing = this.inner ? 1 : -1;
         ctx.lineTo(x + dir * (w * relpos - this.width), y);
         ctx.lineTo(x + dir * (w * relpos), y + facing * dir * this.depth);
         ctx.lineTo(x + dir * (w * relpos + this.width), y);

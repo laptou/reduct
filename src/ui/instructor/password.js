@@ -66,7 +66,7 @@ export default function password(promptText, password) {
 
         document.body.appendChild(outerContainer);
 
-        window.setTimeout(function() {
+        window.setTimeout(() => {
             outerContainer.classList.add("visible");
         }, 200);
     });

@@ -92,7 +92,7 @@ export default class Sidebar {
                 const id = state.get("globals").get(name);
                 this.stage.semantics.search(nodes, id, (_, nid) => {
                     const expr = nodes.get(nid);
-                    if (expr.get("type") === "reference" && globals.has(expr.get("name"))  && !hideGlobals.includes(expr.get("name"))) {
+                    if (expr.get("type") === "reference" && globals.has(expr.get("name")) && !hideGlobals.includes(expr.get("name"))) {
                         const name = expr.get("name");
                         if (!names.has(name)) {
                             names.add(name);
@@ -112,9 +112,9 @@ export default class Sidebar {
             this.viewMap.set(name, viewId);
         }
 
-        this.showing = names.size > 0 ||
-            state.get("board")
-            .some(id => state.getIn([ "nodes", id, "type" ]) === "define");
+        this.showing = names.size > 0
+            || state.get("board")
+                .some((id) => state.getIn([ "nodes", id, "type" ]) === "define");
         return this.showing;
     }
 

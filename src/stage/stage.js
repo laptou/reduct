@@ -87,12 +87,12 @@ export default class Stage extends BaseStage {
         const topLeft = gfxCore.util.topLeftPos(projection, curOffset);
         if (projection.containsPoint(curPos, curOffset)) {
             if (curRoot === null) {
-              //if curRoot is NULL, set both TopNode and TargetNode
+                // if curRoot is NULL, set both TopNode and TargetNode
                 curRoot = curExprId;
                 res = curExprId;
             }
             else if (targetable(curProjId, curExprId)) {
-              //else, just set the targetNode
+                // else, just set the targetNode
                 res = curExprId;
             }
 
@@ -113,7 +113,7 @@ export default class Stage extends BaseStage {
                         sx: curOffset.sx * projection.scale.x,
                         sy: curOffset.sy * projection.scale.y,
                     },
-                    targetable
+                    targetable,
                 );
                 if (subresult) {
                     return subresult;
@@ -137,18 +137,18 @@ export default class Stage extends BaseStage {
         const topLeft = gfxCore.util.topLeftPos(projection, curOffset);
         if (projection.containsPoint(curPos, curOffset)) {
             if (curRoot === null) {
-              //if curRoot is NULL, set both TopNode and TargetNode
+                // if curRoot is NULL, set both TopNode and TargetNode
                 curRoot = curExprId;
                 res = curExprId;
             }
             else if (curNode && this.semantics.targetable(state, curNode)) {
-              //else, just set the targetNode
+                // else, just set the targetNode
                 res = curExprId;
             }
 
             // UGH, forgot why this is here
-            if (curRoot === curExprId && curNode &&
-                !this.semantics.targetable(state, curNode)) {
+            if (curRoot === curExprId && curNode
+                && !this.semantics.targetable(state, curNode)) {
                 return null;
             }
 
@@ -168,7 +168,7 @@ export default class Stage extends BaseStage {
                         y: 0,
                         sx: curOffset.sx * projection.scale.x,
                         sy: curOffset.sy * projection.scale.y,
-                    }
+                    },
                 );
                 if (subresult) {
                     return subresult;
@@ -181,10 +181,10 @@ export default class Stage extends BaseStage {
         return null;
     }
 
-    /*Get all the nodes [topNode] and [targetNode] at the
+    /* Get all the nodes [topNode] and [targetNode] at the
       current position [pos].
     */
-    getNodeAtPos(pos, selectedId=null) {
+    getNodeAtPos(pos, selectedId = null) {
         if (this.alreadyWon) {
             // If already won or stuck, only allow interaction with navbar
             [ result, root ] = this.navbar.getNodeAtPos(state, pos);
@@ -235,7 +235,7 @@ export default class Stage extends BaseStage {
         return [ root, result, false ];
     }
 
-    /*Similar to testNodeAtPos or testExprAtPos but additionally,
+    /* Similar to testNodeAtPos or testExprAtPos but additionally,
      also checks if the node is a reference (a function reference).
     */
     getReferenceNameAtPos(pos) {
@@ -266,7 +266,7 @@ export default class Stage extends BaseStage {
                             y: 0,
                             sx: curOffset.sx * projection.scale.x,
                             sy: curOffset.sy * projection.scale.y,
-                        }
+                        },
                     );
                     if (subresult) {
                         return subresult;
@@ -297,7 +297,7 @@ export default class Stage extends BaseStage {
      *
      * @param changeData Data associated with this edge in the graph.
      */
-    saveState(changeData=null) {
+    saveState(changeData = null) {
         const state = level.serialize(this.getState(), this.semantics);
         const changed = this.stateGraph.push(state, changeData);
         Logging.log("state-save", state);
@@ -309,7 +309,7 @@ export default class Stage extends BaseStage {
         }
     }
 
-    saveNode(id, nodes=null) {
+    saveNode(id, nodes = null) {
         nodes = nodes === null ? this.getState().get("nodes") : nodes;
         return this.semantics.parser.unparse(this.semantics.hydrate(nodes, nodes.get(id)));
     }
@@ -317,7 +317,7 @@ export default class Stage extends BaseStage {
     /**
      * Push and save a special state onto the state graph.
      */
-    pushState(label, edge=null) {
+    pushState(label, edge = null) {
         this.stateGraph.push(label, edge);
         Logging.log("state-save", label);
         Logging.log("state-path-save", this.stateGraph.serialize());
@@ -326,7 +326,7 @@ export default class Stage extends BaseStage {
         }
     }
 
-    /*Used for window resizing.
+    /* Used for window resizing.
       called in index.js
     */
     resize() {
@@ -361,7 +361,6 @@ export default class Stage extends BaseStage {
     }
 
     registerNewDefinedNames(names) {
-
         this.newDefinedNames = names;
     }
 
@@ -391,11 +390,11 @@ export default class Stage extends BaseStage {
             this.width - 50,
             this.height - this.toolbox.size.h - 50 - 100,
             25,
-            true, false
+            true, false,
         );
 
         this.toolbox.drawBase(state);
-        //this.syntaxJournal.drawBase(state);
+        // this.syntaxJournal.drawBase(state);
         this.goal.drawImpl(state);
 
         for (const fx of Object.values(this.effects)) {
@@ -410,17 +409,17 @@ export default class Stage extends BaseStage {
         }
 
         this.toolbox.drawImpl(state);
-         //this.syntaxJournal.drawImpl(state);
+        // this.syntaxJournal.drawImpl(state);
 
 
         for (const id of this._newSyntax) {
             this.drawInternalProjection(state, id);
         }
 
-        //NOTE - why do we need this? --sameer
-        /*if (this.functionDef) {
+        // NOTE - why do we need this? --sameer
+        /* if (this.functionDef) {
             this.functionDef.drawImpl(state);
-        }*/
+        } */
 
         for (const fx of Object.values(this.effects)) {
             if (!fx.under) {
@@ -448,9 +447,9 @@ export default class Stage extends BaseStage {
             // clone instead.
             const [ clonedNode, addedNodes ] = this.semantics.clone(
                 selectedNode,
-                state.get("nodes")
+                state.get("nodes"),
             );
-              // make clone include result in addedNodes
+            // make clone include result in addedNodes
             const allAddedNodes = addedNodes.concat([ clonedNode ]);
 
             const tempNodes = state.get("nodes").withMutations((nodes) => {
@@ -459,7 +458,7 @@ export default class Stage extends BaseStage {
                 }
             });
             for (const node of allAddedNodes) {
-               this.views[node.get("id")] = this.semantics.project(this, tempNodes, node);
+                this.views[node.get("id")] = this.semantics.project(this, tempNodes, node);
             }
             this.views[clonedNode.get("id")].pos.x = this.views[selectedNode].pos.x;
             this.views[clonedNode.get("id")].pos.y = this.views[selectedNode].pos.y;
@@ -469,7 +468,7 @@ export default class Stage extends BaseStage {
             this.store.dispatch(action.useToolbox(
                 selectedNode,
                 clonedNode.get("id"),
-                allAddedNodes
+                allAddedNodes,
             ));
             return clonedNode.get("id");
         }
@@ -483,7 +482,7 @@ export default class Stage extends BaseStage {
         if (!target) {
             return false;
         }
-        else if (!target.get("locked") && target.get("parent") && target.get("type") !== "missing") {
+        if (!target.get("locked") && target.get("parent") && target.get("type") !== "missing") {
             return this.semantics.detachable(state, target.get("parent"), targetNode);
         }
         return false;
@@ -517,7 +516,7 @@ export default class Stage extends BaseStage {
             pos.x,
             pos.y,
             sz.w,
-            sz.h
+            sz.h,
         );
         animate.tween(currentView.pos, {
             x: safeX + (currentView.anchor.x * sz.w),
@@ -543,7 +542,7 @@ export default class Stage extends BaseStage {
                     for (const [ selNotchIdx, nodeNotchIdx ] of compatible) {
                         const distance = gfxCore.distance(
                             this.views[nodeId].notchPos(nodeId, nodeId, nodeNotchIdx),
-                            this.views[id].notchPos(id, id, selNotchIdx)
+                            this.views[id].notchPos(id, id, selNotchIdx),
                         );
                         if (distance < 50) {
                             this.views[nodeId].highlighted = true;
@@ -576,7 +575,7 @@ export default class Stage extends BaseStage {
                         }
                         return [ nodes.get(id), nodes ];
                     },
-                    () => true
+                    () => true,
                 );
             }
         }
@@ -585,7 +584,7 @@ export default class Stage extends BaseStage {
 
         if (this.semantics.search(
             nodes, arg,
-            (_, id) => nodes.get(id).get("type") === "missing"
+            (_, id) => nodes.get(id).get("type") === "missing",
         ).length > 0) {
             return;
         }
@@ -617,7 +616,7 @@ export default class Stage extends BaseStage {
         const missingNodes = this.semantics.search(
             nodes,
             selectedNode,
-            (nodes, id) => nodes.get(id).get("type") === "missing"
+            (nodes, id) => nodes.get(id).get("type") === "missing",
         ).filter((id) => {
             const node = nodes.get(id);
             if (!node.get("parent")) return true;
@@ -629,7 +628,7 @@ export default class Stage extends BaseStage {
         if (missingNodes.length > 0) {
             Logging.log("define-failed", {
                 item: this.saveNode(selectedNode),
-                blocking: missingNodes.map(id => this.saveNode(id)),
+                blocking: missingNodes.map((id) => this.saveNode(id)),
             });
             missingNodes.forEach((id) => {
                 animate.fx.error(this, this.getView(id));
@@ -674,7 +673,7 @@ export default class Stage extends BaseStage {
                     for (const [ selNotchIdx, nodeNotchIdx ] of compatible) {
                         const distance = gfxCore.distance(
                             this.views[nodeId].notchPos(nodeId, nodeId, nodeNotchIdx),
-                            this.views[selectedNode].notchPos(selectedNode, selectedNode, selNotchIdx)
+                            this.views[selectedNode].notchPos(selectedNode, selectedNode, selNotchIdx),
                         );
                         if (distance < 50) {
                             this.views[nodeId].highlighted = true;
@@ -705,7 +704,7 @@ export default class Stage extends BaseStage {
                     this.getState(),
                     parent,
                     selectedNode,
-                    notchPair[0]
+                    notchPair[0],
                 )) {
                     animate.fx.blink(this, this.views[parent], {
                         times: 2,
@@ -730,8 +729,8 @@ export default class Stage extends BaseStage {
     /**
      * Helper that handles animation and updating the store for a small-step.
      */
-    step(state, selectedNode, overrideMode=null, shouldStop=null) {
-      //debugger;
+    step(state, selectedNode, overrideMode = null, shouldStop = null) {
+        // debugger;
         const nodes = state.get("nodes");
         const node = nodes.get(selectedNode);
 
@@ -815,7 +814,7 @@ export default class Stage extends BaseStage {
 
                 Logging.log("reduction", {
                     before: this.saveNode(topNodeId),
-                    after: newNodeIds.map(id => this.saveNode(id, tempNodes)),
+                    after: newNodeIds.map((id) => this.saveNode(id, tempNodes)),
                 });
                 if (!recordUndo) {
                     act = action.skipUndo(act);
@@ -876,7 +875,7 @@ export default class Stage extends BaseStage {
      * Helper that handles animation and updating the store for a beta reduction.
      */
     betaReduce(state, target, arg) {
-      //debugger;
+        // debugger;
         const result = this.semantics.interpreter.betaReduce(this, state, target, [ arg ]);
         if (result) {
             const [ topNode, resultNodeIds, newNodes ] = result;
@@ -905,7 +904,7 @@ export default class Stage extends BaseStage {
 
                 this.store.dispatch(action.betaReduce(
                     topNode, arg,
-                    resultNodeIds, newNodes
+                    resultNodeIds, newNodes,
                 ));
 
                 Promise.all([
@@ -952,7 +951,7 @@ export default class Stage extends BaseStage {
             Logging.log("reduction-lambda", {
                 before: origExp,
                 applied: origArg,
-                after: resultNodeIds.map(id => this.saveNode(id, tempNodes)),
+                after: resultNodeIds.map((id) => this.saveNode(id, tempNodes)),
             });
         }
         else {
@@ -981,8 +980,8 @@ export default class Stage extends BaseStage {
         }
 
         for (const [ nodeId, view ] of views) {
-            if (state.getIn([ "nodes", nodeId ]) &&
-                this.semantics.ignoreForVictory(state, state.getIn([ "nodes", nodeId ]))) {
+            if (state.getIn([ "nodes", nodeId ])
+                && this.semantics.ignoreForVictory(state, state.getIn([ "nodes", nodeId ]))) {
                 continue;
             }
 
@@ -1007,7 +1006,7 @@ export default class Stage extends BaseStage {
             })
             .then(() => {
                 const title = gfxCore.sprite({
-                    image: Loader.images["you_win"],
+                    image: Loader.images.you_win,
                     size: { w: 509, h: 110 },
                 });
                 const titleId = this.allocate(title);
@@ -1039,7 +1038,7 @@ export default class Stage extends BaseStage {
                         subexpScale: 1,
                     }, gfxCore.baseProjection),
                     "center",
-                    {}
+                    {},
                 );
                 const layoutId = this.allocate(layout);
 
@@ -1050,7 +1049,7 @@ export default class Stage extends BaseStage {
                     rows.push(this.allocate(gfxCore.layout.hbox(
                         () => starList.slice(j, j + starsPerRow),
                         {},
-                        gfxCore.baseProjection
+                        gfxCore.baseProjection,
                     )));
                     i += starsPerRow;
                 }
@@ -1102,8 +1101,8 @@ export default class Stage extends BaseStage {
                         explosionRadius: 600,
                         numOfParticles: 60,
                         duration: 800,
-                        color: idx => scale(idx / 60.0),
-                        angle: idx => 2 * Math.PI * (idx / 60.0),
+                        color: (idx) => scale(idx / 60.0),
+                        angle: (idx) => 2 * Math.PI * (idx / 60.0),
                     });
                 }).then(() => Promise.all([
                     animate.tween(title, {
@@ -1209,7 +1208,7 @@ export default class Stage extends BaseStage {
     /**
      * Show the definition of the given reference under its view.
      */
-    showReferenceDefinition(state, referenceId, immediate=false) {
+    showReferenceDefinition(state, referenceId, immediate = false) {
         const referenceNameNode = state.getIn([ "nodes", referenceId ]);
         const name = referenceNameNode.get("name");
         if (builtins.has(name)) return;
@@ -1225,7 +1224,7 @@ export default class Stage extends BaseStage {
                 name,
                 functionBodyId,
                 referenceId,
-                immediate ? 0 : 500
+                immediate ? 0 : 500,
             );
         }
         else {
@@ -1234,7 +1233,7 @@ export default class Stage extends BaseStage {
                 name,
                 functionNodeId,
                 referenceId,
-                immediate ? 0 : 500
+                immediate ? 0 : 500,
             );
         }
     }
@@ -1255,7 +1254,7 @@ export default class Stage extends BaseStage {
 
                 const origRef = nodes.get(this.functionDef.referenceId);
                 const subexprs = this.semantics.subexpressions(origRef);
-                const hasArgs = subexprs.some(field => nodes.getIn([ origRef.get(field), "type" ]) !== "missing");
+                const hasArgs = subexprs.some((field) => nodes.getIn([ origRef.get(field), "type" ]) !== "missing");
 
                 let result = body;
 
@@ -1263,7 +1262,7 @@ export default class Stage extends BaseStage {
                     for (const field of subexprs) {
                         const hydrated = this.semantics.hydrate(
                             nodes,
-                            nodes.get(origRef.get(field))
+                            nodes.get(origRef.get(field)),
                         );
                         result = this.semantics.apply(result, hydrated);
                     }
@@ -1300,7 +1299,7 @@ export default class Stage extends BaseStage {
                 this.store.dispatch(action.unfold(
                     this.functionDef.referenceId,
                     fullNodes[0].get("id"),
-                    fullNodes
+                    fullNodes,
                 ));
             }
             else {
@@ -1354,14 +1353,14 @@ export default class Stage extends BaseStage {
     }
 
     library(state, topNode) {
-      return; //unimplemented right now.
-      console.log("In stage");
-      this.syntaxJournal.open();
+        return; // unimplemented right now.
+        console.log("In stage");
+        this.syntaxJournal.open();
     }
 
     getTests(inputList, outputList) {
-      this.input = inputList;
-      this.output = outputList;
+        this.input = inputList;
+        this.output = outputList;
     }
 
     _mousedown(e) {

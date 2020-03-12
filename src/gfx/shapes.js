@@ -13,8 +13,8 @@ function shadow(ctx, exprId, projection, state, f) {
 }
 
 function drawPrimitive(exprId, projection, state, stage, offset,
-                       drawFunction, strokeFunction=null) {
-    const ctx = stage.ctx;
+    drawFunction, strokeFunction = null) {
+    const { ctx } = stage;
     ctx.save();
 
     const node = state.getIn([ "nodes", exprId ]);
@@ -42,7 +42,8 @@ function drawPrimitive(exprId, projection, state, stage, offset,
             offset.sx * projection.scale.x * projection.size.w,
             offset.sy * projection.scale.y * projection.size.h,
             sx * 22,
-            true, stage.isHovered(exprId), null);
+            true, stage.isHovered(exprId), null,
+        );
         ctx.fillStyle = "#555";
         primitive.roundRect(
             ctx,
@@ -51,7 +52,8 @@ function drawPrimitive(exprId, projection, state, stage, offset,
             offset.sx * projection.scale.x * projection.size.w,
             offset.sy * projection.scale.y * projection.size.h,
             sx * 22,
-            true, stage.isHovered(exprId), null);
+            true, stage.isHovered(exprId), null,
+        );
     }
     else if ((!hasParent || !locked) && stage.isHovered(exprId)) {
         primitive.setStroke(ctx, {
@@ -80,7 +82,7 @@ function shapeProjection(options) {
         color: "gold",
         shadowColor: "#000",
         shadowOffset: 4,
-        shadow: true,  // Always draw shadow
+        shadow: true, // Always draw shadow
     }, options);
 }
 
@@ -88,12 +90,12 @@ function shapeProjection(options) {
  * @class
  * @alias gfx.shapes.triangle
  */
-export function triangle(options={}) {
+export function triangle(options = {}) {
     const projection = shapeProjection(options);
     projection.type = "triangle";
 
     projection.draw = function(id, exprId, state, stage, offset) {
-        const ctx = stage.ctx;
+        const { ctx } = stage;
         const [ sx, sy ] = util.absoluteScale(this, offset);
         drawPrimitive(exprId, this, state, stage, offset, (dy) => {
             let w = offset.sx * this.scale.x * this.size.w;
@@ -107,7 +109,7 @@ export function triangle(options={}) {
             ctx.beginPath();
             ctx.moveTo(x, y + h + dy);
             ctx.lineTo(x + w, y + h + dy);
-            ctx.lineTo(x + w/2.0, y + dy);
+            ctx.lineTo(x + w / 2.0, y + dy);
             ctx.closePath();
         });
     };
@@ -118,12 +120,12 @@ export function triangle(options={}) {
  * @class
  * @alias gfx.shapes.circle
  */
-export function circle(options={}) {
+export function circle(options = {}) {
     const projection = shapeProjection(options);
     projection.type = "circle";
 
     projection.draw = function(id, exprId, state, stage, offset) {
-        const ctx = stage.ctx;
+        const { ctx } = stage;
         const [ sx, sy ] = util.absoluteScale(this, offset);
         drawPrimitive(exprId, this, state, stage, offset, (dy) => {
             let w = offset.sx * this.scale.x * this.size.w;
@@ -136,7 +138,7 @@ export function circle(options={}) {
             const rad = w / 2;
 
             ctx.beginPath();
-            ctx.arc(x + rad, y + rad + dy, rad, 0, 2*Math.PI);
+            ctx.arc(x + rad, y + rad + dy, rad, 0, 2 * Math.PI);
         });
     };
     return projection;
@@ -146,12 +148,12 @@ export function circle(options={}) {
  * @class
  * @alias gfx.shapes.rectangle
  */
-export function rectangle(options={}) {
+export function rectangle(options = {}) {
     const projection = shapeProjection(options);
     projection.type = "rectangle";
 
     projection.draw = function(id, exprId, state, stage, offset) {
-        const ctx = stage.ctx;
+        const { ctx } = stage;
         const [ sx, sy ] = util.absoluteScale(this, offset);
         let w = offset.sx * this.scale.x * this.size.w;
         let h = offset.sy * this.scale.y * this.size.h;
@@ -175,12 +177,12 @@ export function rectangle(options={}) {
  * @class
  * @alias gfx.shapes.star
  */
-export function star(options={}) {
+export function star(options = {}) {
     const projection = shapeProjection(options);
     projection.type = "star";
 
     projection.draw = function(id, exprId, state, stage, offset) {
-        const ctx = stage.ctx;
+        const { ctx } = stage;
         const [ sx, sy ] = util.absoluteScale(this, offset);
         let w = offset.sx * this.scale.x * this.size.w;
         let h = offset.sy * this.scale.y * this.size.h;
@@ -191,7 +193,7 @@ export function star(options={}) {
         h *= 0.7;
 
         drawPrimitive(id, this, state, stage, offset, (dy) => {
-            primitive.drawStar(ctx, x + w/2, y + h/2 + dy, 5, w/2, 0.5*w/2, false, false);
+            primitive.drawStar(ctx, x + w / 2, y + h / 2 + dy, 5, w / 2, 0.5 * w / 2, false, false);
         });
     };
     return projection;

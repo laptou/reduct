@@ -13,7 +13,7 @@ export function button(stage, label, options) {
             color: "#FFF",
         })));
     }
-    const projection = gfx.layout.hbox(label, Object.assign({
+    const projection = gfx.layout.hbox(label, {
         color: options.color || "lightblue",
         padding: {
             left: 20,
@@ -30,7 +30,8 @@ export function button(stage, label, options) {
         },
         shadow: true,
         shadowColor: "black",
-    }, options));
+        ...options,
+    });
 
     projection.onclick = function() {
         this.shadow = true;
@@ -52,10 +53,8 @@ export function button(stage, label, options) {
  * @class
  * @alias gfx.ui.imageButton
  */
-export function imageButton(images, options={}) {
-    const projection = gfx.baseProjection(Object.assign({}, {
-        enabled: true,
-    }, options));
+export function imageButton(images, options = {}) {
+    const projection = gfx.baseProjection({ enabled: true, ...options });
 
     const sprites = {
         normal: gfx.sprite({ image: images.normal }),
@@ -63,10 +62,11 @@ export function imageButton(images, options={}) {
         active: gfx.sprite({ image: images.active }),
     };
 
-    projection.size = Object.assign({}, {
+    projection.size = {
         w: images.normal.naturalWidth,
         h: images.normal.naturalHeight,
-    }, options.size || {});
+        ...options.size || {},
+    };
 
     let state = "normal";
 
@@ -105,9 +105,7 @@ export function imageButton(images, options={}) {
     };
 
     projection.draw = function(id, exprId, boardState, stage, offset) {
-        sprites[state].draw.call(this, id, exprId, boardState, stage, Object.assign({}, offset, {
-            opacity: offset.opacity * (this.enabled ? 1 : 0.3),
-        }));
+        sprites[state].draw.call(this, id, exprId, boardState, stage, { ...offset, opacity: offset.opacity * (this.enabled ? 1 : 0.3) });
     };
 
     projection.highlight = function() {

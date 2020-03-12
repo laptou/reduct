@@ -49,7 +49,7 @@ export default class StuckEffect {
         });
 
         const board = state.get("board")
-              .filter(n => !this.stage.semantics.ignoreForVictory(state, state.getIn([ "nodes", n ])));
+            .filter((n) => !this.stage.semantics.ignoreForVictory(state, state.getIn([ "nodes", n ])));
         const goal = state.get("goal");
 
         const blinkers = [];
@@ -60,15 +60,13 @@ export default class StuckEffect {
             if (typeof reverseMatching[id] === "undefined") {
                 blinkers.push(id);
                 // Clone view to avoid messing up positioning
-                extraMsg.push([ this.stage.allocate(Object.assign(
-                    {},
-                    this.stage.getView(id),
-                    {
-                        pos: { x: 0, y: 0 },
-                        anchor: { x: 0, y: 0 },
-                        animating: 0,
-                    }
-                )), id ]);
+                extraMsg.push([ this.stage.allocate({
+
+                    ...this.stage.getView(id),
+                    pos: { x: 0, y: 0 },
+                    anchor: { x: 0, y: 0 },
+                    animating: 0,
+                }), id ]);
                 this.stage.getView(id).stroke = { color: "#F00", lineWidth: 0 };
             }
         }
@@ -76,17 +74,14 @@ export default class StuckEffect {
         const missingMsg = [ "We're still missing:" ];
         for (const id of goal) {
             if (typeof matching[id] === "undefined") {
-
                 blinkers.push(id);
                 // Clone view to avoid messing up positioning
-                missingMsg.push([ this.stage.allocate(Object.assign(
-                    {},
-                    this.stage.getView(id),
-                    {
-                        pos: { x: 0, y: 0 },
-                        animating: 0,
-                    }
-                )), id ]);
+                missingMsg.push([ this.stage.allocate({
+
+                    ...this.stage.getView(id),
+                    pos: { x: 0, y: 0 },
+                    animating: 0,
+                }), id ]);
 
                 this.stage.getView(id).stroke = { color: "#F00", lineWidth: 0 };
             }

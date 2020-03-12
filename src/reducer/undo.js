@@ -33,7 +33,7 @@ export function redo() {
  * @param {Function} options.extraState - Given the previous and new
  * state, record any state that lives outside of Redux.
  */
-export function undoable(reducer, options={}) {
+export function undoable(reducer, options = {}) {
     const initialState = immutable.Map({
         $present: reducer(undefined, {}),
         $past: immutable.Stack(),
@@ -44,7 +44,7 @@ export function undoable(reducer, options={}) {
         $futureExtra: immutable.Stack(),
     });
 
-    return function(state=initialState, action) {
+    return function(state = initialState, action) {
         const $present = state.get("$present");
         const $past = state.get("$past");
         const $future = state.get("$future");
@@ -64,7 +64,7 @@ export function undoable(reducer, options={}) {
         case UNDO: {
             if ($past.isEmpty()) return state;
 
-            const newState = state.withMutations(map => {
+            const newState = state.withMutations((map) => {
                 map
                     .set("$past", $past.shift())
                     .set("$present", $past.peek())
@@ -79,7 +79,7 @@ export function undoable(reducer, options={}) {
         case REDO: {
             if ($future.isEmpty()) return state;
 
-            const newState = state.withMutations(map => {
+            const newState = state.withMutations((map) => {
                 map
                     .set("$past", $past.unshift($present))
                     .set("$present", $future.peek())
@@ -96,12 +96,12 @@ export function undoable(reducer, options={}) {
             if (newPresent === $present) {
                 return state;
             }
-            else if (options.actionFilter && options.actionFilter(action)) {
+            if (options.actionFilter && options.actionFilter(action)) {
                 return state.set("$present", newPresent);
             }
 
             const extraState = options.extraState($present, newPresent);
-            return state.withMutations(map => {
+            return state.withMutations((map) => {
                 map
                     .set("$past", $past.unshift($present))
                     .set("$present", newPresent)

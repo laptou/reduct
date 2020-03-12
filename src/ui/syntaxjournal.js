@@ -1,10 +1,11 @@
+import * as immutable from "immutable";
 import * as gfx from "../gfx/core";
 import * as animate from "../gfx/animate";
 import * as progression from "../game/progression";
 import Loader from "../loader";
 import * as action from "../reducer/action";
 import { nextId } from "../reducer/reducer";
-import * as immutable from "immutable";
+
 export default class SyntaxJournal {
     constructor(stage) {
         this.stage = stage;
@@ -44,7 +45,7 @@ export default class SyntaxJournal {
             marginX: 270,
         }));
 
-        /*this.if_dog = stage.allocate(gfx.layout.sticky(gfx.ui.imageButton({
+        /* this.if_dog = stage.allocate(gfx.layout.sticky(gfx.ui.imageButton({
           normal: Loader.images["animal_dog"],
           hover: Loader.images["animal_ocra"],
           active: Loader.images["animal_bear"],
@@ -52,7 +53,7 @@ export default class SyntaxJournal {
            click: () => console.log("Yay"),
         }), "center", {
           marginX: 0,
-        }));*/
+        })); */
 
         this.prev = stage.allocateInternal(gfx.layout.sticky(gfx.ui.imageButton({
             normal: Loader.images["btn-back-default"],
@@ -73,17 +74,23 @@ export default class SyntaxJournal {
     getNodeAtPos(state, pos) {
         if (this.state === "closed") {
             const journal = this.stage.internalViews[this.button];
-            if (journal.containsPoint(pos, { x: 0, y: 0, sx: 1, sy: 1 })) {
+            if (journal.containsPoint(pos, {
+                x: 0, y: 0, sx: 1, sy: 1,
+            })) {
                 return [ this.button, this.button ];
             }
         }
         else {
             const prev = this.stage.getView(this.prev);
             const next = this.stage.getView(this.next);
-            if (this.showBack && prev.containsPoint(pos, { x: 0, y: 0, sx: 1, sy: 1 })) {
+            if (this.showBack && prev.containsPoint(pos, {
+                x: 0, y: 0, sx: 1, sy: 1,
+            })) {
                 return [ this.prev, this.prev ];
             }
-            else if (this.showForward && next.containsPoint(pos, { x: 0, y: 0, sx: 1, sy: 1 })) {
+            if (this.showForward && next.containsPoint(pos, {
+                x: 0, y: 0, sx: 1, sy: 1,
+            })) {
                 return [ this.next, this.next ];
             }
         }
@@ -129,9 +136,9 @@ export default class SyntaxJournal {
             }
 
             let y = bg.pos.y + 200;
-            let x = this.stage.width / 2;
+            const x = this.stage.width / 2;
 
-          /* for (const nodeId of state.get("toolbox")) {
+            /* for (const nodeId of state.get("toolbox")) {
              const state = this.stage.getState();
              const node = state.getIn([ "nodes", nodeId ]);
              if (node.has("__meta") && node.get("__meta").toolbox.unlimited) {
@@ -154,14 +161,13 @@ export default class SyntaxJournal {
                projection.prepare(nodeId, nodeId, state, this.stage);
                projection.draw(nodeId, nodeId, state, this.stage, this.stage.makeBaseOffset());
              }
-         }*/
+         } */
 
             const { ctx } = this.stage;
             ctx.save();
             ctx.globalCompositeOperation = "multiply";
 
             this.project();
-
 
 
             const syntax = progression.getLearnedSyntaxes()[this.currentSyntax];
@@ -173,7 +179,6 @@ export default class SyntaxJournal {
                 y += view.size.h + 10;
                 this.stage.drawProjection(state, this.syntaxes[syntax], offset);
             }
-
 
 
             ctx.restore();
@@ -269,7 +274,7 @@ export default class SyntaxJournal {
                             inner: 10,
                         },
                     },
-                    gfx.baseProjection
+                    gfx.baseProjection,
                 );
                 container.anchor = { x: 0.5, y: 0 };
                 this.syntaxes[syntax] = this.stage.allocate(container);
@@ -278,5 +283,4 @@ export default class SyntaxJournal {
     }
 
     showBox() {}
-
 }

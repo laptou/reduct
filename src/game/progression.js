@@ -14,7 +14,7 @@ export const PROGRESSIONS = {
             "testing": ["lists-intro"],
             "lists-intro": ["lists-query"],
             "lists-query": ["booleans-definition"],
-//          "array-booleans" : ["booleans-definition"],
+            //          "array-booleans" : ["booleans-definition"],
             "booleans-definition": ["weekdays"],
             "weekdays": ["higher-order-functions"],
             "higher-order-functions": ["define-challenges"],
@@ -26,7 +26,7 @@ export const PROGRESSIONS = {
             "list-functions": ["strings"],
             "strings": ["letExpr"],
             "letExpr": ["play"],
-            "play": []
+            "play": [],
         },
         settings: { // This sets global flags.
             "__ALLOW_PARTIAL_REPLICATION": false,
@@ -72,7 +72,7 @@ export function nextLevel() {
     }
     currentLevelIdx = Math.min(
         currentLevelIdx + 1,
-        ACTIVE_PROGRESSION_DEFINITION.progression.levels.length - 1
+        ACTIVE_PROGRESSION_DEFINITION.progression.levels.length - 1,
     );
     save();
 }
@@ -80,7 +80,7 @@ export function nextLevel() {
 export function nextChallengeLevel() {
     currentLevelIdx = Math.min(
         currentLevelIdx + 1,
-        ACTIVE_PROGRESSION_DEFINITION.progression.levels.length - 1
+        ACTIVE_PROGRESSION_DEFINITION.progression.levels.length - 1,
     );
     save();
 }
@@ -163,7 +163,7 @@ export function learnSyntax(name) {
 
 export function getLearnedSyntaxes() {
     // Filter out undefined syntaxes
-    learnedSyntaxes = learnedSyntaxes.filter(name => getSyntaxDefinition(name));
+    learnedSyntaxes = learnedSyntaxes.filter((name) => getSyntaxDefinition(name));
     save();
     return learnedSyntaxes;
 }
@@ -179,7 +179,7 @@ export function getFadeLevel(exprType, level = null) {
     if (typeof __fadeOverrides[exprType] === "number") {
         return __fadeOverrides[exprType];
     }
-    else if (typeof fadeLevels[exprType] === "number") {
+    if (typeof fadeLevels[exprType] === "number") {
         return fadeLevels[exprType];
     }
     return 0;
@@ -190,9 +190,9 @@ export function forceFadeLevel(exprType, level) {
 }
 
 export function isFadeBorder(exprType) {
-    return currentLevel() !== 0 &&
-        (getFadeLevel(exprType, currentLevel()) !==
-            getFadeLevel(exprType, currentLevel() - 1));
+    return currentLevel() !== 0
+        && (getFadeLevel(exprType, currentLevel())
+            !== getFadeLevel(exprType, currentLevel() - 1));
 }
 
 export function overrideFadeLevel(cb) {
@@ -206,23 +206,23 @@ export function overrideFadeLevel(cb) {
 }
 
 export function save() {
-    window.localStorage["currentLevelIdx"] = currentLevelIdx;
-    window.localStorage["learnedSyntaxes"] = JSON.stringify(learnedSyntaxes);
-    window.localStorage["version"] = VERSION;
+    window.localStorage.currentLevelIdx = currentLevelIdx;
+    window.localStorage.learnedSyntaxes = JSON.stringify(learnedSyntaxes);
+    window.localStorage.version = VERSION;
 }
 
 export function restore() {
-    if (parseInt(window.localStorage["version"], 10) !== VERSION) {
+    if (parseInt(window.localStorage.version, 10) !== VERSION) {
         save();
         return;
     }
 
-    if (!currentLevelIdx && window.localStorage["currentLevelIdx"]) {
-        currentLevelIdx = window.parseInt(window.localStorage["currentLevelIdx"], 10);
+    if (!currentLevelIdx && window.localStorage.currentLevelIdx) {
+        currentLevelIdx = window.parseInt(window.localStorage.currentLevelIdx, 10);
     }
 
-    if (window.localStorage["learnedSyntaxes"]) {
-        learnedSyntaxes = JSON.parse(window.localStorage["learnedSyntaxes"]);
+    if (window.localStorage.learnedSyntaxes) {
+        learnedSyntaxes = JSON.parse(window.localStorage.learnedSyntaxes);
     }
 
     // Guard against negatives, NaN

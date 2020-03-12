@@ -103,7 +103,7 @@ export default class Toolbox {
             this.stage.internalViews[this.bg].size.w - 50,
             this.stage.internalViews[this.bg].size.h - 10,
             25,
-            true, false
+            true, false,
         );
     }
 
@@ -115,8 +115,8 @@ export default class Toolbox {
         x = TOOLBOX_LEFT_MARGIN;
         let i = 0;
         for (const nodeId of state.get("toolbox")) {
-          const node = state.get("nodes").get(nodeId);
-        //  if (!(node.has("__meta") && node.get("__meta").toolbox.unlimited)) {
+            const node = state.get("nodes").get(nodeId);
+            //  if (!(node.has("__meta") && node.get("__meta").toolbox.unlimited)) {
             const projection = this.stage.views[nodeId];
             if (x + projection.size.w >= this.stage.width - TOOLBOX_RIGHT_MARGIN) {
                 curRow += 1;
@@ -178,7 +178,7 @@ export default class Toolbox {
                     y: -6,
                 }));
             }
-          //}
+            // }
 
             i++;
         }

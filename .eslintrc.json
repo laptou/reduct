@@ -31,5 +31,12 @@
         "no-console": "off",
         "no-underscore-dangle": "off",
         "quote-props": ["error", "consistent"]
-    }
+    },
+    "ignorePatterns": [
+        "node_modules/",
+        "chapterutil/",
+        "dist/",
+        "resources/",
+        "docs/"
+    ]
 }

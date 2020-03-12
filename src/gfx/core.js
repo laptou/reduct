@@ -7,6 +7,12 @@ import * as notch from "./notch";
 import * as primitive from "./primitive";
 import * as util from "./util";
 
+import * as custom from "./custom";
+import * as layout from "./layout";
+import * as shapes from "./shapes";
+import * as ui from "./ui";
+import * as viewport from "./viewport";
+
 export { image, util };
 
 let DEBUG = false;
@@ -32,8 +38,7 @@ document.body.addEventListener("keyup", (e) => {
  * @alias gfx.baseProjection
  */
 export function baseProjection(options) {
-    const projection = Object.assign({
-        /**
+    const projection = { /**
          * @member
          * @memberof! gfx.baseProjection
          * @alias gfx.baseProjection.pos
@@ -82,7 +87,8 @@ export function baseProjection(options) {
          * @instance
          */
         offset: { x: 0, y: 0 },
-    }, options);
+        ...options,
+    };
 
     if (options && options.notches) {
         projection.notches = notch.parseDescriptions(options.notches);
@@ -142,10 +148,10 @@ export function baseProjection(options) {
      */
     projection.containsPoint = function(pos, offset) {
         const { x, y } = util.topLeftPos(this, offset);
-        return pos.x >= x &&
-            pos.y >= y &&
-            pos.x <= x + (this.size.w * offset.sx * this.scale.x) &&
-            pos.y <= y + (this.size.h * offset.sy * this.scale.y);
+        return pos.x >= x
+            && pos.y >= y
+            && pos.x <= x + (this.size.w * offset.sx * this.scale.x)
+            && pos.y <= y + (this.size.h * offset.sy * this.scale.y);
     };
 
     /**
@@ -251,8 +257,8 @@ export function debugDraw(ctx, projection, offset) {
         ctx.strokeStyle = DEBUG_COLORS[projection.type] || "red";
         ctx.lineWidth = 1;
         ctx.strokeRect(x, y,
-                       projection.size.w * sx,
-                       projection.size.h * sy);
+            projection.size.w * sx,
+            projection.size.h * sy);
         ctx.restore();
     }
 }
@@ -273,7 +279,8 @@ export function hoverOutline(id, projection, stage, offset) {
             projection.scale.x * offset.sx * (projection.radius || 15),
             false,
             true,
-            projection.stroke ? projection.stroke.opacity : null);
+            projection.stroke ? projection.stroke.opacity : null,
+        );
     }
 }
 
@@ -303,7 +310,7 @@ export function constant(...projections) {
 export function distance(proj1, proj2) {
     const p1 = proj1.pos || proj1;
     const p2 = proj2.pos || proj2;
-    return Math.sqrt((p1.x - p2.x)**2 + (p1.y - p2.y)**2);
+    return Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
 }
 
 /**
@@ -360,7 +367,7 @@ export function centerPos(projection) {
     };
 }
 
-export function baseShape(name, defaults, draw, baseShapeOptions={}) {
+export function baseShape(name, defaults, draw, baseShapeOptions = {}) {
     return function(options) {
         const projection = Object.assign(baseProjection(), defaults, options);
         projection.size.w = projection.size.h = 40;
@@ -379,7 +386,7 @@ export function baseShape(name, defaults, draw, baseShapeOptions={}) {
         }
 
         projection.draw = function(id, exprId, state, stage, offset) {
-            const ctx = stage.ctx;
+            const { ctx } = stage;
             ctx.save();
 
             const [ sx, sy ] = util.absoluteScale(this, offset);
@@ -389,16 +396,16 @@ export function baseShape(name, defaults, draw, baseShapeOptions={}) {
 
             const node = state.getIn([ "nodes", exprId ]);
 
-            if ((this.shadow !== false) &&
-                (this.shadow || (node && (!node.get("parent") || !node.get("locked"))))) {
+            if ((this.shadow !== false)
+                && (this.shadow || (node && (!node.get("parent") || !node.get("locked"))))) {
                 ctx.fillStyle = this.shadowColor;
                 draw(ctx, this,
-                     x, y + this.shadowOffset * offset.sy,
-                     offset.sx * this.scale.x * this.size.w,
-                     offset.sy * this.scale.y * this.size.h,
-                     sx, sy,
-                     this.stroke,
-                     this.notches);
+                    x, y + this.shadowOffset * offset.sy,
+                    offset.sx * this.scale.x * this.size.w,
+                    offset.sy * this.scale.y * this.size.h,
+                    sx, sy,
+                    this.stroke,
+                    this.notches);
             }
 
             if (this.color) ctx.fillStyle = this.color;
@@ -415,8 +422,8 @@ export function baseShape(name, defaults, draw, baseShapeOptions={}) {
                 });
                 shouldStroke = true;
             }
-            else if (!!(node && node.get("parent") && node.get("locked")) &&
-                     this.strokeWhenChild) {
+            else if (!!(node && node.get("parent") && node.get("locked"))
+                     && this.strokeWhenChild) {
                 // Stroke if we have a parent to make it clearer.
                 primitive.setStroke(ctx, {
                     lineWidth: 1,
@@ -438,12 +445,12 @@ export function baseShape(name, defaults, draw, baseShapeOptions={}) {
 
 
             draw(ctx, this,
-                 x, y,
-                 offset.sx * this.scale.x * this.size.w,
-                 offset.sy * this.scale.y * this.size.h,
-                 sx, sy,
-                 this.stroke || shouldStroke,
-                 this.notches);
+                x, y,
+                offset.sx * this.scale.x * this.size.w,
+                offset.sy * this.scale.y * this.size.h,
+                sx, sy,
+                this.stroke || shouldStroke,
+                this.notches);
             debugDraw(ctx, this, offset);
 
             ctx.restore();
@@ -485,16 +492,16 @@ export const roundedRect = baseShape("roundedRect", {
     radius: 18,
     shadowColor: "#000",
     shadowOffset: 4,
-    strokeWhenChild: true,  // Draw border when child of another expression
+    strokeWhenChild: true, // Draw border when child of another expression
 }, (ctx, projection, x, y, w, h, sx, sy, shouldStroke, notches) => {
     primitive.roundRect(
         ctx,
         x, y, w, h,
         sx * projection.radius,
-        projection.color ? true : false,
+        !!projection.color,
         shouldStroke,
         projection.stroke ? projection.stroke.opacity : null,
-        notches
+        notches,
     );
 }, {
     notchOffset(id, exprId, notchIdx) {
@@ -535,14 +542,15 @@ export const hexaRect = baseShape("hexaRect", {
     radius: 20,
     shadowColor: "#000",
     shadowOffset: 4,
-    strokeWhenChild: true,  // Draw border when child of another expression
+    strokeWhenChild: true, // Draw border when child of another expression
 }, (ctx, projection, x, y, w, h, sx, sy, shouldStroke) => {
     primitive.hexaRect(
         ctx,
         x, y, w, h, Math.min(25, w / 2), h / 2,
-        projection.color ? true : false,
+        !!projection.color,
         shouldStroke,
-        projection.stroke ? projection.stroke.opacity : null);
+        projection.stroke ? projection.stroke.opacity : null,
+    );
 });
 
 /**
@@ -576,7 +584,7 @@ export function dynamic(mapping, keyFunc, options) {
         }
         this.dynamicKey = newKey;
 
-        let proj = mapping["__default__"];
+        let proj = mapping.__default__;
         if (typeof mapping[this.dynamicKey] !== "undefined") {
             proj = mapping[this.dynamicKey];
         }
@@ -594,8 +602,8 @@ export function dynamic(mapping, keyFunc, options) {
             mapping[this.dynamicKey].draw.call(this, id, exprId, state, stage, offset);
         }
         else {
-            this.children = mapping["__default__"].children;
-            mapping["__default__"].draw.call(this, id, exprId, state, stage, offset);
+            this.children = mapping.__default__.children;
+            mapping.__default__.draw.call(this, id, exprId, state, stage, offset);
         }
     };
 
@@ -646,12 +654,8 @@ export function dynamicProperty(projection, keyFunc, mappings) {
 
 export { default as text } from "./text";
 
-import * as custom from "./custom";
-import * as layout from "./layout";
-import * as shapes from "./shapes";
-import * as ui from "./ui";
-import * as viewport from "./viewport";
-
 export { default as decal } from "./decal";
 export * from "./sprite";
-export { custom, layout, primitive, shapes, ui, viewport };
+export {
+    custom, layout, primitive, shapes, ui, viewport,
+};

@@ -22,7 +22,7 @@ export function genericFlatten(nextId, subexpressions) {
 * subexpressions.
 */
 export function genericMap(subexpressions) {
-    const innerMap = function(nodes, nodeId, f, filter=null, top=true) {
+    const innerMap = function(nodes, nodeId, f, filter = null, top = true) {
         let currentStore = nodes;
         if (top) currentStore = currentStore.asMutable();
         const currentNode = nodes.get(nodeId);
@@ -85,19 +85,19 @@ export function genericEqual(subexpressions, shallowEqual) {
 }
 
 export function genericClone(nextId, subexpressions) {
-    return function clone(id, nodes, locked=true) {
+    return function clone(id, nodes, locked = true) {
         const node = nodes.get(id);
         let newNodes = [];
 
         let currentStore = nodes;
-        const result = node.withMutations(n => {
+        const result = node.withMutations((n) => {
             const newId = nextId();
             n.set("id", newId);
 
             for (const field of subexpressions(node)) {
                 const [ subclone, subclones, nodesStore ] = clone(node.get(field), currentStore, locked);
                 currentStore = nodesStore;
-                const result = subclone.withMutations(sc => {
+                const result = subclone.withMutations((sc) => {
                     sc.set("parent", newId);
                     sc.set("parentField", field);
                     sc.set("locked", locked);
@@ -136,19 +136,19 @@ export function genericBetaReduce(semant, state, config) {
             if (node.get("type") === "missing") {
                 return true;
             }
-            else if (node.get("type") === "lambdaVar") {
+            if (node.get("type") === "lambdaVar") {
                 // Look for binder
                 let current = node;
                 while (current.get("parent")) {
                     current = nodes.get(current.get("parent"));
-                    if (current.get("type") === "lambda" &&
-                        nodes.get(current.get("arg")).get("name") === node.get("name")) {
+                    if (current.get("type") === "lambda"
+                        && nodes.get(current.get("arg")).get("name") === node.get("name")) {
                         return false;
                     }
                 }
                 return true;
             }
-        }
+        },
     ).filter((id) => {
         const node = nodes.get(id);
         if (node.get("type") === "lambdaVar") return true;
@@ -182,11 +182,12 @@ export function genericBetaReduce(semant, state, config) {
             // applied.
             if (nodes.get(argId).get("type") === "missing") continue;
 
-            const result = genericBetaReduce(semant, curState, Object.assign({}, config, {
+            const result = genericBetaReduce(semant, curState, {
+                ...config,
                 topNode: curTopNode,
                 targetNode: curTargetNode,
                 argIds: [ argId ],
-            }));
+            });
             if (!result) {
                 // Return partial result
                 break;
@@ -228,7 +229,7 @@ export function genericBetaReduce(semant, state, config) {
         const missingArgNodes = semant.search(
             nodes,
             argId,
-            (nodes, id) => nodes.get(id).get("type") === "missing"
+            (nodes, id) => nodes.get(id).get("type") === "missing",
         ).filter((id) => {
             const node = nodes.get(id);
             if (!node.get("parent")) return true;
@@ -286,19 +287,18 @@ export function genericBetaReduce(semant, state, config) {
         // TODO: should we delete parent/parentField?
         return [
             topNode.get("id"),
-            semant.subexpressions(newTop).map(field => newTop.get(field)),
-            newNodes.slice(1).map(node => (node.get("parent") === newTop.get("id") ?
-                                           node.delete("parent").delete("parentField") :
-                                           node)),
+            semant.subexpressions(newTop).map((field) => newTop.get(field)),
+            newNodes.slice(1).map((node) => (node.get("parent") === newTop.get("id")
+                ? node.delete("parent").delete("parentField")
+                : node)),
         ];
     }
-    else {
-        return [
-            topNode.get("id"),
-            [ newTop.get("id") ],
-            newNodes.concat([newTop]),
-        ];
-    }
+
+    return [
+        topNode.get("id"),
+        [ newTop.get("id") ],
+        newNodes.concat([newTop]),
+    ];
 }
 
 /**
@@ -346,10 +346,10 @@ export const missing = {
 };
 
 export function getField(object, field, ...args) {
-  const v = object[field];
-  return typeof v == "function"
-           ? v.call(object, ...args)
-           : v;
+    const v = object[field];
+    return typeof v === "function"
+        ? v.call(object, ...args)
+        : v;
 }
 
 // Turn a hydrated AST node resultExpr into a computation result for evaluating
@@ -358,13 +358,13 @@ export function makeResult(sourceExpr, resultExpr, semant) {
     resultExpr.locked = false;
     delete resultExpr.parent;
     delete resultExpr.parentField;
-    //console.log(`Making result for ${resultExpr.type}`);
-    //console.log(JSON.stringify(semant.flatten(resultExpr).map(immutable.Map)));
+    // console.log(`Making result for ${resultExpr.type}`);
+    // console.log(JSON.stringify(semant.flatten(resultExpr).map(immutable.Map)));
     const newNodes = semant.flatten(resultExpr).map(immutable.Map);
-    //console.log(`New nodes are ${newNodes}`);
+    // console.log(`New nodes are ${newNodes}`);
     return [
         sourceExpr.get("id"),
         [ newNodes[0].get("id") ],
-        newNodes
+        newNodes,
     ];
 }

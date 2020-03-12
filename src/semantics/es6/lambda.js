@@ -24,24 +24,23 @@ export default {
                 inner: 5,
             },
         },
-        betaReduce: (semant, stage, state, expr, argIds) =>
-            core.genericBetaReduce(semant, state, {
-                topNode: expr,
-                targetNode: state.get("nodes").get(expr.get("arg")),
-                argIds,
-                targetName: node => node.get("name"),
-                isVar: node => node.get("type") === "lambdaVar",
-                varName: node => node.get("name"),
-                isCapturing: node => node.get("type") === "lambda",
-                captureName: (nodes, node) => nodes.get(node.get("arg")).get("name"),
-                animateInvalidArg: (id) => {
-                    const node = state.getIn([ "nodes", id ]);
-                    if (node.get("type") === "lambdaVar") {
-                        stage.feedback.update("#000", [ `We don't know what ${node.get("name")} is!` ]);
-                    }
-                    animate.fx.error(stage, stage.views[id]);
-                },
-            }),
+        betaReduce: (semant, stage, state, expr, argIds) => core.genericBetaReduce(semant, state, {
+            topNode: expr,
+            targetNode: state.get("nodes").get(expr.get("arg")),
+            argIds,
+            targetName: (node) => node.get("name"),
+            isVar: (node) => node.get("type") === "lambdaVar",
+            varName: (node) => node.get("name"),
+            isCapturing: (node) => node.get("type") === "lambda",
+            captureName: (nodes, node) => nodes.get(node.get("arg")).get("name"),
+            animateInvalidArg: (id) => {
+                const node = state.getIn([ "nodes", id ]);
+                if (node.get("type") === "lambdaVar") {
+                    stage.feedback.update("#000", [ `We don't know what ${node.get("name")} is!` ]);
+                }
+                animate.fx.error(stage, stage.views[id]);
+            },
+        }),
     },
 
     lambdaArg: {
@@ -95,8 +94,8 @@ export default {
                 const myName = current.get("name");
                 while (current.get("parent")) {
                     current = nodes.get(current.get("parent"));
-                    if (current.get("type") === "lambda" &&
-                        nodes.get(current.get("arg")).get("name") === myName) {
+                    if (current.get("type") === "lambda"
+                        && nodes.get(current.get("arg")).get("name") === myName) {
                         return "enabled";
                     }
                 }
@@ -115,8 +114,8 @@ export default {
                     const myName = current.get("name");
                     while (current.get("parent")) {
                         current = nodes.get(current.get("parent"));
-                        if (current.get("type") === "lambda" &&
-                            nodes.get(current.get("arg")).get("name") === myName) {
+                        if (current.get("type") === "lambda"
+                            && nodes.get(current.get("arg")).get("name") === myName) {
                             animate.fx.blink(stage, stage.getView(current.get("arg")), {
                                 times: 3,
                                 speed: 100,

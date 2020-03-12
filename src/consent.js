@@ -9,13 +9,12 @@ function playerIdOK() {
 // (according to playerIdOK) if user_ids is true.
 export default function consent(user_ids) {
     if (user_ids) {
-        Array.prototype.forEach.call(document.getElementsByClassName('consent-request-id'),
-            e => e.style.display = "inline"
-        )
+        Array.prototype.forEach.call(document.getElementsByClassName("consent-request-id"),
+            (e) => e.style.display = "inline");
     }
     return new Promise((resolve, reject) => {
         document.querySelector("#consent")
-             .classList.add("visible");
+            .classList.add("visible");
         document.querySelector("#consent-agree")
             .addEventListener("click", () => {
                 document.querySelector("#consent")

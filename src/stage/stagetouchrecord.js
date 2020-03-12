@@ -72,7 +72,7 @@ export default class TouchRecord extends BaseTouchRecord {
         const topNode = nodes.get(this.topNode);
         const highlightSidebar = topNode.get("type") === "define";
 
-        //sidebar highlighting for defines
+        // sidebar highlighting for defines
         let sidebarScale = null;
         let sidebarHoverScale = null;
         if (highlightSidebar) {
@@ -89,7 +89,7 @@ export default class TouchRecord extends BaseTouchRecord {
             });
         }
 
-        //highlighting droppable targets for the topNode
+        // highlighting droppable targets for the topNode
         state.get("board").forEach((id) => {
             if (id === this.topNode) return;
 
@@ -100,7 +100,7 @@ export default class TouchRecord extends BaseTouchRecord {
                     const other = nodes.get(subId);
                     const compatible = this.stage.semantics.notchesCompatible(topNode, other);
                     return droppable || (compatible && compatible.length > 0);
-                }
+                },
             ));
         });
 
@@ -153,14 +153,14 @@ export default class TouchRecord extends BaseTouchRecord {
 
             const state = this.stage.getState();
             const selected = state.getIn([ "nodes", this.topNode ]);
-            this.clonable = this.fromToolbox &&
-                selected.has("__meta") &&
-                selected.get("__meta").toolbox.unlimited;
+            this.clonable = this.fromToolbox
+                && selected.has("__meta")
+                && selected.get("__meta").toolbox.unlimited;
         }
 
         const referenceId = this.stage.getReferenceNameAtPos(mousePos);
         if (referenceId) {
-           this.stage.showReferenceDefinition(this.stage.getState(), referenceId);
+            this.stage.showReferenceDefinition(this.stage.getState(), referenceId);
         }
     }
 
@@ -181,9 +181,9 @@ export default class TouchRecord extends BaseTouchRecord {
             return;
         }
 
-        //case when moving a "normal" node
-        if (mouseDown && this.topNode !== null && this.isExpr &&
-            (!this.targetNode || !this.stage.isDetachable(this.targetNode))) {
+        // case when moving a "normal" node
+        if (mouseDown && this.topNode !== null && this.isExpr
+            && (!this.targetNode || !this.stage.isDetachable(this.targetNode))) {
             // Tolerance before a click becomes a drag
             if (this.dragged || gfxCore.distance(this.dragStart, mousePos) > 10) {
                 // Clear any feedback messages
@@ -232,9 +232,9 @@ export default class TouchRecord extends BaseTouchRecord {
             }
         }
 
-        //case when we take a node out of a hole
-        if (this.isExpr && mouseDown && this.targetNode &&
-            gfxCore.distance(this.dragStart, mousePos) > 10) {
+        // case when we take a node out of a hole
+        if (this.isExpr && mouseDown && this.targetNode
+            && gfxCore.distance(this.dragStart, mousePos) > 10) {
             const newSelected = this.stage.detachFromHole(this.topNode, this.targetNode);
             if (newSelected !== null) {
                 // Highlight droppable holes
@@ -244,7 +244,7 @@ export default class TouchRecord extends BaseTouchRecord {
                 this.dragAnchor = this.stage.computeDragAnchor(
                     this.dragStart,
                     newSelected,
-                    newSelected
+                    newSelected,
                 );
             }
         }
@@ -254,18 +254,18 @@ export default class TouchRecord extends BaseTouchRecord {
         // "sticky".
         const oldHover = this.hoverNode;
         this.findHoverNode(mousePos);
-        if (this.isExpr && this.topNode !== null &&
-            (this.hoverNode === null || !this.stage.semantics.droppable(
+        if (this.isExpr && this.topNode !== null
+            && (this.hoverNode === null || !this.stage.semantics.droppable(
                 this.stage.getState(),
                 this.topNode,
-                this.hoverNode
-            )) &&
-            oldHover !== null && this.hoverStartPos &&
-            gfxCore.distance(mousePos, this.hoverStartPos) < 50) {
+                this.hoverNode,
+            ))
+            && oldHover !== null && this.hoverStartPos
+            && gfxCore.distance(mousePos, this.hoverStartPos) < 50) {
             this.hoverNode = oldHover;
         }
         else if (this.topNode !== null && this.hoverNode !== null) {
-            this.hoverStartPos = Object.assign({}, mousePos);
+            this.hoverStartPos = { ...mousePos };
         }
 
         if (this.isExpr && this.topNode && this.hoverNode) {
@@ -274,9 +274,9 @@ export default class TouchRecord extends BaseTouchRecord {
             const holeType = state.getIn([ "nodes", this.hoverNode, "ty" ]);
             const exprType = state.getIn([ "nodes", this.topNode, "ty" ]);
             // TODO: don't hardcode these checks
-            if ((holeExprType !== "missing" &&
-                 holeExprType !== "lambdaArg") ||
-                (holeType && exprType && holeType !== exprType)) {
+            if ((holeExprType !== "missing"
+                 && holeExprType !== "lambdaArg")
+                || (holeType && exprType && holeType !== exprType)) {
                 this.hoverNode = null;
             }
         }
@@ -412,8 +412,8 @@ export default class TouchRecord extends BaseTouchRecord {
         else if (mousePos.sidebar && this.isExpr && this.stage.dropDefines(this.topNode)) {
             // Drop definitions in sidebar to activate them
         }
-        else if (this.isExpr && this.dragged && this.hoverNode &&
-                 this.stage.semantics.droppable(state, this.topNode, this.hoverNode) === "hole") {
+        else if (this.isExpr && this.dragged && this.hoverNode
+                 && this.stage.semantics.droppable(state, this.topNode, this.hoverNode) === "hole") {
             // Drag something into hole
             if (this.fromToolbox) this.useToolboxItem();
 
@@ -455,10 +455,10 @@ export default class TouchRecord extends BaseTouchRecord {
             }
         }
         else if (this.isExpr && !this.dragged && this.topNode !== null && this.fromToolbox) {
-          return; //unimplemented
-            const node = state.getIn(["nodes",this.topNode]);
-            if(node.get("name") == "Library") {
-              this.stage.library(state,this.topNode);
+            return; // unimplemented
+            const node = state.getIn(["nodes", this.topNode]);
+            if (node.get("name") == "Library") {
+                this.stage.library(state, this.topNode);
             }
         }
 
@@ -468,8 +468,8 @@ export default class TouchRecord extends BaseTouchRecord {
             const projection = this.stage.views[this.topNode];
             const topLeft = gfxCore.absolutePos(projection);
             const bottom = { x: 0, y: topLeft.y + projection.size.h };
-            if (this.stage.toolbox.containsPoint(bottom) &&
-                !this.stage.getState().get("toolbox").includes(this.topNode)) {
+            if (this.stage.toolbox.containsPoint(bottom)
+                && !this.stage.getState().get("toolbox").includes(this.topNode)) {
                 Logging.log("toolbox-reject", this.stage.saveNode(this.topNode));
                 animate.fx.error(this.stage, this.stage.getView(this.topNode));
                 this.stage.feedback.update("#000", [ "We can't put things back in the toolbox!" ]);

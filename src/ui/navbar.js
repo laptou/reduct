@@ -13,7 +13,7 @@ export default class Navbar {
         this.stage = stage;
 
         this.reset = stage.allocate(gfx.ui.imageButton({
-            normal: Loader.images["blureset"],
+            normal: Loader.images.blureset,
             hover: Loader.images["blureset-hover"],
             active: Loader.images["blureset-down"],
         }, {
@@ -24,7 +24,7 @@ export default class Navbar {
         }));
 
         this.undo = stage.allocate(gfx.ui.imageButton({
-            normal: Loader.images["bluundo"],
+            normal: Loader.images.bluundo,
             hover: Loader.images["bluundo-hover"],
             active: Loader.images["bluundo-down"],
         }, {
@@ -36,7 +36,7 @@ export default class Navbar {
         }));
 
         this.redo = stage.allocate(gfx.ui.imageButton({
-            normal: Loader.images["bluredo"],
+            normal: Loader.images.bluredo,
             hover: Loader.images["bluredo-hover"],
             active: Loader.images["bluredo-down"],
         }, {
@@ -47,14 +47,14 @@ export default class Navbar {
         }));
 
         this.start = stage.allocate(gfx.ui.imageButton({
-          normal: Loader.images["btn-hamburger-default"],
-          hover: Loader.images["btn-hamburger-hover"],
-          active: Loader.images["btn-hamburger-down"],
+            normal: Loader.images["btn-hamburger-default"],
+            hover: Loader.images["btn-hamburger-hover"],
+            active: Loader.images["btn-hamburger-down"],
         }, {
             click: () => {
-              window.lvlStage(progression.currentChapter().key);
+                window.lvlStage(progression.currentChapter().key);
             },
-            size: { w: 65, h: 65},
+            size: { w: 65, h: 65 },
         }));
 
         this.buttons = [ this.undo, this.reset, this.redo, this.start ];
@@ -71,7 +71,7 @@ export default class Navbar {
                     inner: 10,
                 },
             },
-            gfx.baseProjection
+            gfx.baseProjection,
         ));
         this.container = stage.allocate(gfx.layout.vbox(
             () => [ topRow ],
@@ -88,7 +88,7 @@ export default class Navbar {
                 color: null,
                 anchor: { x: 1, y: 1 },
             },
-            gfx.roundedRect
+            gfx.roundedRect,
         ));
         const chapter = stage.allocate(gfx.text(`Chapter ${progression.chapterIdx() + 1}`, {
             font: gfx.text.sans,
@@ -117,7 +117,7 @@ export default class Navbar {
                 highlight: false,
                 color: null,
             },
-            gfx.roundedRect
+            gfx.roundedRect,
         ));
     }
 
@@ -143,7 +143,7 @@ export default class Navbar {
         const result = this.stage.testNodeAtPos(
             state, pos, this.container, this.container,
             null, this.stage.makeBaseOffset(),
-            viewId => this.buttons.includes(viewId)
+            (viewId) => this.buttons.includes(viewId),
         );
         if (result) {
             return [ result[1], result[1] ];
@@ -161,12 +161,12 @@ export default class Navbar {
         levelDisplay.pos.y = 100;
         levelDisplay.prepare(
             this.levelDisplay, this.levelDisplay,
-            state, this.stage
+            state, this.stage,
         );
         this.stage.getView(this.levelDisplay).draw(
             this.levelDisplay, this.levelDisplay,
             state, this.stage,
-            this.stage.makeBaseOffset()
+            this.stage.makeBaseOffset(),
         );
 
         const container = this.stage.getView(this.container);
@@ -174,12 +174,12 @@ export default class Navbar {
         container.pos.y = 100;
         container.prepare(
             this.container, this.container,
-            state, this.stage
+            state, this.stage,
         );
         container.draw(
             this.container, this.container,
             state, this.stage,
-            this.stage.makeBaseOffset()
+            this.stage.makeBaseOffset(),
         );
     }
 

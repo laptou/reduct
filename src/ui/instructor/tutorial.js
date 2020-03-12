@@ -14,19 +14,19 @@ export default function tutorial(url) {
         continueButton.style.display = "none";
         video.play();
         video.onclick = () => {
-            if (video.paused) video.play()
-            else video.pause()
+            if (video.paused) video.play();
+            else video.pause();
             continueButton.style.display = "inline";
         };
         video.onended = () => {
             continueButton.style.display = "inline";
-        }
+        };
         continueButton.onclick = () => {
             video.pause();
             outerContainer.classList.remove("visible");
         };
-        window.setTimeout(function() {
-          outerContainer.classList.add("visible");
+        window.setTimeout(() => {
+            outerContainer.classList.add("visible");
         }, 200);
     });
 }

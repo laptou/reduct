@@ -78,6 +78,12 @@ If the build system gets confused and doesn't seem to pick up changes
 to files, delete the `.cache` folder in the project directory and try
 again.
 
+Keyboard shortcuts
+- Ctrl + F8: open debug menu, download CSV
+- Ctrl + F9: jump to level
+- Ctrl + F10: refresh game
+- Ctrl + F11: add new node
+
 Editing levels
 ----------------
 

@@ -4,6 +4,8 @@
 
 import chroma from "chroma-js";
 
+import * as fx from "./fx/fx";
+
 /**
  * A set of easing functions.
  *
@@ -61,9 +63,7 @@ export const Easing = {
      * Exponential tweens.
      */
     Exponential: {
-        Out: (start, stop, t) => {
-            return ((stop - start) * (1 - (2 ** (-10 * t)))) + start;
-        },
+        Out: (start, stop, t) => ((stop - start) * (1 - (2 ** (-10 * t)))) + start,
     },
 
     /**
@@ -114,29 +114,24 @@ export const Easing = {
      * Apply a user-supplied function to the time value, like Reduct
      * 1.
      */
-    Time: (fn) => (start, stop, t) => {
-        return start + ((stop - start) * fn(t));
-    },
+    Time: (fn) => (start, stop, t) => start + ((stop - start) * fn(t)),
 
     /**
      * Tween with a sinusoidal offset value added. The sinusoidal
      * offset's magnitude is itself tweened.
      */
-    Sinusoid: (mag0, mag1, magEasing, freq) => (start, stop, t) =>
-        start + (t * (stop - start)) +
-        (magEasing(mag0, mag1, t) * Math.sin(2 * Math.PI * t * freq)),
+    Sinusoid: (mag0, mag1, magEasing, freq) => (start, stop, t) => start + (t * (stop - start))
+        + (magEasing(mag0, mag1, t) * Math.sin(2 * Math.PI * t * freq)),
 
     /**
      * Tweens that overshoot/undershoot their target.
      * See https://github.com/d3/d3-ease.
      */
     Anticipate: {
-        BackIn: s => (start, stop, t) =>
-            start + ((stop - start) *
-                     t * t * (((s + 1) * t) - s)),
-        BackOut: s => (start, stop, t) =>
-            start + ((stop - start) *
-                     (((t - 1) * (t - 1) * (((s + 1) * (t - 1)) + s)) + 1)),
+        BackIn: (s) => (start, stop, t) => start + ((stop - start)
+                     * t * t * (((s + 1) * t) - s)),
+        BackOut: (s) => (start, stop, t) => start + ((stop - start)
+                     * (((t - 1) * (t - 1) * (((s + 1) * (t - 1)) + s)) + 1)),
     },
 };
 
@@ -231,7 +226,7 @@ export class InterpolateTween extends Tween {
 
         // Guard against very long time steps (e.g. when paused by a
         // debugger)
-        dt = dt % this.duration;
+        dt %= this.duration;
 
         if (this.reversing) {
             this.remaining += dt;
@@ -243,8 +238,8 @@ export class InterpolateTween extends Tween {
         let t = Math.max(0, 1 - (this.remaining / this.duration));
         let completed = false;
 
-        if ((!this.reversing && this.remaining <= 0) ||
-            (this.reversing && this.remaining >= this.duration)) {
+        if ((!this.reversing && this.remaining <= 0)
+            || (this.reversing && this.remaining >= this.duration)) {
             this.repeat -= 1;
             if (this.repeat <= 0) {
                 completed = true;
@@ -262,7 +257,9 @@ export class InterpolateTween extends Tween {
         }
 
         for (const attr of this.properties) {
-            const { target, property, start, end, easing } = attr;
+            const {
+                target, property, start, end, easing,
+            } = attr;
             target[property] = easing(start, end, t);
         }
 
@@ -274,7 +271,7 @@ export class InterpolateTween extends Tween {
     }
 
     /** Resets properties affected back to their initial value. */
-    undo(animated=false) {
+    undo(animated = false) {
         if (animated) {
             const tween = this.makeUndo();
             this.clock.addTween(tween);
@@ -305,7 +302,9 @@ export class InterpolateTween extends Tween {
 
     completed() {
         for (const attr of this.properties) {
-            const { target, property, start, end, easing } = attr;
+            const {
+                target, property, start, end, easing,
+            } = attr;
             target[property] = easing(start, end, 1);
         }
         super.completed();
@@ -457,8 +456,8 @@ export class Clock {
         const duration = options.duration || 300;
         const props = [];
         const defaultEasing = options.easing || Easing.Linear;
-        const setAnimatingFlag = typeof options.setAnimatingFlag === "undefined" ? true :
-              options.setAnimatingFlag;
+        const setAnimatingFlag = typeof options.setAnimatingFlag === "undefined" ? true
+            : options.setAnimatingFlag;
 
         const buildProps = (subTarget, subProps, easing) => {
             for (let [ prop, final ] of Object.entries(subProps)) {
@@ -595,7 +594,7 @@ export function addUpdateListener(f) {
  * @param {Object} options - Other options for the tween. See
  * :js:func:`~animate.Clock.tween`.
  */
-export function tween(target, properties, options={}) {
+export function tween(target, properties, options = {}) {
     return clock.tween(target, properties, options);
 }
 
@@ -606,7 +605,7 @@ export function tween(target, properties, options={}) {
  * :class:`~animate.InfiniteTween`.
  * @param {Object} options
  */
-export function infinite(updater, options={}) {
+export function infinite(updater, options = {}) {
     return clock.addTween(new InfiniteTween(clock, updater, options));
 }
 
@@ -635,7 +634,7 @@ export function chain(target, ...properties) {
  */
 export function after(ms) {
     return new Promise((resolve) => {
-        window.setTimeout(function() {
+        window.setTimeout(() => {
             resolve();
         }, ms / clock.scale);
     });
@@ -654,7 +653,7 @@ export function setDurationScale(category, factor) {
 }
 
 export function replaceDurationScales(_scales) {
-    scales = Object.assign({}, _scales);
+    scales = { ..._scales };
 }
 
 /**
@@ -674,6 +673,4 @@ export function scaleDuration(ms, ...categories) {
     }
     return ms;
 }
-
-import * as fx from "./fx/fx";
 export { fx };

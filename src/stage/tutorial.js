@@ -34,7 +34,7 @@ export default class TutorialStage extends Stage {
             const result = this.testNodeAtPos(
                 state, pos, this.skipButton, this.skipButton,
                 null, this.makeBaseOffset(),
-                id => id === this.skipButton
+                (id) => id === this.skipButton,
             );
             if (result) {
                 return [ result[1], result[1] ];
@@ -190,8 +190,8 @@ class GoalTutorial {
             }
 
             animate.tween(goalText, { opacity: 0 }, {
-                    duration: 1000,
-                    easing: animate.Easing.Cubic.In,
+                duration: 1000,
+                easing: animate.Easing.Cubic.In,
             });
             animate.tween(this, { x: afterX, y: afterY, r: afterR }, {
                 duration: 3000,
@@ -232,7 +232,9 @@ class GoalTutorial {
 
     drawContents() {
         const { ctx, width, height } = this.stage;
-        const { x, y, r, opacity } = this;
+        const {
+            x, y, r, opacity,
+        } = this;
 
         if (this.state === "started") {
             this.state = "goal";

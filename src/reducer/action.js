@@ -35,7 +35,7 @@ export const ADD_GOAL_ITEM = "add-goal-item";
  * @param {Object} globals - Map of (mutable) expressions for globals.
  */
 export function startLevel(stage, goal, board, toolbox, globals) {
-    const semantics = stage.semantics;
+    const { semantics } = stage;
 
     let _nodes = {};
     let _goal = [];
@@ -48,7 +48,7 @@ export function startLevel(stage, goal, board, toolbox, globals) {
             _nodes[newExpr.id] = newExpr;
         }
         _goal.push(expr.id);
-        }
+    }
     for (const expr of board) {
         for (const newExpr of semantics.flatten(expr)) {
             _nodes[newExpr.id] = newExpr;
@@ -77,7 +77,7 @@ export function startLevel(stage, goal, board, toolbox, globals) {
         globals: _globals,
     } = semantics.parser.postParse(_nodes, _goal, _board, _toolbox, _globals));
 
-    /*for debugging
+    /* for debugging
     console.log("nodes after flattening:");
     console.log(_nodes);
     console.log("globals after flattening:");
@@ -104,38 +104,36 @@ export function startLevel(stage, goal, board, toolbox, globals) {
 }
 
 export function addToolboxItem(newNodeId, newNodes) {
-  return {
-    type: ADD_TOOLBOX_ITEM,
-    newNodeId: newNodeId,
-    addedNodes: newNodes,
-  };
-
+    return {
+        type: ADD_TOOLBOX_ITEM,
+        newNodeId,
+        addedNodes: newNodes,
+    };
 }
 
 export function addGoalItem(newNodeId, newNodes) {
-  return {
-    type: ADD_GOAL_ITEM,
-    newNodeId: newNodeId,
-    addedNodes: newNodes,
-  };
-
+    return {
+        type: ADD_GOAL_ITEM,
+        newNodeId,
+        addedNodes: newNodes,
+    };
 }
 
 export function changeGoal(goal_id, newNodeIds, newNodes) {
-  return {
-    type: CHANGE_GOAL,
-    goal_id: goal_id,
-    newNodeIds: newNodeIds,
-    addedNodes: newNodes,
-  };
+    return {
+        type: CHANGE_GOAL,
+        goal_id,
+        newNodeIds,
+        addedNodes: newNodes,
+    };
 }
 
 export function addBoardItem(newNodeIds, addedNodes) {
-  return {
-    type: ADD_BOARD_ITEM,
-    newNodeIds: newNodeIds,
-    addedNodes: addedNodes,
-  }
+    return {
+        type: ADD_BOARD_ITEM,
+        newNodeIds,
+        addedNodes,
+    };
 }
 
 /**
@@ -144,11 +142,11 @@ export function addBoardItem(newNodeIds, addedNodes) {
  * nodes.
  */
 export function smallStep(nodeId, newNodeIds, newNodes) {
-  console.log(JSON.stringify(newNodes));
+    console.log(JSON.stringify(newNodes));
     return {
         type: SMALL_STEP,
         topNodeId: nodeId,
-        newNodeIds: newNodeIds,
+        newNodeIds,
         addedNodes: newNodes,
     };
 }
@@ -195,7 +193,7 @@ export function betaReduce(topNodeId, argNodeId, newNodeIds, addedNodes) {
 export function raise(nodeId) {
     return {
         type: RAISE,
-        nodeId: nodeId,
+        nodeId,
     };
 }
 
@@ -205,7 +203,7 @@ export function raise(nodeId) {
 export function detach(nodeId) {
     return {
         type: DETACH,
-        nodeId: nodeId,
+        nodeId,
     };
 }
 
@@ -215,8 +213,8 @@ export function detach(nodeId) {
 export function fillHole(holeId, childId) {
     return {
         type: FILL_HOLE,
-        holeId: holeId,
-        childId: childId,
+        holeId,
+        childId,
     };
 }
 
@@ -236,7 +234,7 @@ export function attachNotch(parentId, notchIdx, childId, childNotchIdx) {
 /**
  * Take the given node out of the toolbox.
  */
-export function useToolbox(nodeId, clonedNodeId=null, addedNodes=null) {
+export function useToolbox(nodeId, clonedNodeId = null, addedNodes = null) {
     return {
         type: USE_TOOLBOX,
         nodeId,

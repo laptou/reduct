@@ -30,7 +30,7 @@ export default class ChapterEndStage extends BaseStage {
             {
                 align: "center",
                 margin: 20,
-            }
+            },
         ));
 
         animate.tween(this, {
@@ -86,7 +86,7 @@ export default class ChapterEndStage extends BaseStage {
 
         // Generate clusters of stars representing each chapter
         const numChapters = progression.ACTIVE_PROGRESSION_DEFINITION
-              .progression.linearChapters.length;
+            .progression.linearChapters.length;
         const bandWidth = this.width / numChapters;
 
         const scale = chroma.scale("Spectral").mode("lab");
@@ -101,8 +101,8 @@ export default class ChapterEndStage extends BaseStage {
             const lit = j < progression.chapterIdx();
             const lighting = j === progression.chapterIdx();
             const clusterX = ((j + 0.5) * bandWidth);
-            const clusterY = (0.6 * this.height) +
-                  (0.2 * this.height * Math.sin((2 * Math.PI * (clusterX / this.width))));
+            const clusterY = (0.6 * this.height)
+                  + (0.2 * this.height * Math.sin((2 * Math.PI * (clusterX / this.width))));
             const clusterR = 0.4 * bandWidth;
 
             if (lighting) {
@@ -203,8 +203,8 @@ export default class ChapterEndStage extends BaseStage {
                                 explosionRadius: 500,
                                 numOfParticles: particles,
                                 duration: 600,
-                                color: idx => scale(idx / particles),
-                                angle: idx => rotation + (2 * Math.PI * (idx / particles)),
+                                color: (idx) => scale(idx / particles),
+                                angle: (idx) => rotation + (2 * Math.PI * (idx / particles)),
                             });
                         }));
                 }
@@ -396,7 +396,7 @@ export default class ChapterEndStage extends BaseStage {
             this.continueButton.prepare(this.continueButtonId, this.continueButtonId, state, this);
             this.continueButton.draw(
                 this.continueButtonId, this.continueButtonId, state, this,
-                this.makeBaseOffset({ opacity: this.opacity })
+                this.makeBaseOffset({ opacity: this.opacity }),
             );
         }
         if (this.challengeButtonId) {
@@ -404,7 +404,7 @@ export default class ChapterEndStage extends BaseStage {
             view.prepare(this.challengeButtonId, this.challengeButtonId, state, this);
             view.draw(
                 this.challengeButtonId, this.challengeButtonId, state, this,
-                this.makeBaseOffset({ opacity: this.opacity })
+                this.makeBaseOffset({ opacity: this.opacity }),
             );
         }
 
@@ -414,7 +414,7 @@ export default class ChapterEndStage extends BaseStage {
         }
     }
 
-    getNodeAtPos(pos, selectedId=null) {
+    getNodeAtPos(pos, selectedId = null) {
         const projection = this.continueButton;
         const offset = this.makeBaseOffset();
 
@@ -432,7 +432,7 @@ export default class ChapterEndStage extends BaseStage {
         return [ null, null ];
     }
 
-    updateCursor(touchRecord, moved=false) {
+    updateCursor(touchRecord, moved = false) {
         if (touchRecord.hoverNode !== null) {
             this.setCursor("pointer");
         }

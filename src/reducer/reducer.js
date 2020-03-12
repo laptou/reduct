@@ -46,11 +46,11 @@ function markDirty(nodes, id) {
  * the view's position was recorded).
  */
 export function reduct(semantics, views, restorePos) {
-    function program(state=initialProgram, act) {
+    function program(state = initialProgram, act) {
         switch (act.type) {
         case action.START_LEVEL: {
-            act.nodes.forEach(n => markDirty(act.nodes, n.get("id")));
-            act.toolbox.forEach(n => markDirty(act.nodes, n));
+            act.nodes.forEach((n) => markDirty(act.nodes, n.get("id")));
+            act.toolbox.forEach((n) => markDirty(act.nodes, n));
             return state.merge({
                 nodes: act.nodes,
                 goal: act.goal,
@@ -62,14 +62,14 @@ export function reduct(semantics, views, restorePos) {
         case action.RAISE: {
             const board = state.get("board");
             if (board.contains(act.nodeId)) {
-                const newBoard = board.filter(n => n !== act.nodeId).push(act.nodeId);
+                const newBoard = board.filter((n) => n !== act.nodeId).push(act.nodeId);
                 return state.set("board", newBoard);
             }
 
             return state;
         }
         case action.SMALL_STEP: {
-            //console.log("@@SMALL_STEP_REDUCE@@");
+            // console.log("@@SMALL_STEP_REDUCE@@");
             const oldNode = state.getIn([ "nodes", act.topNodeId ]);
 
             let newNodes = state.get("nodes")
@@ -79,7 +79,7 @@ export function reduct(semantics, views, restorePos) {
                     }
                 });
 
-            let newBoard = state.get("board").filter(id => id !== act.topNodeId);
+            let newBoard = state.get("board").filter((id) => id !== act.topNodeId);
             if (!oldNode.get("parent")) {
                 newBoard = newBoard.concat(act.newNodeIds);
             }
@@ -89,7 +89,7 @@ export function reduct(semantics, views, restorePos) {
             }
             else {
                 const parent = newNodes.get(oldNode.get("parent"))
-                      .set(oldNode.get("parentField"), act.newNodeIds[0]);
+                    .set(oldNode.get("parentField"), act.newNodeIds[0]);
 
                 const child = newNodes.get(act.newNodeIds[0]).withMutations((nn) => {
                     nn.set("parent", parent.get("id"));
@@ -102,72 +102,72 @@ export function reduct(semantics, views, restorePos) {
                 });
             }
 
-            act.newNodeIds.forEach(id => markDirty(newNodes, id));
-            //console.log("@@SMALL_STEP_REDUCE - 2@@ " + newBoard);
+            act.newNodeIds.forEach((id) => markDirty(newNodes, id));
+            // console.log("@@SMALL_STEP_REDUCE - 2@@ " + newBoard);
             return state
                 .set("nodes", newNodes)
                 .set("board", newBoard);
         }
         case action.ADD_TOOLBOX_ITEM: {
-          let newNodes = state.get("nodes")
-              .withMutations((n) => {
-                  for (const node of act.addedNodes) {
-                      n.set(node.get("id"), node);
-                  }
-              });
+            const newNodes = state.get("nodes")
+                .withMutations((n) => {
+                    for (const node of act.addedNodes) {
+                        n.set(node.get("id"), node);
+                    }
+                });
 
-          let newToolbox = state.get("toolbox").push(act.newNodeId);
+            const newToolbox = state.get("toolbox").push(act.newNodeId);
 
-          return state
-              .set("nodes", newNodes)
-              .set("toolbox", newToolbox);
+            return state
+                .set("nodes", newNodes)
+                .set("toolbox", newToolbox);
         }
         case action.ADD_GOAL_ITEM: {
-          let newNodes = state.get("nodes")
-              .withMutations((n) => {
-                  for (const node of act.addedNodes) {
-                      n.set(node.get("id"), node);
-                  }
-              });
+            const newNodes = state.get("nodes")
+                .withMutations((n) => {
+                    for (const node of act.addedNodes) {
+                        n.set(node.get("id"), node);
+                    }
+                });
 
-          let addedGoal = state.get("goal").push(act.newNodeId);
+            const addedGoal = state.get("goal").push(act.newNodeId);
 
-          return state
-              .set("nodes", newNodes)
-              .set("goal", addedGoal);
+            return state
+                .set("nodes", newNodes)
+                .set("goal", addedGoal);
         }
         case action.ADD_BOARD_ITEM: {
-            let newNodes = state.get("nodes")
-              .withMutations((n) => {
-                for (const node of act.addedNodes) {
-                  n.set(node.get("id"), node);
-                }
-              });
+            const newNodes = state.get("nodes")
+                .withMutations((n) => {
+                    for (const node of act.addedNodes) {
+                        n.set(node.get("id"), node);
+                    }
+                });
 
-            let newBoard = state.get("board").concat(act.newNodeIds);
+            const newBoard = state.get("board").concat(act.newNodeIds);
 
-            act.newNodeIds.forEach(id => markDirty(newNodes, id));
+            act.newNodeIds.forEach((id) => markDirty(newNodes, id));
 
             return state
                 .set("nodes", newNodes)
                 .set("board", newBoard);
         }
         case action.CHANGE_GOAL: {
-          let newNodes = state.get("nodes")
-              .withMutations((n) => {
-                  for (const node of act.addedNodes) {
-                      n.set(node.get("id"), node);
-                  }
-              });
+            const newNodes = state.get("nodes")
+                .withMutations((n) => {
+                    for (const node of act.addedNodes) {
+                        n.set(node.get("id"), node);
+                    }
+                });
 
-              const len = state.get("goal").size;
+            const len = state.get("goal").size;
 
-              let newGoal = state.get("goal");
-              newGoal = newGoal.splice(act.goal_id,1,...act.newNodeIds);
+            let newGoal = state.get("goal");
+            newGoal = newGoal.splice(act.goal_id, 1, ...act.newNodeIds);
 
-          return state
-                  .set("nodes", newNodes)
-                  .set("goal", newGoal);
+            return state
+                .set("nodes", newNodes)
+                .set("goal", newGoal);
         }
         case action.UNFOLD: {
             const nodes = state.get("nodes");
@@ -183,7 +183,7 @@ export function reduct(semantics, views, restorePos) {
                         const parentId = ref.get("parent");
                         n.set(
                             parentId,
-                            n.get(parentId).set(ref.get("parentField"), act.newNodeId)
+                            n.get(parentId).set(ref.get("parentField"), act.newNodeId),
                         );
                         n.set("locked", true);
                     }
@@ -191,13 +191,13 @@ export function reduct(semantics, views, restorePos) {
 
             if (!ref.has("parent")) {
                 newState = newState
-                    .set("board", state.get("board").map(id => (id === act.nodeId ? act.newNodeId : id)));
+                    .set("board", state.get("board").map((id) => (id === act.nodeId ? act.newNodeId : id)));
             }
 
             return newState;
         }
         case action.BETA_REDUCE: {
-          debugger;
+            debugger;
             const queue = [ act.topNodeId, act.argNodeId ];
             const removedNodes = {};
 
@@ -206,9 +206,8 @@ export function reduct(semantics, views, restorePos) {
                 if (act.newNodeIds.indexOf(id) >= 0) {
                     return [ id, n.delete("parent").delete("parentField") ];
                 }
-                else {
-                    return [ id, n ];
-                }
+
+                return [ id, n ];
             }));
 
             while (queue.length > 0) {
@@ -222,9 +221,7 @@ export function reduct(semantics, views, restorePos) {
 
             const oldNode = state.getIn([ "nodes", act.topNodeId ]);
 
-            let newNodes = state.get("nodes").filter(function (key, value) {
-                return !removedNodes[key];
-            }).merge(addedNodes);
+            let newNodes = state.get("nodes").filter((key, value) => !removedNodes[key]).merge(addedNodes);
 
             let newBoard = state.get("board").filter((id) => !removedNodes[id]);
             if (!oldNode.get("parent")) {
@@ -232,17 +229,17 @@ export function reduct(semantics, views, restorePos) {
             }
             else {
                 if (act.newNodeIds.length > 1) {
-                    console.error(`Can't beta reduce nested lambda that produced multiple new nodes!`);
+                    console.error("Can't beta reduce nested lambda that produced multiple new nodes!");
                     return null;
                 }
                 const parent = newNodes.get(oldNode.get("parent"))
-                      .set(oldNode.get("parentField"), act.newNodeIds[0]);
+                    .set(oldNode.get("parentField"), act.newNodeIds[0]);
                 newNodes = newNodes.set(oldNode.get("parent"), parent);
             }
 
-            act.newNodeIds.forEach(id => markDirty(newNodes, id));
+            act.newNodeIds.forEach((id) => markDirty(newNodes, id));
 
-            return state.withMutations(s => {
+            return state.withMutations((s) => {
                 s.set("nodes", newNodes);
                 s.set("board", newBoard);
                 s.set("toolbox", s.get("toolbox").filter((id) => !removedNodes[id]));
@@ -255,20 +252,20 @@ export function reduct(semantics, views, restorePos) {
             if (holeParent === undefined) throw `Hole ${act.holeId} has no parent!`;
 
             const child = state.getIn([ "nodes", act.childId ]);
-            if (child.get("parent")) throw `Dragging objects from one hole to another is unsupported.`;
+            if (child.get("parent")) throw "Dragging objects from one hole to another is unsupported.";
 
-            return state.withMutations(map => {
+            return state.withMutations((map) => {
                 map.set("board", map.get("board").filter((n) => n != act.childId));
                 map.set("toolbox", map.get("toolbox").filter((n) => n != act.childId));
-                map.set("nodes", map.get("nodes").withMutations(nodes => {
-                    nodes.set(holeParent, nodes.get(holeParent).withMutations(holeParent => {
+                map.set("nodes", map.get("nodes").withMutations((nodes) => {
+                    nodes.set(holeParent, nodes.get(holeParent).withMutations((holeParent) => {
                         // Cache the hole in the parent, so that we
                         // don't have to create a new hole if they
                         // detach the field later.
-                        holeParent.set(hole.get("parentField") + "__hole", holeParent.get(hole.get("parentField")));
+                        holeParent.set(`${hole.get("parentField")}__hole`, holeParent.get(hole.get("parentField")));
                         holeParent.set(hole.get("parentField"), act.childId);
                     }));
-                    nodes.set(act.childId, child.withMutations(child => {
+                    nodes.set(act.childId, child.withMutations((child) => {
                         child.set("parentField", hole.get("parentField"));
                         child.set("parent", holeParent);
                         child.set("locked", false);
@@ -280,11 +277,11 @@ export function reduct(semantics, views, restorePos) {
         }
         case action.ATTACH_NOTCH: {
             const child = state.getIn([ "nodes", act.childId ]);
-            if (child.get("parent")) throw `Dragging objects from one hole to another is unsupported.`;
+            if (child.get("parent")) throw "Dragging objects from one hole to another is unsupported.";
 
             return state.withMutations((s) => {
                 // s.set("board", s.get("board").filter(n => n !== act.childId));
-                s.set("toolbox", s.get("toolbox").filter(n => n !== act.childId));
+                s.set("toolbox", s.get("toolbox").filter((n) => n !== act.childId));
                 s.set("nodes", s.get("nodes").withMutations((nodes) => {
                     nodes.set(act.parentId, nodes.get(act.parentId).set(`notch${act.notchIdx}`, act.childId));
                     nodes.set(act.childId, child.withMutations((c) => {
@@ -305,7 +302,7 @@ export function reduct(semantics, views, restorePos) {
 
                 if (s.get("board").contains(act.childId)) {
                     // Actually remove from the board
-                    s.set("board", s.get("board").filter(n => n !== act.childId));
+                    s.set("board", s.get("board").filter((n) => n !== act.childId));
                 }
 
                 const nodes = state.get("nodes");
@@ -332,7 +329,7 @@ export function reduct(semantics, views, restorePos) {
 
                 return state.withMutations((mutState) => {
                     mutState.set("board", mutState.get("board").push(act.nodeId));
-                    mutState.set("toolbox", mutState.get("toolbox").filter(n => n !== act.nodeId));
+                    mutState.set("toolbox", mutState.get("toolbox").filter((n) => n !== act.nodeId));
                 });
             }
             return state;
@@ -356,7 +353,7 @@ export function reduct(semantics, views, restorePos) {
                             parent.delete(node.get("parentField"));
                         }
                         else {
-                            throw `Unimplemented: creating new hole`;
+                            throw "Unimplemented: creating new hole";
                         }
                     }));
 
@@ -388,7 +385,7 @@ export function reduct(semantics, views, restorePos) {
             });
         }
         case action.VICTORY: {
-            return state.withMutations(map => {
+            return state.withMutations((map) => {
                 map.set("board", immutable.List());
                 map.set("goal", immutable.List());
             });
@@ -402,7 +399,7 @@ export function reduct(semantics, views, restorePos) {
                 }));
                 s.set(
                     act.source,
-                    s.get(act.source).map(n => (n === act.nodeId ? act.newNodeId : n))
+                    s.get(act.source).map((n) => (n === act.nodeId ? act.newNodeId : n)),
                 );
             });
         }
@@ -410,21 +407,21 @@ export function reduct(semantics, views, restorePos) {
             return state.withMutations((s) => {
                 s.set(
                     act.source,
-                    s.get(act.source).map(n => (n === act.unfadedId ? act.fadedId : n))
+                    s.get(act.source).map((n) => (n === act.unfadedId ? act.fadedId : n)),
                 );
             });
         }
         case action.DEFINE: {
             return state.withMutations((s) => {
                 s.set("globals", state.get("globals").set(act.name, act.id));
-                s.set("board", state.get("board").filter(id => id !== act.id));
+                s.set("board", state.get("board").filter((id) => id !== act.id));
             });
         }
         default: return state;
         }
     }
 
-    function annotateTypes(state=initialProgram) {
+    function annotateTypes(state = initialProgram) {
         const annotatedNodes = state.get("nodes").withMutations((n) => {
             // for (const [ exprId, expr ] of n.entries()) {
             //     n.set(exprId, expr.set("ty", null));
@@ -453,24 +450,23 @@ export function reduct(semantics, views, restorePos) {
     return {
         reducer: combineReducers({
             program: undoable(compose(annotateTypes, program), {
-                actionFilter: act =>
-                    act.type === action.RAISE ||
-                    act.type === action.HOVER ||
+                actionFilter: (act) => act.type === action.RAISE
+                    || act.type === action.HOVER
                     // Prevent people from undoing start of level
-                    act.type === action.START_LEVEL ||
-                    act.skipUndo,
+                    || act.type === action.START_LEVEL
+                    || act.skipUndo,
                 extraState: (state, newState) => {
                     const result = {};
                     for (const id of state.get("board")) {
                         if (views[id]) {
-                            const pos = Object.assign({}, gfx.absolutePos(views[id]));
+                            const pos = { ...gfx.absolutePos(views[id]) };
                             if (pos.x === 0 && pos.y === 0) continue;
                             result[id] = pos;
                         }
                     }
                     for (const id of newState.get("board")) {
                         if (views[id]) {
-                            const pos = Object.assign({}, gfx.absolutePos(views[id]));
+                            const pos = { ...gfx.absolutePos(views[id]) };
                             if (pos.x === 0 && pos.y === 0) continue;
                             result[id] = pos;
                         }

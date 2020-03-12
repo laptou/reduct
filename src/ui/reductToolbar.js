@@ -28,7 +28,7 @@ export default class ReductToolbar {
         this._shouldStop = this.shouldStop.bind(this);
     }
 
-    update(id, prevId=null) {
+    update(id, prevId = null) {
         const state = this.stage.getState();
         if (id !== null && (prevId === null || !this.ids.has(prevId))) {
             if (this.stage.semantics.kind(state, state.getIn([ "nodes", id ])) !== "expression") {
@@ -65,8 +65,8 @@ export default class ReductToolbar {
         else if (this.ids.has(prevId)) {
             const idRecord = this.ids.get(prevId);
             this.ids.delete(prevId);
-            if (id !== null &&
-                this.stage.semantics.kind(state, state.getIn([ "nodes", id ])) === "expression") {
+            if (id !== null
+                && this.stage.semantics.kind(state, state.getIn([ "nodes", id ])) === "expression") {
                 this.ids.set(id, idRecord);
                 idRecord.el.dataset.id = id;
             }
@@ -94,9 +94,9 @@ export default class ReductToolbar {
             const absSize = gfx.absoluteSize(view);
 
             let posTop = absPos.y + absSize.h + offsetY;
-            let posLeft = (absPos.x - (toolbar.clientWidth / 2)) +
-                  (absSize.w / 2) +
-                  offsetX;
+            let posLeft = (absPos.x - (toolbar.clientWidth / 2))
+                  + (absSize.w / 2)
+                  + offsetX;
 
             // TODO: refactor this to stage?
             if (gfx.viewport.IS_PHONE) {
@@ -108,7 +108,7 @@ export default class ReductToolbar {
             toolbar.style.left = `${posLeft}px`;
         }
 
-        toDelete.forEach(id => this.update(null, id));
+        toDelete.forEach((id) => this.update(null, id));
     }
 
     shouldStop(id) {

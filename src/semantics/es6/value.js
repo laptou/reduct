@@ -245,7 +245,7 @@ export default {
         projection: {
             type: "default",
             shape: "()",
-            color: expr => expr.get("color"),
+            color: (expr) => expr.get("color"),
         },
     },
 };
