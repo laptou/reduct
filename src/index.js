@@ -19,7 +19,7 @@ import CompleteStage from "./stage/complete";
 import LevelStage from "./stage/lvlStage";
 import passwordPrompt from "./ui/instructor/password";
 import consent from "./consent";
-import tutorial from "./ui/instructor/tutorial";
+import Tutorial from "./ui/instructor/tutorial";
 
 import Loader from "./loader";
 import Logging, { TITLE_LEVEL_ID, DEVELOPMENT_BUILD } from "./logging/logging";
@@ -53,9 +53,9 @@ const fetchLevel = (session_params) => {
     const { user_id } = session_params;
     // console.log("Trying to fetch level for user ID " + JSON.stringify(user_id));
     const url = "https://gdiac.cs.cornell.edu/research_games/php/reduct/last_level.php";
-    const params = { game_id: 7017019, version_id: 6, user_id};
+    const params = { game_id: 7017019, version_id: 6, user_id };
     ajax.jsonp(url, params).then(
-        result => {
+        (result) => {
         // console.log(`GDIAC server reports: ${JSON.stringify(result)}`);
             const { message, level } = result;
             if (message == "success" && level > 0) {
@@ -82,8 +82,8 @@ window.startup = () => {
             return Logging.currentUserId;
         })
         .then(() => (consented
-                ? Logging.startSession()
-                : Logging.startOfflineSession()))
+            ? Logging.startSession()
+            : Logging.startOfflineSession()))
         .then(fetchLevel)
         .then(initialize)
         .catch((msg) => {
@@ -352,12 +352,11 @@ function start(updateLevel, options = {}) {
     const levelDefinition = Loader.progressions.Elementary.levels[progression.currentLevel()];
 
     Logging.transitionToTask(progression.currentLevel(), levelDefinition)
-        .finally(() => {
+        .finally(async () => {
             // Show tutorial if present
             if (levelDefinition.tutorialUrl) {
-                tutorial(levelDefinition.tutorialUrl);
+                await new Tutorial(levelDefinition.tutorialUrl).show().wait();
             }
-
 
             level.startLevel(levelDefinition, es6.parser.parse, store, stg);
             stg.drawImpl();
@@ -406,16 +405,16 @@ function nextLevel(enableChallenge) {
 function extractFunction(str) {
     const funName = str.match(/function ([a-zA-Z]+)/)[1];
     const funHalfBody = str.match(/>([^>]+)$/)[1];
-    const funBody = `${"{ " + "return "}${  funHalfBody}`;
+    const funBody = `${"{ " + "return "}${funHalfBody}`;
     const funArgsRegx = /\(([a-zA-Z]+)\) =>/g;
     let funArgs = "";
-    var match;
+    let match;
     while (match = funArgsRegx.exec(str)) {
         funArgs += match[1];
         funArgs += ",";
     }
     funArgs = funArgs.slice(0, -1);
-    let funFinal = `function ${  funName  }(${  funArgs  }) ${  funBody}`;
+    const funFinal = `function ${funName}(${funArgs}) ${funBody}`;
     return funFinal;
 }
 
@@ -465,7 +464,7 @@ window.jumpToLevel = function(lev) {
 };
 
 window.captureState = function () {
-  const format = "board,goal,textgoal,toolbox,defines,globals,syntax,animationScales";
+    const format = "board,goal,textgoal,toolbox,defines,globals,syntax,animationScales";
 
     const re = /\s*,\s*/;
     const fields = format.split(re);
@@ -492,7 +491,8 @@ window.captureState = function () {
                     // reformatting functions
                     if (subField.includes("function")) {
                         newInput += extractFunction(subField);
-                    } else {
+                    }
+                    else {
                         newInput += subField;
                     }
 
@@ -506,11 +506,11 @@ window.captureState = function () {
                 newInput += "]\"";
             }
             else {
-                newInput = newInput + newLvl[f];
+                newInput += newLvl[f];
             }
         }
         else if (f == "textgoal") {
-            newInput += "\"" + prompt(`Type the value for ${  f  }:`) + "\"";
+            newInput += `"${prompt(`Type the value for ${f}:`)}"`;
         }
         else if (f == "globals" || f == "animationScales") {
             newInput += "{}";
@@ -526,7 +526,7 @@ window.captureState = function () {
     }
 
     // Printing the result
-    const saveString = `${format  }\n${  newInput}`;
+    const saveString = `${format}\n${newInput}`;
     const blob = new window.Blob([ saveString ], {
         type: "application/csv;charset=utf-8",
     });
@@ -564,7 +564,7 @@ window.addNodeToBoard = function() {
             newMacros[name] = expr;
         }
 
-        let newInputIds = [];
+        const newInputIds = [];
         const st = stg.getState();
         const parsed_s = es6.parser.parse(ss, newMacros);
         const flattened_s = es6.flatten(parsed_s).map(immutable.Map);

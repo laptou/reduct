@@ -104,7 +104,7 @@ canvas {
     display: none
 }
 
-#consent, .fade-container {
+.modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -115,7 +115,7 @@ canvas {
     transition: all 0.5s ease-in-out;
 }
 
-#consent.visible, .fade-container.visible {
+#consent.visible, .modal-overlay.visible {
     bottom: 0;
     opacity: 1;
     display: flex;
@@ -123,7 +123,7 @@ canvas {
     justify-content: center;
 }
 
-#consent.visible #consent-inner, .fade-container.visible > div {
+#consent.visible #consent-inner, .modal-overlay.visible > div {
     display: block;
 }
 
@@ -131,7 +131,7 @@ canvas {
     height: 40em;
 }
 
-#consent-inner, .fade-container > div {
+#consent-inner, .modal-overlay > div {
     display: none;
     background: #FFF;
     width: 40em;
@@ -141,7 +141,7 @@ canvas {
     transform: translateX(-50%);
 }
 
-#consent-inner button, .fade-container.visible button {
+#consent-inner button, .modal-overlay.visible button {
     font-size: 1em;
     padding: 0.5em;
     border-radius: 0;
@@ -338,14 +338,28 @@ span.spacer {
     }
 }
 
-#tutorial > div {
+/* #region TUTORIAL */
+
+#tutorial {
+    transition-property: opacity;
+    transition-duration: 0.125s;
+    opacity: 0;
+}
+
+#tutorial.visible {
+    opacity: 1;
+}
+
+#tutorial #tutorial-inner {
     padding: 1em;
     text-align: center;
 }
 
-#tutorial > div > p {
+#tutorial p {
     font-size: 1.25em;
 }
+
+/* #endregion */
 
 #goto-level {
     background-color: #fed;

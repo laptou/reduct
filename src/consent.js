@@ -11,7 +11,10 @@ export default function consent(userIds) {
     if (userIds) {
         Array.prototype.forEach.call(
             document.getElementsByClassName("consent-request-id"),
-            (e) => { e.style.display = "inline"; });
+            (e) => {
+                e.style.display = "inline";
+            },
+        );
     }
     return new Promise((resolve, reject) => {
         document.querySelector("#consent")

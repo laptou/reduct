@@ -70,3 +70,6 @@ dist/
 
 # movie projects
 *.mov
+
+# VSCode
+.vscode
