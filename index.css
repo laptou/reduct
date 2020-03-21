@@ -137,10 +137,16 @@ canvas {
     width: 100%;
     max-width: calc(100vw - 10rem);
     max-height: calc(100vh - 10rem);
+
     border-radius: 0.25rem;
     box-shadow: 0 0 2rem 2rem rgba(0, 0, 0, 0.15);
 
     transform: translate(-50%, -50%);
+}
+
+.modal-overlay.modal-center {
+    height: auto;
+    width: auto;
 }
 
 .modal-overlay .modal-body {

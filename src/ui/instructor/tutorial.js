@@ -14,6 +14,7 @@ export default class Tutorial extends EventEmitter {
         this.dismissed = false;
 
         this.container = document.querySelector("#tutorial");
+        this.innerContainer = this.container.querySelector("#tutorial-inner");
         this.video = this.container.querySelector("video");
         this.skipBtn = this.container.querySelector("#tutorial-continue");
 
@@ -32,7 +33,9 @@ export default class Tutorial extends EventEmitter {
             throw new Error("This tutorial was already dismissed. Create a new Tutorial object.");
         }
 
-        const { video, container, skipBtn } = this;
+        const {
+            video, container, innerContainer, skipBtn,
+        } = this;
 
         video.setAttribute("src", this.uri);
         video.load();
@@ -41,6 +44,7 @@ export default class Tutorial extends EventEmitter {
         this.active = true;
 
         skipBtn.addEventListener("click", this.onDismissClick);
+        innerContainer.addEventListener("click", Tutorial.onDialogClick);
         container.addEventListener("click", this.onDismissClick);
         container.classList.add("visible");
 
@@ -52,7 +56,9 @@ export default class Tutorial extends EventEmitter {
      * @returns {Tutorial} `this`
      */
     dismiss() {
-        const { video, container, skipBtn } = this;
+        const {
+            video, container, innerContainer, skipBtn,
+        } = this;
 
         // pause video
         video.pause();
@@ -62,6 +68,7 @@ export default class Tutorial extends EventEmitter {
 
         // remove event handlers
         video.removeEventListener("click", this.onVideoClick);
+        innerContainer.removeEventListener("click", Tutorial.onDialogClick);
         skipBtn.addEventListener("click", this.onDismissClick);
         container.addEventListener("click", this.onDismissClick);
 
@@ -87,14 +94,19 @@ export default class Tutorial extends EventEmitter {
 
     /**
      * @private
-     * @param {UIEvent} evt
      */
-    onVideoClick(evt) {
+    onVideoClick() {
         const { video } = this;
 
         if (video.paused) video.play();
         else video.pause();
+    }
 
+    /**
+     * @private
+     * @param {UIEvent} evt
+     */
+    static onDialogClick(evt) {
         // don't allow click to bubble to parent element
         // so that video is not accidentally dismissed
         evt.stopPropagation();
