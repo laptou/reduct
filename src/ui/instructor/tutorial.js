@@ -97,7 +97,7 @@ export default class Tutorial extends EventEmitter {
 
         // don't allow click to bubble to parent element
         // so that video is not accidentally dismissed
-        evt.preventDefault();
+        evt.stopPropagation();
     }
 
     /**

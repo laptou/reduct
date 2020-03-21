@@ -55,12 +55,18 @@
     </nav>
 
     <div id="tutorial" class="modal-overlay">
-        <div id="tutorial-inner">
-            <video width="100%" height="100%" src="resources/videos/missing-video.mp4">
-                Sorry, your browser does not support MP4 videos.
-            </video>
-            <button id="tutorial-replay">Replay</button>
-            <button id="tutorial-continue">Continue</button>
+        <div id="tutorial-inner" class="modal-overlay-inner">
+            <section class="modal-body">
+                <video width="100%" height="100%" src="resources/videos/missing-video.mp4">
+                    Sorry, your browser does not support MP4 videos.
+                </video>
+            </section>
+            <section class="modal-actions">
+                <span class="tutorial-hint modal-action-special">This video has sound.</span>
+
+                <button id="tutorial-replay">Replay</button>
+                <button id="tutorial-continue">Continue</button>
+            </section>
         </div>
     </div>
 
@@ -88,8 +94,8 @@
 
 
     <div id="consent" class="modal-overlay">
-        <div id="consent-inner">
-            <section id="consent-body">
+        <div id="consent-inner" class="modal-overlay-inner">
+            <section class="modal-body">
                 <h1>Welcome to Reduct!</h1>
                 <p>
                     We are studying how to make a video game to teach
@@ -115,17 +121,15 @@
                     <p>
                         Number: <input type="text" name="player_id" id="player_id" />
                     </p>
+                    <p id="consent-id-error" class="error">
+                        Sorry, you must enter a correct id number.
+                    </p>
                 </div>
+            </section>
 
-                <span class=spacer>&nbsp;</span>
+            <section class="modal-actions">
                 <button id="consent-agree">I Agree</button>
-                <span class=spacer>&nbsp;</span>
                 <button id="consent-disagree">I Disagree</button>
-
-                <p id="consent-id-error" class="error">
-                    Sorry, you must enter a correct id number.
-                </p>
-
             </section>
         </div>
     </div>

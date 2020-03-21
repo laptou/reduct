@@ -151,6 +151,7 @@ function bindSpecialKeys() {
                 document.querySelector("#add-node input").focus();
                 e.preventDefault();
                 break;
+            default: break;
             }
         }
     });
