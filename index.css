@@ -144,7 +144,7 @@ canvas {
     transform: translate(-50%, -50%);
 }
 
-.modal-overlay.modal-center {
+.modal-overlay.modal-center .modal-overlay-inner {
     height: auto;
     width: auto;
 }
@@ -152,6 +152,7 @@ canvas {
 .modal-overlay .modal-body {
     grid-row: 1;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .modal-overlay .modal-actions {
@@ -379,23 +380,18 @@ h1 {
 
 /* #region TUTORIAL */
 
-#tutorial {
-    transition-property: opacity;
-    transition-duration: 0.125s;
-    opacity: 0;
-}
-
-#tutorial.visible {
-    opacity: 1;
-}
-
 #tutorial #tutorial-inner {
     padding: 1em;
+}
+
+#tutorial .modal-body {
+    overflow-y: hidden; /* no scrollbar b/c video should not get clipped */
     text-align: center;
 }
 
 #tutorial video {
     max-height: 100%;
+    max-width: 100%;
 }
 
 #tutorial .tutorial-hint {
