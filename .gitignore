@@ -73,3 +73,6 @@ dist/
 
 # VSCode
 .vscode
+
+# gitconfig
+.gitconfig
