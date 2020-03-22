@@ -16,12 +16,12 @@ export default class ReductToolbar {
 
         // Map of node ID to [toolbox element, should stop reducing]
         this.ids = new Map();
-
         this.currentId = null;
+        this.playing = false;
 
         // TODO: move this somewhere else
         // Remove any toolbars from the previous level
-        for (const el of document.querySelectorAll(".reduct-toolbar:not(#reduct-toolbar-proto)")) {
+        for (const el of document.querySelectorAll(".reduct-toolbar:not(.reduct-toolbar-proto)")) {
             el.remove();
         }
 
@@ -35,32 +35,32 @@ export default class ReductToolbar {
                 return;
             }
 
-            const cloned = document.querySelector("#reduct-toolbar-proto").cloneNode(true);
-            cloned.setAttribute("id", "");
-            document.body.appendChild(cloned);
-            cloned.dataset.id = id;
-            this.ids.set(id, { el: cloned, shouldStop: false });
+            const elToolbar = document.querySelector(".reduct-toolbar-proto").cloneNode(true);
+            elToolbar.classList.remove("reduct-toolbar-proto");
+            elToolbar.dataset.id = id;
 
-            let status = "can-play";
+            document.body.appendChild(elToolbar);
+            this.ids.set(id, { el: elToolbar, shouldStop: false });
 
-            cloned.querySelector(".toolbar-ffwd")
-                .addEventListener("click", () => this.ffwd(parseInt(cloned.dataset.id, 10)));
+            const btnFfwd = elToolbar.querySelector(".toolbar-ffwd");
+            const btnPlayPause = elToolbar.querySelector(".toolbar-play, .toolbar-pause");
 
-            cloned.querySelector(".toolbar-play")
-                .addEventListener("click", () => {
-                    if (status === "can-play") {
-                        status = "playing";
-                        cloned.classList.add("playing");
-                        this.play(parseInt(cloned.dataset.id, 10));
-                    }
-                    else {
-                        status = "can-play";
-                        cloned.classList.remove("playing");
-                        this.pause(parseInt(cloned.dataset.id, 10));
-                    }
-                    // Reposition buttons
-                    this.drawImpl(this.stage.getState());
-                });
+            btnFfwd.addEventListener("click", () => this.ffwd(parseInt(elToolbar.dataset.id, 10)));
+            btnPlayPause.addEventListener("click", () => {
+                this.playing = !this.playing;
+
+                if (!this.playing) {
+                    elToolbar.classList.remove("reduct-toolbar-playing");
+                    this.pause(parseInt(elToolbar.dataset.id, 10));
+                }
+                else {
+                    elToolbar.classList.add("reduct-toolbar-playing");
+                    this.play(parseInt(elToolbar.dataset.id, 10));
+                }
+
+                // Reposition buttons
+                this.drawImpl(this.stage.getState());
+            });
         }
         else if (this.ids.has(prevId)) {
             const idRecord = this.ids.get(prevId);
