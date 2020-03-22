@@ -13,10 +13,10 @@ import Feedback from "../ui/feedback";
 import Goal from "../ui/goal";
 import Navbar from "../ui/navbar";
 import Toolbox from "../ui/toolbox";
-import ReductToolbar from "../ui/reductToolbar";
+import ReductToolbar from "../ui/reduct-toolbar";
 import Sidebar from "../ui/sidebar";
 import StuckEffect from "../ui/stuck";
-import SyntaxJournal from "../ui/syntaxjournal";
+import SyntaxJournal from "../ui/syntax-journal";
 import FunctionDef from "../ui/functiondef";
 
 import Loader from "../loader";
@@ -730,7 +730,6 @@ export default class Stage extends BaseStage {
      * Helper that handles animation and updating the store for a small-step.
      */
     step(state, selectedNode, overrideMode = null, shouldStop = null) {
-        // debugger;
         const nodes = state.get("nodes");
         const node = nodes.get(selectedNode);
 
@@ -774,13 +773,12 @@ export default class Stage extends BaseStage {
         };
 
         const mode = overrideMode || this.mode;
-        // const mode = document.querySelector("#evaluation-mode").value;
         this.semantics.interpreter.reduce(this, state, node, mode, {
             update: (topNodeId, newNodeIds, addedNodes, recordUndo) => {
                 if (this.alreadyWon) return Promise.resolve(this.getState());
 
                 if (newNodeIds.length !== 1) {
-                    throw "Stepping to produce multiple expressions is currently unsupported.";
+                    throw new Error("Stepping to produce multiple expressions is currently unsupported.");
                 }
 
                 const state = this.getState();

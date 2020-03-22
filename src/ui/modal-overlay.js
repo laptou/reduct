@@ -2,18 +2,27 @@ import { EventEmitter } from "events";
 
 
 /**
+ * @typedef {Object} ModalOverlayOptions
+ * @property {Boolean?} allowSoftDismiss Controls whether this modal is soft-
+ * dismissable.
+ */
+
+/**
+ * Modal overlays that the user should interact with.
+ * @property {Boolean} visible Whether this modal is currently visible.
  * @emits dismissed
  */
 export default class ModalOverlay extends EventEmitter {
     /**
-     *
      * @param {Element} el The `.modal-overlay` container element.
+     * @param {ModalOverlayOptions?} options
      */
-    constructor(el) {
+    constructor(el, options = { allowSoftDismiss: false }) {
         super();
 
         this.visible = false;
         this.el = el;
+        this.options = { allowSoftDismiss: true, ...options };
         this.innerEl = el.querySelector(".modal-overlay-inner");
     }
 
@@ -36,7 +45,7 @@ export default class ModalOverlay extends EventEmitter {
         const { el, innerEl } = this;
 
         innerEl.addEventListener("click", ModalOverlay.onDialogClick);
-        el.addEventListener("click", this.onDismissClick);
+        el.addEventListener("click", this.onBackgroundClick);
         el.classList.add("visible");
 
         return this;
@@ -90,9 +99,9 @@ export default class ModalOverlay extends EventEmitter {
     }
 
     /**
-     * @protected
+     * @private
      */
-    onDismissClick() {
-        this.dismiss();
+    onBackgroundClick() {
+        if (this.options.allowSoftDismiss) this.dismiss();
     }
 }

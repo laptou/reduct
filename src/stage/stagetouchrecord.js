@@ -11,7 +11,7 @@ import * as progression from "../game/progression";
 import Goal from "../ui/goal";
 import Toolbox from "../ui/toolbox";
 import Sidebar from "../ui/sidebar";
-import SyntaxJournal from "../ui/syntaxjournal";
+import SyntaxJournal from "../ui/syntax-journal";
 import FunctionDef from "../ui/functiondef";
 
 import Loader from "../loader";

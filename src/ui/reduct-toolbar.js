@@ -138,4 +138,12 @@ export default class ReductToolbar {
         }
         this.stage.step(this.stage.getState(), id, "big");
     }
+
+    skip(id) {
+        // TODO: LOGGING
+        if (this.ids.has(id)) {
+            this.ids.get(id).shouldStop = false;
+        }
+        this.stage.step(this.stage.getState(), id, "big");
+    }
 }

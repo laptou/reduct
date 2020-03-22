@@ -1,6 +1,5 @@
 import { EventEmitter } from "events";
 
-
 const LOAD_STATE = {
     NONE: 0,
     LOADING: 1,
@@ -9,11 +8,13 @@ const LOAD_STATE = {
 };
 
 /**
- * @emits play
- * @emits pause
- * @emits end
- * @emits load
- * @emits error
+ * This element handles the management of our video player, including click to
+ * pause/unpause/restart.
+ * @emits play Video has started playing.
+ * @emits pause Video has been paused.
+ * @emits end Video ended.
+ * @emits load Video loaded.
+ * @emits error There was an error while loading or playing the video.
  */
 export default class VideoPlayer extends EventEmitter {
     /**
@@ -39,6 +40,10 @@ export default class VideoPlayer extends EventEmitter {
         this.video.addEventListener("error", this.onVideoError);
     }
 
+    /**
+     * Removes event handlers and cleans up this VideoPlayer instance
+     * so that another VideoPlayer may be attached to these elements.
+     */
     detach() {
         const { el, video } = this;
         // stop and unload video
@@ -52,6 +57,9 @@ export default class VideoPlayer extends EventEmitter {
         video.removeEventListener("error", this.onVideoClick);
     }
 
+    /**
+     * Loads the video if it was not loaded, then plays it.
+     */
     play() {
         const { video, el } = this;
 
@@ -68,6 +76,9 @@ export default class VideoPlayer extends EventEmitter {
         this.emit("play");
     }
 
+    /**
+     * Pause the video.
+     */
     pause() {
         const { video, el } = this;
 

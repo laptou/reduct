@@ -15,7 +15,7 @@ export default class Tutorial extends ModalOverlay {
         this.btnSkip = container.querySelector("#tutorial-continue");
         this.videoPlayer = new VideoPlayer(container.querySelector(".video-player"), uri);
 
-        this.onDismissClick = this.onDismissClick.bind(this);
+        this.onSkipClick = this.onSkipClick.bind(this);
     }
 
     /**
@@ -36,7 +36,7 @@ export default class Tutorial extends ModalOverlay {
     show() {
         super.show();
 
-        this.btnSkip.addEventListener("click", this.onDismissClick);
+        this.btnSkip.addEventListener("click", this.onSkipClick);
         if (this.autoplay) {
             this.play();
         }
@@ -50,8 +50,15 @@ export default class Tutorial extends ModalOverlay {
      */
     dismiss() {
         // remove event handlers
-        this.btnSkip.addEventListener("click", this.onDismissClick);
+        this.btnSkip.removeEventListener("click", this.onSkipClick);
 
         return super.dismiss();
+    }
+
+    /**
+     * @private
+     */
+    onSkipClick() {
+        this.dismiss();
     }
 }
