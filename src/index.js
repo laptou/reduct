@@ -17,9 +17,9 @@ import ChapterEndStage from "./stage/chapterend";
 import TitleStage from "./stage/title";
 import CompleteStage from "./stage/complete";
 import LevelStage from "./stage/lvlStage";
-import passwordPrompt from "./ui/instructor/password";
-import consent from "./consent";
-import Tutorial from "./ui/instructor/tutorial";
+import passwordPrompt from "./ui/dialogs/password";
+import ConsentDialog from "./ui/dialogs/consent";
+import TutorialDialog from "./ui/dialogs/tutorial";
 
 import Loader from "./loader";
 import Logging, { TITLE_LEVEL_ID, DEVELOPMENT_BUILD } from "./logging/logging";
@@ -49,8 +49,8 @@ Loader.loadImageAtlas("menusprites", "resources/graphics/menu-assets.json", "res
 Loader.loadChapters("Elementary", progression.ACTIVE_PROGRESSION_DEFINITION);
 Loader.waitForFonts([ "Fira Mono", "Fira Sans", "Nanum Pen Script" ]);
 
-const fetchLevel = (session_params) => {
-    const { user_id } = session_params;
+const fetchLevel = (sessionParams) => {
+    const { user_id } = sessionParams;
     // console.log("Trying to fetch level for user ID " + JSON.stringify(user_id));
     const url = "https://gdiac.cs.cornell.edu/research_games/php/reduct/last_level.php";
     const params = { game_id: 7017019, version_id: 6, user_id };
@@ -66,32 +66,38 @@ const fetchLevel = (session_params) => {
 };
 
 
-window.startup = () => {
-    let consented = false;
-    consent(USER_IDS)
-        .then((c) => {
-            consented = c;
-            console.log(`User consented to logging: ${consented}`);
-            if (!consented) {
-                Logging.resetState();
-                Logging.clearStaticLog();
-                Logging.saveState();
-            }
-            Logging.config("enabled", consented);
-            if (consented) Logging.config("offline", false);
-            return Logging.currentUserId;
-        })
-        .then(() => (consented
-            ? Logging.startSession()
-            : Logging.startOfflineSession()))
-        .then(fetchLevel)
-        .then(initialize)
-        .catch((msg) => {
-            console.error(msg);
-            document.querySelector("#consent-id-error").style.display = "block";
-            setTimeout(() => document.querySelector("#player_id").focus(), 250);
-            window.startup(); // try again
-        });
+window.startup = async () => {
+    try {
+        let consented = await new ConsentDialog(USER_IDS).show().wait();
+        let sessionParams;
+
+        console.log(`User consented to logging: ${consented}`);
+
+        if (!consented) {
+            Logging.resetState();
+            Logging.clearStaticLog();
+            Logging.saveState();
+        }
+        
+        Logging.config("enabled", consented);
+
+        if (consented) { 
+            Logging.config("offline", false);
+            sessionParams = await Logging.startSession();
+        } 
+        else {
+            sessionParams = await Logging.startOfflineSession();
+        }
+
+        fetchLevel(sessionParams);
+        initialize();
+    }
+    catch(e) {
+        console.error(e);
+        document.querySelector("#consent-id-error").style.display = "block";
+        setTimeout(() => document.querySelector("#player_id").focus(), 250);
+        window.startup(); // try again
+    }
 };
 
 Loader.finished.then(() => window.startup());
@@ -356,7 +362,7 @@ function start(updateLevel, options = {}) {
         .finally(async () => {
             // Show tutorial if present
             if (levelDefinition.tutorialUrl) {
-                await new Tutorial(levelDefinition.tutorialUrl).show().wait();
+                await new TutorialDialog(levelDefinition.tutorialUrl).show().wait();
             }
 
             level.startLevel(levelDefinition, es6.parser.parse, store, stg);

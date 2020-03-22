@@ -1,21 +1,21 @@
-import VideoPlayer from "../video-player";
-import ModalOverlay from "../modal-overlay";
+import { autobind } from 'core-decorators';
+import VideoPlayer from "../component/video-player";
+import ModalDialog from "../component/modal-dialog";
 
 
 /**
  * @member {String} uri The URI of the video that this Tutorial instance should play.
  * @member {Boolean} active Whether this Tutorial is currently active.
  */
-export default class Tutorial extends ModalOverlay {
+@autobind
+export default class TutorialDialog extends ModalDialog {
     constructor(uri, autoplay = true) {
         const container = document.querySelector("#tutorial");
-        super(container);
+        super(container, { allowSoftDismiss: true });
 
         this.autoplay = autoplay;
         this.btnSkip = container.querySelector("#tutorial-continue");
         this.videoPlayer = new VideoPlayer(container.querySelector(".video-player"), uri);
-
-        this.onSkipClick = this.onSkipClick.bind(this);
     }
 
     /**
@@ -31,7 +31,7 @@ export default class Tutorial extends ModalOverlay {
 
     /**
      * Shows the tutorial to the user.
-     * @returns {Tutorial} `this`
+     * @returns {this} `this`
      */
     show() {
         super.show();
@@ -46,7 +46,7 @@ export default class Tutorial extends ModalOverlay {
 
     /**
      * Dismisses the tutorial and cleans up event handlers.
-     * @returns {Tutorial} `this`
+     * @returns {this} `this`
      */
     dismiss() {
         // remove event handlers

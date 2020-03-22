@@ -7,7 +7,7 @@ import Audio from "../resource/audio";
 import * as random from "../util/random";
 
 import Loader from "../loader";
-import passwordPrompt from "../ui/instructor/password";
+import passwordPrompt from "../ui/dialogs/password";
 
 import BaseStage from "./basestage";
 import BaseTouchRecord from "./touchrecord";

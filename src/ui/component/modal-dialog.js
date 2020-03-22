@@ -1,5 +1,5 @@
+import { autobind } from 'core-decorators';
 import { EventEmitter } from "events";
-
 
 /**
  * @typedef {Object} ModalOverlayOptions
@@ -12,7 +12,7 @@ import { EventEmitter } from "events";
  * @property {Boolean} visible Whether this modal is currently visible.
  * @emits dismissed
  */
-export default class ModalOverlay extends EventEmitter {
+export default class ModalDialog extends EventEmitter {
     /**
      * @param {Element} el The `.modal-overlay` container element.
      * @param {ModalOverlayOptions?} options
@@ -28,7 +28,7 @@ export default class ModalOverlay extends EventEmitter {
 
     /**
      * Shows the tutorial to the user.
-     * @returns {Tutorial} `this`
+     * @returns {this} `this`
      */
     show() {
         if (this.dismissed) {
@@ -44,7 +44,7 @@ export default class ModalOverlay extends EventEmitter {
 
         const { el, innerEl } = this;
 
-        innerEl.addEventListener("click", ModalOverlay.onDialogClick);
+        innerEl.addEventListener("click", ModalDialog.onDialogClick);
         el.addEventListener("click", this.onBackgroundClick);
         el.classList.add("visible");
 
@@ -53,7 +53,7 @@ export default class ModalOverlay extends EventEmitter {
 
     /**
      * Dismisses the tutorial and cleans up event handlers.
-     * @returns {Tutorial} `this`
+     * @returns {this} `this`
      */
     dismiss() {
         const {
@@ -65,8 +65,8 @@ export default class ModalOverlay extends EventEmitter {
         this.visible = false;
 
         // remove event handlers
-        el.addEventListener("click", this.onDismissClick);
-        innerEl.removeEventListener("click", ModalOverlay.onDialogClick);
+        el.removeEventListener("click", this.onDismissClick);
+        innerEl.removeEventListener("click", ModalDialog.onDialogClick);
 
         // TODO: wait for CSS transition?
 
@@ -101,6 +101,7 @@ export default class ModalOverlay extends EventEmitter {
     /**
      * @private
      */
+    @autobind
     onBackgroundClick() {
         if (this.options.allowSoftDismiss) this.dismiss();
     }
