@@ -1,4 +1,3 @@
-import "babel-regenerator-runtime";
 import vis from "vis";
 import { createStore, applyMiddleware } from "redux";
 

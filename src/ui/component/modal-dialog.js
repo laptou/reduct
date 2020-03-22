@@ -1,4 +1,3 @@
-import { autobind } from 'core-decorators';
 import { EventEmitter } from "events";
 
 /**
@@ -24,6 +23,8 @@ export default class ModalDialog extends EventEmitter {
         this.el = el;
         this.options = { allowSoftDismiss: true, ...options };
         this.innerEl = el.querySelector(".modal-overlay-inner");
+
+        this.onBackgroundClick = this.onBackgroundClick.bind(this);
     }
 
     /**
@@ -101,7 +102,6 @@ export default class ModalDialog extends EventEmitter {
     /**
      * @private
      */
-    @autobind
     onBackgroundClick() {
         if (this.options.allowSoftDismiss) this.dismiss();
     }

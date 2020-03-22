@@ -1,4 +1,3 @@
-import { autobind } from 'core-decorators';
 import VideoPlayer from "../component/video-player";
 import ModalDialog from "../component/modal-dialog";
 
@@ -7,7 +6,6 @@ import ModalDialog from "../component/modal-dialog";
  * @member {String} uri The URI of the video that this Tutorial instance should play.
  * @member {Boolean} active Whether this Tutorial is currently active.
  */
-@autobind
 export default class TutorialDialog extends ModalDialog {
     constructor(uri, autoplay = true) {
         const container = document.querySelector("#tutorial");
@@ -16,6 +14,8 @@ export default class TutorialDialog extends ModalDialog {
         this.autoplay = autoplay;
         this.btnSkip = container.querySelector("#tutorial-continue");
         this.videoPlayer = new VideoPlayer(container.querySelector(".video-player"), uri);
+
+        this.onSkipClick = this.onSkipClick.bind(this);
     }
 
     /**

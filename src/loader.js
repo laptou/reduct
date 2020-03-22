@@ -61,9 +61,6 @@ export class LoaderClass {
                 if (!this.images[sprite.name]) {
                     this.images[sprite.name] = sprite.image;
                 }
-                else {
-
-                }
             }
 
             this.finishLoad();

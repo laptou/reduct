@@ -1,4 +1,3 @@
-import { autobind } from 'core-decorators';
 import ModalDialog from "../component/modal-dialog";
 
 // Report whether a player id is acceptable
@@ -7,8 +6,6 @@ function playerIdOK() {
     if ((id >= 56000 && id < 58000) || id === 1234 || id === 513) return true;
     return false;
 }
-
-@autobind
 export default class ConsentDialog extends ModalDialog {
     constructor() {
         const el = document.querySelector("#consent");
