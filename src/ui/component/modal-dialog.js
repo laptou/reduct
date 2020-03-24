@@ -48,8 +48,6 @@ export default class ModalDialog extends EventEmitter {
 
         innerEl.addEventListener("click", ModalDialog.onDialogClick);
         el.addEventListener("click", this.onBackgroundClick);
-        el.addEventListener("transitionend", this.onTransitionEnd, { once: true });
-        el.classList.add("transitioning");
         el.classList.add("visible");
 
         return this;
@@ -65,9 +63,7 @@ export default class ModalDialog extends EventEmitter {
         } = this;
 
         // make this invisible
-        el.addEventListener("transitionend", this.onTransitionEnd, { once: true });
         el.classList.remove("visible");
-        el.classList.add("transitioning");
         this.visible = false;
 
         // remove event handlers
