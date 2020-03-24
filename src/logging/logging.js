@@ -1,12 +1,3 @@
-/* TODO:
- * User ID tracking: sync with GDIAC server
- *
- * Opt-out
- *
- * Static logging: events are serialized to localStorage, and can be
- * downloaded as a blob
- */
-
 import fileSaver from "file-saver";
 
 import * as level from "../game/level";
@@ -15,6 +6,15 @@ import * as undoAction from "../reducer/undo";
 import * as ajax from "../util/ajax";
 import * as random from "../util/random";
 import VERSION_ID from "../version";
+
+/* TODO:
+ * User ID tracking: sync with GDIAC server
+ *
+ * Opt-out
+ *
+ * Static logging: events are serialized to localStorage, and can be
+ * downloaded as a blob
+ */
 
 const GAME_ID = 7017019;
 const IS_LOCAL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";

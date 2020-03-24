@@ -22,8 +22,12 @@ import TutorialDialog from "./ui/dialogs/tutorial";
 
 import Loader from "./loader";
 import Logging, { TITLE_LEVEL_ID, DEVELOPMENT_BUILD } from "./logging/logging";
+
+import Test from "./png/test";
+
 import * as ajax from "./util/ajax";
 
+console.log({ Test });
 
 // Whether the game will ask for (valid) user ids
 const USER_IDS = false;
@@ -31,7 +35,7 @@ const USER_IDS = false;
 // Globals to help you debug
 window.gfx = gfx;
 window.animate = animate;
-window.Logging = Logging;
+// window.Logging = Logging;
 window.progression = progression;
 window.devMode = 1;
 
@@ -67,7 +71,7 @@ const fetchLevel = (sessionParams) => {
 
 window.startup = async () => {
     try {
-        let consented = await new ConsentDialog(USER_IDS).show().wait();
+        const consented = await new ConsentDialog(USER_IDS).show().wait();
         let sessionParams;
 
         console.log(`User consented to logging: ${consented}`);
@@ -77,13 +81,13 @@ window.startup = async () => {
             Logging.clearStaticLog();
             Logging.saveState();
         }
-        
+
         Logging.config("enabled", consented);
 
-        if (consented) { 
+        if (consented) {
             Logging.config("offline", false);
             sessionParams = await Logging.startSession();
-        } 
+        }
         else {
             sessionParams = await Logging.startOfflineSession();
         }
@@ -91,7 +95,7 @@ window.startup = async () => {
         fetchLevel(sessionParams);
         initialize();
     }
-    catch(e) {
+    catch (e) {
         console.error(e);
         document.querySelector("#consent-id-error").style.display = "block";
         setTimeout(() => document.querySelector("#player_id").focus(), 250);
@@ -199,7 +203,7 @@ function initialize() {
     stg = new TitleStage(startGame, canvas, 800, 600, store, views, es6);
     window.stage = stg;
 
-    window.Logging = Logging;
+    // window.Logging = Logging;
 
     animate.addUpdateListener(() => {
         stg.draw();
