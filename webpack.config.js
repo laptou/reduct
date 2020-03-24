@@ -2,14 +2,22 @@ const path = require("path");
 
 const HtmlPlugin = require("html-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 
-/** @param {String} env If this is set to `"production"`, then additional optimization
- *  will be applied.
+
+/**
+ * @typedef {Object} Env
+ * @member {Boolean} development Whether we are running in a dev environment.
+ * @member {Boolean} production Whether we are running in a prod environment.
+ * @member {Boolean} analyze Whether to perform bundle size analysis.
+ */
+
+/** @param {Env} env Current environment.
  *  @returns {import("webpack").Configuration} */
 exports.default = (env) => ({
     context: __dirname,
     entry: ["./src/index.js"],
-    devtool: env === "development" ? "eval-source-map" : false,
+    devtool: env.development ? "eval-source-map" : false,
     devServer: {
         port: 1234,
     },
@@ -58,11 +66,16 @@ exports.default = (env) => ({
         new HtmlPlugin({
             template: "index.html",
         }),
-        ...(env === "production"
+        ...(env.production
             ? [
                 new CompressionPlugin({
                     threshold: 8192,
                 }),
+            ]
+            : []),
+        ...(env.analyze
+            ? [
+                new BundleAnalyzerPlugin(),
             ]
             : []),
     ],
