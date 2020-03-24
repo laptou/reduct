@@ -5,6 +5,12 @@
     "output.mp3",
     "output.wav"
   ],
+  "volumes": {
+    "chapter-complete": 0.5,
+    "chapter-complete-2": 0.5,
+    "acceptance": 0.7,
+    "pop": 0.5
+  },
   "sprite": {
     "119556__vrodge__office-printer-printing": [
       0,

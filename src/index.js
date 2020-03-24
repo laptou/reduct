@@ -40,15 +40,10 @@ window.progression = progression;
 window.devMode = 1;
 
 // Load assets.
-Loader.loadAudioSprite("sounds", "resources/audio/output.json", "resources/audio/volumes.json", [
-    "resources/audio/output.opus",
-    "resources/audio/output.ogg",
-    "resources/audio/output.mp3",
-    "resources/audio/output.wav",
-]);
-Loader.loadImageAtlas("spritesheet", "resources/graphics/assets.json", "resources/graphics/assets.png");
-Loader.loadImageAtlas("titlesprites", "resources/graphics/title-assets.json", "resources/graphics/title-assets.png");
-Loader.loadImageAtlas("menusprites", "resources/graphics/menu-assets.json", "resources/graphics/menu-assets.png");
+Loader.loadAudioSprite("sounds", "output");
+Loader.loadImageAtlas("spritesheet", "assets", "assets.png");
+Loader.loadImageAtlas("titlesprites", "title-assets", "title-assets.png");
+Loader.loadImageAtlas("menusprites", "menu-assets", "menu-assets.png");
 Loader.loadChapters("Elementary", progression.ACTIVE_PROGRESSION_DEFINITION);
 Loader.waitForFonts([ "Fira Mono", "Fira Sans", "Nanum Pen Script" ]);
 

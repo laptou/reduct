@@ -13,7 +13,6 @@ exports.default = (env) => ({
     devServer: {
         port: 1234,
     },
-
     optimization: {
         runtimeChunk: false,
         splitChunks: {
@@ -32,17 +31,17 @@ exports.default = (env) => ({
                     {
                         loader: "babel-loader",
                         options: {
-                            // cacheDirectory: true,
+                            cacheDirectory: true,
                         },
                     },
-                    // {
-                    //     loader: "eslint-loader",
-                    //     options: {
-                    //         // ESLint will not prevent you from building the project
-                    //         // due to lint errors ... for now
-                    //         emitWarning: true,
-                    //     },
-                    // },
+                    {
+                        loader: "eslint-loader",
+                        options: {
+                            // ESLint will not prevent you from building the project
+                            // due to lint errors ... for now
+                            emitWarning: true,
+                        },
+                    },
                 ],
             },
             {
@@ -67,4 +66,9 @@ exports.default = (env) => ({
             ]
             : []),
     ],
+    resolve: {
+        alias: {
+            "@resources": path.resolve(__dirname, "resources"),
+        },
+    },
 });
