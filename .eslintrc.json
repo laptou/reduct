@@ -5,11 +5,25 @@
     },
     "parser": "babel-eslint",
     "rules": {
-        "indent": [ "error", 4 ],
-        "quotes": [ "error", "double" ],
+        "indent": [
+            "error",
+            4,
+            {
+                "ignoredNodes": [
+                    "TemplateLiteral"
+                ]
+            }
+        ],
+        "quotes": [
+            "error",
+            "double"
+        ],
         "no-continue": "off",
         "no-restricted-syntax": "off",
-        "brace-style": [ "error", "stroustrup" ],
+        "brace-style": [
+            "error",
+            "stroustrup"
+        ],
         "array-bracket-spacing": "off",
         "comma-dangle": [
             "error",
@@ -31,7 +45,10 @@
         "no-param-reassign": "off",
         "no-console": "off",
         "no-underscore-dangle": "off",
-        "quote-props": ["error", "consistent"]
+        "quote-props": [
+            "error",
+            "consistent"
+        ]
     },
     "ignorePatterns": [
         "node_modules/",

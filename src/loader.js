@@ -3,17 +3,14 @@ import { Howl } from "howler";
 
 import * as gfx from "./gfx/core";
 import * as globalProgressions from "./game/progression";
-import { getJSON } from "./util/ajax";
 
-const BASE_PATH = "resources/";
-
-function getImage(path) {
-    return new Promise((resolve) => {
+async function getImage(path) {
+    const resolvedPath = (await import(`@resources/graphics/${path}`)).default;
+    return new Promise((resolve, reject) => {
         const image = document.createElement("img");
-        image.onload = function() {
-            resolve(image);
-        };
-        image.setAttribute("src", path);
+        image.addEventListener("load", () => resolve(image), { once: true });
+        image.addEventListener("error", () => reject(), { once: true });
+        image.setAttribute("src", resolvedPath);
     });
 }
 
@@ -21,9 +18,10 @@ export class LoaderClass {
     constructor(root) {
         this.rootPath = root;
         this.graphicsPath = `${root}/graphics/`;
-        this.pending = this.loaded = 0;
+        this.pending = 0;
+        this.loaded = 0;
 
-        this._promise = new Promise((resolve, reject) => {
+        this._promise = new Promise((resolve) => {
             this._resolve = resolve;
         });
 
@@ -50,17 +48,18 @@ export class LoaderClass {
     }
 
     /**
-     * 
+     *
      * @param {String} alias The name of this atlas.
      * @param {String} key The name of the JSON file corresponding to this atlas (no extension).
-     * @param {String} imagePath The path to the image file relative to the `resources/graphics` directory.
+     * @param {String} imagePath The path to the image file relative to the `resources/graphics`
+     * directory.
      */
     async loadImageAtlas(alias, key, imagePath) {
         this.startLoad();
 
         const [ json, img ] = await Promise.all([
             import(`@resources/graphics/${key}.json`),
-            import(`@resources/graphics/${imagePath}`),
+            getImage(imagePath),
         ]);
 
         const atlas = new gfx.image.ImageAtlas(alias, json, img);
@@ -76,21 +75,24 @@ export class LoaderClass {
     async loadAudioSprite(alias, key) {
         this.startLoad();
         const data = await import(`@resources/audio/${key}.json`);
+        const audioUrls = await Promise.all(
+            data.urls.map((u) => import(`@resources/audio/${u}`).then((f) => f.default)),
+        );
 
         await new Promise((resolve, reject) => {
-            for (const key of Object.keys(data.volumes)) {
-                this.audioVolumes[key] = volumes[key];
-            }
+            this.audioVolumes = { ...this.audioVolumes, ...data.volumes };
 
             this.audioSprites[alias] = new Howl({
-                src: data.urls.map(u => require(`@resources/audio/${u}`)),
+                src: audioUrls,
                 sprite: data.sprite,
                 onload: () => {
-                    for (const key of Object.keys(json.sprite)) {
-                        this.sounds[key] = this.audioSprites[alias];
+                    for (const spriteKey of Object.keys(data.sprite)) {
+                        this.sounds[spriteKey] = this.audioSprites[alias];
                     }
+
+                    resolve();
                 },
-                onloaderror: reject
+                onloaderror: reject,
             });
         });
 
@@ -100,7 +102,7 @@ export class LoaderClass {
     async loadSyntax(progression, key) {
         this.startLoad();
 
-        this.progressions[progression].syntax[name] = await import(`@resources/levels-progression/${key}.json`);
+        this.progressions[progression].syntax[key] = await import(`@resources/levels-progression/${key}.json`);
 
         this.finishLoad();
     }
@@ -108,8 +110,8 @@ export class LoaderClass {
     async loadChapter(progression, key) {
         this.startLoad();
 
-        const json = await import(`@resources/levels-progression/${key}.json`); 
-        
+        const json = await import(`@resources/levels-progression/${key}.json`);
+
         // Copy the planet's aliens to the individual level
         // definitions, so that buildLevel has access to
         // them. Provide a default alien when not specified.
@@ -120,7 +122,7 @@ export class LoaderClass {
         }
 
         const d = {
-            key: key,
+            key,
             name: json.chapterName,
             description: json.description,
             challenge: json.challenge || false,
@@ -168,12 +170,13 @@ export class LoaderClass {
     async loadChapters(name, definition) {
         this.startLoad();
         // Initilizing variables --s
-        const progression = this.progressions[name] = {
+        const progression = {
             chapters: {},
             levels: [],
             linearChapters: [],
             syntax: {},
         };
+        this.progressions[name] = progression;
         const chapterKeys = Object.keys(definition.digraph);
 
         let extraDefines = [];
@@ -195,7 +198,7 @@ export class LoaderClass {
         const marked = {};
         let remaining = chapterKeys.length;
 
-        outerLoop:
+        outer:
         while (remaining > 0) {
             for (const [chapterName, chapter] of Object.entries(progression.chapters)) {
                 if (chapter.dependencies.every((dep) => marked[dep]) && !marked[chapterName]) {
@@ -239,7 +242,7 @@ export class LoaderClass {
                         }
                     }
 
-                    continue outerLoop;
+                    continue outer;
                 }
             }
 

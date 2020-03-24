@@ -1,4 +1,4 @@
-import vis from "vis";
+import vis from "vis-charts";
 
 // Compares arrays like sets.
 function setCompare(arr1, arr2, compareFunc) {

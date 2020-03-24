@@ -1,4 +1,4 @@
-import vis from "vis";
+import vis from "vis-charts";
 import { createStore, applyMiddleware } from "redux";
 
 import fileSaver from "file-saver";
@@ -23,11 +23,7 @@ import TutorialDialog from "./ui/dialogs/tutorial";
 import Loader from "./loader";
 import Logging, { TITLE_LEVEL_ID, DEVELOPMENT_BUILD } from "./logging/logging";
 
-import Test from "./png/test";
-
 import * as ajax from "./util/ajax";
-
-console.log({ Test });
 
 // Whether the game will ask for (valid) user ids
 const USER_IDS = false;
