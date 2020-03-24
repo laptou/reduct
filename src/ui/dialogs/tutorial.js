@@ -51,6 +51,8 @@ export default class TutorialDialog extends ModalDialog {
     dismiss() {
         // remove event handlers
         this.btnSkip.removeEventListener("click", this.onSkipClick);
+        this.videoPlayer.pause();
+        this.videoPlayer.detach();
 
         return super.dismiss();
     }
