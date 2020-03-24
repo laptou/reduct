@@ -13,7 +13,7 @@ import { EventEmitter } from "events";
  */
 export default class ModalDialog extends EventEmitter {
     /**
-     * @param {Element} el The `.modal-overlay` container element.
+     * @param {Element} el The `.modal-dialog` container element.
      * @param {ModalOverlayOptions?} options
      */
     constructor(el, options = { allowSoftDismiss: false }) {
@@ -22,9 +22,10 @@ export default class ModalDialog extends EventEmitter {
         this.visible = false;
         this.el = el;
         this.options = { allowSoftDismiss: true, ...options };
-        this.innerEl = el.querySelector(".modal-overlay-inner");
+        this.innerEl = el.querySelector(".modal-dialog-inner");
 
         this.onBackgroundClick = this.onBackgroundClick.bind(this);
+        this.onTransitionEnd = this.onTransitionEnd.bind(this);
     }
 
     /**
@@ -47,6 +48,8 @@ export default class ModalDialog extends EventEmitter {
 
         innerEl.addEventListener("click", ModalDialog.onDialogClick);
         el.addEventListener("click", this.onBackgroundClick);
+        el.addEventListener("transitionend", this.onTransitionEnd, { once: true });
+        el.classList.add("transitioning");
         el.classList.add("visible");
 
         return this;
@@ -62,7 +65,9 @@ export default class ModalDialog extends EventEmitter {
         } = this;
 
         // make this invisible
+        el.addEventListener("transitionend", this.onTransitionEnd, { once: true });
         el.classList.remove("visible");
+        el.classList.add("transitioning");
         this.visible = false;
 
         // remove event handlers
@@ -104,5 +109,12 @@ export default class ModalDialog extends EventEmitter {
      */
     onBackgroundClick() {
         if (this.options.allowSoftDismiss) this.dismiss();
+    }
+
+    /**
+     * @private
+     */
+    onTransitionEnd() {
+        this.el.classList.remove("transitioning");
     }
 }

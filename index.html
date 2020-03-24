@@ -60,8 +60,8 @@
         </button>
     </nav>
 
-    <div id="tutorial" class="modal-overlay modal-center">
-        <div id="tutorial-inner" class="modal-overlay-inner">
+    <div id="tutorial" class="modal-dialog modal-center">
+        <div id="tutorial-inner" class="modal-dialog-inner">
             <section class="modal-body">
                 <div id="tutorial-video-player" class="video-player">
                     <video src="resources/videos/missing-video.mp4">
@@ -88,14 +88,14 @@
         </div>
     </div>
 
-    <div id="goto-level" class="modal-overlay">
+    <div id="goto-level" class="modal-dialog">
         Jump to level
         <input name=targetLevel type="text" size=3 onchange="jumpToLevel(this.value)">
     </div>
 
 
     <form target="remember" onsubmit="return addNodeToBoard()" method="get" action="about:blank" autocomplete="on">
-        <div id="add-node" class="modal-overlay">
+        <div id="add-node" class="modal-dialog">
             Add node
             <input id="targetNodeToAdd" name=targetNode list="valueOptions" type="text" size=3 required>
             <datalist id="valueOptions"></datalist>
@@ -110,8 +110,8 @@
         </div>
     </form>
 
-    <div id="consent" class="modal-overlay">
-        <div id="consent-inner" class="modal-overlay-inner">
+    <div id="consent" class="modal-dialog">
+        <div id="consent-inner" class="modal-dialog-inner">
             <section class="modal-body">
                 <!-- Consent system is currently not enabled, so sections related to that are commented out.-->
                 <h1>Welcome to Reduct!</h1>

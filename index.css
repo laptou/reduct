@@ -108,7 +108,7 @@ canvas {
 
 /* #region MODAL OVERLAYS */
 
-.modal-overlay {
+.modal-dialog {
     position: fixed;
     pointer-events: none;
     top: 0;
@@ -118,9 +118,15 @@ canvas {
     background: rgba(0, 0, 0, 0.7);
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
+    visibility: hidden;
 }
 
-.modal-overlay.visible {
+.modal-dialog.transitioning {
+    visibility: visible;
+}   
+
+.modal-dialog.visible {
+    visibility: visible;
     bottom: 0;
     pointer-events: auto;
     opacity: 1;
@@ -129,7 +135,7 @@ canvas {
     justify-content: center;
 }
 
-.modal-overlay .modal-overlay-inner {
+.modal-dialog .modal-dialog-inner {
     background: #FFF;
     position: fixed;
     display: grid;
@@ -148,18 +154,18 @@ canvas {
     transform: translate(-50%, -50%);
 }
 
-.modal-overlay.modal-center .modal-overlay-inner {
+.modal-dialog.modal-center .modal-dialog-inner {
     height: auto;
     width: auto;
 }
 
-.modal-overlay .modal-body {
+.modal-dialog .modal-body {
     grid-row: 1;
     overflow-y: auto;
     overflow-x: hidden;
 }
 
-.modal-overlay .modal-actions {
+.modal-dialog .modal-actions {
     grid-row: 2;
     display: flex;
     justify-content: end;
@@ -167,13 +173,13 @@ canvas {
     margin: 0.5rem -0.5rem -0.5rem;
 }
 
-.modal-overlay .modal-actions * {
+.modal-dialog .modal-actions * {
     margin: 0.5rem;
     -moz-user-select: none;
     -webkit-user-select: none;
 }
 
-.modal-overlay .modal-actions .modal-action-special {
+.modal-dialog .modal-actions .modal-action-special {
     flex-grow: 1;
     text-align: start;
 }
