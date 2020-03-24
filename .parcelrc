@@ -1,5 +1,0 @@
-{
-  "transformers": {
-    "*.js": ["@parcel/transformer-babel"]
-  }
-}
