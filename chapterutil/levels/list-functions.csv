@@ -1,4 +1,4 @@
-board,goal,textgoal,toolbox,defines,globals,syntax,animationScales,,tutorialUrl,comments
+board,goal,textgoal,toolbox,defines,globals,syntax,animationScales,,tutorial,comments
 "['function head(list) {return get(list, 0);}', 'function tail(list) {length(list) == 1 ? [] : slice(list, 1, length(list)); }']","['1','[2,4,6]']",Head and Tail Introduction,"['__unlimited; [1,2,4,6]','head','tail']","['function head(list) { return get(list, 0); }', 'function tail(list) {length(list) == 1 ? [] : slice(list, 1, length(list)); }']",{},[],{}
 "[]","['0','1','2']","Access Elements","['__unlimited; head','__unlimited; tail','__unlimited; [0,1,2,3]']",,{},[],{}
 "['function cons(e,list) { return  concat([e], list); }','[]']","['[1,2,3]']","Build List","['__unlimited; cons','1','5','4','2','3']","['function cons(e,list) { return  concat([e], list); }']",{},[],{}

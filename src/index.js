@@ -1,3 +1,5 @@
+import "@resources/style/index.css";
+
 import vis from "vis-charts";
 import { createStore, applyMiddleware } from "redux";
 
@@ -339,7 +341,7 @@ function persistGraph() {
     }
 }
 
-function start(updateLevel, options = {}) {
+async function start(updateLevel, options = {}) {
     animate.clock.cancelAll();
 
     if (options.persistGraph !== false) persistGraph();
@@ -352,28 +354,32 @@ function start(updateLevel, options = {}) {
 
     const levelDefinition = Loader.progressions.Elementary.levels[progression.currentLevel()];
 
-    Logging.transitionToTask(progression.currentLevel(), levelDefinition)
-        .finally(async () => {
-            // Show tutorial if present
-            if (levelDefinition.tutorialUrl) {
-                await new TutorialDialog(levelDefinition.tutorialUrl).show().wait();
-            }
+    try {
+        await Logging.transitionToTask(progression.currentLevel(), levelDefinition);
+    }
+    finally { // Show tutorial if present
+        if (levelDefinition.tutorial) {
+            const diag = new TutorialDialog();
+            await diag.load(levelDefinition.tutorial);
+            diag.show();
+            await diag.wait();
+        }
 
-            level.startLevel(levelDefinition, es6.parser.parse, store, stg);
-            stg.drawImpl();
+        level.startLevel(levelDefinition, es6.parser.parse, store, stg);
+        stg.drawImpl();
 
-            // Sync chapter dropdown with current level
-            let prevOption = null;
-            for (const option of document.querySelectorAll("#chapter option")) {
-                if (window.parseInt(option.getAttribute("value"), 10) <= progression.currentLevel()) {
-                    prevOption = option;
-                }
-                else {
-                    break;
-                }
+        // Sync chapter dropdown with current level
+        let prevOption = null;
+        for (const option of document.querySelectorAll("#chapter option")) {
+            if (window.parseInt(option.getAttribute("value"), 10) <= progression.currentLevel()) {
+                prevOption = option;
             }
-            document.querySelector("#chapter").value = prevOption.getAttribute("value");
-        });
+            else {
+                break;
+            }
+        }
+        document.querySelector("#chapter").value = prevOption.getAttribute("value");
+    }
 
     // Reset buttons
     window.updateStateGraph();

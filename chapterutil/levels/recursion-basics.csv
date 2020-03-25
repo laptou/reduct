@@ -1,5 +1,5 @@
-animationScales,tutorialUrl,syntax,globals,output,toolbox,defines,textgoal,goal,board,fade,input
-{},resources/videos/recursion.mp4,[],{},[],[u'countDown'],,This function uses recursion to count down to 0,[u'10'],"[u'15', u'function countDown(n) { return n == 10 ? n : countDown(n-1); }']",[{}],[]
+animationScales,tutorial,syntax,globals,output,toolbox,defines,textgoal,goal,board,fade,input
+{},recursion,[],{},[],[u'countDown'],,This function uses recursion to count down to 0,[u'10'],"[u'15', u'function countDown(n) { return n == 10 ? n : countDown(n-1); }']",[{}],[]
 {},,[],{},[],"[u'countDown', u'3', u'1', u'n']",,Define a function that counts down to 1,[u'1'],"[u'5', u'function countDown(n) { return n == _ ? n : countDown(_ - 1); }', u'n']",[{}],[]
 {},,[],{},[],"[u'countUpTo', u'10', u'5', u'1', u'n']",,We can use recursion to count up too.,[u'5'],"[u'function countUpTo(x, n) { return x == _ ? x : countUpTo(x + 1, n); }']",[{}],[]
 {},,[],{},[],"[u'__unlimited; countUpTo(_, 10)', u'x + 1', u'__unlimited; n']",,,"[u'10', u'10']","[u'function countUpTo(x, n) { return x == _ ? x : countUpTo(_, _); }', u'8', u'5']",[{}],[]

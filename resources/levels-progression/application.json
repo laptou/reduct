@@ -16,7 +16,7 @@
             ],
             "syntax": [],
             "textgoal": "Use the application block",
-            "tutorialUrl": "resources/videos/application.mp4"
+            "tutorial": "application"
         },
         {
             "animationScales": {

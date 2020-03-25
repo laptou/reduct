@@ -33,6 +33,7 @@ export default class VideoPlayer extends EventEmitter {
         this.onVideoClick = this.onVideoClick.bind(this);
         this.onVideoEnd = this.onVideoEnd.bind(this);
         this.onVideoLoad = this.onVideoLoad.bind(this);
+        this.onVideoError = this.onVideoError.bind(this);
 
         this.el.addEventListener("click", this.onVideoClick);
         this.video.addEventListener("ended", this.onVideoEnd);

@@ -1,5 +1,5 @@
-board,goal,textgoal,tutorialUrl,toolbox,defines,globals,syntax,animationScales,fade,
-['function star() { return A; }'],['A'],Move the def block to the left box to define the word {star}!,resources/videos/defn-intro.mp4,['star'],,{},[],{},{},
+board,goal,textgoal,tutorial,toolbox,defines,globals,syntax,animationScales,fade,
+['function star() { return A; }'],['A'],Move the def block to the left box to define the word {star}!,defn-intro,['star'],,{},[],{},{},
 "['function star() { return A; }', 'function rect() { return B; }']","['B', 'B', 'A']",Reach the goal by creating new definitions!,,"['__unlimited;star', '__unlimited;rect']",,{},[],{},{},
 "['function makeStar(x) { return A; }', 'D', 'B', 'C']","['A', 'A', 'A']",Define a function which always outputs a {star},,['__unlimited;makeStar'],,{},[],{},{},
 "['function triangle() { return _; }', 'C']","['C', 'C', 'C']",Define the name "triangle" to be {a triangle},,['__unlimited; triangle'],,{},[],{},{},

@@ -7,26 +7,35 @@ import ModalDialog from "../component/modal-dialog";
  * @member {Boolean} active Whether this Tutorial is currently active.
  */
 export default class TutorialDialog extends ModalDialog {
-    constructor(uri, autoplay = true) {
+    constructor(key, autoplay = true) {
         const container = document.querySelector("#tutorial");
         super(container, { allowSoftDismiss: true });
 
         this.autoplay = autoplay;
         this.btnSkip = container.querySelector("#tutorial-continue");
-        this.videoPlayer = new VideoPlayer(container.querySelector(".video-player"), uri);
+        this.videoPlayer = null;
 
         this.onSkipClick = this.onSkipClick.bind(this);
+    }
+
+    async load(key) {
+        this.videoPlayer = new VideoPlayer(
+            this.el.querySelector(".video-player"),
+            // eslint-disable-next-line import/no-dynamic-require
+            (await import(`@resources/videos/${key}.mp4`)).default,
+        );
+        return this;
     }
 
     /**
      * Starts playing the tutorial.
      */
     play() {
-        this.videoPlayer.play();
+        this.videoPlayer?.play();
     }
 
     pause() {
-        this.videoPlayer.pause();
+        this.videoPlayer?.pause();
     }
 
     /**
@@ -51,8 +60,8 @@ export default class TutorialDialog extends ModalDialog {
     dismiss() {
         // remove event handlers
         this.btnSkip.removeEventListener("click", this.onSkipClick);
-        this.videoPlayer.pause();
-        this.videoPlayer.detach();
+        this.videoPlayer?.pause();
+        this.videoPlayer?.detach();
 
         return super.dismiss();
     }

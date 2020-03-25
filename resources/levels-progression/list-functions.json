@@ -25,7 +25,7 @@
                 "head",
                 "tail"
             ],
-            "tutorialUrl": "None"
+            "tutorial": "None"
         },
         {
             "animationScales": {},
@@ -43,7 +43,7 @@
                 "__unlimited; tail",
                 "__unlimited; [0,1,2,3]"
             ],
-            "tutorialUrl": "None"
+            "tutorial": "None"
         },
         {
             "animationScales": {},
@@ -68,7 +68,7 @@
                 "2",
                 "3"
             ],
-            "tutorialUrl": "None"
+            "tutorial": "None"
         },
         {
             "animationScales": {},
@@ -88,7 +88,7 @@
             "toolbox": [
                 "duplicate"
             ],
-            "tutorialUrl": "None"
+            "tutorial": "None"
         },
         {
             "animationScales": {},
@@ -108,7 +108,7 @@
                 "[1,2,3,4]",
                 "reverse"
             ],
-            "tutorialUrl": "None"
+            "tutorial": "None"
         },
         {
             "animationScales": {},
@@ -133,7 +133,7 @@
                 "[5]",
                 "[13,4,6,2]"
             ],
-            "tutorialUrl": "None"
+            "tutorial": "None"
         },
         {
             "animationScales": {},
@@ -158,7 +158,7 @@
             "toolbox": [
                 "__unlimited; add"
             ],
-            "tutorialUrl": "None"
+            "tutorial": "None"
         },
         {
             "animationScales": {},
@@ -179,7 +179,7 @@
                 "count",
                 "count"
             ],
-            "tutorialUrl": "None"
+            "tutorial": "None"
         },
         {
             "animationScales": {},
@@ -204,7 +204,7 @@
                 "[1,2,4,3]",
                 "__unlimited; tooSmall"
             ],
-            "tutorialUrl": "None"
+            "tutorial": "None"
         },
         {
             "animationScales": {},
@@ -223,7 +223,7 @@
                 "__unlimited; duplicate",
                 "count"
             ],
-            "tutorialUrl": "None"
+            "tutorial": "None"
         },
         {
             "animationScales": {},
@@ -251,7 +251,7 @@
                 "tail",
                 "__unlimited; my_count"
             ],
-            "tutorialUrl": "None"
+            "tutorial": "None"
         },
         {
             "animationScales": {},
@@ -276,7 +276,7 @@
                 "__unlimited; [1,2,3,4]",
                 "__unlimited; filter"
             ],
-            "tutorialUrl": "None"
+            "tutorial": "None"
         },
         {
             "animationScales": {},
@@ -299,7 +299,7 @@
                 "[0,3,2,1]",
                 "[0,0,0,0]"
             ],
-            "tutorialUrl": "None"
+            "tutorial": "None"
         },
         {
             "animationScales": {},
@@ -325,7 +325,7 @@
                 "__unlimited; keepTrue",
                 "(_) == (true)"
             ],
-            "tutorialUrl": "None"
+            "tutorial": "None"
         },
         {
             "animationScales": {},
@@ -350,7 +350,7 @@
                 "x => _",
                 "filter"
             ],
-            "tutorialUrl": "None"
+            "tutorial": "None"
         },
         {
             "animationScales": {},
@@ -383,7 +383,7 @@
                 "__unlimited; tail",
                 "__unlimited; [1,2,3]"
             ],
-            "tutorialUrl": "None"
+            "tutorial": "None"
         },
         {
             "animationScales": {},
@@ -398,7 +398,7 @@
             "toolbox": [
                 "addOne"
             ],
-            "tutorialUrl": "None"
+            "tutorial": "None"
         }
     ],
     "macros": {

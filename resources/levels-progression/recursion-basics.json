@@ -20,7 +20,7 @@
             "toolbox": [
                 "countDown"
             ],
-            "tutorialUrl": "resources/videos/recursion.mp4"
+            "tutorial": "recursion"
         },
         {
             "animationScales": {},
