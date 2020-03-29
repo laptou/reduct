@@ -7,9 +7,7 @@ export default {
         kind: "statement",
         fields: ["name", "params"],
         subexpressions: ["body"],
-        targetable: (semant, state, expr) => {
-            return !expr.has("parent");
-        },
+        targetable: (semant, state, expr) => !expr.has("parent"),
         notches: [
             {
                 side: "left",
@@ -29,7 +27,7 @@ export default {
             },
             fields: {
                 default: {
-                    color: projection => animate.tween(projection, {
+                    color: (projection) => animate.tween(projection, {
                         color: "OrangeRed",
                     }, {
                         duration: 500,
@@ -37,7 +35,7 @@ export default {
                     }),
                 },
                 attached: {
-                    color: projection => animate.tween(projection, {
+                    color: (projection) => animate.tween(projection, {
                         color: "#8ab7db",
                     }, {
                         duration: 500,
@@ -125,7 +123,7 @@ export default {
                     const missingNodes = semant.search(
                         nodes,
                         otherId,
-                        (nodes, id) => nodes.get(id).get("type") === "missing"
+                        (nodes, id) => nodes.get(id).get("type") === "missing",
                     ).filter((id) => {
                         const node = nodes.get(id);
                         if (!node.get("parent")) return true;

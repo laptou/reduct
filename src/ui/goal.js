@@ -29,9 +29,9 @@ export default class Goal {
         this.stage = stage;
 
         const chapter = progression.currentChapter();
-        const alienIndex = Math.floor(((progression.currentLevel() - chapter.startIdx) /
-                                       ((chapter.endIdx - chapter.startIdx) + 1)) *
-                                      chapter.resources.aliens.length);
+        const alienIndex = Math.floor(((progression.currentLevel() - chapter.startIdx)
+                                       / ((chapter.endIdx - chapter.startIdx) + 1))
+                                      * chapter.resources.aliens.length);
         const image = Loader.images[chapter.resources.aliens[alienIndex]];
         const alienSize = { h: 100, w: 100 * (image.frame.w / image.frame.h) };
         if (alienSize.w > 120) {
@@ -43,7 +43,7 @@ export default class Goal {
             size: alienSize,
         }));
 
-        const alienBox = Loader.images["alien_box"];
+        const alienBox = Loader.images.alien_box;
 
         let bgSize = {
             h: 1.5 * this.stage.getView(alien).size.h * (alienBox.frame.h / alienBox.frame.w),
@@ -71,9 +71,7 @@ export default class Goal {
         this.alien = alien;
         this.background = background;
 
-        const container = stage.allocate(gfx.layout.hbox((_id, state) => {
-            return state.get("goal");
-        }, {
+        const container = stage.allocate(gfx.layout.hbox((_id, state) => state.get("goal"), {
             subexpScale: 1,
             padding: {
                 left: 10,
@@ -83,16 +81,16 @@ export default class Goal {
             },
         }, gfx.baseProjection));
         this.container = stage.allocate(gfx.patch3(gfx.constant(container), {
-            left: Loader.images["dialog_box_left"],
-            middle: Loader.images["dialog_box_mid"],
-            right: Loader.images["dialog_box_right"],
+            left: Loader.images.dialog_box_left,
+            middle: Loader.images.dialog_box_mid,
+            right: Loader.images.dialog_box_right,
             leftSpill: 0.4,
         }));
 
         this.textGoal = null;
     }
 
-    startLevel(textGoal, showConcreteGoal=false) {
+    startLevel(textGoal, showConcreteGoal = false) {
         if (textGoal) {
             textGoal = templateText(this.stage.semantics, textGoal);
 
@@ -116,7 +114,7 @@ export default class Goal {
                     this.text,
                     this.stage.allocate(gfx.layout.hbox(contents, {
                         subexpScale: 1,
-                    }, gfx.baseProjection))
+                    }, gfx.baseProjection)),
                 ), {
                     subexpScale: 1,
                     padding: {
@@ -136,9 +134,9 @@ export default class Goal {
             }
 
             this.container = this.stage.allocate(gfx.patch3(gfx.constant(container), {
-                left: Loader.images["dialog_box_left"],
-                middle: Loader.images["dialog_box_mid"],
-                right: Loader.images["dialog_box_right"],
+                left: Loader.images.dialog_box_left,
+                middle: Loader.images.dialog_box_mid,
+                right: Loader.images.dialog_box_right,
             }));
         }
 

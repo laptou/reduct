@@ -1,14 +1,15 @@
-import "babel-regenerator-runtime";
-import vis from "vis";
+import "@resources/style/index.css";
+
+import vis from "vis-charts";
 import { createStore, applyMiddleware } from "redux";
 
 import fileSaver from "file-saver";
+import * as immutable from "immutable";
 import * as gfx from "./gfx/core";
 import * as animate from "./gfx/animate";
 import * as reducer from "./reducer/reducer";
 import * as level from "./game/level";
 import * as progression from "./game/progression";
-import * as immutable from "immutable";
 import * as action from "./reducer/action";
 import es6 from "./semantics/es6";
 import Stage from "./stage/stage";
@@ -17,14 +18,14 @@ import ChapterEndStage from "./stage/chapterend";
 import TitleStage from "./stage/title";
 import CompleteStage from "./stage/complete";
 import LevelStage from "./stage/lvlStage";
-import passwordPrompt from "./ui/instructor/password";
-import consent from "./consent";
-import tutorial from "./ui/instructor/tutorial";
+import passwordPrompt from "./ui/dialogs/password";
+import ConsentDialog from "./ui/dialogs/consent";
+import TutorialDialog from "./ui/dialogs/tutorial";
 
 import Loader from "./loader";
-import Logging from "./logging/logging";
+import Logging, { TITLE_LEVEL_ID, DEVELOPMENT_BUILD } from "./logging/logging";
+
 import * as ajax from "./util/ajax";
-import { TITLE_LEVEL_ID, DEVELOPMENT_BUILD } from "./logging/logging";
 
 // Whether the game will ask for (valid) user ids
 const USER_IDS = false;
@@ -32,67 +33,68 @@ const USER_IDS = false;
 // Globals to help you debug
 window.gfx = gfx;
 window.animate = animate;
-window.Logging = Logging;
+// window.Logging = Logging;
 window.progression = progression;
 window.devMode = 1;
 
 // Load assets.
-Loader.loadAudioSprite("sounds", "resources/audio/output.json", "resources/audio/volumes.json", [
-    "resources/audio/output.opus",
-    "resources/audio/output.ogg",
-    "resources/audio/output.mp3",
-    "resources/audio/output.wav",
-]);
-Loader.loadImageAtlas("spritesheet", "resources/graphics/assets.json", "resources/graphics/assets.png");
-Loader.loadImageAtlas("titlesprites", "resources/graphics/title-assets.json", "resources/graphics/title-assets.png");
-Loader.loadImageAtlas("menusprites", "resources/graphics/menu-assets.json", "resources/graphics/menu-assets.png");
+Loader.loadAudioSprite("sounds", "output");
+Loader.loadImageAtlas("spritesheet", "assets", "assets.png");
+Loader.loadImageAtlas("titlesprites", "title-assets", "title-assets.png");
+Loader.loadImageAtlas("menusprites", "menu-assets", "menu-assets.png");
 Loader.loadChapters("Elementary", progression.ACTIVE_PROGRESSION_DEFINITION);
 Loader.waitForFonts([ "Fira Mono", "Fira Sans", "Nanum Pen Script" ]);
 
-const fetchLevel = session_params => {
-    const {user_id} = session_params;
+const fetchLevel = (sessionParams) => {
+    const { user_id } = sessionParams;
     // console.log("Trying to fetch level for user ID " + JSON.stringify(user_id));
     const url = "https://gdiac.cs.cornell.edu/research_games/php/reduct/last_level.php";
-    const params = {game_id: 7017019, version_id: 6, user_id: user_id};
+    const params = { game_id: 7017019, version_id: 6, user_id };
     ajax.jsonp(url, params).then(
-      result => {
+        (result) => {
         // console.log(`GDIAC server reports: ${JSON.stringify(result)}`);
-        const {message, level} = result;
-        if (message == "success" && level > 0) {
-            progression.setLevel(level);
-        }
-      }
-    )
-}
+            const { message, level } = result;
+            if (message == "success" && level > 0) {
+                progression.setLevel(level);
+            }
+        },
+    );
+};
 
 
-window.startup = () => {
-  let consented = false;
-  consent(USER_IDS)
-    .then(c => {
-        consented = c;
+window.startup = async () => {
+    try {
+        const consented = await new ConsentDialog(USER_IDS).show().wait();
+        let sessionParams;
+
         console.log(`User consented to logging: ${consented}`);
+
         if (!consented) {
             Logging.resetState();
             Logging.clearStaticLog();
             Logging.saveState();
         }
+
         Logging.config("enabled", consented);
-        if (consented) Logging.config("offline", false);
-        return Logging.currentUserId;
-    })
-    .then(() => consented
-                ? Logging.startSession()
-                : Logging.startOfflineSession())
-    .then(fetchLevel)
-    .then(initialize)
-    .catch((msg) => {
-        console.error(msg);
+
+        if (consented) {
+            Logging.config("offline", false);
+            sessionParams = await Logging.startSession();
+        }
+        else {
+            sessionParams = await Logging.startOfflineSession();
+        }
+
+        fetchLevel(sessionParams);
+        initialize();
+    }
+    catch (e) {
+        console.error(e);
         document.querySelector("#consent-id-error").style.display = "block";
         setTimeout(() => document.querySelector("#player_id").focus(), 250);
         window.startup(); // try again
-    });
-}
+    }
+};
 
 Loader.finished.then(() => window.startup());
 
@@ -102,7 +104,7 @@ let stg;
 let canvas;
 
 function toggleDev() {
-    window.devMode = (window.devMode + 1)%2;
+    window.devMode = (window.devMode + 1) % 2;
     const nav = document.querySelector("#nav");
     const devEls = document.querySelectorAll(".dev");
     if (nav.style.display === "none") {
@@ -120,37 +122,38 @@ function bindSpecialKeys() {
     document.body.addEventListener("keyup", (e) => {
         if (e.ctrlKey) {
             switch (e.code) {
-                case "F6":
-                    window.prev();
-                    e.preventDefault();
-                    break;
-                case "F7":
-                    window.next();
-                    e.preventDefault();
-                    break;
-                case "F8":
-                    toggleDev();
-                    e.preventDefault();
-                    break;
-                case "F9":
-                    document.querySelector("#goto-level").classList.add("visible");
-                    document.querySelector("#goto-level input").value = "";
-                    document.querySelector("#goto-level input").focus();
-                    e.preventDefault();
-                    break;
-                case "F10":
-                    window.localStorage["version"] = "";
-                    Logging.resetState();
-                    Logging.clearStaticLog();
-                    Logging.saveState();
-                    e.preventDefault();
-                    window.location.reload();
-                    break;
-                case "F11":
-                    document.querySelector("#add-node").classList.add("visible");
-                    document.querySelector("#add-node input").focus();
-                    e.preventDefault();
-                    break;
+            case "F6":
+                window.prev();
+                e.preventDefault();
+                break;
+            case "F7":
+                window.next();
+                e.preventDefault();
+                break;
+            case "F8":
+                toggleDev();
+                e.preventDefault();
+                break;
+            case "F9":
+                document.querySelector("#goto-level").classList.add("visible");
+                document.querySelector("#goto-level input").value = "";
+                document.querySelector("#goto-level input").focus();
+                e.preventDefault();
+                break;
+            case "F10":
+                window.localStorage.version = "";
+                Logging.resetState();
+                Logging.clearStaticLog();
+                Logging.saveState();
+                e.preventDefault();
+                window.location.reload();
+                break;
+            case "F11":
+                document.querySelector("#add-node").classList.add("visible");
+                document.querySelector("#add-node input").focus();
+                e.preventDefault();
+                break;
+            default: break;
             }
         }
     });
@@ -187,13 +190,13 @@ function initialize() {
             (...args) => stg.saveState(...args),
             (...args) => stg.pushState(...args),
             (...args) => stg.saveNode(...args),
-            es6
-        ))
+            es6,
+        )),
     );
     stg = new TitleStage(startGame, canvas, 800, 600, store, views, es6);
     window.stage = stg;
 
-    window.Logging = Logging;
+    // window.Logging = Logging;
 
     animate.addUpdateListener(() => {
         stg.draw();
@@ -205,13 +208,13 @@ function initialize() {
     });
 
     // TODO: dispatch events to scene, then to stage
-    canvas.addEventListener("mousedown", e => stg._mousedown(e));
-    canvas.addEventListener("mousemove", e => stg._mousemove(e));
-    canvas.addEventListener("mouseup", e => stg._mouseup(e));
+    canvas.addEventListener("mousedown", (e) => stg._mousedown(e));
+    canvas.addEventListener("mousemove", (e) => stg._mousemove(e));
+    canvas.addEventListener("mouseup", (e) => stg._mouseup(e));
 
-    canvas.addEventListener("touchstart", e => stg._touchstart(e));
-    canvas.addEventListener("touchmove", e => stg._touchmove(e));
-    canvas.addEventListener("touchend", e => stg._touchend(e));
+    canvas.addEventListener("touchstart", (e) => stg._touchstart(e));
+    canvas.addEventListener("touchmove", (e) => stg._touchmove(e));
+    canvas.addEventListener("touchend", (e) => stg._touchend(e));
 
     // When the state changes, redraw the state.
     store.subscribe(() => {
@@ -234,8 +237,8 @@ function initialize() {
                     nextLevel();
                 });
             }
-            else if (stg.semantics &&
-                     !stg.semantics.mightBeCompleted(state, s => level.checkVictory(s, es6))) {
+            else if (stg.semantics
+                     && !stg.semantics.mightBeCompleted(state, (s) => level.checkVictory(s, es6))) {
                 Logging.log("dead-end", {
                     final_state: level.serialize(state, es6),
                 });
@@ -256,7 +259,7 @@ function initialize() {
         window.updateStateGraph();
     });
     document.querySelector("#capture-graph").addEventListener("click", () => {
-      captureState();
+        captureState();
     });
 
 
@@ -265,9 +268,9 @@ function initialize() {
         window.updateStateGraph();
     };
 
-    for (const chapterName of Loader.progressions["Elementary"].linearChapters) {
+    for (const chapterName of Loader.progressions.Elementary.linearChapters) {
         const option = document.createElement("option");
-        option.setAttribute("value", Loader.progressions["Elementary"].chapters[chapterName].startIdx);
+        option.setAttribute("value", Loader.progressions.Elementary.chapters[chapterName].startIdx);
         option.innerText = `Chapter: ${chapterName}`;
         document.querySelector("#chapter").appendChild(option);
     }
@@ -309,12 +312,12 @@ function persistGraph() {
                     partialData: [ array[serialized] ],
                 };
 
-                while (JSON.stringify(attempt).length < MAX_BLOB_LENGTH &&
-                       serialized + attempt.partialData.length < array.length) {
+                while (JSON.stringify(attempt).length < MAX_BLOB_LENGTH
+                       && serialized + attempt.partialData.length < array.length) {
                     attempt.partialData.push(array[serialized + attempt.partialData.length]);
                 }
-                if (attempt.partialData.length > 1 &&
-                    JSON.stringify(attempt).length > MAX_BLOB_LENGTH) {
+                if (attempt.partialData.length > 1
+                    && JSON.stringify(attempt).length > MAX_BLOB_LENGTH) {
                     attempt.partialData.pop();
                 }
                 serialized += attempt.partialData.length;
@@ -338,7 +341,7 @@ function persistGraph() {
     }
 }
 
-function start(updateLevel, options={}) {
+async function start(updateLevel, options = {}) {
     animate.clock.cancelAll();
 
     if (options.persistGraph !== false) persistGraph();
@@ -349,31 +352,34 @@ function start(updateLevel, options={}) {
     stg = new Stage(canvas, 800, 600, store, views, es6);
     window.stage = stg;
 
-    const levelDefinition = Loader.progressions["Elementary"].levels[progression.currentLevel()];
+    const levelDefinition = Loader.progressions.Elementary.levels[progression.currentLevel()];
 
-    Logging.transitionToTask(progression.currentLevel(), levelDefinition)
-        .finally(() => {
-            // Show tutorial if present
-            if (levelDefinition.tutorialUrl) {
-                tutorial(levelDefinition.tutorialUrl);
+    try {
+        await Logging.transitionToTask(progression.currentLevel(), levelDefinition);
+    }
+    finally { // Show tutorial if present
+        if (levelDefinition.tutorial) {
+            const diag = new TutorialDialog();
+            await diag.load(levelDefinition.tutorial);
+            diag.show();
+            await diag.wait();
+        }
+
+        level.startLevel(levelDefinition, es6.parser.parse, store, stg);
+        stg.drawImpl();
+
+        // Sync chapter dropdown with current level
+        let prevOption = null;
+        for (const option of document.querySelectorAll("#chapter option")) {
+            if (window.parseInt(option.getAttribute("value"), 10) <= progression.currentLevel()) {
+                prevOption = option;
             }
-
-
-            level.startLevel(levelDefinition, es6.parser.parse, store, stg);
-            stg.drawImpl();
-
-            // Sync chapter dropdown with current level
-            let prevOption = null;
-            for (const option of document.querySelectorAll("#chapter option")) {
-                if (window.parseInt(option.getAttribute("value"), 10) <= progression.currentLevel()) {
-                    prevOption = option;
-                }
-                else {
-                    break;
-                }
+            else {
+                break;
             }
-            document.querySelector("#chapter").value = prevOption.getAttribute("value");
-        });
+        }
+        document.querySelector("#chapter").value = prevOption.getAttribute("value");
+    }
 
     // Reset buttons
     window.updateStateGraph();
@@ -404,37 +410,37 @@ function nextLevel(enableChallenge) {
 }
 
 function extractFunction(str) {
-  const funName = str.match(/function ([a-zA-Z]+)/)[1];
-  const funHalfBody = str.match(/>([^>]+)$/)[1];
-  const funBody = "{ " + "return " + funHalfBody;
-  const funArgsRegx = /\(([a-zA-Z]+)\) =>/g;
-  let funArgs = "";
-  var match;
-  while (match = funArgsRegx.exec(str)) {
-      funArgs += match[1];
-      funArgs += ",";
-  }
-  funArgs = funArgs.slice(0,-1);
-  let funFinal = "function " + funName + "(" + funArgs + ") " + funBody;
-  return funFinal;
+    const funName = str.match(/function ([a-zA-Z]+)/)[1];
+    const funHalfBody = str.match(/>([^>]+)$/)[1];
+    const funBody = `${"{ " + "return "}${funHalfBody}`;
+    const funArgsRegx = /\(([a-zA-Z]+)\) =>/g;
+    let funArgs = "";
+    let match;
+    while (match = funArgsRegx.exec(str)) {
+        funArgs += match[1];
+        funArgs += ",";
+    }
+    funArgs = funArgs.slice(0, -1);
+    const funFinal = `function ${funName}(${funArgs}) ${funBody}`;
+    return funFinal;
 }
 
 
 window.lvlStage = function lvlStage(chapterName) {
-  stg = new LevelStage(startGame, chapterName, canvas, 800, 600, store, views, es6);
-  window.stage = stg;
-}
+    stg = new LevelStage(startGame, chapterName, canvas, 800, 600, store, views, es6);
+    window.stage = stg;
+};
 
 window.init = function init() {
-  stg = new CompleteStage(startGame, canvas, 800, 600, store, views, es6);
-  window.stage = stg;
-}
+    stg = new CompleteStage(startGame, canvas, 800, 600, store, views, es6);
+    window.stage = stg;
+};
 
 window.reset = function reset() {
     if (stg.pushState) stg.pushState("reset");
     start();
 };
-window.next = function next(challenge, prompt=true) {
+window.next = function next(challenge, prompt = true) {
     const doNext = () => {
         if (stg.pushState) stg.pushState("next");
         nextLevel(challenge);
@@ -462,80 +468,80 @@ window.jumpToLevel = function(lev) {
     d.classList.remove("visible");
     progression.jumpToLevel(lev);
     window.prev();
-}
+};
 
 window.captureState = function () {
+    const format = "board,goal,textgoal,toolbox,defines,globals,syntax,animationScales";
 
-  const format = `board,goal,textgoal,toolbox,defines,globals,syntax,animationScales`;
+    const re = /\s*,\s*/;
+    const fields = format.split(re);
 
-  const re = /\s*,\s*/;
-  const fields = format.split(re);
+    // getting current state
+    const lastNode = stg.stateGraph.lastNodeId;
+    const stateNodes = stg.stateGraph.serialize().nodes;
+    const curStateNode = stateNodes[lastNode];
+    const newLvl = curStateNode.data;
 
-  //getting current state
-  const lastNode = stg.stateGraph.lastNodeId;
-  const stateNodes = stg.stateGraph.serialize().nodes;
-  const curStateNode = stateNodes[lastNode];
-  const newLvl = curStateNode.data;
+    // forming new input string
+    let newInput = "";
+    const fieldsLen = fields.length;
+    let curField = 0;
+    for (const f of fields) {
+        if (newLvl[f]) {
+            if (Array.isArray(newLvl[f])) {
+                newInput += "\"[";
+                let curIndex = 0;
+                const lenArray = newLvl[f].length;
+                for (const subField of newLvl[f]) {
+                    newInput += "\'";
 
-  //forming new input string
-  let newInput = "";
-  const fieldsLen = fields.length;
-  let curField = 0;
-  for(const f of fields){
-    if(newLvl[f]){
-      if(Array.isArray(newLvl[f])){
-        newInput += "\"[";
-        let curIndex = 0;
-        const lenArray = newLvl[f].length;
-        for(const subField of newLvl[f]){
-          newInput += "\'";
+                    // reformatting functions
+                    if (subField.includes("function")) {
+                        newInput += extractFunction(subField);
+                    }
+                    else {
+                        newInput += subField;
+                    }
 
-          //reformatting functions
-          if(subField.includes("function")){
-            newInput += extractFunction(subField);
-          }else {
-            newInput += subField;
-          }
+                    newInput += "\'";
 
-          newInput += "\'";
-
-          if(curIndex < lenArray - 1) {
-            newInput += ",";
-          }
-          curIndex++;
+                    if (curIndex < lenArray - 1) {
+                        newInput += ",";
+                    }
+                    curIndex++;
+                }
+                newInput += "]\"";
+            }
+            else {
+                newInput += newLvl[f];
+            }
         }
-        newInput += "]\"";
-      }
-      else {
-        newInput = newInput + newLvl[f];
-      }
-    }
-    else if (f == "textgoal"){
-      newInput += `"` + prompt("Type the value for " + f + ":") + `"`;
-    }
-    else if (f == "globals" || f == "animationScales"){
-      newInput += "{}";
-    }
-    else if(f == "syntax"){
-      newInput += "[]";
+        else if (f == "textgoal") {
+            newInput += `"${prompt(`Type the value for ${f}:`)}"`;
+        }
+        else if (f == "globals" || f == "animationScales") {
+            newInput += "{}";
+        }
+        else if (f == "syntax") {
+            newInput += "[]";
+        }
+
+        if (curField < fieldsLen - 1) {
+            newInput += ",";
+        }
+        curField++;
     }
 
-    if(curField < fieldsLen - 1){
-      newInput += ",";
-    }
-    curField++;
-  }
+    // Printing the result
+    const saveString = `${format}\n${newInput}`;
+    const blob = new window.Blob([ saveString ], {
+        type: "application/csv;charset=utf-8",
+    });
+    fileSaver.saveAs(blob, `level_${progression.currentLevel() + 1}.csv`);
 
-  //Printing the result
-  const saveString = format + "\n" + newInput;
-  const blob = new window.Blob([ saveString ], {
-      type: "application/csv;charset=utf-8",
-  });
-  fileSaver.saveAs(blob, `level_${progression.currentLevel()+1}.csv`);
-
-  //Preventing form to reload
-  return false;
-}
+    // Preventing form to reload
+    return false;
+};
 
 window.addNodeToBoard = function() {
     const d = document.querySelector("#add-node");
@@ -544,7 +550,7 @@ window.addNodeToBoard = function() {
     const stringOfNodes = document.querySelector("#targetNodeToAdd").value;
     const place = document.querySelector("#targetPlace").value;
 
-    //storing current value for this session.
+    // storing current value for this session.
     const option = document.createElement("option");
     option.setAttribute("value", stringOfNodes);
     document.querySelector("#valueOptions").appendChild(option);
@@ -555,55 +561,55 @@ window.addNodeToBoard = function() {
     const nodesToAdd = stringOfNodes.split(re);
     console.log(nodesToAdd);
 
-    for(const ss of nodesToAdd){
-    const newNames = [ss].map(str => es6.parser.parse(str, newMacros))
-                         .reduce((a, b) => (Array.isArray(b) ? a.concat(b) : a.concat([b])), [])
-                         .map(expr => es6.parser.extractDefines(es6, expr))
-                         .filter(name => name !== null);
+    for (const ss of nodesToAdd) {
+        const newNames = [ss].map((str) => es6.parser.parse(str, newMacros))
+            .reduce((a, b) => (Array.isArray(b) ? a.concat(b) : a.concat([b])), [])
+            .map((expr) => es6.parser.extractDefines(es6, expr))
+            .filter((name) => name !== null);
 
-    for(const [ name, expr ] of newNames) {
-      newMacros[name] = expr;
+        for (const [ name, expr ] of newNames) {
+            newMacros[name] = expr;
+        }
+
+        const newInputIds = [];
+        const st = stg.getState();
+        const parsed_s = es6.parser.parse(ss, newMacros);
+        const flattened_s = es6.flatten(parsed_s).map(immutable.Map);
+
+        // create temporary nodes
+        const tempNodes = st.get("nodes").withMutations((nodes) => {
+            for (const node of flattened_s) {
+                nodes.set(node.get("id"), node);
+            }
+        });
+
+        // define views
+        for (const aa of flattened_s) {
+            newInputIds.push(aa.get("id"));
+            views[aa.get("id")] = es6.project(stg, tempNodes, aa);
+        }
+
+        if (place === "board") {
+            // define location
+            stg.views[newInputIds[0]].anchor.x = 0.5;
+            stg.views[newInputIds[0]].anchor.y = 0.5;
+            stg.views[newInputIds[0]].pos.x = 300;
+            stg.views[newInputIds[0]].pos.y = 300;
+
+            // dispatch
+            stg.store.dispatch(action.addBoardItem([newInputIds[0]], flattened_s));
+        }
+        else if (place === "toolbox") {
+            stg.store.dispatch(action.addToolboxItem(newInputIds[0], flattened_s));
+        }
+        else if (place === "goal") {
+            stg.store.dispatch(action.addGoalItem(newInputIds[0], flattened_s));
+        }
     }
 
-    let newInputIds = [];
-    const st = stg.getState();
-    const parsed_s = es6.parser.parse(ss,newMacros);
-    const flattened_s = es6.flatten(parsed_s).map(immutable.Map);
-
-    //create temporary nodes
-    const tempNodes = st.get("nodes").withMutations((nodes) => {
-      for (const node of flattened_s) {
-        nodes.set(node.get("id"), node);
-      }
-    });
-
-    //define views
-    for(const aa of flattened_s) {
-      newInputIds.push(aa.get("id"));
-      views[aa.get("id")] = es6.project(stg,tempNodes,aa);
-    }
-
-    if(place === "board"){
-    //define location
-    stg.views[newInputIds[0]].anchor.x = 0.5;
-    stg.views[newInputIds[0]].anchor.y = 0.5;
-    stg.views[newInputIds[0]].pos.x = 300;
-    stg.views[newInputIds[0]].pos.y = 300;
-
-    //dispatch
-    stg.store.dispatch(action.addBoardItem([newInputIds[0]], flattened_s));
-  }
-  else if(place === "toolbox"){
-    stg.store.dispatch(action.addToolboxItem(newInputIds[0], flattened_s));
-  }
-  else if(place === "goal"){
-    stg.store.dispatch(action.addGoalItem(newInputIds[0], flattened_s));
-  }
-}
-
-    //Preventing form to reload
+    // Preventing form to reload
     return false;
-}
+};
 
 window.updateStateGraph = function updateStateGraph(networkData) {
     if (!document.querySelector("#state-graph")) {

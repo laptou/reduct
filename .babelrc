@@ -1,12 +1,16 @@
 {
   "presets": [
-    ["env", {
-      "targets": {
-        "browsers": ["last 2 versions"]
-      },
-    }]
+    [
+      "@babel/preset-env",
+      {
+        "modules": "commonjs",
+        "targets": "> 0.25%, not dead",
+        "useBuiltIns": "usage",
+        "corejs": 3
+      }
+    ]
   ],
- "plugins": [
-    ["transform-object-rest-spread", { "useBuiltIns": true }]
+  "plugins": [
+    "@babel/plugin-proposal-optional-chaining"
   ]
 }

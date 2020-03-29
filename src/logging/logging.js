@@ -1,12 +1,3 @@
-/* TODO:
- * User ID tracking: sync with GDIAC server
- *
- * Opt-out
- *
- * Static logging: events are serialized to localStorage, and can be
- * downloaded as a blob
- */
-
 import fileSaver from "file-saver";
 
 import * as level from "../game/level";
@@ -15,6 +6,15 @@ import * as undoAction from "../reducer/undo";
 import * as ajax from "../util/ajax";
 import * as random from "../util/random";
 import VERSION_ID from "../version";
+
+/* TODO:
+ * User ID tracking: sync with GDIAC server
+ *
+ * Opt-out
+ *
+ * Static logging: events are serialized to localStorage, and can be
+ * downloaded as a blob
+ */
 
 const GAME_ID = 7017019;
 const IS_LOCAL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
@@ -36,8 +36,8 @@ export const REQUIRE_PASSWORDS = false;
 
 const params = new URL(window.location).searchParams;
 export const DEVELOPMENT_BUILD = typeof params.get("nodev") !== "string" && (
-    typeof params.get("dev") === "string" ||
-        process.env.NODE_ENV !== "production");
+    typeof params.get("dev") === "string"
+        || process.env.NODE_ENV !== "production");
 
 class Logger {
     constructor() {
@@ -64,12 +64,12 @@ class Logger {
         if (this.config("static")) {
             // Before closing page, save the static log
             window.onbeforeunload = () => {
-                window.localStorage["static_log"] = JSON.stringify(this.staticLog);
+                window.localStorage.static_log = JSON.stringify(this.staticLog);
             };
 
             // Deserialize static log
-            if (window.localStorage["static_log"]) {
-                this.staticLog = JSON.parse(window.localStorage["static_log"]);
+            if (window.localStorage.static_log) {
+                this.staticLog = JSON.parse(window.localStorage.static_log);
                 this.info("Loaded prior play data from localStorage.");
             }
         }
@@ -86,7 +86,7 @@ class Logger {
     }
 
     clearStaticLog() {
-        delete window.localStorage["static_log"];
+        delete window.localStorage.static_log;
         this.staticLog = [];
         console.log("Cleared prior play data from localStorage.");
     }
@@ -128,17 +128,17 @@ class Logger {
             });
         }).catch(() => {
             this.info("Contacting remote server failed");
-            return this.startOfflineSession(params)
+            return this.startOfflineSession(params);
         });
     }
 
     get isSessionStarted() {
-        return !this.enabled ||
-            (this.currentUserId !== null &&
-             this.currentSessionId !== null);
+        return !this.enabled
+            || (this.currentUserId !== null
+             && this.currentSessionId !== null);
     }
 
-    startTask(taskId, data=null) {
+    startTask(taskId, data = null) {
         this.debug(`Start task: ${taskId}%c ${JSON.stringify(data)}`);
 
         if (!this.enabled) {
@@ -175,9 +175,9 @@ class Logger {
     }
 
     get isTaskStarted() {
-        return !this.enabled ||
-            (this.currentTaskId !== null &&
-             this.dynamicTaskId !== null);
+        return !this.enabled
+            || (this.currentTaskId !== null
+             && this.dynamicTaskId !== null);
     }
 
     endTask(taskId) {
@@ -211,7 +211,7 @@ class Logger {
         return Promise.resolve();
     }
 
-    transitionToTask(taskId, data=null) {
+    transitionToTask(taskId, data = null) {
         if (this.isTaskStarted) {
             return this.endTask(this.currentTaskId).finally(() => this.startTask(taskId, data));
         }
@@ -241,12 +241,8 @@ class Logger {
         }
 
         params.action_detail = data;
-        const staticParams = Object.assign({
-            action_id: actionId,
-        }, params);
-        const remoteParams = Object.assign({
-            action_id: numericActionId,
-        }, params);
+        const staticParams = { action_id: actionId, ...params };
+        const remoteParams = { action_id: numericActionId, ...params };
 
         this.logStatic("action", staticParams, false);
         if (!this.isTaskStarted) {
@@ -261,7 +257,7 @@ class Logger {
     }
 
     logMiddleware(getState, saveState, pushState, saveNode, semantics) {
-        return () => next => (act) => {
+        return () => (next) => (act) => {
             if (act.type === action.RAISE) {
                 return next(act);
             }
@@ -381,10 +377,11 @@ class Logger {
 
         this.info(`Starting offline session, user ID = ${this.currentUserId}.`);
 
-        this.logStatic("startSession", Object.assign({}, params, {
+        this.logStatic("startSession", {
+            ...params,
             session_id: this.currentSessionId,
             message: "static_session",
-        }), false);
+        }, false);
 
         this.saveState();
 
@@ -442,7 +439,7 @@ class Logger {
         }
     }
 
-    config(key, value=undefined) {
+    config(key, value = undefined) {
         if (typeof value !== "undefined") {
             this._config[key] = value;
             this.saveConfig();
@@ -451,7 +448,7 @@ class Logger {
     }
 
     resetConfig() {
-         this._config = {
+        this._config = {
             enabled: true, // Is logging even enabled?
             debug: true, // Print debug messages?
             local: false, // Are we logging to a local server?
@@ -462,26 +459,26 @@ class Logger {
     }
 
     loadConfig() {
-        if (window.localStorage["loggingConfig"]) {
+        if (window.localStorage.loggingConfig) {
             this._config = Object.assign(
                 this._config,
-                JSON.parse(window.localStorage["loggingConfig"])
+                JSON.parse(window.localStorage.loggingConfig),
             );
         }
     }
 
     saveConfig() {
-        window.localStorage["loggingConfig"] = JSON.stringify(this._config);
+        window.localStorage.loggingConfig = JSON.stringify(this._config);
     }
 
     loadState() {
-        if (window.localStorage["userId"]) {
-            this.currentUserId = JSON.parse(window.localStorage["userId"]);
+        if (window.localStorage.userId) {
+            this.currentUserId = JSON.parse(window.localStorage.userId);
         }
     }
 
     saveState() {
-        window.localStorage["userId"] = JSON.stringify(this.currentUserId);
+        window.localStorage.userId = JSON.stringify(this.currentUserId);
     }
 
     resetState() {

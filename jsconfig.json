@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "target": "es2018",
+    "baseUrl": "./src",
+    "paths": {
+      "@resources/*": ["../resources/*"]
+    }
+  }
+}

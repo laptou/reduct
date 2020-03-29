@@ -42,8 +42,8 @@ export default function decal(projection) {
                 firstChild.y = view.pos.y;
                 if (subexpr.get("type") === "lambda") {
                     const [ argChildId ] = stage.views[childId]
-                          .children(subexprId, state)
-                          .next().value;
+                        .children(subexprId, state)
+                        .next().value;
                     const argView = stage.views[argChildId];
                     firstChild.x += argView.pos.x + ((argView.scale.x * argView.size.w) / 2);
                     firstChild.y += argView.pos.y + (argView.scale.y * argView.size.h * 0.2);
@@ -71,7 +71,7 @@ export default function decal(projection) {
 
         const gradient = ctx.createLinearGradient(
             x + (sx * lastChild.x), y + (sy * lastChild.y),
-            x + (sx * firstChild.x), y + (sy * firstChild.y)
+            x + (sx * firstChild.x), y + (sy * firstChild.y),
         );
         gradient.addColorStop(0, lastFilled ? "#14818b" : "gray");
         gradient.addColorStop(0.7, (firstFilled && lastFilled) ? "#c500ff" : "gray");
@@ -93,31 +93,31 @@ export default function decal(projection) {
             cx - 10,
             y - 30,
             x + (sx * (firstChild.x + arrowBase)),
-            y + (sy * (firstChild.y + arrowBase))
+            y + (sy * (firstChild.y + arrowBase)),
         );
         ctx.lineTo(
             x + (sx * (firstChild.x + arrowWidth)),
-            y + (sy * (firstChild.y + arrowWidth))
+            y + (sy * (firstChild.y + arrowWidth)),
         );
 
         ctx.lineTo(
             x + (sx * (firstChild.x - (2 * arrowWidth))),
-            y + (sy * (firstChild.y + (2 * arrowWidth)))
+            y + (sy * (firstChild.y + (2 * arrowWidth))),
         );
 
         ctx.lineTo(
             x + (sx * (firstChild.x - arrowWidth)),
-            y + (sy * (firstChild.y - arrowWidth))
+            y + (sy * (firstChild.y - arrowWidth)),
         );
         ctx.lineTo(
             x + (sx * (firstChild.x - arrowBase)),
-            y + (sy * (firstChild.y - arrowBase))
+            y + (sy * (firstChild.y - arrowBase)),
         );
         ctx.quadraticCurveTo(
             cx + 10,
             y - 40,
             x + (sx * lastChild.x),
-            y + (sy * lastChild.y)
+            y + (sy * lastChild.y),
         );
 
         ctx.fill();

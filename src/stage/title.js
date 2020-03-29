@@ -16,65 +16,65 @@ export default class TitleStage extends BaseStage {
         this.startGame = startGame;
         this.color = "#8ab7db";
 
-        //allocating title ID
+        // allocating title ID
         const title = gfx.layout.sticky(
             gfx.layout.ratioSizer(gfx.sprite({
-                image: Loader.images["reduct_title"],
+                image: Loader.images.reduct_title,
                 size: { h: 213, w: 899 },
             }), 213 / 899, 0.6),
             "center",
-            {}
+            {},
         );
         title.opacity = 0;
         this.title = this.allocateInternal(title);
 
         const buttons = [];
 
-        //allocating shape, food, etc... IDs
+        // allocating shape, food, etc... IDs
         const shapeIds = [
             gfx.shapes.star(), gfx.shapes.triangle(),
-        ].map(view => this.allocate(view));
+        ].map((view) => this.allocate(view));
         const foodIds = [
-            Loader.images["food_1"],
-            Loader.images["food_2"],
-        ].map(image => this.allocate(gfx.sprite({
+            Loader.images.food_1,
+            Loader.images.food_2,
+        ].map((image) => this.allocate(gfx.sprite({
             image,
-            size: image.naturalHeight / image.naturalWidth > 1.5 ?
-                {
+            size: image.naturalHeight / image.naturalWidth > 1.5
+                ? {
                     w: 25,
                     h: (image.naturalHeight / image.naturalWidth) * 25,
-                } :
-                {
+                }
+                : {
                     w: 50,
                     h: (image.naturalHeight / image.naturalWidth) * 50,
                 },
         })));
         const sportsIds = [
-            Loader.images["sport_1"],
-            Loader.images["sport_2"],
-        ].map(image => this.allocate(gfx.sprite({
+            Loader.images.sport_1,
+            Loader.images.sport_2,
+        ].map((image) => this.allocate(gfx.sprite({
             image,
-            size: image.naturalHeight / image.naturalWidth > 1.5 ?
-                {
+            size: image.naturalHeight / image.naturalWidth > 1.5
+                ? {
                     w: 25,
                     h: (image.naturalHeight / image.naturalWidth) * 25,
-                } :
-                {
+                }
+                : {
                     w: 50,
                     h: (image.naturalHeight / image.naturalWidth) * 50,
                 },
         })));
         const animalIds = [
-            Loader.images["animal_dog"],
-            Loader.images["animal_orca"],
-        ].map(image => this.allocate(gfx.sprite({
+            Loader.images.animal_dog,
+            Loader.images.animal_orca,
+        ].map((image) => this.allocate(gfx.sprite({
             image,
-            size: image.naturalHeight / image.naturalWidth > 1.5 ?
-                {
+            size: image.naturalHeight / image.naturalWidth > 1.5
+                ? {
                     w: 25,
                     h: (image.naturalHeight / image.naturalWidth) * 25,
-                } :
-                {
+                }
+                : {
                     w: 50,
                     h: (image.naturalHeight / image.naturalWidth) * 50,
                 },
@@ -86,32 +86,32 @@ export default class TitleStage extends BaseStage {
                 {
                     subexpScale: 1.0,
                 },
-                gfx.baseProjection
+                gfx.baseProjection,
             )],
             [1, gfx.layout.hbox(
                 () => foodIds,
                 {
                     subexpScale: 1.0,
                 },
-                gfx.baseProjection
+                gfx.baseProjection,
             )],
             [2, gfx.layout.hbox(
                 () => sportsIds,
                 {
                     subexpScale: 1.0,
                 },
-                gfx.baseProjection
+                gfx.baseProjection,
             )],
             [3, gfx.layout.hbox(
                 () => animalIds,
                 {
                     subexpScale: 1.0,
                 },
-                gfx.baseProjection
+                gfx.baseProjection,
             )],
         ];
 
-        //allocating button ID
+        // allocating button ID
         for (const [ symbolFadeLevel, view ] of views) {
             const theme = this.allocate(view);
             const label = this.allocate(gfx.text("I like", {
@@ -141,7 +141,7 @@ export default class TitleStage extends BaseStage {
 
         this.buttons = buttons;
 
-        //allocating layout ID
+        // allocating layout ID
         const layout = gfx.layout.sticky(gfx.layout.vbox(() => buttons, {
             subexpScale: 1.0,
             padding: {
@@ -257,7 +257,7 @@ export default class TitleStage extends BaseStage {
         this.drawProjection(state, this.layout);
     }
 
-    getNodeAtPos(pos, selectedId=null) {
+    getNodeAtPos(pos, selectedId = null) {
         if (this.state !== "initialized") return [ null, null ];
 
         const offset = this.makeBaseOffset();
@@ -280,7 +280,7 @@ export default class TitleStage extends BaseStage {
         return [ null, null ];
     }
 
-    updateCursor(touchRecord, moved=false) {
+    updateCursor(touchRecord, moved = false) {
         if (touchRecord.hoverNode !== null) {
             this.setCursor("pointer");
         }

@@ -28,15 +28,15 @@ export default {
                     color: "#ffcc00",
                 },
                 ">": {
-                  type: "default",
-                  shape: "()",
-                  color: "#ffcc00",
-                    },
+                    type: "default",
+                    shape: "()",
+                    color: "#ffcc00",
+                },
                 "<": {
-                  type: "default",
-                  shape: "()",
-                  color: "#ffcc00",
-                    },
+                    type: "default",
+                    shape: "()",
+                    color: "#ffcc00",
+                },
                 "==": {
                     type: "default",
                     shape: "<>",
@@ -118,10 +118,10 @@ export default {
             return {
                 types: result,
                 // TODO: less ad-hoc
-                complete: (types.get(expr.get("left")) === "number" ||
-                           nodes.get(expr.get("left")).get("type") === "lambdaVar") &&
-                    (types.get(expr.get("right")) === "number" ||
-                     nodes.get(expr.get("right")).get("type") === "lambdaVar"),
+                complete: (types.get(expr.get("left")) === "number"
+                           || nodes.get(expr.get("left")).get("type") === "lambdaVar")
+                    && (types.get(expr.get("right")) === "number"
+                     || nodes.get(expr.get("right")).get("type") === "lambdaVar"),
             };
         },
         // Invariant: all subexpressions are values or syntax;
@@ -139,13 +139,13 @@ export default {
                 if (leftExpr.get("ty") !== "number" && leftExpr.get("type") !== "string") {
                     return [left, "+ can only add numbers or strings"];
                 }
-                else if (rightExpr.get("ty") !== "number" && rightExpr.get("type") !== "string") {
+                if (rightExpr.get("ty") !== "number" && rightExpr.get("type") !== "string") {
                     return [right, "+ can only add numbers or strings"];
                 }
-                else if (leftExpr.get("ty") === "number" && rightExpr.get("type") === "string") {
+                if (leftExpr.get("ty") === "number" && rightExpr.get("type") === "string") {
                     return [right, "cannot add a number and a string"];
                 }
-                else if (leftExpr.get("type") === "string" && rightExpr.get("ty") === "number") {
+                if (leftExpr.get("type") === "string" && rightExpr.get("ty") === "number") {
                     return [right, "cannot add a number and a string"];
                 }
             }
@@ -154,7 +154,7 @@ export default {
                 if (leftExpr.get("ty") !== "number") {
                     return [ left, `${op} can only ${op === "+" ? "add" : "subtract"} numbers!` ];
                 }
-                else if (rightExpr.get("ty") !== "number") {
+                if (rightExpr.get("ty") !== "number") {
                     return [ right, `${op} can only ${op === "+" ? "add" : "subtract"} numbers!` ];
                 }
             }
@@ -164,12 +164,12 @@ export default {
                 }
             }
             else if (op === "||" || op === "&&") {
-              if (leftExpr.get("ty") !== "boolean") {
-                 return [ left, `${op} can only ${op === "||" ? "OR" : "AND"} booleans!`];
-              }
-              else if (rightExpr.get("ty") !== "boolean"){
-                  return [ right, `${op} can only ${op === "||" ? "OR" : "AND"} booleans!`];
-              }
+                if (leftExpr.get("ty") !== "boolean") {
+                    return [ left, `${op} can only ${op === "||" ? "OR" : "AND"} booleans!`];
+                }
+                if (rightExpr.get("ty") !== "boolean") {
+                    return [ right, `${op} can only ${op === "||" ? "OR" : "AND"} booleans!`];
+                }
             }
 
             return null;
@@ -180,40 +180,38 @@ export default {
             const op = nodes.get(expr.get("op")).get("name");
             if (op === "+") {
                 if (nodes.get(expr.get("left")).get("type") === "number") {
-                    return semant.number(nodes.get(expr.get("left")).get("value") +
-                        nodes.get(expr.get("right")).get("value"));
+                    return semant.number(nodes.get(expr.get("left")).get("value")
+                        + nodes.get(expr.get("right")).get("value"));
                 }
-                else {
-                    return semant.string(nodes.get(expr.get("left")).get("value") +
-                        nodes.get(expr.get("right")).get("value"));
-                }
+
+                return semant.string(nodes.get(expr.get("left")).get("value")
+                        + nodes.get(expr.get("right")).get("value"));
             }
-            else if (op === "-") {
-                return semant.number(nodes.get(expr.get("left")).get("value") -
-                                     nodes.get(expr.get("right")).get("value"));
+            if (op === "-") {
+                return semant.number(nodes.get(expr.get("left")).get("value")
+                                     - nodes.get(expr.get("right")).get("value"));
             }
-            else if (op === ">") {
-              return semant.bool(nodes.get(expr.get("left")).get("value") >
-                                   nodes.get(expr.get("right")).get("value"));
+            if (op === ">") {
+                return semant.bool(nodes.get(expr.get("left")).get("value")
+                                   > nodes.get(expr.get("right")).get("value"));
             }
 
-            else if (op === "<") {
-              return semant.bool(nodes.get(expr.get("left")).get("value") <
-                                   nodes.get(expr.get("right")).get("value"));
+            if (op === "<") {
+                return semant.bool(nodes.get(expr.get("left")).get("value")
+                                   < nodes.get(expr.get("right")).get("value"));
             }
-            else if (op === "==") {
+            if (op === "==") {
                 return semant.bool(semant.deepEqual(nodes,
                     nodes.get(expr.get("left")),
-                    nodes.get(expr.get("right"))
-                ));
+                    nodes.get(expr.get("right"))));
             }
-            else if (op === "||") {
-              return semant.bool(nodes.get(expr.get("left")).get("value") ||
-                                   nodes.get(expr.get("right")).get("value"));
+            if (op === "||") {
+                return semant.bool(nodes.get(expr.get("left")).get("value")
+                                   || nodes.get(expr.get("right")).get("value"));
             }
-            else if (op === "&&") {
-              return semant.bool(nodes.get(expr.get("left")).get("value") &&
-                                   nodes.get(expr.get("right")).get("value"));
+            if (op === "&&") {
+                return semant.bool(nodes.get(expr.get("left")).get("value")
+                                   && nodes.get(expr.get("right")).get("value"));
             }
             throw `Unrecognized operator ${op}`;
         },

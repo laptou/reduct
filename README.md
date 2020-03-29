@@ -14,11 +14,8 @@ First, install Yarn if necessary. On the Mac this can be done with `brew install
 
 ```
 yarn install     # install all required node modules in the node_modules directory
-mkdir dist
-# Symlink resources into the folder that our bundler serves
-ln -s "$(pwd)/resources/" dist/resources
 yarn serve
-open http://localhost:1234/index.html
+open http://localhost:1234/
 ```
 
 Note that if the installation fails for some reason, you can remove the
@@ -28,11 +25,8 @@ NPM:
 
 ```
 npm install
-mkdir dist
-# Symlink resources into the folder that our bundler serves
-ln -s "$(pwd)/resources/" dist/resources
 npm run serve
-open http://localhost:1234/index.html
+open http://localhost:1234/
 ```
 
 Distribution
@@ -49,10 +43,8 @@ $ ls dist
 7a8f62b47d6afa44523f2b4bfacf0304.png  index.html
 7d4e14db6c871b054b74a4c5b2bc2367.js   reduct-redux.js
 a18342a55b8501c4686ae638f58cd800.js   reduct-redux.map
-d004428b9d33a5c3a235b1f80a1a6641.png  resources
+d004428b9d33a5c3a235b1f80a1a6641.png 
 ```
-
-(Remember, `resources` is a symlink that you created above.)
 
 Now you can copy the contents of this directory to a web server.
 
@@ -77,6 +69,12 @@ the URL will enable development mode.
 If the build system gets confused and doesn't seem to pick up changes
 to files, delete the `.cache` folder in the project directory and try
 again.
+
+Keyboard shortcuts
+- Ctrl + F8: open debug menu, download CSV
+- Ctrl + F9: jump to level
+- Ctrl + F10: refresh game
+- Ctrl + F11: add new node
 
 Editing levels
 ----------------

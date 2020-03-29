@@ -16,57 +16,57 @@ export default class ReductToolbar {
 
         // Map of node ID to [toolbox element, should stop reducing]
         this.ids = new Map();
-
         this.currentId = null;
+        this.playing = false;
 
         // TODO: move this somewhere else
         // Remove any toolbars from the previous level
-        for (const el of document.querySelectorAll(".reduct-toolbar:not(#reduct-toolbar-proto)")) {
+        for (const el of document.querySelectorAll(".reduct-toolbar:not(.reduct-toolbar-proto)")) {
             el.remove();
         }
 
         this._shouldStop = this.shouldStop.bind(this);
     }
 
-    update(id, prevId=null) {
+    update(id, prevId = null) {
         const state = this.stage.getState();
         if (id !== null && (prevId === null || !this.ids.has(prevId))) {
             if (this.stage.semantics.kind(state, state.getIn([ "nodes", id ])) !== "expression") {
                 return;
             }
 
-            const cloned = document.querySelector("#reduct-toolbar-proto").cloneNode(true);
-            cloned.setAttribute("id", "");
-            document.body.appendChild(cloned);
-            cloned.dataset.id = id;
-            this.ids.set(id, { el: cloned, shouldStop: false });
+            const elToolbar = document.querySelector(".reduct-toolbar-proto").cloneNode(true);
+            elToolbar.classList.remove("reduct-toolbar-proto");
+            elToolbar.dataset.id = id;
 
-            let status = "can-play";
+            document.body.appendChild(elToolbar);
+            this.ids.set(id, { el: elToolbar, shouldStop: false });
 
-            cloned.querySelector(".toolbar-ffwd")
-                .addEventListener("click", () => this.ffwd(parseInt(cloned.dataset.id, 10)));
+            const btnFfwd = elToolbar.querySelector(".toolbar-ffwd");
+            const btnPlayPause = elToolbar.querySelector(".toolbar-play, .toolbar-pause");
 
-            cloned.querySelector(".toolbar-play")
-                .addEventListener("click", () => {
-                    if (status === "can-play") {
-                        status = "playing";
-                        cloned.classList.add("playing");
-                        this.play(parseInt(cloned.dataset.id, 10));
-                    }
-                    else {
-                        status = "can-play";
-                        cloned.classList.remove("playing");
-                        this.pause(parseInt(cloned.dataset.id, 10));
-                    }
-                    // Reposition buttons
-                    this.drawImpl(this.stage.getState());
-                });
+            btnFfwd.addEventListener("click", () => this.ffwd(parseInt(elToolbar.dataset.id, 10)));
+            btnPlayPause.addEventListener("click", () => {
+                this.playing = !this.playing;
+
+                if (!this.playing) {
+                    elToolbar.classList.remove("reduct-toolbar-playing");
+                    this.pause(parseInt(elToolbar.dataset.id, 10));
+                }
+                else {
+                    elToolbar.classList.add("reduct-toolbar-playing");
+                    this.play(parseInt(elToolbar.dataset.id, 10));
+                }
+
+                // Reposition buttons
+                this.drawImpl(this.stage.getState());
+            });
         }
         else if (this.ids.has(prevId)) {
             const idRecord = this.ids.get(prevId);
             this.ids.delete(prevId);
-            if (id !== null &&
-                this.stage.semantics.kind(state, state.getIn([ "nodes", id ])) === "expression") {
+            if (id !== null
+                && this.stage.semantics.kind(state, state.getIn([ "nodes", id ])) === "expression") {
                 this.ids.set(id, idRecord);
                 idRecord.el.dataset.id = id;
             }
@@ -94,9 +94,9 @@ export default class ReductToolbar {
             const absSize = gfx.absoluteSize(view);
 
             let posTop = absPos.y + absSize.h + offsetY;
-            let posLeft = (absPos.x - (toolbar.clientWidth / 2)) +
-                  (absSize.w / 2) +
-                  offsetX;
+            let posLeft = (absPos.x - (toolbar.clientWidth / 2))
+                  + (absSize.w / 2)
+                  + offsetX;
 
             // TODO: refactor this to stage?
             if (gfx.viewport.IS_PHONE) {
@@ -108,7 +108,7 @@ export default class ReductToolbar {
             toolbar.style.left = `${posLeft}px`;
         }
 
-        toDelete.forEach(id => this.update(null, id));
+        toDelete.forEach((id) => this.update(null, id));
     }
 
     shouldStop(id) {
@@ -132,6 +132,14 @@ export default class ReductToolbar {
     }
 
     ffwd(id) {
+        // TODO: LOGGING
+        if (this.ids.has(id)) {
+            this.ids.get(id).shouldStop = false;
+        }
+        this.stage.step(this.stage.getState(), id, "big");
+    }
+
+    skip(id) {
         // TODO: LOGGING
         if (this.ids.has(id)) {
             this.ids.get(id).shouldStop = false;

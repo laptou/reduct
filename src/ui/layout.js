@@ -16,7 +16,7 @@ function seededRandom(max, min) {
     const rnd = SEED / 233280;
 
     return min + rnd * (max - min);
-};
+}
 
 // Ian's really inefficient packing algorithm:
 // * 1. Put the expressions in random places.
@@ -45,10 +45,10 @@ export function ianPacking(stage, bounds, nodeIds) {
         const sz1 = getSize(id1);
         const pos2 = positions.get(id2);
         const sz2 = getSize(id2);
-        return !(pos2.x > pos1.x + sz1.w ||
-                 pos2.x + sz2.w < pos1.x ||
-                 pos2.y > pos1.y + sz1.h ||
-                 pos2.y + sz2.h < pos1.y);
+        return !(pos2.x > pos1.x + sz1.w
+                 || pos2.x + sz2.w < pos1.x
+                 || pos2.y > pos1.y + sz1.h
+                 || pos2.y + sz2.h < pos1.y);
     };
 
     const candidates = [];
@@ -137,9 +137,9 @@ export function ianPacking(stage, bounds, nodeIds) {
     let maxDist = progression.currentLevel() === 0 ? 100000000 : 0;
     let maxIdx = -1;
     for (let i = 0; i < candidates.length; i++) {
-        if (progression.currentLevel() === 0 ?
-            pairwiseTotals[i] < maxDist :
-            pairwiseTotals[i] > maxDist) {
+        if (progression.currentLevel() === 0
+            ? pairwiseTotals[i] < maxDist
+            : pairwiseTotals[i] > maxDist) {
             maxDist = pairwiseTotals[i];
             maxIdx = i;
         }
@@ -272,7 +272,7 @@ export function repulsorPacking(stage, bounds, nodeIds) {
     let dx = 0;
     if (xmax - xmin < bounds.w) {
         dx = (bounds.w - (xmax - xmin)) / 2;
-        dx = dx - xmin;
+        dx -= xmin;
     }
     for (const id of positions.keys()) {
         const pos = positions.get(id);
@@ -306,10 +306,10 @@ function aabbIntersects(aabb1, aabb2) {
     const sz1 = aabb1;
     const pos2 = { x: aabb2.cx - (aabb2.w / 2), y: aabb2.cy - (aabb2.h / 2) };
     const sz2 = aabb2;
-    return !(pos2.x > pos1.x + sz1.w ||
-             pos2.x + sz2.w < pos1.x ||
-             pos2.y > pos1.y + sz1.h ||
-             pos2.y + sz2.h < pos1.y);
+    return !(pos2.x > pos1.x + sz1.w
+             || pos2.x + sz2.w < pos1.x
+             || pos2.y > pos1.y + sz1.h
+             || pos2.y + sz2.h < pos1.y);
 }
 
 function raySegmentIntersect(p, r, q, s) {
@@ -321,7 +321,7 @@ function raySegmentIntersect(p, r, q, s) {
     if (Math.abs(rxs) < 1e-5) {
         if (Math.abs(qmpxr) < 1e-5) {
             // Colinear
-            const t0 = (qmp.x * r.x + qmp.y * r.y) / (r.x**2 + r.y**2);
+            const t0 = (qmp.x * r.x + qmp.y * r.y) / (r.x ** 2 + r.y ** 2);
             // const qmpps = { x: q.x + s.x - p.x, y: q.x + s.y - p.y };
             // const t1 = (qmpps.x * r.x + qpsmp.y * r.y) / (r.x**2 + r.y**2);
             if (t0 >= 0) {

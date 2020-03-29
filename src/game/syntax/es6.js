@@ -5,12 +5,12 @@ function modifier(ast) {
     if (ast.body.length !== 2) return null;
     if (ast.body[0].type !== "ExpressionStatement") return null;
 
-    if (ast.body[0].expression.type === "CallExpression" &&
-        ast.body[0].expression.callee.type === "Identifier") {
+    if (ast.body[0].expression.type === "CallExpression"
+        && ast.body[0].expression.callee.type === "Identifier") {
         return [
             {
                 name: ast.body[0].expression.callee.name,
-                params: ast.body[0].expression.arguments.map(x => x.name),
+                params: ast.body[0].expression.arguments.map((x) => x.name),
             },
             ast.body[1],
         ];
@@ -28,14 +28,14 @@ export function makeParser(jssemant) {
         if (ast.body.length === 1) {
             const result = parseNode(ast.body[0], macros);
             if (result === null) {
-                return fail(`Cannot parse program.`, program);
+                return fail("Cannot parse program.", program);
             }
 
             return result;
         }
-        else if (mod !== null) {
+        if (mod !== null) {
             const [ modName, node ] = mod;
-            let result = parseNode(node, macros);
+            const result = parseNode(node, macros);
             if (result === null) {
                 return fail("Cannot parse node.", program);
             }
@@ -66,9 +66,8 @@ export function makeParser(jssemant) {
 
             return result;
         }
-        else {
-            return fail(`Cannot parse multi-statement programs at the moment.`, program);
-        }
+
+        return fail("Cannot parse multi-statement programs at the moment.", program);
     };
 
     function parseNode(node, macros) {
@@ -98,14 +97,14 @@ export function makeParser(jssemant) {
             if (node.name === "xx") {
                 return jssemant.vtuple([ jssemant.lambdaVar("x"), jssemant.lambdaVar("x") ]);
             }
-            else if (node.name === "xxx") {
+            if (node.name === "xxx") {
                 return jssemant.vtuple([
                     jssemant.lambdaVar("x"),
                     jssemant.lambdaVar("x"),
                     jssemant.lambdaVar("x"),
                 ]);
             }
-            else if (node.name.slice(0, 9) === "__variant") {
+            if (node.name.slice(0, 9) === "__variant") {
                 const [ variant, value ] = node.name.slice(10).split("_");
                 if (!variant || !value) {
                     throw `Invalid dynamic variant ${node.name}`;
@@ -121,10 +120,10 @@ export function makeParser(jssemant) {
             if (typeof node.value === "number") return jssemant.number(node.value);
             if (typeof node.value === "boolean") return jssemant.bool(node.value);
 
-            if (node.value === "star" ||
-                node.value === "circle" ||
-                node.value === "triangle" ||
-                node.value === "rect") {
+            if (node.value === "star"
+                || node.value === "circle"
+                || node.value === "triangle"
+                || node.value === "rect") {
                 return jssemant.symbol(node.value);
             }
 
@@ -144,49 +143,49 @@ export function makeParser(jssemant) {
         }
 
         case "UnaryExpression": {
-          return jssemant.not(parseNode(node.argument,macros));
+            return jssemant.not(parseNode(node.argument, macros));
         }
 
         case "BinaryExpression":
         // TODO: need ExprManager
-        return jssemant.binop(parseNode(node.left, macros),
-                              jssemant.op(node.operator),
-                              parseNode(node.right, macros));
+            return jssemant.binop(parseNode(node.left, macros),
+                jssemant.op(node.operator),
+                parseNode(node.right, macros));
 
         case "LogicalExpression":
         // TODO: need ExprManager
-        return jssemant.binop(parseNode(node.left, macros),
-                              jssemant.op(node.operator),
-                              parseNode(node.right, macros));
+            return jssemant.binop(parseNode(node.left, macros),
+                jssemant.op(node.operator),
+                parseNode(node.right, macros));
 
         case "CallExpression": {
             if (node.callee.type === "Identifier" && node.callee.name === "__tests") {
-                const testCases = node.arguments.map(arg => parseNode(arg, macros));
+                const testCases = node.arguments.map((arg) => parseNode(arg, macros));
                 // TODO: better way to figure out name
                 const name = node.arguments[0].type === "CallExpression" ? node.arguments[0].callee.name : "f";
                 return jssemant.lambda(jssemant.lambdaArg(name, true), jssemant.vtuple(testCases));
             }
 
-            if(node.callee.type === "Identifier" && node.callee.name === "__autograder") {
-              /* Color for goals
+            if (node.callee.type === "Identifier" && node.callee.name === "__autograder") {
+                /* Color for goals
                */
-              const colors = ["#c0392b","#2980b9","#2ecc71","#8e44ad","#f39c12"];
+                const colors = ["#c0392b", "#2980b9", "#2ecc71", "#8e44ad", "#f39c12"];
 
-              /* Getting the alien index.
+                /* Getting the alien index.
                */
-              const chapter = progression.currentChapter();
-              const alienIndex = Math.floor(((progression.currentLevel() - chapter.startIdx) /
-                                             ((chapter.endIdx - chapter.startIdx) + 1)) *
-                                            chapter.resources.aliens.length);
-              const alienName = chapter.resources.aliens[alienIndex];
+                const chapter = progression.currentChapter();
+                const alienIndex = Math.floor(((progression.currentLevel() - chapter.startIdx)
+                                             / ((chapter.endIdx - chapter.startIdx) + 1))
+                                            * chapter.resources.aliens.length);
+                const alienName = chapter.resources.aliens[alienIndex];
 
-              return jssemant.autograder(alienName, node.arguments[0].value,colors[node.arguments[0].value],jssemant.missing());
+                return jssemant.autograder(alienName, node.arguments[0].value, colors[node.arguments[0].value], jssemant.missing());
             }
 
-            if(node.callee.type === "Identifier" && node.callee.name === "unsol") {
-              //NOTE - This should never be called externally
-              //only called within inside the autograder.
-              return jssemant.unsol("red",parseNode(node.arguments[0],[]));
+            if (node.callee.type === "Identifier" && node.callee.name === "unsol") {
+                // NOTE - This should never be called externally
+                // only called within inside the autograder.
+                return jssemant.unsol("red", parseNode(node.arguments[0], []));
             }
 
             if (node.arguments.length === 0) {
@@ -195,16 +194,16 @@ export function makeParser(jssemant) {
 
             // If the thunk can take arguments (i.e. it's a reference-with-holes), use that
 
-            if (macros &&
-                node.callee.type === "Identifier" &&
-                macros[node.callee.name] &&
-                macros[node.callee.name].takesArgs) {
-                return macros[node.callee.name](...node.arguments.map(n => parseNode(n, macros)));
+            if (macros
+                && node.callee.type === "Identifier"
+                && macros[node.callee.name]
+                && macros[node.callee.name].takesArgs) {
+                return macros[node.callee.name](...node.arguments.map((n) => parseNode(n, macros)));
             }
 
             let result = jssemant.apply(
                 parseNode(node.callee, macros),
-                parseNode(node.arguments[0], macros)
+                parseNode(node.arguments[0], macros),
             );
 
             for (const arg of node.arguments.slice(1)) {
@@ -218,7 +217,7 @@ export function makeParser(jssemant) {
             return jssemant.conditional(
                 parseNode(node.test, macros),
                 parseNode(node.consequent, macros),
-                parseNode(node.alternate, macros)
+                parseNode(node.alternate, macros),
             );
         }
 
@@ -243,7 +242,7 @@ export function makeParser(jssemant) {
             if (node.kind !== "let") {
                 return fail(`parsers.es6: Unrecognized '${node.kind}' declaration`, node);
             }
-            else if (node.declarations.length !== 1) {
+            if (node.declarations.length !== 1) {
                 return fail("parsers.es6: Only declaring 1 item at a time is supported", node);
             }
 
@@ -263,8 +262,8 @@ export function makeParser(jssemant) {
         }
 
         case "MemberExpression": {
-          return jssemant.member(parseNode(node.object,macros),
-            parseNode(node.property, macros));
+            return jssemant.member(parseNode(node.object, macros),
+                parseNode(node.property, macros));
         }
 
         default: return fail(`parsers.es6: Unrecognized ES6 node type ${node.type}`, node);
@@ -286,25 +285,24 @@ export function makeUnparser(jssemant) {
             if (node.body.type === "vtuple") {
                 if (node.body.child0.type === "lambdaVar") {
                     // Unparse replicator block
-                    let replicator = [];
+                    const replicator = [];
                     for (let i = 0; i < node.body.numChildren; i++) {
                         replicator.push(node.body.child0.name);
                     }
                     return `(${unparseES6(node.arg)}) => ${replicator.join("")}`;
                 }
-                else {
-                    const cases = [];
-                    for (let i = 0; i < node.body.numChildren; i++) {
-                        cases.push(unparseES6(node.body[`child${i}`]));
-                    }
-                    return `__tests(${cases.join(", ")})`;
+
+                const cases = [];
+                for (let i = 0; i < node.body.numChildren; i++) {
+                    cases.push(unparseES6(node.body[`child${i}`]));
                 }
+                return `__tests(${cases.join(", ")})`;
             }
             return `(${unparseES6(node.arg)}) => ${unparseES6(node.body)}`;
         }
         case "reference": {
-            if (node.params && node.params.some(name => node[`arg_${name}`].type !== "missing")) {
-                const args = node.params.map(name => unparseES6(node[`arg_${name}`])).join(", ");
+            if (node.params && node.params.some((name) => node[`arg_${name}`].type !== "missing")) {
+                const args = node.params.map((name) => unparseES6(node[`arg_${name}`])).join(", ");
                 return `${node.name}(${args})`;
             }
             return `${node.name}`;
@@ -314,7 +312,7 @@ export function makeUnparser(jssemant) {
             return `${node.name}`;
         }
         case "not": {
-          return `!${node.value}`;
+            return `!${node.value}`;
         }
         case "binop": {
             return `(${unparseES6(node.left)}) ${node.op.name} (${unparseES6(node.right)})`;
@@ -342,7 +340,7 @@ export function makeUnparser(jssemant) {
             // the argument name "x", but has no body. The user
             // instead places (y) => y.
             const args = "";
-            const body = node.body;
+            const { body } = node;
             return `function ${node.name}(${args}) { return ${unparseES6(body)}; }`;
         }
         case "defineAttach": {
@@ -354,8 +352,9 @@ export function makeUnparser(jssemant) {
         }
         case "arrayvalue":
         case "array": {
-            let result = "[", first = true;
-            if (typeof node.length != "number") {
+            let result = "["; const
+                first = true;
+            if (typeof node.length !== "number") {
                 throw `array length is not a number: ${node.length}`;
             }
             for (let i = 0; i < node.length; i++) {
@@ -367,16 +366,16 @@ export function makeUnparser(jssemant) {
             return result;
         }
         case "member": {
-          return `${node.array}[${node.index}]`;
+            return `${node.array}[${node.index}]`;
         }
         case "autograder": {
-          return `__autograder(${node.goalId})`;
+            return `__autograder(${node.goalId})`;
         }
-        case "unsol":{
+        case "unsol": {
             return `${node.value}`;
         }
         case "vtuple": {
-          return;
+            return;
         }
         default:
             console.error(`unparsers.es6: Unrecognized ES6 node type "${node.type}": `, node);
@@ -388,5 +387,5 @@ export function makeUnparser(jssemant) {
 
 function fail(message, node) {
     console.warn(message, node);
-    throw { message: message, node: node };
+    throw { message, node };
 }

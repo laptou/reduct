@@ -11,9 +11,9 @@ export default class Feedback {
         this.stage = stage;
 
         const chapter = progression.currentChapter();
-        const alienIndex = Math.floor(((progression.currentLevel() - chapter.startIdx) /
-                                       ((chapter.endIdx - chapter.startIdx) + 1)) *
-                                      chapter.resources.aliens.length);
+        const alienIndex = Math.floor(((progression.currentLevel() - chapter.startIdx)
+                                       / ((chapter.endIdx - chapter.startIdx) + 1))
+                                      * chapter.resources.aliens.length);
         const image = Loader.images[chapter.resources.aliens[alienIndex]];
         const alien = stage.allocate(gfx.sprite({
             image,
@@ -43,8 +43,8 @@ export default class Feedback {
         }
         else {
             const rowIds = rows
-                .map(items => this._makeRow(color, items))
-                .map(ids => this.stage.allocate(gfx.layout.hbox(() => ids, {
+                .map((items) => this._makeRow(color, items))
+                .map((ids) => this.stage.allocate(gfx.layout.hbox(() => ids, {
                     subexpScale: 1,
                 }, gfx.baseProjection)));
             this.contents = [

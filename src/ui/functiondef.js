@@ -8,7 +8,7 @@ import Audio from "../resource/audio";
  * @module FunctionDef
  */
 export default class FunctionDef {
-    constructor(stage, name, nodeId, referenceId, delay=500) {
+    constructor(stage, name, nodeId, referenceId, delay = 500) {
         this.stage = stage;
         this.name = name;
         this.id = nodeId;
@@ -46,7 +46,7 @@ export default class FunctionDef {
     }
 
     project() {
-        const view = Object.assign({}, this.stage.views[this.id]);
+        const view = { ...this.stage.views[this.id] };
         view.shadow = false;
         view.stroke = { lineWidth: 1, color: "gray" };
         view.opacity = 0;

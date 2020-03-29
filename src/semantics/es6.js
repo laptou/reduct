@@ -32,10 +32,10 @@ export default transform({
             const replacements = defn.nameReplacements || [];
 
             for (const [ key, replacement ] of replacements) {
-                const Key = ucfirst(key),
-                      Replacement = ucfirst(replacement);
+                const Key = ucfirst(key);
+                const Replacement = ucfirst(replacement);
                 name = name.replace(new RegExp(key, "g"), replacement)
-                           .replace(new RegExp(Key, "g"), Replacement);
+                    .replace(new RegExp(Key, "g"), Replacement);
             }
             return name;
         },
@@ -49,7 +49,7 @@ export default transform({
             // we have access to expr.params, so generate a thunk that
             // can take arguments
             if (expr.params) {
-                const params = expr.params;
+                const { params } = expr;
                 thunk = (...args) => {
                     const missing = params.map((_, idx) => {
                         if (args[idx]) {
@@ -83,7 +83,7 @@ export default transform({
         extractGlobalNames: (semant, name, expr) => {
             // We have access to expr.params
             if (expr.params) {
-                const params = expr.params;
+                const { params } = expr;
                 const thunk = (...args) => {
                     const missing = params.map((_, idx) => {
                         if (args[idx]) {
@@ -103,15 +103,13 @@ export default transform({
             return [ name, () => semant.reference(name) ];
         },
 
-        postParse: (nodes, goal, board, toolbox, globals) => {
-            return {
-                nodes,
-                goal,
-                board,
-                toolbox,
-                globals,
-            };
-        },
+        postParse: (nodes, goal, board, toolbox, globals) => ({
+            nodes,
+            goal,
+            board,
+            toolbox,
+            globals,
+        }),
     },
 
     expressions: {
@@ -128,6 +126,6 @@ export default transform({
         ...member,
         ...not,
         ...reference,
-        ...value
+        ...value,
     },
 });

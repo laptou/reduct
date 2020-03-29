@@ -35,12 +35,13 @@ export function expand(projection, options) {
  */
 export function sticky(projection, direction, options) {
     const origPrepare = projection.prepare;
-    projection.sticky = Object.assign({
+    projection.sticky = {
         margin: 0,
         marginX: 0,
         marginY: 0,
         align: "left",
-    }, options || {});
+        ...options || {},
+    };
     projection.prepare = function(id, exprId, state, stage) {
         origPrepare.call(this, id, exprId, state, stage);
         this.anchor.x = 0;
@@ -83,17 +84,20 @@ export function sticky(projection, direction, options) {
  * @class
  * @alias gfx.layout.hbox
  */
-export function hbox(childrenFunc, options={}, baseProjection=roundedRect) {
+export function hbox(childrenFunc, options = {}, baseProjection = roundedRect) {
     if (options && options.padding) {
-        options.padding = Object.assign({
-            left: 10, inner: 5, right: 10, top: 0, bottom: 0,
-        }, options.padding);
+        options.padding = {
+            left: 10, inner: 5, right: 10, top: 0, bottom: 0, ...options.padding,
+        };
     }
 
-    const projection = baseProjection(Object.assign({}, {
-        padding: { left: 10, inner: 5, right: 10, top: 0, bottom: 0 },
+    const projection = baseProjection({
+        padding: {
+            left: 10, inner: 5, right: 10, top: 0, bottom: 0,
+        },
         subexpScale: 0.85,
-    }, options));
+        ...options,
+    });
     const baseDraw = projection.draw;
     const basePrepare = projection.prepare;
 
@@ -137,13 +141,14 @@ export function hbox(childrenFunc, options={}, baseProjection=roundedRect) {
         const [ sx, sy ] = util.absoluteScale(this, offset);
         const { x, y } = util.topLeftPos(this, offset);
 
-        const subOffset = Object.assign({}, offset, {
-            x: x,
-            y: y,
+        const subOffset = {
+            ...offset,
+            x,
+            y,
             sx: offset.sx * this.scale.x,
             sy: offset.sy * this.scale.y,
             opacity: this.opacity * offset.opacity,
-        });
+        };
 
         for (const [ childId, subexprId ] of this.children(exprId, state)) {
             stage.views[childId].draw(childId, subexprId, state, stage, subOffset);
@@ -161,18 +166,21 @@ export function hbox(childrenFunc, options={}, baseProjection=roundedRect) {
  * @class
  * @alias gfx.layout.vbox
  */
-export function vbox(childrenFunc, options={}, baseProjection=roundedRect) {
+export function vbox(childrenFunc, options = {}, baseProjection = roundedRect) {
     if (options && options.padding) {
-        options.padding = Object.assign({
-            top: 5, left: 0, inner: 5, right: 0, bottom: 5,
-        }, options.padding);
+        options.padding = {
+            top: 5, left: 0, inner: 5, right: 0, bottom: 5, ...options.padding,
+        };
     }
-    const projection = baseProjection(Object.assign({
+    const projection = baseProjection({
         horizontalAlign: 0.5,
-        padding: { top: 5, left: 0, inner: 5, right: 0, bottom: 5 },
+        padding: {
+            top: 5, left: 0, inner: 5, right: 0, bottom: 5,
+        },
         subexpScale: 0.85,
         ellipsize: false,
-    }, options));
+        ...options,
+    });
     const baseDraw = projection.draw;
     const basePrepare = projection.prepare;
     projection.type = "vbox";
@@ -180,11 +188,11 @@ export function vbox(childrenFunc, options={}, baseProjection=roundedRect) {
     projection.isEllipsized = function(id, exprId, state) {
         const parent = state.getIn([ "nodes", exprId, "parent" ]);
         const parent2 = state.getIn([ "nodes", parent, "parent" ]);
-        return this.ellipsize &&
-            (id === exprId) && // Are we the top-level projection for this expression?
-            parent && parent2 &&
-            state.getIn([ "nodes", exprId, "type" ]) === state.getIn([ "nodes", parent, "type"]) &&
-            state.getIn([ "nodes", parent, "type" ]) === state.getIn([ "nodes", parent2, "type"]);
+        return this.ellipsize
+            && (id === exprId) // Are we the top-level projection for this expression?
+            && parent && parent2
+            && state.getIn([ "nodes", exprId, "type" ]) === state.getIn([ "nodes", parent, "type"])
+            && state.getIn([ "nodes", parent, "type" ]) === state.getIn([ "nodes", parent2, "type"]);
     };
 
     projection.prepare = function(id, exprId, state, stage) {
@@ -220,10 +228,9 @@ export function vbox(childrenFunc, options={}, baseProjection=roundedRect) {
             const childProjection = stage.views[childId];
             if (childProjection.animating) continue;
 
-            childProjection.pos.x =
-                this.scale.x * this.padding.left +
-                this.horizontalAlign * (this.size.w * this.scale.x -
-                 childProjection.size.w * childProjection.scale.x * this.scale.x);
+            childProjection.pos.x = this.scale.x * this.padding.left
+                + this.horizontalAlign * (this.size.w * this.scale.x
+                 - childProjection.size.w * childProjection.scale.x * this.scale.x);
         }
     };
     projection.draw = function(id, exprId, state, stage, offset) {
@@ -251,13 +258,14 @@ export function vbox(childrenFunc, options={}, baseProjection=roundedRect) {
             return;
         }
 
-        const subOffset = Object.assign({}, offset, {
-            x: x,
-            y: y,
+        const subOffset = {
+            ...offset,
+            x,
+            y,
             sx: offset.sx * this.scale.x,
             sy: offset.sy * this.scale.y,
             opacity: this.opacity * offset.opacity,
-        });
+        };
         for (const [ childId, subexprId ] of this.children(exprId, state)) {
             stage.views[childId].draw(childId, subexprId, state, stage, subOffset);
         }
@@ -273,7 +281,8 @@ export function previewer(projection) {
 
     projection.prepare = function(id, exprId, state, stage) {
         if (this.preview && !this.prevPreview) {
-            this.prevPreview = Object.assign({}, stage.getView(this.preview), {
+            this.prevPreview = {
+                ...stage.getView(this.preview),
                 pos: this.pos,
                 scale: {
                     x: this.scale.x,
@@ -282,14 +291,14 @@ export function previewer(projection) {
                 shadow: false,
                 anchor: this.anchor,
                 opacity: 1,
-            });
+            };
         }
         else if (!this.preview) {
             delete this.prevPreview;
         }
         if (this.preview) {
             this.prevPreview.prepare(this.preview, this.preview, state, stage);
-            this.size = Object.assign({}, this.prevPreview.size);
+            this.size = { ...this.prevPreview.size };
             return;
         }
 
@@ -298,7 +307,7 @@ export function previewer(projection) {
 
     projection.draw = function(id, exprId, state, stage, offset) {
         if (this.preview) {
-            this.prevPreview.draw(this.preview, this.preview, state, stage, Object.assign({}, offset));
+            this.prevPreview.draw(this.preview, this.preview, state, stage, { ...offset });
             return;
         }
 

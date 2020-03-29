@@ -3,27 +3,25 @@ import { Howl } from "howler";
 
 import * as gfx from "./gfx/core";
 import * as globalProgressions from "./game/progression";
-import { getJSON } from "./util/ajax";
 
-const BASE_PATH = "resources/";
-
-function getImage(path) {
-    return new Promise((resolve) => {
+async function getImage(path) {
+    const resolvedPath = (await import(`@resources/graphics/${path}`)).default;
+    return new Promise((resolve, reject) => {
         const image = document.createElement("img");
-        image.onload = function() {
-            resolve(image);
-        };
-        image.setAttribute("src", path);
+        image.addEventListener("load", () => resolve(image), { once: true });
+        image.addEventListener("error", () => reject(), { once: true });
+        image.setAttribute("src", resolvedPath);
     });
 }
 
 export class LoaderClass {
     constructor(root) {
         this.rootPath = root;
-        this.graphicsPath = root + "/graphics/";
-        this.pending = this.loaded = 0;
+        this.graphicsPath = `${root}/graphics/`;
+        this.pending = 0;
+        this.loaded = 0;
 
-        this._promise = new Promise((resolve, reject) => {
+        this._promise = new Promise((resolve) => {
             this._resolve = resolve;
         });
 
@@ -49,216 +47,218 @@ export class LoaderClass {
         }
     }
 
-    loadImageAtlas(alias, jsonSrc, imageSrc) {
+    /**
+     *
+     * @param {String} alias The name of this atlas.
+     * @param {String} key The name of the JSON file corresponding to this atlas (no extension).
+     * @param {String} imagePath The path to the image file relative to the `resources/graphics`
+     * directory.
+     */
+    async loadImageAtlas(alias, key, imagePath) {
         this.startLoad();
 
-        Promise.all([
-            getJSON(jsonSrc),
-            getImage(imageSrc),
-        ]).then(([ json, img ]) => {
-            const atlas = new gfx.image.ImageAtlas(alias, json, img);
-            for (const sprite of atlas.sprites) {
-                if (!this.images[sprite.name]) {
-                    this.images[sprite.name] = sprite.image;
-                }
-                else {
+        const [ json, img ] = await Promise.all([
+            import(`@resources/graphics/${key}.json`),
+            getImage(imagePath),
+        ]);
 
-                }
+        const atlas = new gfx.image.ImageAtlas(alias, json, img);
+        for (const sprite of atlas.sprites) {
+            if (!this.images[sprite.name]) {
+                this.images[sprite.name] = sprite.image;
             }
+        }
 
-            this.finishLoad();
-        });
+        this.finishLoad();
     }
 
-    loadAudioSprite(alias, jsonSrc, volumeSrc, audioSrcs) {
+    async loadAudioSprite(alias, key) {
         this.startLoad();
-        Promise.all([ getJSON(jsonSrc), getJSON(volumeSrc) ]).then(([ json, volumes ]) => {
-            for (const key of Object.keys(volumes)) {
-                this.audioVolumes[key] = volumes[key];
-            }
+        const data = await import(`@resources/audio/${key}.json`);
+        const audioUrls = await Promise.all(
+            data.urls.map((u) => import(`@resources/audio/${u}`).then((f) => f.default)),
+        );
+
+        await new Promise((resolve, reject) => {
+            this.audioVolumes = { ...this.audioVolumes, ...data.volumes };
 
             this.audioSprites[alias] = new Howl({
-                src: audioSrcs,
-                sprite: json.sprite,
+                src: audioUrls,
+                sprite: data.sprite,
                 onload: () => {
-                    for (const key of Object.keys(json.sprite)) {
-                        this.sounds[key] = this.audioSprites[alias];
+                    for (const spriteKey of Object.keys(data.sprite)) {
+                        this.sounds[spriteKey] = this.audioSprites[alias];
                     }
-                    this.finishLoad();
+
+                    resolve();
                 },
+                onloaderror: reject,
             });
-        })
-        .catch(err =>  {
-            console.log("Could not load audio sprites. Is resources/ directory available/symlinked?");
         });
+
+        this.finishLoad();
     }
 
-    loadSyntax(progression, name, path) {
+    async loadSyntax(progression, key) {
         this.startLoad();
 
-        return getJSON(`${BASE_PATH}/${path}`).then((json) => {
-            this.progressions[progression].syntax[name] = json;
+        this.progressions[progression].syntax[key] = await import(`@resources/levels-progression/${key}.json`);
 
-            this.finishLoad();
-        });
+        this.finishLoad();
     }
 
-    loadChapter(progression, name, path) {
+    async loadChapter(progression, key) {
         this.startLoad();
 
-        return getJSON(`${BASE_PATH}/${path}`).then((json) => {
-            // Copy the planet's aliens to the individual level
-            // definitions, so that buildLevel has access to
-            // them. Provide a default alien when not specified.
-            const aliens = (json.resources && json.resources.aliens) ?
-                json.resources.aliens : ["alien-function-1"];
-            for (const level of json.levels) {
-                level.resources = level.resources || { aliens };
-            }
+        const json = await import(`@resources/levels-progression/${key}.json`);
 
-            const d = {
-                key: name,
-                name: json.chapterName,
-                description: json.description,
-                challenge: json.challenge || false,
-                language: json.language,
-                levels: [],
-                dependencies: [],
-                password: json.password,
-            };
-            if (json.resources) d.resources = json.resources;
+        // Copy the planet's aliens to the individual level
+        // definitions, so that buildLevel has access to
+        // them. Provide a default alien when not specified.
+        const aliens = (json.resources && json.resources.aliens)
+            ? json.resources.aliens : ["alien-function-1"];
+        for (const level of json.levels) {
+            level.resources = level.resources || { aliens };
+        }
 
-            json.levels.forEach((lvl) => {
-                lvl.language = d.language;
-                if (json.macros) lvl.macros = json.macros;
-                if (typeof lvl.goal === "string") lvl.goal = [lvl.goal];
-                if (!lvl.toolbox) lvl.toolbox = [];
-                if (typeof lvl.board === "string") lvl.board = [lvl.board];
-                if (typeof lvl.toolbox === "string") lvl.toolbox = [lvl.toolbox];
-                if (!lvl.defines) lvl.defines = [];
-                else if (typeof lvl.defines === "string") lvl.defines = [lvl.defines];
-                if (!lvl.globals) lvl.globals = {};
-                if (!lvl.syntax) lvl.syntax = [];
-                // used for hiding definitions on the sidebar
-                if (!lvl.hideGlobals) lvl.hideGlobals = [];
-                // used for autograder tests
-                if (!lvl.input) lvl.input = [];
-                if (!lvl.output) lvl.output = [];
-                if (!lvl.numTests) lvl.numTests = 0;
-                else if (typeof lvl.syntax === "string") lvl.syntax = [lvl.syntax];
+        const d = {
+            key,
+            name: json.chapterName,
+            description: json.description,
+            challenge: json.challenge || false,
+            language: json.language,
+            levels: [],
+            dependencies: [],
+            password: json.password,
+        };
+        if (json.resources) d.resources = json.resources;
 
-                if (!lvl.fade) lvl.fade = {};
+        json.levels.forEach((lvl) => {
+            lvl.language = d.language;
+            if (json.macros) lvl.macros = json.macros;
+            if (typeof lvl.goal === "string") lvl.goal = [lvl.goal];
+            if (!lvl.toolbox) lvl.toolbox = [];
+            if (typeof lvl.board === "string") lvl.board = [lvl.board];
+            if (typeof lvl.toolbox === "string") lvl.toolbox = [lvl.toolbox];
+            if (!lvl.defines) lvl.defines = [];
+            else if (typeof lvl.defines === "string") lvl.defines = [lvl.defines];
+            if (!lvl.globals) lvl.globals = {};
+            if (!lvl.syntax) lvl.syntax = [];
+            // used for hiding definitions on the sidebar
+            if (!lvl.hideGlobals) lvl.hideGlobals = [];
+            // used for autograder tests
+            if (!lvl.input) lvl.input = [];
+            if (!lvl.output) lvl.output = [];
+            if (!lvl.numTests) lvl.numTests = 0;
+            else if (typeof lvl.syntax === "string") lvl.syntax = [lvl.syntax];
 
-                if (!lvl.animationScales) lvl.animationScales = {};
+            if (!lvl.fade) lvl.fade = {};
 
-                if (typeof lvl.showConcreteGoal === "undefined") lvl.showConcreteGoal = true;
-                if (typeof lvl.tutorialUrl === "undefined") lvl.tutorialUrl = null;
+            if (!lvl.animationScales) lvl.animationScales = {};
 
-                d.levels.push(lvl);
-            });
+            if (typeof lvl.showConcreteGoal === "undefined") lvl.showConcreteGoal = true;
+            if (typeof lvl.tutorialUrl === "undefined") lvl.tutorialUrl = null;
 
-            this.progressions[progression].chapters[name] = d;
-
-            this.finishLoad();
+            d.levels.push(lvl);
         });
+
+        this.progressions[progression].chapters[key] = d;
+
+        this.finishLoad();
     }
 
-    loadChapters(name, definition) {
+    async loadChapters(name, definition) {
         this.startLoad();
-        //Initilizing variables --s
-        const progression = this.progressions[name] = {
+        // Initilizing variables --s
+        const progression = {
             chapters: {},
             levels: [],
             linearChapters: [],
             syntax: {},
         };
-        const filenames = Object.keys(definition.digraph);
+        this.progressions[name] = progression;
+        const chapterKeys = Object.keys(definition.digraph);
 
         let extraDefines = [];
         let animationScales = {};
         let fade = {};
 
-        //counting dependencies for each chapter so
-        //as to sort the chapters in order --s
-        Promise.all(filenames.map(
-            (filename) => this.loadChapter(
-                name, filename,
-                `${definition.dir}/${filename}.json`)))
-            .then(() => {
-                for (const chapter of filenames) {
-                    progression.chapters[chapter].transitions = definition.digraph[chapter];
-                    for (const transition of definition.digraph[chapter]) {
-                        progression.chapters[transition].dependencies.push(chapter);
-                    }
-                }
+        // counting dependencies for each chapter so
+        // as to sort the chapters in order --s
+        await Promise.all(chapterKeys.map((key) => this.loadChapter(name, key)));
 
-                // Topological sort
-                const marked = {};
-                let remaining = filenames.length;
+        for (const chapter of chapterKeys) {
+            progression.chapters[chapter].transitions = definition.digraph[chapter];
+            for (const transition of definition.digraph[chapter]) {
+                progression.chapters[transition].dependencies.push(chapter);
+            }
+        }
 
-                outerLoop:
-                while (remaining > 0) {
-                    for (const [chapterName, chapter] of Object.entries(progression.chapters)) {
-                        if (chapter.dependencies.every(dep => marked[dep]) && !marked[chapterName]) {
-                            marked[chapterName] = true;
-                            progression.linearChapters.push(chapterName);
+        // Topological sort
+        const marked = {};
+        let remaining = chapterKeys.length;
 
-                            chapter.startIdx = progression.levels.length;
-                            progression.levels = progression.levels.concat(chapter.levels);
-                            chapter.endIdx = progression.levels.length - 1;
+        outer:
+        while (remaining > 0) {
+            for (const [chapterName, chapter] of Object.entries(progression.chapters)) {
+                if (chapter.dependencies.every((dep) => marked[dep]) && !marked[chapterName]) {
+                    marked[chapterName] = true;
+                    progression.linearChapters.push(chapterName);
 
-                            remaining--;
+                    chapter.startIdx = progression.levels.length;
+                    progression.levels = progression.levels.concat(chapter.levels);
+                    chapter.endIdx = progression.levels.length - 1;
 
-                            // TODO: patch defines
-                            for (const level of chapter.levels) {
-                                //setting animationScales
-                                const newScales = Object.assign(
-                                    {},
-                                    animationScales,
-                                    level.animationScales
-                                );
-                                level.animationScales = Object.assign(
-                                    animationScales,
-                                    level.animationScales
-                                );
-                                animationScales = newScales;
+                    remaining--;
 
-                                //setting fade property
-                                const newFade = Object.assign({}, fade, level.fade);
-                                level.fade = Object.assign({}, fade, level.fade);
-                                fade = newFade;
+                    // TODO: patch defines
+                    for (const level of chapter.levels) {
+                        // setting animationScales
+                        const newScales = {
 
-                                //setting extradefines - functions that show
-                                //on the sidebar
-                                level.extraDefines = extraDefines;
-                                extraDefines = extraDefines.concat(level.defines);
+                            ...animationScales,
+                            ...level.animationScales,
+                        };
+                        level.animationScales = Object.assign(
+                            animationScales,
+                            level.animationScales,
+                        );
+                        animationScales = newScales;
 
-                                for (const syntax of level.syntax) {
-                                    if (progression.syntax[syntax]) continue;
+                        // setting fade property
+                        const newFade = { ...fade, ...level.fade };
+                        level.fade = { ...fade, ...level.fade };
+                        fade = newFade;
 
-                                    progression.syntax[syntax] = this.loadSyntax(name, syntax, `${definition.dir}/${syntax}.json`);
-                                }
-                            }
+                        // setting extradefines - functions that show
+                        // on the sidebar
+                        level.extraDefines = extraDefines;
+                        extraDefines = extraDefines.concat(level.defines);
 
-                            continue outerLoop;
+                        for (const syntax of level.syntax) {
+                            if (progression.syntax[syntax]) continue;
+
+                            progression.syntax[syntax] = this.loadSyntax(name, syntax);
                         }
                     }
 
-                    console.error("Loader#loadChapters: Could not finish digraph.");
-                    break;
+                    continue outer;
                 }
+            }
 
-                globalProgressions.PROGRESSIONS[name].progression = progression;
+            console.error("Loader#loadChapters: Could not finish digraph.");
+            break;
+        }
 
-                this.finishLoad();
-            });
+        globalProgressions.PROGRESSIONS[name].progression = progression;
+
+        this.finishLoad();
     }
 
-    waitForFonts(fonts) {
+    async waitForFonts(fonts) {
         this.startLoad();
-        Promise.all(fonts.map(name => new FontFaceObserver(name).load(null, 5000))).then(() => {
-            this.finishLoad();
-        });
+        await Promise.all(fonts.map((name) => new FontFaceObserver(name).load(null, 5000)));
+        this.finishLoad();
     }
 }
 

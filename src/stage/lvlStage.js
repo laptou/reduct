@@ -1,166 +1,163 @@
+import * as immutable from "immutable";
 import * as gfx from "../gfx/core";
 import * as animate from "../gfx/animate";
 import * as progression from "../game/progression";
 import Audio from "../resource/audio";
 import Logging from "../logging/logging";
-import * as immutable from "immutable";
 import Loader from "../loader";
 import es6 from "../semantics/es6";
 import BaseStage from "./basestage";
 import BaseTouchRecord from "./touchrecord";
 
 export default class LevelStage extends BaseStage {
-    constructor(startGame,chapterName, ...args) {
+    constructor(startGame, chapterName, ...args) {
         super(...args);
 
         this.startGame = startGame;
         this.color = "#8ab7db";
 
-        //allocating title ID
+        // allocating title ID
         const title = gfx.layout.sticky(
-            gfx.layout.ratioSizer(gfx.text(`${chapterName}`,{
-              fontSize: 200,
-              font: gfx.text.script,
+            gfx.layout.ratioSizer(gfx.text(`${chapterName}`, {
+                fontSize: 200,
+                font: gfx.text.script,
             }), 213 / 899, 0.6),
             "center",
-            {}
+            {},
         );
         title.opacity = 0;
         this.title = this.allocateInternal(title);
 
-        const label = this.allocate(gfx.text(`Chapter List`, {
-        fontSize: 30,
-        font: gfx.text.script,
-      }));
+        const label = this.allocate(gfx.text("Chapter List", {
+            fontSize: 30,
+            font: gfx.text.script,
+        }));
 
         const backButton = gfx.layout.sticky(gfx.ui.button(this, () => [label], {
-          color:"#e95888",
-          subexpScale: 1,
-          anchor: {
-              x: 0,
-              y: 0,
-          },
-          click: () => {
-            window.init();
-          },
+            color: "#e95888",
+            subexpScale: 1,
+            anchor: {
+                x: 0,
+                y: 0,
+            },
+            click: () => {
+                window.init();
+            },
         }), "top", {});
 
         this.backButton = this.allocate(backButton);
         backButton.opacity = 0.0;
 
 
-
         const buttons = [];
-        const start = Loader.progressions["Elementary"].chapters[chapterName].startIdx;
-        const end = Loader.progressions["Elementary"].chapters[chapterName].endIdx;
+        const start = Loader.progressions.Elementary.chapters[chapterName].startIdx;
+        const end = Loader.progressions.Elementary.chapters[chapterName].endIdx;
         const curLvl = progression.currentLevel();
 
-        //allocating button ID
+        // allocating button ID
         for (let beginLvl = start; beginLvl <= end; beginLvl++) {
+            const label = this.allocate(gfx.text(`Level: ${beginLvl + 1}`, {
+                fontSize: 20,
+                font: gfx.text.mono,
+            }));
 
-          const label = this.allocate(gfx.text(`Level: ${beginLvl  + 1}`, {
-              fontSize: 20,
-              font: gfx.text.mono,
-          }));
-
-          if(beginLvl < curLvl){
-            const button = gfx.ui.button(this, () => [label], {
-                color: "#e95888",
-                anchor: {
-                    x: 0,
-                    y: 0,
-                },
-                subexpScale: 1,
-                click: () => {
-                    progression.setLevel(beginLvl);
-                    this.animateStart();
-                },
-            });
-            buttons.push(this.allocate(button));
+            if (beginLvl < curLvl) {
+                const button = gfx.ui.button(this, () => [label], {
+                    color: "#e95888",
+                    anchor: {
+                        x: 0,
+                        y: 0,
+                    },
+                    subexpScale: 1,
+                    click: () => {
+                        progression.setLevel(beginLvl);
+                        this.animateStart();
+                    },
+                });
+                buttons.push(this.allocate(button));
+            }
+            else if (beginLvl == curLvl) {
+                const button = gfx.ui.button(this, () => [label], {
+                    color: "#ffcc00",
+                    anchor: {
+                        x: 0,
+                        y: 0,
+                    },
+                    subexpScale: 1,
+                    click: () => {
+                        progression.setLevel(beginLvl);
+                        this.animateStart();
+                    },
+                });
+                buttons.push(this.allocate(button));
+            }
+            else {
+                const button = gfx.ui.button(this, () => [label], {
+                    shadow: true,
+                    anchor: {
+                        x: 0,
+                        y: 0,
+                    },
+                    subexpScale: 1,
+                    click: () => {
+                        if (window.devMode) {
+                            progression.setLevel(beginLvl);
+                            this.animateStart();
+                        }
+                    },
+                });
+                buttons.push(this.allocate(button));
+            }
         }
-        else if(beginLvl == curLvl){
-          const button = gfx.ui.button(this, () => [label], {
-              color: "#ffcc00",
-              anchor: {
-                  x: 0,
-                  y: 0,
-              },
-              subexpScale: 1,
-              click: () => {
-                  progression.setLevel(beginLvl);
-                  this.animateStart();
-              },
-          });
-          buttons.push(this.allocate(button));
-        }
-        else {
-          const button = gfx.ui.button(this, () => [label], {
-              shadow: true,
-              anchor: {
-                  x: 0,
-                  y: 0,
-              },
-              subexpScale: 1,
-              click: () => {
-                if(window.devMode){
-                  progression.setLevel(beginLvl);
-                  this.animateStart();
-                }
-              },
-          });
-          buttons.push(this.allocate(button));
-        }
-      }
 
         this.buttons = buttons;
 
-        let myLayouts = [];
+        const myLayouts = [];
         let numLayouts = 0;
         this.myLayouts = [];
 
-        function genLayouts(stage, arrayButtons){
-          let workButtons = [];
-          if(arrayButtons.length <= 5){
-            workButtons = arrayButtons;
+        function genLayouts(stage, arrayButtons) {
+            let workButtons = [];
+            if (arrayButtons.length <= 5) {
+                workButtons = arrayButtons;
 
-            myLayouts[numLayouts] = gfx.layout.hbox(() => workButtons, {
-                subexpScale: 1.0,
-                padding: {
-                    inner: 20,
-                    top: stage.height + numLayouts*100,
-                    left: 250,
-                },
-            }, gfx.baseProjection);
+                myLayouts[numLayouts] = gfx.layout.hbox(() => workButtons, {
+                    subexpScale: 1.0,
+                    padding: {
+                        inner: 20,
+                        top: stage.height + numLayouts * 100,
+                        left: 250,
+                    },
+                }, gfx.baseProjection);
 
-            myLayouts[numLayouts].opacity = 0.0;
-            stage.myLayouts.push(stage.allocate(myLayouts[numLayouts]));
-            numLayouts++;
-            return;
-          }
-          else {
-            workButtons = arrayButtons.slice(0,5);
+                myLayouts[numLayouts].opacity = 0.0;
+                stage.myLayouts.push(stage.allocate(myLayouts[numLayouts]));
+                numLayouts++;
+            }
+            else {
+                workButtons = arrayButtons.slice(0, 5);
 
-            myLayouts[numLayouts] = gfx.layout.hbox(() => workButtons, {
-                subexpScale: 1.0,
-                padding: {
-                    inner: 20,
-                    top: stage.height + numLayouts*100,
-                    left: 250,
-                },
-            }, gfx.baseProjection);
+                myLayouts[numLayouts] = gfx.layout.hbox(() => workButtons, {
+                    subexpScale: 1.0,
+                    padding: {
+                        inner: 20,
+                        top: stage.height + numLayouts * 100,
+                        left: 250,
+                    },
+                }, gfx.baseProjection);
 
-            myLayouts[numLayouts].opacity = 0.0;
-            stage.myLayouts.push(stage.allocate(myLayouts[numLayouts]));
-            numLayouts++;
+                myLayouts[numLayouts].opacity = 0.0;
+                stage.myLayouts.push(stage.allocate(myLayouts[numLayouts]));
+                numLayouts++;
 
-            genLayouts(stage, arrayButtons.slice(5));
-          }
+                genLayouts(stage, arrayButtons.slice(5));
+            }
         }
 
 
-         genLayouts(this, buttons);
+        genLayouts(this, buttons);
 
-         /*
+        /*
          let newInputIds = [];
          const ss = "57 + 1";
          const st = stage.getState();
@@ -231,36 +228,36 @@ export default class LevelStage extends BaseStage {
                     easing: animate.Easing.Cubic.Out,
                 }),
                 animate.tween(backButton, {
-                  opacity: 1.0,
-                }, {
-                  duration: 1000,
-                  easing: animate.Easing.Cubic.Out,
-                }),
-            ]))
-            .then(() => {
-              for(let i =0;i<myLayouts.length;i++){
-                   animate.tween(myLayouts[i], {
                     opacity: 1.0,
                 }, {
                     duration: 1000,
                     easing: animate.Easing.Cubic.Out,
-                });
-              }
+                }),
+            ]))
+            .then(() => {
+                for (let i = 0; i < myLayouts.length; i++) {
+                    animate.tween(myLayouts[i], {
+                        opacity: 1.0,
+                    }, {
+                        duration: 1000,
+                        easing: animate.Easing.Cubic.Out,
+                    });
+                }
             })
             .then(() => {
                 this.state = "initialized";
             });
-        }
+    }
 
-        _mouseup(e) {
+    _mouseup(e) {
         if (this.state === "initializing") {
             this.fastForward();
         }
 
         super._mouseup(e);
-        }
+    }
 
-        fastForward() {
+    fastForward() {
         animate.clock.cancelAll();
         this.state = "initialized";
         this.color = "#FFF";
@@ -269,16 +266,14 @@ export default class LevelStage extends BaseStage {
         title.scale = { x: 0.7, y: 0.7 };
         title.sticky.marginY = -180;
 
-        for(let i=0;i<this.myLayouts.length;i++){
-          this.getView(this.myLayouts[i]).opacity = 1.0;
+        for (let i = 0; i < this.myLayouts.length; i++) {
+            this.getView(this.myLayouts[i]).opacity = 1.0;
         }
         this.getView(this.backButton).opacity = 1.0;
+    }
 
-        }
-
-        animateStart() {
+    animateStart() {
         this.state = "transitioning";
-
 
 
         Promise.all([
@@ -309,23 +304,23 @@ export default class LevelStage extends BaseStage {
                 easing: animate.Easing.Color(animate.Easing.Cubic.In, this.color, "#8ab7db"),
             }),
         ]).then(() => {
-          for(let i=0;i<this.myLayouts.length;i++){
-              animate.tween(this.getView(this.myLayouts[i]), {
-                  opacity: 0,
-              }, {
-                  duration: 500,
-                  easing: animate.Easing.Cubic.In,
-              })
-          }
+            for (let i = 0; i < this.myLayouts.length; i++) {
+                animate.tween(this.getView(this.myLayouts[i]), {
+                    opacity: 0,
+                }, {
+                    duration: 500,
+                    easing: animate.Easing.Cubic.In,
+                });
+            }
         })
-        .then(() => this.startGame());
-        }
+            .then(() => this.startGame());
+    }
 
-        get touchRecordClass() {
+    get touchRecordClass() {
         return TouchRecord;
-        }
+    }
 
-        drawContents() {
+    drawContents() {
         const state = this.getState();
 
         this.ctx.save();
@@ -335,53 +330,53 @@ export default class LevelStage extends BaseStage {
 
         this.drawInternalProjection(state, this.title);
 
-        for(let i=0;i<this.myLayouts.length;i++){
-          this.drawProjection(state, this.myLayouts[i]);
+        for (let i = 0; i < this.myLayouts.length; i++) {
+            this.drawProjection(state, this.myLayouts[i]);
         }
 
         this.drawProjection(state, this.backButton);
-        }
+    }
 
-        getNodeAtPos(pos, selectedId=null) {
+    getNodeAtPos(pos, selectedId = null) {
         if (this.state !== "initialized") return [ null, null ];
 
         const offset = this.makeBaseOffset();
         const backLayout = this.getView(this.backButton);
 
 
-        if(backLayout.containsPoint(pos, offset)){
-          const topLeft = gfx.util.topLeftPos(backLayout, offset);
-          const subpos = {
-              x: pos.x - topLeft.x,
-              y: pos.y - topLeft.y,
+        if (backLayout.containsPoint(pos, offset)) {
+            const topLeft = gfx.util.topLeftPos(backLayout, offset);
+            const subpos = {
+                x: pos.x - topLeft.x,
+                y: pos.y - topLeft.y,
             };
 
-          return [this.backButton, this.backButton];
-         }
-
-
-         for(const id of this.buttons){
-           const button = this.getView(id);
-           if (button.containsPoint(pos, offset)) {
-               return [ id, id ];
-           }
-         }
-
-        return [ null, null ];
+            return [this.backButton, this.backButton];
         }
 
-        updateCursor(touchRecord, moved=false) {
+
+        for (const id of this.buttons) {
+            const button = this.getView(id);
+            if (button.containsPoint(pos, offset)) {
+                return [ id, id ];
+            }
+        }
+
+        return [ null, null ];
+    }
+
+    updateCursor(touchRecord, moved = false) {
         if (touchRecord.hoverNode !== null) {
             this.setCursor("pointer");
         }
         else {
             this.setCursor("default");
         }
-        }
-        }
+    }
+}
 
-        class TouchRecord extends BaseTouchRecord {
-        onstart(...args) {
+class TouchRecord extends BaseTouchRecord {
+    onstart(...args) {
         super.onstart(...args);
 
         if (this.topNode) {
@@ -390,9 +385,9 @@ export default class LevelStage extends BaseStage {
                 view.onmousedown();
             }
         }
-        }
+    }
 
-        onmove(...args) {
+    onmove(...args) {
         super.onmove(...args);
 
         if (this.hoverNode !== this.prevHoverNode) {
@@ -407,9 +402,9 @@ export default class LevelStage extends BaseStage {
                 view.onmouseenter();
             }
         }
-        }
+    }
 
-        onend(...args) {
+    onend(...args) {
         super.onend(...args);
 
         if (this.topNode) {
@@ -418,5 +413,5 @@ export default class LevelStage extends BaseStage {
                 view.onclick();
             }
         }
-        }
-        }
+    }
+}

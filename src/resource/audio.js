@@ -5,7 +5,7 @@ import Loader from "../loader";
 class AudioEngine {
     constructor() {
         this.muted = false;
-        if (window.localStorage["muted"] === "true") {
+        if (window.localStorage.muted === "true") {
             this.muted = true;
         }
     }
@@ -53,13 +53,13 @@ class AudioEngine {
     mute() {
         Howler.mute(true);
         this.muted = true;
-        window.localStorage["muted"] = "true";
+        window.localStorage.muted = "true";
     }
 
     unmute() {
         Howler.mute(false);
         this.muted = false;
-        window.localStorage["muted"] = "false";
+        window.localStorage.muted = "false";
     }
 
     toggleMute() {

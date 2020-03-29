@@ -38,9 +38,9 @@ export function argumentBar() {
         }
         else {
             this.names = [];
-            const params = Array.isArray(define.get("params")) ?
-                  define.get("params") :
-                  state.getIn([ "nodes", state.getIn([ "globals", define.get("name") ]), "params" ]);
+            const params = Array.isArray(define.get("params"))
+                ? define.get("params")
+                : state.getIn([ "nodes", state.getIn([ "globals", define.get("name") ]), "params" ]);
 
             let maxY = 50;
             for (const name of params) {
@@ -102,13 +102,14 @@ export function argumentBar() {
         for (const [ name, width ] of this.names) {
             if (name === null) {
                 const subexprId = width;
-                const subOffset = Object.assign({}, offset, {
+                const subOffset = {
+                    ...offset,
                     x,
                     y,
                     sx: offset.sx * this.scale.x,
                     sy: offset.sy * this.scale.y,
                     opacity: this.opacity * offset.opacity,
-                });
+                };
 
                 stage.getView(subexprId).draw(subexprId, subexprId, state, stage, subOffset);
             }
@@ -122,7 +123,7 @@ export function argumentBar() {
                     true,
                     false,
                     1.0,
-                    null
+                    null,
                 );
 
                 ctx.fillStyle = "#555";
@@ -133,17 +134,18 @@ export function argumentBar() {
                     true,
                     false,
                     1.0,
-                    null
+                    null,
                 );
 
                 txt.text = name;
                 txt.prepare(null, null, state, stage);
-                txt.draw(null, null, state, stage, Object.assign({}, offset, {
+                txt.draw(null, null, state, stage, {
+                    ...offset,
                     x: x + dx + Math.max(0, (w - width) / 2),
                     y: y + (5 * offset.sy),
                     sx,
                     sy,
-                }));
+                });
 
                 dx += w + (20 * sx);
             }
@@ -231,7 +233,7 @@ export function fadeMe(projection, onfade) {
                 5,
                 star.r / 2,
                 star.r,
-                true
+                true,
             );
             ctx.fillStyle = "#0F0";
             primitive.drawStar(
@@ -241,7 +243,7 @@ export function fadeMe(projection, onfade) {
                 5,
                 star.r / 2,
                 star.r,
-                true
+                true,
             );
         }
         ctx.restore();

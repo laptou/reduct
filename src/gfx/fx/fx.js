@@ -11,14 +11,15 @@ import * as primitive from "../primitive";
 /**
  * An explosion effect.
  */
-export function splosion(stage, pos, options={}) {
-    options = Object.assign({}, {
+export function splosion(stage, pos, options = {}) {
+    options = {
         color: "gold",
         numOfParticles: 20,
         explosionRadius: 100,
         duration: 600,
-        angle: _idx => Math.random() * Math.PI * 2,
-    }, options);
+        angle: (_idx) => Math.random() * Math.PI * 2,
+        ...options,
+    };
     const parts = [];
     const tweens = [];
 
@@ -42,7 +43,7 @@ export function splosion(stage, pos, options={}) {
             r: 0,
         }, {
             duration: options.duration,
-            easing: animate.Easing.Time(t => Math.pow(t, 0.5)),
+            easing: animate.Easing.Time((t) => Math.pow(t, 0.5)),
         }));
     }
 
@@ -60,7 +61,7 @@ export function splosion(stage, pos, options={}) {
                     record.x + record.r,
                     record.y + record.r,
                     record.r,
-                    0, 2 * Math.PI
+                    0, 2 * Math.PI,
                 );
                 ctx.fill();
                 i += 1;
@@ -76,14 +77,15 @@ export function splosion(stage, pos, options={}) {
 }
 
 export function blink(stage, projection, opts) {
-    const options = Object.assign({
+    const options = {
         times: 1,
         color: "#F00",
         speed: 600,
         lineWidth: 3,
         background: false,
         field: "stroke",
-    }, opts);
+        ...opts,
+    };
 
     if (!projection.color) projection.color = "black";
 
@@ -154,7 +156,7 @@ export function shatter(stage, projection, options) {
             status.w, status.h,
             projection.radius,
             true,
-            true
+            true,
         );
     };
     if (projection.baseType === "hexaRect") {
@@ -165,7 +167,7 @@ export function shatter(stage, projection, options) {
                 status.w, status.h,
                 Math.min(25, status.w / 2), status.h / 2,
                 true,
-                true
+                true,
             );
         };
     }
@@ -203,7 +205,7 @@ export function shatter(stage, projection, options) {
                 x: pos.x - (0.1 * size.w),
                 y: pos.y - (0.2 * size.h),
             },
-            { duration: options.outroDuration || 800, easing: animate.Easing.Cubic.Out }
+            { duration: options.outroDuration || 800, easing: animate.Easing.Cubic.Out },
         ).then(() => {
             stage.removeEffect(id);
             if (onFullComplete) {
@@ -217,7 +219,7 @@ export function poof(stage, projection) {
     const pos = gfx.centerPos(projection);
     const status = { t: 0.0 };
     const images = [ "poof0", "poof1", "poof2", "poof3", "poof4" ]
-          .map(key => Loader.images[key]);
+        .map((key) => Loader.images[key]);
 
     const { ctx } = stage;
     const id = stage.addEffect({
@@ -228,7 +230,7 @@ export function poof(stage, projection) {
             images[idx].draw(
                 ctx,
                 pos.x - 45, pos.y - 45,
-                90, 90
+                90, 90,
             );
             ctx.restore();
         },
@@ -278,7 +280,7 @@ export function emerge(stage, state, bodyPos, bodySize, resultIds) {
         (ap.x + (as.w / 2)) - (maxWidth / 2),
         y - emergeDistance,
         maxWidth,
-        totalHeight
+        totalHeight,
     );
 
     emergeDistance = y - (maxHeight / 2) - safeY;
@@ -312,7 +314,7 @@ export function emerge(stage, state, bodyPos, bodySize, resultIds) {
     return Promise.all(tweens);
 }
 
-export function expandingShape(stage, projection, options={}) {
+export function expandingShape(stage, projection, options = {}) {
     const centerPos = gfx.centerPos(projection);
     const state = {
         pos: centerPos,
@@ -357,7 +359,7 @@ export function expandingShape(stage, projection, options={}) {
  * Render a node that isn't currently part of the board, for as long
  * as a particular tween is running.
  */
-export function keepAlive(stage, id, promise, under=false) {
+export function keepAlive(stage, id, promise, under = false) {
     const fxId = stage.addEffect({
         under,
         prepare: () => {

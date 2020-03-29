@@ -42,7 +42,7 @@ export default function transform(definition) {
     module.projections = {};
 
     /** Get the definition of the given expression, accounting for fade level. */
-    module.definitionOf = function getDefinition(exprOrType, fadeLevel=null) {
+    module.definitionOf = function getDefinition(exprOrType, fadeLevel = null) {
         const type = exprOrType.get ? exprOrType.get("type") : (exprOrType.type || exprOrType);
         const result = module.definition.expressions[type];
         if (Array.isArray(result)) {
@@ -58,7 +58,9 @@ export default function transform(definition) {
      * onto the board when they are the top-level node.
      */
     module.vtuple = function vtuple(children) {
-        const result = { type: "vtuple", kind: "expression", locked: true, numChildren: children.length };
+        const result = {
+            type: "vtuple", kind: "expression", locked: true, numChildren: children.length,
+        };
         let i = 0;
         for (const child of children) {
             result[`child${i}`] = child;
@@ -105,7 +107,7 @@ export default function transform(definition) {
                     result.locked = exprDefinition.locked;
                 }
                 if (typeof exprDefinition.notches !== "undefined") {
-                    result.notches = immutable.List(exprDefinition.notches.map(n => new NotchRecord(n)));
+                    result.notches = immutable.List(exprDefinition.notches.map((n) => new NotchRecord(n)));
                 }
 
                 let argPointer = 0;
@@ -152,10 +154,10 @@ export default function transform(definition) {
         }
         if (type === "array") {
             const result = [];
-            const nc = expr.get ? expr.get("length") : expr.length
-                for (let i = 0; i < nc; i++) {
-                    result.push(`elem${i}`);
-                }
+            const nc = expr.get ? expr.get("length") : expr.length;
+            for (let i = 0; i < nc; i++) {
+                result.push(`elem${i}`);
+            }
             return result;
         }
 
@@ -165,8 +167,8 @@ export default function transform(definition) {
         if (!defn) throw `semantics.subexpressions: Unrecognized expression type ${type}`;
 
         const subexprBase = defn.reductionOrder || defn.subexpressions;
-        const subexprs = typeof subexprBase === "function" ?
-            subexprBase(module, expr)
+        const subexprs = typeof subexprBase === "function"
+            ? subexprBase(module, expr)
             : defn.reductionOrder || defn.subexpressions;
         // Handle notches
         if (defn.notches && defn.notches.length > 0) {
@@ -203,15 +205,15 @@ export default function transform(definition) {
     module.searchNoncapturing = function(nodes, targetName, exprId) {
         const result = [];
         module.map(nodes, exprId, (nodes, id) => {
-                const node = nodes.get(id);
-                if (node.get("type") === "lambdaVar" && node.get("name") === targetName) {
+            const node = nodes.get(id);
+            if (node.get("type") === "lambdaVar" && node.get("name") === targetName) {
                 result.push(id);
                 return [ node, nodes ];
-                }
-                return [ node, nodes ];
-                }, (nodes, node) => (
-                    node.get("type") !== "lambda" ||
-                    nodes.get(node.get("arg")).get("name") !== targetName));
+            }
+            return [ node, nodes ];
+        }, (nodes, node) => (
+            node.get("type") !== "lambda"
+                    || nodes.get(node.get("arg")).get("name") !== targetName));
         return result;
     };
 
@@ -224,13 +226,13 @@ export default function transform(definition) {
         const remainingNodes = board.concat(toolbox);
 
         const containsReduceableExpr = remainingNodes.some((id) => {
-                const node = nodes.get(id);
-                const kind = module.kind(state, node);
-                return kind === "expression" ||
-                kind === "statement" ||
-                node.get("type") === "lambda" ||
-                node.get("type") === "reference"
-                });
+            const node = nodes.get(id);
+            const kind = module.kind(state, node);
+            return kind === "expression"
+                || kind === "statement"
+                || node.get("type") === "lambda"
+                || node.get("type") === "reference";
+        });
 
         if (containsReduceableExpr) {
             return true;
@@ -245,9 +247,9 @@ export default function transform(definition) {
         // Only one thing in toolbox - does using it complete the level?
         if (toolbox.size === 1) {
             return checkVictory(state.withMutations((s) => {
-                        s.set("toolbox", immutable.List());
-                        s.set("board", remainingNodes);
-                        }));
+                s.set("toolbox", immutable.List());
+                s.set("board", remainingNodes);
+            }));
         }
 
         // Try adding any combination of toolbox items to the board -
@@ -273,9 +275,9 @@ export default function transform(definition) {
 
         for (const subset of powerset(toolbox.toArray())) {
             const matching = checkVictory(state.withMutations((s) => {
-                        s.set("toolbox", toolbox.filter(i => subset.indexOf(i) === -1));
-                        s.set("board", board.concat(immutable.List(subset)));
-                        }));
+                s.set("toolbox", toolbox.filter((i) => subset.indexOf(i) === -1));
+                s.set("board", board.concat(immutable.List(subset)));
+            }));
             if (matching && Object.keys(matching).length > 0) {
                 return true;
             }
@@ -303,26 +305,22 @@ export default function transform(definition) {
     };
 
     /** Check the equality of all subexpressions as well. */
-    module.deepEqual = function deepEqual(nodes,n1,n2){
+    module.deepEqual = function deepEqual(nodes, n1, n2) {
+        if (!module.shallowEqual(n1, n2)) return false;
 
-      if(!module.shallowEqual(n1,n2))
-        return false;
+        if (n1.get("type") === "array") {
+            if (n1.get("length") !== n2.get("length")) return false;
+            debugger;
+            for (let i = 0; i < n1.get("length"); i++) {
+                const e1 = nodes.get(n1.get(`elem${i}`));
+                const e2 = nodes.get(n2.get(`elem${i}`));
 
-      if(n1.get("type") === "array"){
-        if(n1.get("length") !== n2.get("length"))
-          return false;
-          debugger;
-        for(let i=0;i<n1.get("length");i++){
-          const e1 = nodes.get(n1.get(`elem${i}`));
-          const e2 = nodes.get(n2.get(`elem${i}`));
-
-          if(!deepEqual(nodes,e1,e2))
-            return false;
+                if (!deepEqual(nodes, e1, e2)) return false;
+            }
         }
-      }
 
-      return true;
-    }
+        return true;
+    };
 
     /**
      * Can an expression have something dropped into it?
@@ -335,7 +333,7 @@ export default function transform(definition) {
         if (item.get("type") === "define") {
             return false;
         }
-        else if (target.get("type") === "missing") {
+        if (target.get("type") === "missing") {
             // Use type inference to decide whether hole can be filled
             const holeType = target.get("ty");
             const exprType = item.get("ty");
@@ -343,10 +341,10 @@ export default function transform(definition) {
                 return "hole";
             }
         }
-        else if (target.get("type") === "lambdaArg" &&
-                !state.getIn([ "nodes", target.get("parent"), "parent" ]) &&
+        else if (target.get("type") === "lambdaArg"
+                && !state.getIn([ "nodes", target.get("parent"), "parent" ])
                 // Lambda vars can't be dropped into lambda args
-                item.get("type") !== "lambdaVar") {
+                && item.get("type") !== "lambdaVar") {
             return "arg";
         }
         return false;
@@ -382,13 +380,13 @@ export default function transform(definition) {
       * return the resulting (mutated) `expr`. */
     module.lockSubexprs = function(expr, nodes) {
         const s = module.subexpressions(expr);
-        s.forEach(f =>
-            { const se = expr[f];
-              se.locked = true;
-              module.lockSubexprs(se, nodes); }
-        );
+        s.forEach((f) => {
+            const se = expr[f];
+            se.locked = true;
+            module.lockSubexprs(se, nodes);
+        });
         return expr;
-    }
+    };
 
     /** The remnants of type checking. */
     module.collectTypes = function collectTypes(state, rootExpr) {
@@ -433,9 +431,9 @@ export default function transform(definition) {
                     completeness.set(
                         id,
                         complete && module.subexpressions(expr)
-                            .map(field => completeness.get(expr.get(field)) ||
-                                 module.kind(state, nodes.get(expr.get(field))) !== "expression")
-                            .every(x => x)
+                            .map((field) => completeness.get(expr.get(field))
+                                 || module.kind(state, nodes.get(expr.get(field))) !== "expression")
+                            .every((x) => x),
                     );
                     for (const entry of types.entries()) {
                         update(...entry);
@@ -447,9 +445,9 @@ export default function transform(definition) {
                     completeness.set(
                         id,
                         module.subexpressions(expr)
-                            .map(field => completeness.get(expr.get(field)) ||
-                                 completeKind(module.kind(state, nodes.get(expr.get(field)))))
-                            .every(x => x)
+                            .map((field) => completeness.get(expr.get(field))
+                                 || completeKind(module.kind(state, nodes.get(expr.get(field)))))
+                            .every((x) => x),
                     );
                 }
                 else {
@@ -483,10 +481,10 @@ export default function transform(definition) {
                     if (notch1.type === "inset" && notch2.type !== "outset") continue;
                     if (notch1.type === "outset" && notch2.type !== "inset") continue;
 
-                    if ((notch1.side === "left" && notch2.side === "right") ||
-                        (notch1.side === "right" && notch2.side === "left") ||
-                        (notch1.side === "top" && notch2.side === "bottom") ||
-                        (notch1.side === "bottom" && notch2.side === "top")) {
+                    if ((notch1.side === "left" && notch2.side === "right")
+                        || (notch1.side === "right" && notch2.side === "left")
+                        || (notch1.side === "top" && notch2.side === "bottom")
+                        || (notch1.side === "bottom" && notch2.side === "top")) {
                         result.push([ i, j ]);
                     }
                 }
@@ -513,7 +511,7 @@ export default function transform(definition) {
                     state,
                     parentId,
                     childId,
-                    notchPair
+                    notchPair,
                 );
                 if (!canAttach) {
                     Logging.log("attached-expr-failed", {
@@ -521,7 +519,7 @@ export default function transform(definition) {
                         item: stage.saveNode(childId),
                         parentNotchIdx: notchPair[0],
                         childNotchIdx: notchPair[1],
-                        blocking: blockingNodes.map(id => stage.saveNode(id)),
+                        blocking: blockingNodes.map((id) => stage.saveNode(id)),
                     });
                     blockingNodes.forEach((id) => {
                         animate.fx.error(stage, stage.views[id]);
@@ -549,7 +547,7 @@ export default function transform(definition) {
                     module,
                     state,
                     parentId,
-                    childId
+                    childId,
                 );
             }
         }
@@ -577,7 +575,7 @@ export default function transform(definition) {
     module.clone = core.genericClone(nextId, module.subexpressions);
 
     module.parser = {};
-    module.parser.templatizeName = name => definition.parser.templatizeName(module, name);
+    module.parser.templatizeName = (name) => definition.parser.templatizeName(module, name);
     module.parser.parse = definition.parser.parse(module);
     module.parser.unparse = definition.parser.unparse(module);
     module.parser.postParse = definition.parser.postParse;

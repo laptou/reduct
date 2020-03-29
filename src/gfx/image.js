@@ -40,7 +40,7 @@ export class ImageProxy {
         return this.img;
     }
 
-    draw(ctx, x, y, w=null, h=null) {
+    draw(ctx, x, y, w = null, h = null) {
         if (w === null) {
             w = this.naturalWidth;
         }
@@ -73,7 +73,7 @@ export class ImageAtlasProxy {
         };
     }
 
-    draw(ctx, x, y, w=null, h=null) {
+    draw(ctx, x, y, w = null, h = null) {
         if (w === null) {
             w = this.naturalWidth;
         }

@@ -27,25 +27,24 @@ export default {
                 },
             ],
         },
-        validateStep: (semant, state, expr) =>{
+        validateStep: (semant, state, expr) => {
             const callee = state.getIn([ "nodes", expr.get("e2") ]);
             const kind = semant.kind(state, callee);
-            if (kind === "value" &&
-                callee.get("type") !== "lambda" &&
-                callee.get("type") !== "reference") {
+            if (kind === "value"
+                && callee.get("type") !== "lambda"
+                && callee.get("type") !== "reference") {
                 return [ expr.get("callee"), "We can only apply functions!" ];
             }
             return null;
         },
-        smallStep: (semant,stage,state,expr) => {
+        smallStep: (semant, stage, state, expr) => {
             const [ topNodeId, newNodeIds, addedNodes ] = semant.interpreter.betaReduce(
                 stage,
                 state, expr.get("e2"),
-                [ expr.get("e1") ]
+                [ expr.get("e1") ],
             );
 
             return [ expr.get("id"), newNodeIds, addedNodes ];
-
         },
-    }
+    },
 };

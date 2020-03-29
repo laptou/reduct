@@ -49,7 +49,7 @@ export default class BaseStage {
             null,
             false,
             { dx: 0, dy: 0 },
-            { x: 0, y: 0 }
+            { x: 0, y: 0 },
         ));
     }
 
@@ -79,9 +79,9 @@ export default class BaseStage {
         this.canvas.setAttribute("width", this._width);
         this.canvas.setAttribute("height", this._height);
         const scale = window.devicePixelRatio ? window.devicePixelRatio : 1;
-        this.scale = scale // number of screen pixels per CSS pixel
-        this.canvas.style.width = this._width + "px";
-        this.canvas.style.height = this._height + "px";
+        this.scale = scale; // number of screen pixels per CSS pixel
+        this.canvas.style.width = `${this._width}px`;
+        this.canvas.style.height = `${this._height}px`;
         this.canvas.width = this._width * scale;
         this.canvas.height = this._height * scale;
     }
@@ -178,18 +178,19 @@ export default class BaseStage {
     /**
      * Create a basic offset object for rendering.
      */
-    makeBaseOffset(opt={}) {
-        return Object.assign({
+    makeBaseOffset(opt = {}) {
+        return {
             x: 0,
             y: 0,
             sx: 1,
             sy: 1,
             opacity: 1,
-        }, opt);
+            ...opt,
+        };
     }
 
     /** Helper to draw a given view. */
-    drawProjection(state, nodeId, offset=null) {
+    drawProjection(state, nodeId, offset = null) {
         const projection = this.views[nodeId];
         // TODO: autoresizing
         projection.parent = null;
@@ -198,7 +199,7 @@ export default class BaseStage {
     }
 
     /** @deprecated Use :func:`BaseStage.drawProjection` instead. */
-    drawInternalProjection(state, nodeId, exprId=null, offset=null) {
+    drawInternalProjection(state, nodeId, exprId = null, offset = null) {
         const projection = this.internalViews[nodeId];
         projection.parent = null;
         projection.prepare(nodeId, exprId, state, this);
@@ -233,7 +234,7 @@ export default class BaseStage {
      *
      * TODO: return all possible nodes?
      */
-    getNodeAtPos(pos, selectedId=null) {
+    getNodeAtPos(pos, selectedId = null) {
         return [ null, null ];
     }
 
@@ -301,11 +302,11 @@ export default class BaseStage {
     }
 
     /** Update the cursor based on the mouse/touch state. */
-    updateCursor(touchRecord, moved=false) {
-        if (moved &&
-            touchRecord.isExpr &&
-            touchRecord.topNode !== null &&
-            touchRecord.hoverNode !== null) {
+    updateCursor(touchRecord, moved = false) {
+        if (moved
+            && touchRecord.isExpr
+            && touchRecord.topNode !== null
+            && touchRecord.hoverNode !== null) {
             this.setCursor("copy");
         }
         else if (touchRecord.topNode !== null) {
@@ -347,7 +348,7 @@ export default class BaseStage {
                 targetNode,
                 fromToolbox,
                 dragAnchor,
-                pos
+                pos,
             );
             touchRecord.onstart(pos);
             this._touches.set(touch.identifier, touchRecord);
@@ -382,7 +383,6 @@ export default class BaseStage {
         if (topNode === null) return null;
 
 
-
         const dragAnchor = this.computeDragAnchor(pos, topNode, targetNode);
 
 
@@ -404,7 +404,6 @@ export default class BaseStage {
     }
 
     _mousemove(e) {
-
         const buttons = typeof e.buttons !== "undefined" ? e.buttons : e.which;
         const mouse = this._touches.get("mouse");
         mouse.onmove(buttons > 0, this.getMousePos(e));

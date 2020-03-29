@@ -73,7 +73,7 @@ export default {
                         outroDuration,
                     }))
                     .then(() => {
-                        reset.forEach(tween => tween.undo());
+                        reset.forEach((tween) => tween.undo());
                         argView.opacity = 1;
                     });
             }
@@ -175,7 +175,7 @@ export default {
 
                     return animate.after(totalTime)
                         .then(() => {
-                            reset.forEach(tween => tween.undo());
+                            reset.forEach((tween) => tween.undo());
                             clearPreview.forEach((view) => {
                                 view.preview = null;
                                 delete view.previewOptions;
@@ -189,9 +189,9 @@ export default {
         validateStep: (semant, state, expr) => {
             const callee = state.getIn([ "nodes", expr.get("callee") ]);
             const kind = semant.kind(state, callee);
-            if (kind === "value" &&
-                    callee.get("type") !== "lambda" &&
-                    callee.get("type") !== "reference") {
+            if (kind === "value"
+                    && callee.get("type") !== "lambda"
+                    && callee.get("type") !== "reference") {
                 return [ expr.get("callee"), "We can only apply functions!" ];
             }
             return null;
@@ -200,24 +200,23 @@ export default {
             const [ topNodeId, newNodeIds, addedNodes ] = semant.interpreter.betaReduce(
                 stage,
                 state, expr.get("callee"),
-                [ expr.get("argument") ]
+                [ expr.get("argument") ],
             );
 
             return [ expr.get("id"), newNodeIds, addedNodes ];
-
         },
         substepFilter: (semant, state, expr, field) => {
             // Don't force evaluation of reference-with-holes that
             // has unfilled holes, so that it can be used in
             // argument position. However, force evaluation if it
             // doesn't have holes or has filled holes.
-            if (field === "argument" &&
-                state.getIn([ "nodes", expr.get(field), "type" ]) === "reference") {
+            if (field === "argument"
+                && state.getIn([ "nodes", expr.get(field), "type" ]) === "reference") {
                 const ref = state.getIn([ "nodes", expr.get(field) ]);
 
                 if (!ref.has("params") || ref.get("params").length === 0) return true;
 
-                if (ref.get("params").some(p => state.getIn([ "nodes", ref.get(`arg_${p}`), "type" ]) !== "missing")) {
+                if (ref.get("params").some((p) => state.getIn([ "nodes", ref.get(`arg_${p}`), "type" ]) !== "missing")) {
                     return true;
                 }
 

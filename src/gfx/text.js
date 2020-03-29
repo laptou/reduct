@@ -13,14 +13,15 @@ const TEXT_SIZE_CACHE = {};
  * @alias gfx.text
  */
 export default function text(txt, options) {
-    const projection = baseProjection(Object.assign({
+    const projection = baseProjection({
         text: txt,
         fontSize: 28,
         font: text.mono,
         color: "#000",
         type: "text",
         wrapWidth: null,
-    }, options));
+        ...options,
+    });
 
     projection.prepare = function(id, exprId, state, stage) {
         let curText = typeof this.text === "function" ? this.text(state, exprId) : this.text;
@@ -75,14 +76,14 @@ export default function text(txt, options) {
             ctx.fillText(
                 line,
                 (offset.x + (this.pos.x * offset.sx)) / sx,
-                ((dy + offset.y + (this.pos.y * offset.sy)) / sy) + this.fontSize
+                ((dy + offset.y + (this.pos.y * offset.sy)) / sy) + this.fontSize,
             );
             if (this.stroke) {
                 primitive.setStroke(ctx, this.stroke);
                 ctx.strokeText(
                     line,
                     (offset.x + (this.pos.x * offset.sx)) / sx,
-                    ((dy + offset.y + (this.pos.y * offset.sy)) / sy) + this.fontSize
+                    ((dy + offset.y + (this.pos.y * offset.sy)) / sy) + this.fontSize,
                 );
             }
             dy += this.fontSize * 1.35;
@@ -111,7 +112,7 @@ export default function text(txt, options) {
                 this.scale.x * offset.sx * (this.radius || 15),
                 false,
                 true,
-                this.stroke
+                this.stroke,
             );
             ctx.restore();
         }

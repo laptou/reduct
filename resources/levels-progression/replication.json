@@ -35,7 +35,7 @@
                 "x",
                 "y"
             ],
-            "tutorialUrl": "resources/videos/variables.mp4"
+            "tutorial": "variables"
         },
         {
             "animationScales": {},

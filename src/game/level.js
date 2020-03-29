@@ -1,17 +1,17 @@
 import * as immutable from "immutable";
 
-import * as progression from "../game/progression";
+import * as progression from "./progression";
 import * as action from "../reducer/action";
 import * as gfx from "../gfx/core";
 import * as animate from "../gfx/animate";
 import * as layout from "../ui/layout";
 
-export var MACROS;
+export let MACROS;
 export function startLevel(description, parse, store, stage) {
     animate.replaceDurationScales(description.animationScales);
 
-    //console.log(description);
-    const macros = Object.assign({}, description.macros);
+    // console.log(description);
+    const macros = { ...description.macros };
     for (const macroName of Object.keys(macros)) {
         // Needs to be a thunk in order to allocate new ID each time
         const macro = macros[macroName];
@@ -23,54 +23,54 @@ export function startLevel(description, parse, store, stage) {
     // Lots of messiness because parse returns either an expression or
     // an array of expressions.
     const prevDefinedNames = description.extraDefines
-          .map(str => parse(str, macros))
-          .reduce((a, b) => (Array.isArray(b) ? a.concat(b) : a.concat([b])), [])
-          .map(expr => stage.semantics.parser.extractDefines(stage.semantics, expr))
-          .filter(name => name !== null);
+        .map((str) => parse(str, macros))
+        .reduce((a, b) => (Array.isArray(b) ? a.concat(b) : a.concat([b])), [])
+        .map((expr) => stage.semantics.parser.extractDefines(stage.semantics, expr))
+        .filter((name) => name !== null);
     const globalDefinedNames = Object.entries(description.globals)
-          .map(([ name, str ]) => {
-              let parsed = parse(str, macros);
-              if (!Array.isArray(parsed)) {
-                  parsed = [ parsed ];
-              }
-              [ parsed ] = parsed
-                  .map(expr => stage.semantics.parser.extractDefines(stage.semantics, expr))
-                  .filter(expr => expr !== null);
-              return [ name, parsed[1] ];
-          });
+        .map(([ name, str ]) => {
+            let parsed = parse(str, macros);
+            if (!Array.isArray(parsed)) {
+                parsed = [ parsed ];
+            }
+            [ parsed ] = parsed
+                .map((expr) => stage.semantics.parser.extractDefines(stage.semantics, expr))
+                .filter((expr) => expr !== null);
+            return [ name, parsed[1] ];
+        });
     const newDefinedNames = description.board
-          .map(str => parse(str, macros))
-          .reduce((a, b) => (Array.isArray(b) ? a.concat(b) : a.concat([b])), [])
-          .map(expr => stage.semantics.parser.extractDefines(stage.semantics, expr))
-          .filter(name => name !== null);
+        .map((str) => parse(str, macros))
+        .reduce((a, b) => (Array.isArray(b) ? a.concat(b) : a.concat([b])), [])
+        .map((expr) => stage.semantics.parser.extractDefines(stage.semantics, expr))
+        .filter((name) => name !== null);
 
     // Turn these defines into "macros", so that the name resolution
     // system can handle lookup.
     for (const [ name, expr ] of
-         prevDefinedNames.concat(newDefinedNames).concat(globalDefinedNames)) {
+        prevDefinedNames.concat(newDefinedNames).concat(globalDefinedNames)) {
         macros[name] = expr;
     }
     MACROS = macros;
 
     // Actually parse the goal, board, and toolbox.
-    const goal = description.goal.map(str => parse(str, macros));
-    //console.log("parsing board now ...");
-    //console.log(JSON.stringify(description.board));
+    const goal = description.goal.map((str) => parse(str, macros));
+    // console.log("parsing board now ...");
+    // console.log(JSON.stringify(description.board));
     const board = description.board
-          .map(str => parse(str, macros))
-          .reduce((a, b) => (Array.isArray(b) ? a.concat(b) : a.concat([b])), []);
-    //console.log("parsing board end...");
-    //console.log(JSON.stringify(board));
+        .map((str) => parse(str, macros))
+        .reduce((a, b) => (Array.isArray(b) ? a.concat(b) : a.concat([b])), []);
+    // console.log("parsing board end...");
+    // console.log(JSON.stringify(board));
     const toolbox = description.toolbox
-          .map(str => parse(str, macros));
+        .map((str) => parse(str, macros));
 
     // Go back and parse the globals as well.
     const globals = {};
     description.extraDefines
-        .map(str => parse(str, macros))
+        .map((str) => parse(str, macros))
         .reduce((a, b) => (Array.isArray(b) ? a.concat(b) : a.concat([b])), [])
-        .map(expr => stage.semantics.parser.extractGlobals(stage.semantics, expr))
-        .filter(name => name !== null)
+        .map((expr) => stage.semantics.parser.extractGlobals(stage.semantics, expr))
+        .filter((name) => name !== null)
         .forEach(([ name, val ]) => {
             globals[name] = val;
         });
@@ -78,9 +78,9 @@ export function startLevel(description, parse, store, stage) {
         let rawParsed = parse(definition, macros);
         if (!Array.isArray(rawParsed)) rawParsed = [ rawParsed ];
         const parsed = rawParsed
-              .reduce((a, b) => (Array.isArray(b) ? a.concat(b) : a.concat([b])), [])
-              .map(expr => stage.semantics.parser.extractGlobals(stage.semantics, expr))
-              .filter(name => name !== null);
+            .reduce((a, b) => (Array.isArray(b) ? a.concat(b) : a.concat([b])), [])
+            .map((expr) => stage.semantics.parser.extractGlobals(stage.semantics, expr))
+            .filter((name) => name !== null);
         if (parsed.length !== 1) {
             console.error(`level.startLevel: defining global ${name} as ${definition} led to multiple parsed expressions.`);
             continue;
@@ -93,7 +93,7 @@ export function startLevel(description, parse, store, stage) {
     stage.getTests(description.input, description.output);
     store.dispatch(action.startLevel(stage, goal, board, toolbox, globals));
     stage.startLevel(description.textgoal, description.showConcreteGoal, description.hideGlobals);
-    stage.registerNewDefinedNames(newDefinedNames.map(elem => elem[0]));
+    stage.registerNewDefinedNames(newDefinedNames.map((elem) => elem[0]));
 
     const state = stage.getState();
     const nodes = state.get("nodes");
@@ -104,7 +104,7 @@ export function startLevel(description, parse, store, stage) {
         y: 200,
         w: stage.width - 60,
         h: (stage.height - (stage.toolbox.size.h) - 25 - 10 - 200),
-    }, state.get("board").toArray().filter(id => nodes.get(id).get("type") !== "defineAttach"));
+    }, state.get("board").toArray().filter((id) => nodes.get(id).get("type") !== "defineAttach"));
 
 
     if (positions !== null) {
@@ -128,10 +128,10 @@ export function startLevel(description, parse, store, stage) {
     }
 
     // For anything that is fading, spawn the old node on top
-    const checkFade = source => (nodeId, idx) => {
+    const checkFade = (source) => (nodeId, idx) => {
         if (stage.semantics.search(
             state.get("nodes"), nodeId,
-            (_, id) => progression.isFadeBorder(state.getIn([ "nodes", id, "type" ]))
+            (_, id) => progression.isFadeBorder(state.getIn([ "nodes", id, "type" ])),
         ).length > 0) {
             const descr = description[source][idx];
 
@@ -158,7 +158,7 @@ export function startLevel(description, parse, store, stage) {
 
                 store.dispatch(action.unfade(
                     source, nodeId, topNode,
-                    flattened.map(e => immutable.Map(e))
+                    flattened.map((e) => immutable.Map(e)),
                 ));
             });
         }
@@ -192,8 +192,8 @@ export function startLevel(description, parse, store, stage) {
     }
 }
 
-export function checkVictory(state, semantics, partial=false) {
-    const board = state.get("board").filter(n => !semantics.ignoreForVictory(state, state.getIn([ "nodes", n ])));
+export function checkVictory(state, semantics, partial = false) {
+    const board = state.get("board").filter((n) => !semantics.ignoreForVictory(state, state.getIn([ "nodes", n ])));
     const goal = state.get("goal");
 
     if (board.size !== goal.size && !partial) {
