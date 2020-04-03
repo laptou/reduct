@@ -439,7 +439,12 @@ class Logger {
         }
     }
 
-    config(key, value = undefined) {
+    /**
+     * Gets or sets a configuration value.
+     * @param {string} key The key to get or set.
+     * @param {*} value The value to set. Omit this parameter to get the current value instead.
+     */
+    config(key, value) {
         if (typeof value !== "undefined") {
             this._config[key] = value;
             this.saveConfig();

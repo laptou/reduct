@@ -20,13 +20,22 @@ function modifier(ast) {
     return [ ast.body[0].expression.name, ast.body[1] ];
 }
 
-export function makeParser(jssemant) {
-    return function parseES6(program, macros) {
+export class ES6Parser {
+    /**
+     * Creates a new ES6 parser with the given semantics
+     * @param {import('semantics/transform').SemanticsDefinition} semanticsDefinition
+     */
+    constructor(semanticsDefinition) {
+        this.semanticsDefinition = semanticsDefinition;
+    }
+
+    parse(program, macros) {
+        /** @type {esprima.Program} */
         const ast = esprima.parse(program);
         const mod = modifier(ast);
 
         if (ast.body.length === 1) {
-            const result = parseNode(ast.body[0], macros);
+            const result = this.parseNode(ast.body[0], macros);
             if (result === null) {
                 return fail("Cannot parse program.", program);
             }
@@ -35,27 +44,27 @@ export function makeParser(jssemant) {
         }
         if (mod !== null) {
             const [ modName, node ] = mod;
-            const result = parseNode(node, macros);
+            const result = this.parseNode(node, macros);
             if (result === null) {
                 return fail("Cannot parse node.", program);
             }
 
             if (modName === "__unlimited") {
-                result.__meta = new jssemant.meta.Meta({
-                    toolbox: jssemant.meta.ToolboxMeta({
+                result.__meta = new this.semanticsDefinition.meta.Meta({
+                    toolbox: this.semanticsDefinition.meta.ToolboxMeta({
                         unlimited: true,
                     }),
                 });
             }
             else if (modName === "__targetable") {
-                result.__meta = new jssemant.meta.Meta({
-                    toolbox: jssemant.meta.ToolboxMeta({
+                result.__meta = new this.semanticsDefinition.meta.Meta({
+                    toolbox: this.semanticsDefinition.meta.ToolboxMeta({
                         targetable: true,
                     }),
                 });
             }
             else if (modName === "__argumentAnnotated") {
-                result.body = jssemant.missing();
+                result.body = this.semanticsDefinition.missing();
             }
             else if (modName.name === "__argumentAnnotated") {
                 result.params = modName.params;
@@ -68,68 +77,77 @@ export function makeParser(jssemant) {
         }
 
         return fail("Cannot parse multi-statement programs at the moment.", program);
-    };
+    }
 
-    function parseNode(node, macros) {
+
+    /**
+     *
+     * @param {import('estree').Statement} node
+     * @param {*} macros
+     */
+    parseNode(node, macros) {
         switch (node.type) {
         case "ExpressionStatement":
-            return parseNode(node.expression, macros);
+            return this.parseNode(node.expression, macros);
 
         case "ReturnStatement":
-            return parseNode(node.argument, macros);
+            return this.parseNode(node.argument, macros);
 
         case "BlockStatement": {
             if (node.body.length !== 1) {
                 return fail("Cannot parse multi-statement programs.", node);
             }
-            return parseNode(node.body[0], macros);
+            return this.parseNode(node.body[0], macros);
         }
 
         case "Identifier": {
-            if (node.name === "_") return jssemant.missing();
+            if (node.name === "_") return this.semanticsDefinition.missing();
 
-            if (node.name === "__defineAttach") return jssemant.defineAttach();
+            if (node.name === "__defineAttach") return this.semanticsDefinition.defineAttach();
 
             // Each macro is a thunk
-            const macroName = jssemant.parser.templatizeName(node.name);
+            const macroName = this.semanticsDefinition.parser.templatizeName(node.name);
             if (macros && macros[macroName]) return macros[macroName]();
 
             if (node.name === "xx") {
-                return jssemant.vtuple([ jssemant.lambdaVar("x"), jssemant.lambdaVar("x") ]);
+                return this.semanticsDefinition.vtuple([
+                    this.semanticsDefinition.lambdaVar("x"),
+                    this.semanticsDefinition.lambdaVar("x"),
+                ]);
             }
             if (node.name === "xxx") {
-                return jssemant.vtuple([
-                    jssemant.lambdaVar("x"),
-                    jssemant.lambdaVar("x"),
-                    jssemant.lambdaVar("x"),
+                return this.semanticsDefinition.vtuple([
+                    this.semanticsDefinition.lambdaVar("x"),
+                    this.semanticsDefinition.lambdaVar("x"),
+                    this.semanticsDefinition.lambdaVar("x"),
                 ]);
             }
             if (node.name.slice(0, 9) === "__variant") {
                 const [ variant, value ] = node.name.slice(10).split("_");
                 if (!variant || !value) {
-                    throw `Invalid dynamic variant ${node.name}`;
+                    throw new Error(`Invalid dynamic variant ${node.name}`);
                 }
 
-                return jssemant.dynamicVariant(variant, value);
+                return this.semanticsDefinition.dynamicVariant(variant, value);
             }
 
-            return jssemant.lambdaVar(macroName);
+            return this.semanticsDefinition.lambdaVar(macroName);
         }
 
         case "Literal": {
-            if (typeof node.value === "number") return jssemant.number(node.value);
-            if (typeof node.value === "boolean") return jssemant.bool(node.value);
+            if (typeof node.value === "number") return this.semanticsDefinition.number(node.value);
+            if (typeof node.value === "boolean") return this.semanticsDefinition.bool(node.value);
 
             if (node.value === "star"
                 || node.value === "circle"
                 || node.value === "triangle"
                 || node.value === "rect") {
-                return jssemant.symbol(node.value);
+                return this.semanticsDefinition.symbol(node.value);
             }
 
             // Interpreting strings after symbols so as to prevent the engine from
             // treating the symbols as strings
-            if (typeof node.value === "string") return jssemant.string(node.value);
+            if (typeof node.value === "string") return this.semanticsDefinition.string(node.value);
             return fail(`parsers.es6: Unrecognized value ${node.value}`, node);
         }
 
@@ -138,50 +156,50 @@ export function makeParser(jssemant) {
                 // Implement capture of bindings
                 const argName = node.params[0].name;
                 const newMacros = {};
-                newMacros[argName] = () => jssemant.lambdaVar(argName);
-                const body = parseNode(node.body, Object.assign(macros, newMacros));
-                return jssemant.lambda(jssemant.lambdaArg(argName), body);
+                newMacros[argName] = () => this.semanticsDefinition.lambdaVar(argName);
+                const body = this.parseNode(node.body, Object.assign(macros, newMacros));
+                return this.semanticsDefinition.lambda(this.semanticsDefinition.lambdaArg(argName), body);
             }
             return fail("Lambda expessions with more than one input are currently undefined.", node);
         }
 
         case "AssignmentExpression": {
-            const name = jssemant.parser.templatizeName(node.left.name);
+            const name = this.semanticsDefinition.parser.templatizeName(node.left.name);
 
             const argName = node.left.name;
             const newMacros = {};
-            newMacros[argName] = () => jssemant.lambdaVar(argName);
-            const body = parseNode(node.right.right, Object.assign(macros, newMacros));
+            newMacros[argName] = () => this.semanticsDefinition.lambdaVar(argName);
+            const body = this.parseNode(node.right.right, Object.assign(macros, newMacros));
 
-            return jssemant.letExpr(
+            return this.semanticsDefinition.letExpr(
                 name,
-                parseNode(node.right.left, newMacros),
-                jssemant.lambda(jssemant.lambdaArg(argName), body),
+                this.parseNode(node.right.left, newMacros),
+                this.semanticsDefinition.lambda(this.semanticsDefinition.lambdaArg(argName), body),
             );
         }
 
         case "UnaryExpression": {
-            return jssemant.not(parseNode(node.argument, macros));
+            return this.semanticsDefinition.not(this.parseNode(node.argument, macros));
         }
 
         case "BinaryExpression":
         // TODO: need ExprManager
-            return jssemant.binop(parseNode(node.left, macros),
-                jssemant.op(node.operator),
-                parseNode(node.right, macros));
+            return this.semanticsDefinition.binop(this.parseNode(node.left, macros),
+                this.semanticsDefinition.op(node.operator),
+                this.parseNode(node.right, macros));
 
         case "LogicalExpression":
         // TODO: need ExprManager
-            return jssemant.binop(parseNode(node.left, macros),
-                jssemant.op(node.operator),
-                parseNode(node.right, macros));
+            return this.semanticsDefinition.binop(this.parseNode(node.left, macros),
+                this.semanticsDefinition.op(node.operator),
+                this.parseNode(node.right, macros));
 
         case "CallExpression": {
             if (node.callee.type === "Identifier" && node.callee.name === "__tests") {
-                const testCases = node.arguments.map((arg) => parseNode(arg, macros));
+                const testCases = node.arguments.map((arg) => this.parseNode(arg, macros));
                 // TODO: better way to figure out name
                 const name = node.arguments[0].type === "CallExpression" ? node.arguments[0].callee.name : "f";
-                return jssemant.lambda(jssemant.lambdaArg(name, true), jssemant.vtuple(testCases));
+                return this.semanticsDefinition.lambda(this.semanticsDefinition.lambdaArg(name, true), this.semanticsDefinition.vtuple(testCases));
             }
 
             if (node.callee.type === "Identifier" && node.callee.name === "__autograder") {
@@ -197,13 +215,13 @@ export function makeParser(jssemant) {
                                             * chapter.resources.aliens.length);
                 const alienName = chapter.resources.aliens[alienIndex];
 
-                return jssemant.autograder(alienName, node.arguments[0].value, colors[node.arguments[0].value], jssemant.missing());
+                return this.semanticsDefinition.autograder(alienName, node.arguments[0].value, colors[node.arguments[0].value], this.semanticsDefinition.missing());
             }
 
             if (node.callee.type === "Identifier" && node.callee.name === "unsol") {
                 // NOTE - This should never be called externally
                 // only called within inside the autograder.
-                return jssemant.unsol("red", parseNode(node.arguments[0], []));
+                return this.semanticsDefinition.unsol("red", this.parseNode(node.arguments[0], []));
             }
 
             if (node.arguments.length === 0) {
@@ -216,44 +234,44 @@ export function makeParser(jssemant) {
                 && node.callee.type === "Identifier"
                 && macros[node.callee.name]
                 && macros[node.callee.name].takesArgs) {
-                return macros[node.callee.name](...node.arguments.map((n) => parseNode(n, macros)));
+                return macros[node.callee.name](...node.arguments.map((n) => this.parseNode(n, macros)));
             }
 
-            let result = jssemant.apply(
-                parseNode(node.callee, macros),
-                parseNode(node.arguments[0], macros),
+            let result = this.semanticsDefinition.apply(
+                this.parseNode(node.callee, macros),
+                this.parseNode(node.arguments[0], macros),
             );
 
             for (const arg of node.arguments.slice(1)) {
-                result = jssemant.apply(result, parseNode(arg, macros));
+                result = this.semanticsDefinition.apply(result, this.parseNode(arg, macros));
             }
 
             return result;
         }
 
         case "ConditionalExpression": {
-            return jssemant.conditional(
-                parseNode(node.test, macros),
-                parseNode(node.consequent, macros),
-                parseNode(node.alternate, macros),
+            return this.semanticsDefinition.conditional(
+                this.parseNode(node.test, macros),
+                this.parseNode(node.consequent, macros),
+                this.parseNode(node.alternate, macros),
             );
         }
 
         case "FunctionDeclaration": {
-            const name = jssemant.parser.templatizeName(node.id.name);
+            const name = this.semanticsDefinition.parser.templatizeName(node.id.name);
             if (node.params.length === 0) {
-                return jssemant.define(name, [], parseNode(node.body, macros));
+                return this.semanticsDefinition.define(name, [], this.parseNode(node.body, macros));
             }
 
-            let result = parseNode(node.body, macros);
+            let result = this.parseNode(node.body, macros);
             const args = [];
             for (const arg of node.params.slice().reverse()) {
-                const argName = jssemant.parser.templatizeName(arg.name);
+                const argName = this.semanticsDefinition.parser.templatizeName(arg.name);
                 args.push(argName);
-                result = jssemant.lambda(jssemant.lambdaArg(argName), result);
+                result = this.semanticsDefinition.lambda(this.semanticsDefinition.lambdaArg(argName), result);
             }
             args.reverse();
-            return jssemant.define(name, args, result);
+            return this.semanticsDefinition.define(name, args, result);
         }
 
         case "VariableDeclaration": {
@@ -264,24 +282,24 @@ export function makeParser(jssemant) {
                 return fail("parsers.es6: Only declaring 1 item at a time is supported", node);
             }
 
-            const name = jssemant.parser.templatizeName(node.declarations[0].id.name);
-            const body = parseNode(node.declarations[0].init, macros);
+            const name = this.semanticsDefinition.parser.templatizeName(node.declarations[0].id.name);
+            const body = this.parseNode(node.declarations[0].init, macros);
 
-            return jssemant.define(name, [], body);
+            return this.semanticsDefinition.define(name, [], body);
         }
 
         case "ArrayExpression": {
             const a = [];
             a.push(node.elements.length);
             for (const e of node.elements) {
-                a.push(parseNode(e, macros));
+                a.push(this.parseNode(e, macros));
             }
-            return jssemant.array(...a);
+            return this.semanticsDefinition.array(...a);
         }
 
         case "MemberExpression": {
-            return jssemant.member(parseNode(node.object, macros),
-                parseNode(node.property, macros));
+            return this.semanticsDefinition.member(this.parseNode(node.object, macros),
+                this.parseNode(node.property, macros));
         }
 
         default: return fail(`parsers.es6: Unrecognized ES6 node type ${node.type}`, node);

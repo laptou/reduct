@@ -365,6 +365,6 @@ export default function projector(definition) {
     case "sprite":
         return spriteProjector(definition);
     default:
-        throw `Unrecognized projection type ${definition.type}`;
+        throw new Error(`Unrecognized projection type ${definition.type}`);
     }
 }

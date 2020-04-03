@@ -310,7 +310,6 @@ export default function transform(definition) {
 
         if (n1.get("type") === "array") {
             if (n1.get("length") !== n2.get("length")) return false;
-            debugger;
             for (let i = 0; i < n1.get("length"); i++) {
                 const e1 = nodes.get(n1.get(`elem${i}`));
                 const e2 = nodes.get(n2.get(`elem${i}`));

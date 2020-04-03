@@ -65,7 +65,6 @@ const fetchLevel = (sessionParams) => {
 window.startup = async () => {
     try {
         const consented = await new ConsentDialog(USER_IDS).show().wait();
-        let sessionParams;
 
         console.log(`User consented to logging: ${consented}`);
 
@@ -76,6 +75,8 @@ window.startup = async () => {
         }
 
         Logging.config("enabled", consented);
+
+        let sessionParams;
 
         if (consented) {
             Logging.config("offline", false);
@@ -292,7 +293,7 @@ function startGame() {
 // Log state graph, using multiple requests to avoid problem of too-long URI.
 let __monotonic = 0;
 function persistGraph() {
-    if (!stg || !stg.stateGraph) return;
+    if (!stg?.stateGraph) return;
 
     try {
         const graph = stg.stateGraph.serialize();

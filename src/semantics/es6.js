@@ -1,6 +1,4 @@
 import * as core from "./core";
-import * as gfx from "../gfx/core";
-import * as animate from "../gfx/animate";
 import { makeParser, makeUnparser } from "../syntax/es6";
 import transform from "./transform";
 
@@ -17,7 +15,7 @@ import not from "./es6/not";
 import reference from "./es6/reference";
 import value from "./es6/value";
 
-function ucfirst(s) {
+function capitalize(s) {
     return s.charAt(0).toUpperCase() + s.substr(1);
 }
 
@@ -32,8 +30,8 @@ export default transform({
             const replacements = defn.nameReplacements || [];
 
             for (const [ key, replacement ] of replacements) {
-                const Key = ucfirst(key);
-                const Replacement = ucfirst(replacement);
+                const Key = capitalize(key);
+                const Replacement = capitalize(replacement);
                 name = name.replace(new RegExp(key, "g"), replacement)
                     .replace(new RegExp(Key, "g"), Replacement);
             }
