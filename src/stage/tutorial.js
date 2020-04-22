@@ -1,3 +1,6 @@
+// TODO: big refactor
+/* eslint-disable max-classes-per-file */
+
 import * as gfx from "../gfx/core";
 import * as animate from "../gfx/animate";
 import Logging from "../logging/logging";

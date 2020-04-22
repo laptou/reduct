@@ -7,7 +7,7 @@ import ModalDialog from "../component/modal-dialog";
  * @member {Boolean} active Whether this Tutorial is currently active.
  */
 export default class TutorialDialog extends ModalDialog {
-    constructor(key, autoplay = true) {
+    constructor(autoplay = true) {
         const container = document.querySelector("#tutorial");
         super(container, { allowSoftDismiss: true });
 
@@ -22,7 +22,9 @@ export default class TutorialDialog extends ModalDialog {
         this.videoPlayer = new VideoPlayer(
             this.el.querySelector(".video-player"),
             // eslint-disable-next-line import/no-dynamic-require
-            (await import(`@resources/videos/${key}.mp4`)).default,
+            await import(`@resources/videos/${key}.mp4`)
+                .then((mod) => mod.default)
+                .catch((err) => console.error("failed to load tutorial", err)),
         );
         return this;
     }

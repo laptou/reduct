@@ -1,5 +1,5 @@
 import * as core from "./core";
-import { makeParser, makeUnparser } from "../syntax/es6";
+import { ES6Parser, makeUnparser } from "../syntax/es6";
 import transform from "./transform";
 
 import apply from "./es6/apply";
@@ -22,7 +22,11 @@ function capitalize(s) {
 export default transform({
     name: "ECMAScript 6",
     parser: {
-        parse: makeParser,
+        parse: (semanticsDefinition) => {
+            // gradually introducing class-based model
+            const parser = new ES6Parser(semanticsDefinition);
+            return parser.parse.bind(parser);
+        },
         unparse: makeUnparser,
 
         templatizeName: (semant, name) => {

@@ -2,6 +2,7 @@ const webpack = require("webpack");
 const path = require("path");
 
 const HtmlPlugin = require("html-webpack-plugin");
+const EslintPlugin = require("eslint-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const SriPlugin = require("webpack-subresource-integrity");
@@ -19,7 +20,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 exports.default = (env) => ({
     context: __dirname,
     entry: ["./src/index.js"],
-    devtool: env.development ? "eval-source-map" : false,
+    devtool: env.development ? "source-map" : false,
     devServer: {
         port: 1234,
         hot: true,
@@ -43,14 +44,6 @@ exports.default = (env) => ({
                         loader: "babel-loader",
                         options: {
                             cacheDirectory: true,
-                        },
-                    },
-                    {
-                        loader: "eslint-loader",
-                        options: {
-                            // ESLint will not prevent you from building the project
-                            // due to lint errors ... for now
-                            emitWarning: true,
                         },
                     },
                 ],
@@ -98,6 +91,7 @@ exports.default = (env) => ({
         ...(env.development
             ? [
                 new webpack.HotModuleReplacementPlugin(),
+                new EslintPlugin(),
             ]
             : []),
     ],
