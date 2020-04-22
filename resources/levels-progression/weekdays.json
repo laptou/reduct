@@ -9,11 +9,15 @@
                 "mon == mon",
                 "_ == tue"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "true",
                 "false"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "tue",
@@ -28,11 +32,15 @@
                 "_ == _",
                 "__tests(testMe(sat, sat), testMe(mon, tue))"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "true",
                 "false"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that outputs true if the x and y are the same weekday, otherwise false",
             "toolbox": [
@@ -52,11 +60,15 @@
             "defines": [
                 "function isMonday(x) { return x == mon }"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "true",
                 "false"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that outputs true if x is Monday, otherwise false",
             "toolbox": [
@@ -75,11 +87,15 @@
             "defines": [
                 "function isFriday(x) { return x == fri }"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "false",
                 "true"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that outputs true if x is Friday, otherwise false",
             "toolbox": [
@@ -100,6 +116,7 @@
                 "isFriday(_)",
                 "__tests(testMe(mon), testMe(tue), testMe(fri), testMe(sun))"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "true",
@@ -107,6 +124,9 @@
                 "false",
                 "false"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that outputs true if x is Monday or Friday, otherwise false",
             "toolbox": [
@@ -126,6 +146,7 @@
                 "x",
                 "__tests(testMe(mon), testMe(tue), testMe(fri), testMe(sun))"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "true",
@@ -133,6 +154,9 @@
                 "false",
                 "false"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that outputs true if x is Monday or Friday, otherwise false",
             "toolbox": [
@@ -157,6 +181,7 @@
             "defines": [
                 "function isWeekend(x) { return x == sat ? true : x == sun }"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "true",
@@ -164,6 +189,9 @@
                 "false",
                 "true"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that outputs true if x is the weekend, otherwise false",
             "toolbox": [
@@ -184,6 +212,7 @@
                 "function isWeekday(x) {return isWeekend ? false : _; }",
                 "__tests(testMe(sat), testMe(tue), testMe(mon), testMe(sun))"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "false",
@@ -191,6 +220,9 @@
                 "true",
                 "false"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that outputs true if x is one of the weekdays, otherwise false",
             "toolbox": [
@@ -211,6 +243,7 @@
                 "_ ? _ : _",
                 "__tests(testMe(sat), testMe(tue), testMe(mon), testMe(sun))"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "false",
@@ -218,6 +251,9 @@
                 "true",
                 "false"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that outputs true if x is one of the weekdays, otherwise false",
             "toolbox": [
@@ -239,11 +275,15 @@
                 "function tomorrow(day) {return _;}",
                 "{ day == mon ? tue : (day == tue ? wed : (day == wed ? thu : (day == thu ? fri : (day == fri ? sat : (day == sat ? sun : mon))))); }"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "tue",
                 "sun"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define the function tomorrow to compute the next day of any given day",
             "toolbox": [
@@ -261,11 +301,15 @@
                 "function yesterday(day) {return _;}",
                 "{day == mon ? sun : (day == tue ? mon : (day == wed ? tue : (day == thu ? wed : (day == fri ? thu : (day == sat ? fri : sat))))); }"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "tue",
                 "sun"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define the function yesterday to compute the previous day of any given day",
             "toolbox": [
@@ -287,6 +331,7 @@
                 "function tomorrow(x) { return x == mon ? tue : (x == tue ? wed : (x == wed ? thu : (x == thu ? fri : (x == fri ? sat : (x == sat ? sun : mon))))); }",
                 "function yesterday(x) { return x == mon ? sun : (x == tue ? mon : (x == wed ? tue : (x == thu ? wed : (x == fri ? thu : (x == sat ? fri : sat))))); }"
             ],
+            "fade": {},
             "globals": {
                 "tomorrow": "function tomorrow(x) { return x == mon ? tue : (x == tue ? wed : (x == wed ? thu : (x == thu ? fri : (x == fri ? sat : (x == sat ? sun : mon))))); }",
                 "yesterday": "function yesterday(x) { return x == mon ? sun : (x == tue ? mon : (x == wed ? tue : (x == thu ? wed : (x == fri ? thu : (x == sat ? fri : sat))))); }"
@@ -295,6 +340,9 @@
                 "tue",
                 "tue"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "mon",

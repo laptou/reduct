@@ -9,6 +9,7 @@
                 "function count(a) {return (a == []) ? 0: count(remove_first(a)) + 1}",
                 "[A, A, C, A]"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -16,6 +17,8 @@
             "goal": [
                 "4"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
             "textgoal": "Let's count to 4!",
@@ -29,6 +32,7 @@
             "board": [
                 "function count(a) {return (a == _) ? _: count(remove_first(a)) + 1}"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -36,9 +40,11 @@
             "goal": [
                 "0"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "Can you count a list with no items in it? ",
+            "textgoal": "Can you count a list with no items in it?",
             "toolbox": [
                 "count",
                 "remove_first",
@@ -54,6 +60,7 @@
                 "function count(a) {return (a == []) ? 0: _ + _}",
                 "count"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -61,6 +68,8 @@
             "goal": [
                 "3"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
             "textgoal": "Let's count to 3!",
@@ -79,6 +88,7 @@
                 "function count(a) {return (a == _) ? _ : _ + _}",
                 "count"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -86,6 +96,8 @@
             "goal": [
                 "4"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
             "textgoal": "Can you count a mixed list?",
@@ -104,6 +116,7 @@
             "board": [
                 "function count_target(a, target) {(a == []) ? 0: (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -111,9 +124,11 @@
             "goal": [
                 "3"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "Can you count only one type of object? ",
+            "textgoal": "Can you count only one type of object?",
             "toolbox": [
                 "count_target",
                 "A",
@@ -126,6 +141,7 @@
             "board": [
                 "function count_target(a, target) {(_ == _) ? _: (first(a) == target) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -133,6 +149,8 @@
             "goal": [
                 "0"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
             "textgoal": "Let's count a list of 0!",
@@ -152,6 +170,7 @@
             "board": [
                 "function count_target(a, target) {(a == []) ? 0: (_ == _) ? count_target(remove_first(a), target) + 1: count_target(remove_first(a), target)}"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -159,9 +178,11 @@
             "goal": [
                 "1"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "Can you count to 1? ",
+            "textgoal": "Can you count to 1?",
             "toolbox": [
                 "count_target",
                 "first",
@@ -177,6 +198,7 @@
             "board": [
                 "function count_target(a, target) {(a == []) ? 0: (first(a) == target) ? _ + _: count_target(remove_first(a), target)}"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -184,9 +206,11 @@
             "goal": [
                 "3"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "Can we still count this list? ",
+            "textgoal": "Can we still count this list?",
             "toolbox": [
                 "first",
                 "remove_first",
@@ -205,6 +229,7 @@
             "board": [
                 "function count_target(a, target) {(a == []) ? 0: (first(a) == target) ? count_target(remove_first(a), target) + 1: _}"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -212,9 +237,11 @@
             "goal": [
                 "2"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "Can you fill out the bottom part? ",
+            "textgoal": "Can you fill out the bottom part?",
             "toolbox": [
                 "0",
                 "1",
@@ -233,6 +260,7 @@
             "board": [
                 "function count_target(a, target) {(a == []) ? 0:( _ == _) ? _ + _: _}"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -240,9 +268,11 @@
             "goal": [
                 "3"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "Can you fill out the whole thing? ",
+            "textgoal": "Can you fill out the whole thing?",
             "toolbox": [
                 "__unlimited; first",
                 "__unlimited; target",
@@ -260,6 +290,7 @@
             "board": [
                 "function count_target(a, target) {(a == []) ? 0: (_ == _) ? _ + _: _}"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -267,6 +298,8 @@
             "goal": [
                 "2"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
             "textgoal": "Let's fill out the whole function!",
@@ -290,13 +323,16 @@
             "board": [
                 "concat"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "[A, B, A]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "Just as a reminder, concat glues two arrays together. ",
+            "textgoal": "Just as a reminder, concat glues two arrays together.",
             "toolbox": [
                 "[A]",
                 "[B, A]"
@@ -307,6 +343,7 @@
             "board": [
                 "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? remove_value(remove_first(a), target): concat([first(a)], remove_value(remove_first(a), target))}"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -314,9 +351,11 @@
             "goal": [
                 "[A, A, A]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "Can you remove something from this list? ",
+            "textgoal": "Can you remove something from this list?",
             "toolbox": [
                 "remove_value",
                 "B",
@@ -328,6 +367,7 @@
             "board": [
                 "function remove_value(a, target) {(_ == _) ? _: (first(a) == target) ? remove_value(remove_first(a), target): concat([first(a)], remove_value(remove_fisrt(a), target))}"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -335,9 +375,11 @@
             "goal": [
                 "[]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "What happens when you put in an empty list? ",
+            "textgoal": "What happens when you put in an empty list?",
             "toolbox": [
                 "remove_value",
                 "__unlimited; []",
@@ -351,6 +393,7 @@
             "board": [
                 "function remove_value(a, target) {(a == []) ? []: (_ == _) ? remove_value(remove_first(a), target): concat([first(a)], remove_value(remove_first(a), target))}"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -358,9 +401,11 @@
             "goal": [
                 "[B, B, B]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "What do you want to remove? ",
+            "textgoal": "What do you want to remove?",
             "toolbox": [
                 "remove_value",
                 "remove_first",
@@ -377,6 +422,7 @@
             "board": [
                 "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? _ : concat([first(a)], remove_value(remove_first(a), target))}"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -384,9 +430,11 @@
             "goal": [
                 "[A, A]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "What happens when your first item is the target? ",
+            "textgoal": "What happens when your first item is the target?",
             "toolbox": [
                 "__unlimited; remove_value",
                 "remove_first",
@@ -403,6 +451,7 @@
             "board": [
                 "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? remove_value(remove_first(a, target), _ ):concat([first(a)], remove_value(remove(first(a), target))}"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -410,9 +459,11 @@
             "goal": [
                 "[B, B]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "What happens when your first item isn't the target? ",
+            "textgoal": "What happens when your first item isn't the target?",
             "toolbox": [
                 "concat",
                 "[first(a)]",
@@ -430,6 +481,7 @@
             "board": [
                 "function remove_value(a, target) {(a == []) ? []: (first(a) == target) ? _ : _}"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -437,9 +489,11 @@
             "goal": [
                 "[A, A, A]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "Can you fill out the entire bottom section? ",
+            "textgoal": "Can you fill out the entire bottom section?",
             "toolbox": [
                 "__unlimited; concat",
                 "__unlimited; [first(a)]",
@@ -459,6 +513,7 @@
                 "[A, B, A, A]",
                 "B"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -466,9 +521,11 @@
             "goal": [
                 "[A, A, A]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "Can you fill out the whole thing? ",
+            "textgoal": "Can you fill out the whole thing?",
             "toolbox": [
                 "__unlimited; concat",
                 "__unlimited; [first(a)]",
@@ -488,6 +545,7 @@
                 "replace_value",
                 "[5, 6, 7]"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -495,9 +553,11 @@
             "goal": [
                 "[5, 8, 7]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "Replace value allows you to replace one value for another. ",
+            "textgoal": "Replace value allows you to replace one value for another.",
             "toolbox": [
                 "6",
                 "8",
@@ -511,6 +571,7 @@
                 "replace_value",
                 "[5, 6, 7]"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -518,9 +579,11 @@
             "goal": [
                 "[]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "What happens when you have an empty list? ",
+            "textgoal": "What happens when you have an empty list?",
             "toolbox": [
                 "0",
                 "a",
@@ -536,6 +599,7 @@
                 "7",
                 "9"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -543,9 +607,11 @@
             "goal": [
                 "[4, 9, 8]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "How can you make sure you are replacing the right value? ",
+            "textgoal": "How can you make sure you are replacing the right value?",
             "toolbox": [
                 "first",
                 "a",
@@ -563,6 +629,7 @@
                 "11",
                 "9"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -570,9 +637,11 @@
             "goal": [
                 "[6, 7, 9]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "What happens when the first value is the target? ",
+            "textgoal": "What happens when the first value is the target?",
             "toolbox": [
                 "concat",
                 "replacement",
@@ -593,6 +662,7 @@
                 "5",
                 "3"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -600,9 +670,11 @@
             "goal": [
                 "[5, 4]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "What happens if the first value isn't the target? ",
+            "textgoal": "What happens if the first value isn't the target?",
             "toolbox": [
                 "concat",
                 "first",
@@ -625,6 +697,7 @@
                 "9",
                 "2"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -632,6 +705,8 @@
             "goal": [
                 "[7, 2]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
             "textgoal": "Let's fill out the bottom part!",
@@ -656,6 +731,7 @@
                 "12",
                 "14"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -663,6 +739,8 @@
             "goal": [
                 "[14, 15, 21]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
             "textgoal": "Let's fill out the whole function!",
@@ -686,6 +764,7 @@
                 "insert_in_order",
                 "[10, 15, 18]"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -693,9 +772,11 @@
             "goal": [
                 "[10, 14, 15, 18"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "Insert in order inserts a number so the whole list is sorted. ",
+            "textgoal": "Insert in order inserts a number so the whole list is sorted.",
             "toolbox": [
                 "14"
             ]
@@ -708,6 +789,7 @@
                 "[]",
                 "2"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -715,9 +797,11 @@
             "goal": [
                 "[2]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "What happens when you have an empty list? ",
+            "textgoal": "What happens when you have an empty list?",
             "toolbox": [
                 "a",
                 "0",
@@ -734,6 +818,7 @@
                 "[1, 2, 3]",
                 "4"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -741,9 +826,11 @@
             "goal": [
                 "[1, 2, 3, 4]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "How do you make sure you are inserting in the right place? ",
+            "textgoal": "How do you make sure you are inserting in the right place?",
             "toolbox": [
                 "first",
                 "a",
@@ -760,6 +847,7 @@
                 "[5, 6]",
                 "7"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -767,9 +855,11 @@
             "goal": [
                 "[5, 6, 7]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "What happens when your position value is less than the target? ",
+            "textgoal": "What happens when your position value is less than the target?",
             "toolbox": [
                 "target",
                 "a",
@@ -790,6 +880,7 @@
                 "[6, 7, 8]",
                 "9"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -797,9 +888,11 @@
             "goal": [
                 "[6, 7, 8, 9]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "What happens when your position value is more than the target? ",
+            "textgoal": "What happens when your position value is more than the target?",
             "toolbox": [
                 "concat",
                 "a",
@@ -815,6 +908,7 @@
                 "[10, 15, 23]",
                 "21"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -822,6 +916,8 @@
             "goal": [
                 "[10, 15, 21, 23]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
             "textgoal": "Let's fill out the bottom part!",
@@ -844,6 +940,7 @@
                 "[25, 29, 36]",
                 "21"
             ],
+            "fade": {},
             "globals": {
                 "first": "function first(a) {return get(a,0);}",
                 "remove_first": "function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1, length(a))}"
@@ -851,6 +948,8 @@
             "goal": [
                 "[21, 25, 29, 36]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
             "textgoal": "Let's fill out the whole function!",

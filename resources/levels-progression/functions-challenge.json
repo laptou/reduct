@@ -11,11 +11,15 @@
                 "x => C",
                 "A"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "B",
                 "C"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Create {a square} and {a triangle}",
             "toolbox": [
@@ -33,11 +37,15 @@
                 "C",
                 "C"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "A",
                 "B"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Create {a star} and {a square}",
             "toolbox": [
@@ -51,10 +59,14 @@
                 "(x) => (y) => _",
                 "x => xx"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "15"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "_ + _",
@@ -72,10 +84,14 @@
                 "x => xxx",
                 "(x) => (y) => _ + _"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "16"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "x",

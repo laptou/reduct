@@ -9,11 +9,14 @@
                 "function concatStrings(a,b) { return  (a) + (b); }",
                 "\"Computer\""
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "\"ComputerScience\""
             ],
             "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function to concatenate two strings",
             "toolbox": [
@@ -31,11 +34,14 @@
             "defines": [
                 "function reverseString(str) {return str == \"\" ? \"\" : (x => reverseString(slice(str,1, length(str))) + x)(get(str,0));}"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "\"eeffocsetalocohc\""
             ],
             "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that reverses a string",
             "toolbox": [
@@ -51,6 +57,7 @@
                 "\"abcd\"",
                 "str"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "true",
@@ -59,6 +66,8 @@
             "hideGlobals": [
                 "reverseString"
             ],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that checks if  string is a palindrome",
             "toolbox": [
@@ -73,12 +82,15 @@
                 "\"ooooompalooooompa\"",
                 "function countAs(str,char,counter) { return  ((str) == (\"\")) ? (counter) : (((get(str, 0)) == (char)) ? (countAs(slice(str, 1, length(str)), char, (counter) + (1))) : (countAs(slice(str, 1, length(str)), char, counter))); }"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "10",
                 "2"
             ],
             "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that counts the occurences of a given character",
             "toolbox": [

@@ -8,10 +8,14 @@
             "board": [
                 "(firstNumber) => (secondNumber) => firstNumber + secondNumber"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "7"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "1",
@@ -26,10 +30,14 @@
             "board": [
                 "(a) => (b) => b + a"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "12"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "1",
@@ -45,11 +53,15 @@
                 "(number) => (dontCare) => number + 1",
                 "(dontCare) => (number) => number + 3"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "4",
                 "6"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "1",
@@ -66,10 +78,14 @@
                 "A",
                 "B"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "A"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Create {a star}"
         },
@@ -80,10 +96,14 @@
                 "B",
                 "C"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "C"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Create {a triangle}"
         },
@@ -95,11 +115,15 @@
                 "B",
                 "C"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "A",
                 "C"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Create {a star} and {a triangle}"
         },
@@ -113,11 +137,15 @@
                 "D",
                 "C"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "A",
                 "C"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Create {a star} and {a triangle}"
         },
@@ -126,10 +154,14 @@
             "board": [
                 "x => y => _"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "A"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Create {a star}",
             "toolbox": [
@@ -146,10 +178,14 @@
                 "B",
                 "B"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "A"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Create {a star}"
         },
@@ -159,11 +195,15 @@
                 "dontCare => something => C",
                 "object => y => object"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "A",
                 "C"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Create {a star} and {a triangle}",
             "toolbox": [

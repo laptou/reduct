@@ -16,12 +16,14 @@
                 "func",
                 "_ - 1"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "_",
                 "_",
                 "_"
             ],
+            "hideGlobals": [],
             "input": [
                 "(3, addOne, 3)",
                 "(3, doNothing, 5)",
@@ -51,12 +53,14 @@
                 "__tests(testMe(2, addOne, 6), testMe(3, addOne, 12), testMe(4, addOne, 22))",
                 "myRepeat"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "8",
                 "15",
                 "26"
             ],
+            "hideGlobals": [],
             "input": [],
             "output": [],
             "syntax": [],

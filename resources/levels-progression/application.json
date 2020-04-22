@@ -10,10 +10,14 @@
             "board": [
                 "(number => number)(1)"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "1"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Use the application block",
             "tutorial": "application"
@@ -26,10 +30,14 @@
                 "(x => x + 1)(_)",
                 "(x => x)(_)"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "4"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "2",
@@ -43,10 +51,14 @@
                 "_(2)",
                 "_(_)"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "4"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "num => num+ 1",
@@ -61,12 +73,16 @@
                 "_(3)",
                 "_(8)"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "1",
                 "6",
                 "8"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "x => x + 1",
@@ -83,10 +99,14 @@
                 "_(_)",
                 "x => x + _"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "7"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "1",
@@ -105,11 +125,15 @@
                 "1",
                 "3"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "6",
                 "7"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "number => number + _",

@@ -15,6 +15,9 @@
                 "C",
                 "C"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": []
         },
         {
@@ -28,6 +31,9 @@
                 "A",
                 "A"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "x => A",
@@ -46,6 +52,9 @@
                 "3",
                 "7"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "__unlimited;addOne;"
@@ -64,6 +73,9 @@
                 "A",
                 "A"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "__unlimited; starify",
@@ -86,6 +98,9 @@
                 "3",
                 "3"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that outputs 3",
             "toolbox": [
@@ -109,6 +124,9 @@
                 "3",
                 "4"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "threeify",
@@ -132,6 +150,9 @@
                 "5",
                 "9"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that computes x plus 3",
             "toolbox": [

@@ -9,11 +9,14 @@
             "defines": [
                 "function fold(f, a, i) { return 0;}"
             ],
+            "fade": {},
             "globals": {},
             "goal": [],
             "hideGlobals": [
                 "addOne"
             ],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "play",
             "toolbox": [

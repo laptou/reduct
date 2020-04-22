@@ -16,6 +16,9 @@
             "goal": [
                 "7"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function to add 2 to a number.",
             "toolbox": [
@@ -38,6 +41,9 @@
             "goal": [
                 "18"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function to use a function 3 times in a row.",
             "toolbox": [
@@ -64,6 +70,9 @@
             "goal": [
                 "16"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function to use a function 2 times in a row.",
             "toolbox": [
@@ -90,6 +99,9 @@
             "goal": [
                 "7"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Use the apply block to generate the goal!",
             "toolbox": [
@@ -112,6 +124,9 @@
             "goal": [
                 "7"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "addOne",
@@ -141,6 +156,9 @@
                 "9",
                 "13"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Use twice to define a function that computes x plus 2",
             "toolbox": [
@@ -169,6 +187,9 @@
                 "5",
                 "13"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that computes x plus 4",
             "toolbox": [
@@ -189,6 +210,9 @@
             "goal": [
                 "5"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "The repeat function lets you use the same function many times!",
             "toolbox": [
@@ -211,6 +235,9 @@
             "goal": [
                 "11"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "__unlimited; _(_)",
@@ -232,6 +259,9 @@
             "goal": [
                 "8"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "__unlimited; _(_)",
@@ -262,6 +292,9 @@
                 "11",
                 "15"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that computes x plus 6",
             "toolbox": [
@@ -287,6 +320,9 @@
                 "9",
                 "12"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "__unlimited; _(_)",
@@ -319,6 +355,9 @@
                 "8",
                 "9"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that computes a plus b",
             "toolbox": [
@@ -352,6 +391,9 @@
                 "8",
                 "9"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that computes a plus b",
             "toolbox": [

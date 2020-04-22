@@ -8,10 +8,14 @@
             "board": [
                 "object => _"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "B"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Build your own function to create a {square}",
             "toolbox": [
@@ -24,10 +28,14 @@
             "board": [
                 "x => _"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "A"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Hint: create a function that gives back the input",
             "toolbox": [
@@ -46,10 +54,14 @@
                 "B",
                 "C"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "B"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Create {a square} using functions"
         },
@@ -58,11 +70,15 @@
             "board": [
                 "x => xx"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "C",
                 "C"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Create two {triangles}",
             "toolbox": [
@@ -78,12 +94,16 @@
                 "_ + 7",
                 "4 + _"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "5",
                 "5",
                 "9"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "1",
@@ -94,83 +114,18 @@
         {
             "animationScales": {},
             "board": [
-                "x => xx",
-                "something => something",
-                "A"
-            ],
-            "globals": {},
-            "goal": [
-                "A"
-            ],
-            "syntax": [],
-            "textgoal": "Create {a star}"
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "x => xx",
-                "x => C"
-            ],
-            "globals": {},
-            "goal": [
-                "B",
-                "C"
-            ],
-            "syntax": [],
-            "textgoal": "Create {a square} and {a triangle}",
-            "toolbox": [
-                "A",
-                "B"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "x => xx",
-                "B"
-            ],
-            "globals": {},
-            "goal": [
-                "A",
-                "B"
-            ],
-            "syntax": [],
-            "textgoal": "Create {a star} and {a square}",
-            "toolbox": [
-                "A",
-                "x",
-                "x => _"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "2",
-                "7",
-                "x => xxx"
-            ],
-            "globals": {},
-            "goal": [
-                "1",
-                "5"
-            ],
-            "syntax": [],
-            "toolbox": [
-                "number => number + 1",
-                "k => k - 1"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
                 "(x) => xx",
                 "(number) => _ + number"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "5",
                 "6"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Create a function to add 2 to the input",
             "toolbox": [
@@ -185,10 +140,14 @@
             "board": [
                 "x => xx"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "11"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Choose your functions wisely",
             "toolbox": [
@@ -204,10 +163,14 @@
             "board": [
                 "x => x + x"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "4"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "0",
@@ -222,10 +185,14 @@
                 "(x) => x + _",
                 "x => xx"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "8"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Hint: what function should you duplicate?",
             "toolbox": [

@@ -79,15 +79,20 @@ def csv2json(infile, outfile):
             level = {}
             skip_level = False
 
-            try:
-              if lvl['number'] == "SKIP":
+            # removing spacing from aligned CSVs
+            lvl = { 
+                key.strip():val.strip() for key, val in # then strip whitespace from keys and values
+                (kv for kv in lvl.items() if kv[0] is not None and kv[1] is not None) # filter out none values first
+            }
+
+            if 'number' in level and lvl['number'] == "SKIP":
                 skip_level = True
-            except KeyError as ke:
-                {}
 
             for field, converter in fieldnames.items():
                 try:
                     if field not in lvl:
+                        if field in field_defaults:
+                            level[field] = field_defaults[field]
                         continue
 
                     if lvl[field] is None and field in field_defaults:

@@ -12,11 +12,15 @@
             "defines": [
                 "function isTriangle(x) { return x == 'triangle'; }"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "true",
                 "false"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "__unlimited; isTriangle;"
@@ -31,12 +35,16 @@
             "defines": [
                 "function isStar(x) { return x == 'star'; }"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "true",
                 "false",
                 "true"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that outputs true if x is {a star}, otherwise false",
             "toolbox": [
@@ -57,6 +65,7 @@
             "defines": [
                 "function isZero(x) { return x == 0; }"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "false",
@@ -64,6 +73,9 @@
                 "false",
                 "true"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that outputs true if x is 0, otherwise false",
             "toolbox": [
@@ -82,11 +94,15 @@
                 "function add(x,y) { return (_ + _); }",
                 "x"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "6",
                 "9"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that adds two numbers",
             "toolbox": [
@@ -109,12 +125,16 @@
                 "y",
                 "x"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "false",
                 "true",
                 "true"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that outputs true if x and y are equal, otherwise false",
             "toolbox": [
@@ -134,12 +154,16 @@
             "defines": [
                 "function equals(x, y) { return x == y; }"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "false",
                 "true",
                 "false"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that outputs true if x and y are equal, otherwise false",
             "toolbox": [
@@ -158,12 +182,16 @@
                 "x == _",
                 "__tests(testMe('rect'), testMe('star'), testMe('triangle'))"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "0",
                 "1",
                 "0"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that outputs 1 if x is {a star}",
             "toolbox": [
@@ -185,12 +213,16 @@
             "defines": [
                 "function alwaysOne(x) { return x == 1 ? x : 1; }"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "1",
                 "1",
                 "1"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Define a function that always outputs 1",
             "toolbox": [
@@ -210,6 +242,7 @@
             "defines": [
                 "function firstNonZero(x, y) { return x == 0 ? x : y; }"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "1",
@@ -217,8 +250,11 @@
                 "2",
                 "3"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
-            "textgoal": "Define a function that outputs x if it is non zero and y otherwise ",
+            "textgoal": "Define a function that outputs x if it is non zero and y otherwise",
             "toolbox": [
                 "__unlimited;isZero;",
                 "__unlimited; firstNonZero; ",

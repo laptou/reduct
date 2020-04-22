@@ -9,13 +9,16 @@
                 "get(a, _)",
                 "[A, B, B]"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "A"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "Just as a reminder, \"get\" gets an item from a list. Hint: the list starts at position 0. ",
+            "textgoal": "Just as a reminder, \"get\" gets an item from a list. Hint: the list starts at position 0.",
             "toolbox": [
                 "0",
                 "1",
@@ -31,13 +34,16 @@
             "defines": [
                 "function first(a) {return get(a,0);}"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "A"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "First allows you to get the first item in a list. ",
+            "textgoal": "First allows you to get the first item in a list.",
             "toolbox": [
                 "first"
             ]
@@ -48,13 +54,16 @@
                 "function first(a) {return _}",
                 "[B, A, A]"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "B"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "Can you get the first item from this list? ",
+            "textgoal": "Can you get the first item from this list?",
             "toolbox": [
                 "first",
                 "get(a,_)",
@@ -72,13 +81,16 @@
             "defines": [
                 "function remove_first(a) {return length(a) < 2 ? []: slice(a, 1, length(a))}"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "[A, B, A]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "Remove_first allows you to remove the first item in a list. ",
+            "textgoal": "Remove_first allows you to remove the first item in a list.",
             "toolbox": [
                 "remove_first"
             ]
@@ -89,13 +101,16 @@
                 "function remove_first(a) {return _ < _ ? _: slice(a, 1, length(a))}",
                 "[A]"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "[]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "What happens when the list only has one item in it? Hint: length allows you to find the length of a list and slice cuts up an array. ",
+            "textgoal": "What happens when the list only has one item in it? Hint: length allows you to find the length of a list and slice cuts up an array.",
             "toolbox": [
                 "remove_first",
                 "length(a)",
@@ -114,13 +129,16 @@
                 "function remove_first(a) {return length(a) < 2 ? []: _}",
                 "[A, B, B, A]"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "[B, B, A]"
             ],
+            "hideGlobals": [],
+            "input": [],
             "output": [],
             "syntax": [],
-            "textgoal": "What happens in a normal list? ",
+            "textgoal": "What happens in a normal list?",
             "toolbox": [
                 "remove_first",
                 "length(a)",

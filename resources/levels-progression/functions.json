@@ -9,10 +9,14 @@
                 "x => x",
                 "A"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "A"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Drop the {star} onto the function!",
             "tutorial": "reduct-intro"
@@ -25,10 +29,14 @@
                 "something => something",
                 "A"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "A"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [
                 "syntax-lambda"
             ],
@@ -42,10 +50,14 @@
                 "object => object",
                 "a => a"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "a => a"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "The input to a function can be another function"
         },
@@ -54,23 +66,31 @@
             "board": [
                 "1 + 1"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "2"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
-            "textgoal": "This is an expression you can click on "
+            "textgoal": "This is an expression you can click on"
         },
         {
             "animationScales": {},
             "board": [
                 "B"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "B",
                 "B"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Use the toolbox at the bottom of the screen to place two {squares} on the board",
             "toolbox": [
@@ -83,11 +103,15 @@
         {
             "animationScales": {},
             "board": [],
+            "fade": {},
             "globals": {},
             "goal": [
                 "5",
                 "8"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [
                 "syntax-add"
             ],
@@ -105,11 +129,15 @@
                 "A",
                 "D"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "A",
                 "A"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Create two {stars}"
         },
@@ -120,12 +148,16 @@
                 "dontCare => A",
                 "whatever => B"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "C",
                 "B",
                 "A"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Create a {star}, {square}, and {triangle}",
             "toolbox": [
@@ -140,10 +172,14 @@
             "board": [
                 "(number) => number + 1"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "4"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "2",
@@ -158,10 +194,14 @@
                 "(number) => number + 3",
                 "(i) => i + 1"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "8"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Hint: you can\u2019t add a function to a number",
             "toolbox": [
@@ -170,6 +210,26 @@
                 "4",
                 "5",
                 "6"
+            ]
+        },
+        {
+            "animationScales": {},
+            "board": [
+                "x => x"
+            ],
+            "fade": {},
+            "globals": {},
+            "goal": [
+                "B"
+            ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
+            "syntax": [],
+            "textgoal": "Create {a square}",
+            "toolbox": [
+                "something => B",
+                "dont_care => C"
             ]
         }
     ],

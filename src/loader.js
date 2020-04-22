@@ -5,7 +5,7 @@ import * as gfx from "./gfx/core";
 import * as globalProgressions from "./game/progression";
 
 async function getImage(path) {
-    const resolvedPath = (await import(`@resources/graphics/${path}`)).default;
+    const resolvedPath = await import(`@resources/graphics/${path}`).then((mod) => mod.default);
     return new Promise((resolve, reject) => {
         const image = document.createElement("img");
         image.addEventListener("load", () => resolve(image), { once: true });
@@ -76,7 +76,7 @@ export class LoaderClass {
         this.startLoad();
         const data = await import(`@resources/audio/${key}.json`);
         const audioUrls = await Promise.all(
-            data.urls.map((u) => import(`@resources/audio/${u}`).then((f) => f.default)),
+            data.urls.map((uri) => import(`@resources/audio/${uri}`).then((mod) => mod.default)),
         );
 
         await new Promise((resolve, reject) => {
@@ -198,6 +198,7 @@ export class LoaderClass {
         const marked = {};
         let remaining = chapterKeys.length;
 
+        // eslint-disable-next-line no-labels
         outer:
         while (remaining > 0) {
             for (const [chapterName, chapter] of Object.entries(progression.chapters)) {
@@ -206,7 +207,7 @@ export class LoaderClass {
                     progression.linearChapters.push(chapterName);
 
                     chapter.startIdx = progression.levels.length;
-                    progression.levels = progression.levels.concat(chapter.levels);
+                    progression.levels.push(...chapter.levels);
                     chapter.endIdx = progression.levels.length - 1;
 
                     remaining--;

@@ -9,11 +9,15 @@
                 "'triangle' == 'star'",
                 "_ == 'star'"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "true",
                 "false"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "'star'",
@@ -28,11 +32,15 @@
                 "(number) => 2 == number",
                 "2"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "true",
                 "false"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "1",
@@ -46,11 +54,15 @@
                 "(isTwo) => 2 == isTwo",
                 "(x) => xx"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "false",
                 "true"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "2",
@@ -67,11 +79,15 @@
                 "2",
                 "2"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "true",
                 "false"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": []
         },
         {
@@ -79,10 +95,14 @@
             "board": [
                 "true ? (1 + 2) : (5 + 6)"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "3"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "tutorial": "conditional"
         },
@@ -91,10 +111,14 @@
             "board": [
                 "_ ? 'rect' : _"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "'star'"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "false",
@@ -110,11 +134,15 @@
                 "(truth) => truth ? 'triangle' : 'rect'",
                 "(trueOrFalse) => trueOrFalse ? 'rect' : 'star'"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "'triangle'",
                 "'star'"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "true",
@@ -128,10 +156,14 @@
             "board": [
                 "(z) => z == _ ? 4 : z"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "3"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "1",
@@ -145,10 +177,14 @@
                 "(x) => x == _ ? 4 : x",
                 "(y) => _ == y ? 5 : y"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "5"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "1",
@@ -164,11 +200,15 @@
                 "(thing1) => (thing2) => thing1 == thing2 ? 1 : 2",
                 "x => xx"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "1",
                 "2"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "3",
@@ -183,11 +223,15 @@
                 "(oneThing) => (anotherThing) => oneThing== anotherThing",
                 "(x) => xx"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "false",
                 "true"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "'rect'",

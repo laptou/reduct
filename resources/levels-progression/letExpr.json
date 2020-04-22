@@ -8,10 +8,14 @@
             "board": [
                 "x = _ in ((x) + (x))"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "4"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "let expressions",
             "toolbox": [
@@ -25,10 +29,14 @@
             "board": [
                 "x = _ in (x = (x) + (x) in ((x) + (x)))"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "4"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "scoping x",
             "toolbox": [
@@ -43,10 +51,14 @@
             "board": [
                 "f = _ in ((((f)(3))(4)) + (((f)(4))(3)))"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "0"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "functions in let",
             "toolbox": [

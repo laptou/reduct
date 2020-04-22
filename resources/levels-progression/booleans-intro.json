@@ -9,11 +9,15 @@
                 "'triangle' == 'star'",
                 "_ == 'star'"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "true",
                 "false"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "'star'",
@@ -28,11 +32,15 @@
                 "(number) => 2 == number",
                 "2"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "true",
                 "false"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "1",
@@ -46,11 +54,15 @@
                 "(isTwo) => 2 == isTwo",
                 "(x) => xx"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "false",
                 "true"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "2",
@@ -65,10 +77,14 @@
                 "_ == _",
                 "_ == 2"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "false"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "2",
@@ -80,10 +96,14 @@
             "board": [
                 "true ? (1 + 2) : (5 + 6)"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "3"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "tutorial": "conditional"
         },
@@ -92,10 +112,14 @@
             "board": [
                 "_ ? 'rect' : _"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "'star'"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "false",
@@ -111,11 +135,15 @@
                 "(truth) => truth ? 'triangle' : 'rect'",
                 "(trueOrFalse) => trueOrFalse ? 'rect' : 'star'"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "'triangle'",
                 "'star'"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "true",
@@ -129,10 +157,14 @@
             "board": [
                 "(z) => z == _ ? 4 : z"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "3"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "1",
@@ -146,10 +178,14 @@
                 "(x) => x == _ ? 4 : x",
                 "(y) => _ == y ? 5 : y"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "5"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "1",
@@ -165,11 +201,15 @@
                 "(thing1) => (thing2) => thing1 == thing2 ? 1 : 2",
                 "x => xx"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "1",
                 "2"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "3",
@@ -184,10 +224,14 @@
                 "(x) => _ == 'star' ? true : _",
                 "x"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "true"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "'rect'",
@@ -201,10 +245,14 @@
             "board": [
                 "!true"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "false"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": []
         },
         {
@@ -212,10 +260,14 @@
             "board": [
                 "!_"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "false"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "true",
@@ -228,10 +280,14 @@
                 "!_",
                 "_ == 'true'"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "true"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "false"
@@ -243,10 +299,14 @@
                 "!_",
                 "_ == _ "
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "false"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "__unlimited;'star'",
@@ -258,10 +318,14 @@
             "board": [
                 "!_ ? 3 : 4"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "3"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "true",
@@ -274,10 +338,14 @@
                 "_ ? 'star' : 'rect'",
                 "!_"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "'rect'"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "true",
@@ -292,10 +360,14 @@
                 "'star'",
                 "'rect'"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "'rect'"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "true",

@@ -14,10 +14,14 @@
                 "function slice(array, begin, end) { return 0;}",
                 "function set(a, i, value) { return 0;}"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "[A, B, C]"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Make an array with three elements",
             "toolbox": [
@@ -39,10 +43,14 @@
                 "function map(f, a) { return a; }",
                 "function length(a) { return 0; }"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "C"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "\"get\" can get an element from an array",
             "toolbox": [
@@ -59,10 +67,14 @@
             "board": [
                 "map(addOne, [1, _, 4])"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "[2, 4, 5]"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "\"map\" applies a function to every element",
             "toolbox": [
@@ -78,10 +90,14 @@
             "board": [
                 "map(_, [1, 2, 4, 8])"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "[2, 4, 8, 16]"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "x => x + _",
@@ -95,11 +111,15 @@
         {
             "animationScales": {},
             "board": [],
+            "fade": {},
             "globals": {},
             "goal": [
                 "3",
                 "0"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "\"length\" gives the number of elements",
             "toolbox": [
@@ -119,10 +139,14 @@
             "defines": [
                 "function concat(left,right) { return a; }"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "[1, 0, 2]"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "An array can hold other arrays",
             "toolbox": [
@@ -136,10 +160,14 @@
             "board": [
                 "[1]"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "[4,3,2,1]"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "\"concat\" glues arrays together",
             "toolbox": [
@@ -156,10 +184,14 @@
             "board": [
                 "get(_, 2)"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "C"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "toolbox": [
                 "__unlimited; concat",
@@ -176,10 +208,14 @@
             "board": [
                 "map(_, [1, 2, 1, 4])"
             ],
+            "fade": {},
             "globals": {},
             "goal": [
                 "[true, false, true, false]"
             ],
+            "hideGlobals": [],
+            "input": [],
+            "output": [],
             "syntax": [],
             "textgoal": "Make a function that sees if a number is 1",
             "toolbox": [
