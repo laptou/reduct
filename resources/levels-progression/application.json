@@ -48,27 +48,6 @@
         {
             "animationScales": {},
             "board": [
-                "_(2)",
-                "_(_)"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "4"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "toolbox": [
-                "num => num+ 1",
-                "num => num + 2",
-                "object => object"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
                 "_(5)",
                 "_(3)",
                 "_(8)"

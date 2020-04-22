@@ -92,44 +92,6 @@
         {
             "animationScales": {},
             "board": [
-                "x => object => object",
-                "B",
-                "C"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "C"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "textgoal": "Create {a triangle}"
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "e => h => e",
-                "A",
-                "B",
-                "C"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "A",
-                "C"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "textgoal": "Create {a star} and {a triangle}"
-        },
-        {
-            "animationScales": {},
-            "board": [
                 "x => y => x",
                 "x => y => y",
                 "A",
@@ -169,48 +131,6 @@
                 "B",
                 "x",
                 "y"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "something => somethingElse => A",
-                "B",
-                "B"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "A"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "textgoal": "Create {a star}"
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "dontCare => something => C",
-                "object => y => object"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "A",
-                "C"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "textgoal": "Create {a star} and {a triangle}",
-            "toolbox": [
-                "A",
-                "B",
-                "C",
-                "D"
             ]
         }
     ],

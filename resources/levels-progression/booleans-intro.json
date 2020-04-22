@@ -94,22 +94,6 @@
         {
             "animationScales": {},
             "board": [
-                "true ? (1 + 2) : (5 + 6)"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "3"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "tutorial": "conditional"
-        },
-        {
-            "animationScales": {},
-            "board": [
                 "_ ? 'rect' : _"
             ],
             "fade": {},
@@ -175,29 +159,6 @@
         {
             "animationScales": {},
             "board": [
-                "(x) => x == _ ? 4 : x",
-                "(y) => _ == y ? 5 : y"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "5"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "toolbox": [
-                "1",
-                "2",
-                "3",
-                "1",
-                "4"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
                 "(thing1) => (thing2) => thing1 == thing2 ? 1 : 2",
                 "x => xx"
             ],
@@ -243,59 +204,6 @@
         {
             "animationScales": {},
             "board": [
-                "!true"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "false"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": []
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "!_"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "false"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "toolbox": [
-                "true",
-                "false"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "!_",
-                "_ == 'true'"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "true"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "toolbox": [
-                "false"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
                 "!_",
                 "_ == _ "
             ],
@@ -322,48 +230,6 @@
             "globals": {},
             "goal": [
                 "3"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "toolbox": [
-                "true",
-                "false"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "_ ? 'star' : 'rect'",
-                "!_"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "'rect'"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "toolbox": [
-                "true",
-                "false"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "_ ? _ : _",
-                "!_",
-                "'star'",
-                "'rect'"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "'rect'"
             ],
             "hideGlobals": [],
             "input": [],

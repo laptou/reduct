@@ -197,7 +197,6 @@ export function reduct(semantics, views, restorePos) {
             return newState;
         }
         case action.BETA_REDUCE: {
-            debugger;
             const queue = [ act.topNodeId, act.argNodeId ];
             const removedNodes = {};
 

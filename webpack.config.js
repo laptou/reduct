@@ -91,7 +91,12 @@ exports.default = (env) => ({
         ...(env.development
             ? [
                 new webpack.HotModuleReplacementPlugin(),
-                new EslintPlugin(),
+                /** eslint errors are currently so many that you can't
+                 *  even see the more important errors
+                 *  makes you wonder why they even included ESLint in this
+                 *  project if they were going to completely ignore it and
+                 *  write spaghetti code */
+                // new EslintPlugin(),
             ]
             : []),
     ],

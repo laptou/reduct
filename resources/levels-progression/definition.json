@@ -49,52 +49,6 @@
         {
             "animationScales": {},
             "board": [
-                "function makeStar(x) { return A; }",
-                "D",
-                "B",
-                "C"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "A",
-                "A",
-                "A"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "textgoal": "Define a function which always outputs a {star}",
-            "toolbox": [
-                "__unlimited;makeStar"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "function triangle() { return _; }",
-                "C"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "C",
-                "C",
-                "C"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "textgoal": "Define the name \"triangle\" to be {a triangle}",
-            "toolbox": [
-                "__unlimited; triangle"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
                 "function trianglify(object) { return _; }",
                 "A",
                 "D",
@@ -113,32 +67,6 @@
             "textgoal": "Define a function that takes an input and outputs {a triangle}",
             "toolbox": [
                 "__unlimited;trianglify"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "let squarify = _;",
-                "x => _",
-                "A",
-                "A",
-                "B",
-                "C"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "B",
-                "B",
-                "B"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "textgoal": "Define a function that outputs {a square}",
-            "toolbox": [
-                "__unlimited;squarify"
             ]
         },
         {
@@ -193,33 +121,6 @@
         {
             "animationScales": {},
             "board": [
-                "addOne(7)",
-                "addOne(_)"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "7",
-                "8"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "toolbox": [
-                "1",
-                "2",
-                "3",
-                "4",
-                "5",
-                "6",
-                "7",
-                "8"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
                 "__argumentAnnotated; function doNothing(x) { return _ }",
                 "_(7)",
                 "_(3)"
@@ -243,52 +144,6 @@
                 "__unlimited; doNothing",
                 "x => _",
                 "x"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "_(3)",
-                "_(4)",
-                "_(8)"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "3",
-                "6",
-                "8"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "toolbox": [
-                "__unlimited;addOne;",
-                "__unlimited;doNothing;",
-                "_(_)"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "_(3)",
-                "_(8)",
-                "addOne(_)"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "4",
-                "8"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "toolbox": [
-                "__unlimited;addOne;",
-                "__unlimited;doNothing;"
             ]
         },
         {

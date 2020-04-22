@@ -6,23 +6,6 @@
         {
             "animationScales": {},
             "board": [
-                "x => C",
-                "__tests(testMe(A), testMe(B))"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "C",
-                "C"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": []
-        },
-        {
-            "animationScales": {},
-            "board": [
                 "__tests(testMe(A), testMe(C))"
             ],
             "fade": {},
@@ -39,25 +22,6 @@
                 "x => A",
                 "x => B",
                 "x => C"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "__tests(testMe(2), testMe(6))"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "3",
-                "7"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "toolbox": [
-                "__unlimited;addOne;"
             ]
         },
         {
@@ -110,28 +74,6 @@
                 "1",
                 "2",
                 "3"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "__tests(testMe(2), testMe(3), testMe(1))"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "2",
-                "3",
-                "4"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "toolbox": [
-                "threeify",
-                "addOne",
-                "doNothing"
             ]
         },
         {

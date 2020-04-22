@@ -61,7 +61,7 @@ export default class VideoPlayer extends EventEmitter {
     /**
      * Loads the video if it was not loaded, then plays it.
      */
-    play() {
+    async play() {
         const { video, el } = this;
 
         if (this.loadState === LOAD_STATE.NONE) {
@@ -70,7 +70,7 @@ export default class VideoPlayer extends EventEmitter {
             this.loadState = LOAD_STATE.LOADING;
         }
 
-        video.play();
+        await video.play();
 
         el.classList.add("playing");
         el.classList.remove("paused", "ended");
@@ -108,11 +108,11 @@ export default class VideoPlayer extends EventEmitter {
     /**
      * @private
      */
-    onVideoClick() {
+    async onVideoClick() {
         const { video } = this;
 
         if (video.paused) {
-            this.play();
+            await this.play();
         }
         else {
             this.pause();

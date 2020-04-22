@@ -6,5 +6,3 @@ number,board,goal,textgoal,toolbox,defines,globals,syntax,animationScales,tutori
 75,[],"['3', '0']","""length"" gives the number of elements","['[1,2,3,4]', '[A,B,C]', '[]', '[true]', '__unlimited; length']",,{},[],{},
 76,"['map(length, _)', '[[A], _, _]']","['[1, 0, 2]']",An array can hold other arrays,"['0', '[A, B]', '[]']","['function concat(left,right) { return a; }']",{},[],{},
 77,['[1]'],"['[4,3,2,1]']","""concat"" glues arrays together","['__unlimited; concat', '[4]', '[_,2]', '[4,3]', 'A', '3']",,{},[],{},
-78,"['get(_, 2)']",['C'],,"['__unlimited; concat', '[A]', 'A', '[C, B, A]', '[]', '[B]', 'D']",,{},[],{},
-79,"['map(_, [1, 2, 1, 4])']","['[true, false, true, false]']",Make a function that sees if a number is 1,"['a => _', '_ == _', '1', '2', 'true', 'a']",,{},[],{},
