@@ -60,60 +60,6 @@
         {
             "animationScales": {},
             "board": [
-                "function twice(func, number){ return _;}",
-                "number",
-                "_(_)",
-                "_(_)"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "16"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "textgoal": "Define a function to use a function 2 times in a row.",
-            "toolbox": [
-                "__unlimited; addThree",
-                "__unlimited; func",
-                "twice",
-                "3",
-                "4",
-                "5",
-                "6",
-                "10"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "__unlimited; _(_)",
-                "twice(addOne)"
-            ],
-            "fade": {},
-            "globals": {
-                "twice": "function twice(f) { return (x) => f(f(x)); }"
-            },
-            "goal": [
-                "7"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "textgoal": "Use the apply block to generate the goal!",
-            "toolbox": [
-                "3",
-                "4",
-                "5",
-                "6"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
                 "__unlimited; _(_)",
                 "twice(_)"
             ],
@@ -128,6 +74,7 @@
             "input": [],
             "output": [],
             "syntax": [],
+            "textgoal": "\ud83c\udf46",
             "toolbox": [
                 "addOne",
                 "addThree",
@@ -170,41 +117,11 @@
         {
             "animationScales": {},
             "board": [
-                "twice",
-                "z",
-                "function addFour(z) { return _; }",
-                "__tests(testMe(1), testMe(testMe(5)))"
-            ],
-            "defines": [
-                "function addFour(x) { return (twice(addTwo))(x); }",
-                "function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1, f)(f(x)); }"
-            ],
-            "fade": {},
-            "globals": {
-                "twice": "function twice(f) { return (x) => f(f(x)); }"
-            },
-            "goal": [
-                "5",
-                "13"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "textgoal": "Define a function that computes x plus 4",
-            "toolbox": [
-                "__unlimited; _(_)",
-                "addFour",
-                "addTwo"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
                 "repeat(2, addOne)"
             ],
             "fade": {},
             "globals": {
+                "repeat": "function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1, f)(f(x)); }",
                 "twice": "function twice(f) { return (x) => f(f(x)); }"
             },
             "goal": [
@@ -230,6 +147,7 @@
             ],
             "fade": {},
             "globals": {
+                "repeat": "function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1, f)(f(x)); }",
                 "twice": "function twice(f) { return (x) => f(f(x)); }"
             },
             "goal": [
@@ -254,6 +172,7 @@
             ],
             "fade": {},
             "globals": {
+                "repeat": "function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1, f)(f(x)); }",
                 "twice": "function twice(f) { return (x) => f(f(x)); }"
             },
             "goal": [
@@ -286,6 +205,7 @@
             ],
             "fade": {},
             "globals": {
+                "repeat": "function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1, f)(f(x)); }",
                 "twice": "function twice(f) { return (x) => f(f(x)); }"
             },
             "goal": [
@@ -314,6 +234,7 @@
             ],
             "fade": {},
             "globals": {
+                "repeat": "function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1, f)(f(x)); }",
                 "twice": "function twice(f) { return (x) => f(f(x)); }"
             },
             "goal": [
@@ -348,6 +269,7 @@
             ],
             "fade": {},
             "globals": {
+                "repeat": "function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1, f)(f(x)); }",
                 "twice": "function twice(f) { return (x) => f(f(x)); }"
             },
             "goal": [
@@ -384,6 +306,7 @@
             ],
             "fade": {},
             "globals": {
+                "repeat": "function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1, f)(f(x)); }",
                 "twice": "function twice(f) { return (x) => f(f(x)); }"
             },
             "goal": [

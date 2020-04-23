@@ -178,54 +178,6 @@
                 "A",
                 "3"
             ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "get(_, 2)"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "C"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "toolbox": [
-                "__unlimited; concat",
-                "[A]",
-                "A",
-                "[C, B, A]",
-                "[]",
-                "[B]",
-                "D"
-            ]
-        },
-        {
-            "animationScales": {},
-            "board": [
-                "map(_, [1, 2, 1, 4])"
-            ],
-            "fade": {},
-            "globals": {},
-            "goal": [
-                "[true, false, true, false]"
-            ],
-            "hideGlobals": [],
-            "input": [],
-            "output": [],
-            "syntax": [],
-            "textgoal": "Make a function that sees if a number is 1",
-            "toolbox": [
-                "a => _",
-                "_ == _",
-                "1",
-                "2",
-                "true",
-                "a"
-            ]
         }
     ],
     "macros": {
