@@ -2,7 +2,7 @@ const webpack = require("webpack");
 const path = require("path");
 
 const HtmlPlugin = require("html-webpack-plugin");
-const EslintPlugin = require("eslint-webpack-plugin");
+const TsCheckerPlugin = require("fork-ts-checker-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const SriPlugin = require("webpack-subresource-integrity");
@@ -37,7 +37,7 @@ exports.default = (env) => ({
     module: {
         rules: [
             {
-                test: /\.js$/i,
+                test: /\.(ts|js)$/i,
                 exclude: /node_modules/,
                 use: [
                     {
@@ -73,6 +73,13 @@ exports.default = (env) => ({
             template: "index.html",
         }),
         new MiniCssExtractPlugin(),
+        new TsCheckerPlugin({
+            workers: TsCheckerPlugin.TWO_CPUS_FREE,
+            // I don't have time to fix ESLint errors right now.
+            // Who the fuck wrote so much unlintable code?!
+            // - Ibiyemi Abiodun (iaa34)
+            // eslint: true,
+        }),
         ...(env.production
             ? [
                 new CompressionPlugin({
