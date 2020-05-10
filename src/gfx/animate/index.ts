@@ -1,3 +1,5 @@
+import * as Easing from './easing';
+
 let scales: Record<string, number> = {};
 
 export function setDurationScale(category: string, factor: number) {
@@ -29,7 +31,7 @@ export function scaleDuration(duration: number, ...categories: string[]) {
 export {
     default as Clock, addUpdateListener, after, chain, clock, infinite, tween
 } from './clock';
-export * as Easing from './easing';
+export { Easing }; // TODO: fix when babel supports `export * as ns` syntax
 export type { Tween, TweenOptions, TweenStatus } from './tween';
 export { default as InterpolateTween } from './tween/interpolate';
 export { default as InfiniteTween } from './tween/infinite';

@@ -21,7 +21,7 @@ export const Quadratic: EasingGroup = {
         }
         t -= 1;
         return start - (((stop - start) * ((t * (t - 2)) - 1)) / 2);
-    },
+    }
 };
 
 /**
@@ -40,14 +40,14 @@ export const Cubic: EasingGroup = {
         }
         t -= 2;
         return start + (((stop - start) * ((t * t * t) + 2)) / 2);
-    },
+    }
 };
 
 /**
    * Exponential tweens.
    */
 export const Exponential: { Out: Easing } = {
-    Out: (start, stop, t) => ((stop - start) * (1 - (2 ** (-10 * t)))) + start,
+    Out: (start, stop, t) => ((stop - start) * (1 - (2 ** (-10 * t)))) + start
 };
 
 /**
@@ -79,7 +79,7 @@ export const Exponential: { Out: Easing } = {
    * @returns {Function} The easing function.
    */
 export const Color = (easing: Easing, src: string | chroma.Color, dst: string | chroma.Color): Easing<chroma.Color> => {
-    const scale = chroma.scale([ src, dst ]).mode("lch");
+    const scale = chroma.scale([src, dst]).mode('lch');
     return (start, stop, t) => scale(easing(0.0, 1.0, t));
 };
 
@@ -98,7 +98,7 @@ export const Projectile = (easing: Easing): Easing => (start, stop, t) => {
    * Apply a user-supplied function to the time value, like Reduct
    * 1.
    */
-export const Time = (easing: Easing): Easing => (start, stop, t) => start + ((stop - start) * easing(t));
+export const Time = (fn: (t: number) => number): Easing => (start, stop, t) => start + ((stop - start) * fn(t));
 
 /**
    * Tween with a sinusoidal offset value added. The sinusoidal
@@ -118,5 +118,5 @@ export const Anticipate: {
     BackIn: (s) => (start, stop, t) => start + ((stop - start)
                    * t * t * (((s + 1) * t) - s)),
     BackOut: (s) => (start, stop, t) => start + ((stop - start)
-                   * (((t - 1) * (t - 1) * (((s + 1) * (t - 1)) + s)) + 1)),
+                   * (((t - 1) * (t - 1) * (((s + 1) * (t - 1)) + s)) + 1))
 };

@@ -1,6 +1,6 @@
 import * as chroma from 'chroma-js';
 
-import * as fx from '../../gfx/fx';
+import * as fx from '../gfx/fx';
 import * as gfx from '../gfx/core';
 import * as animate from '../gfx/animate';
 import * as progression from '../game/progression';

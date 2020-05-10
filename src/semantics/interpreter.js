@@ -3,7 +3,7 @@ import * as immutable from 'immutable';
 import Audio from '../resource/audio';
 
 import * as animate from '../gfx/animate';
-import * as fx from '../../gfx/fx';
+import * as fx from '../gfx/fx';
 
 import { nextId } from '../reducer/reducer';
 
