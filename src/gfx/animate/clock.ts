@@ -195,7 +195,7 @@ export default class Clock {
    *
    * @param {animate.Tween} t
    */
-  public addTween(t: Tween) {
+  public addTween<T extends Tween>(t: T): T {
       this.tweens.push(t);
       if (!this.running) {
           this.start();
@@ -230,8 +230,7 @@ export default class Clock {
 /**
  * The default clock.
  */
-const clock = new Clock();
-
+export const clock = new Clock();
 
 /**
  * Add a callback that is fired every animation tick.
@@ -273,17 +272,13 @@ export function infinite(updater: (dt: number) => void, options: TweenOptions) {
     return clock.addTween(new InfiniteTween(clock, updater, options));
 }
 
-export function chain<T extends object>(target: T, ...properties: Partial<T>[]) {
-    if (properties.length % 2 !== 0) {
-        throw new Error('animate.chain: Must provide an even number of properties.');
-    }
-
+export function chain<T extends object>(target: T, ...properties: [Partial<T>, TweenOptions][]) {
     let base = null;
-    for (let i = 0; i < properties.length; i += 2) {
+    for (const [prop, options] of properties) {
         if (base === null) {
-            base = tween(target, properties[i], properties[i + 1]);
+            base = tween(target, prop, options);
         } else {
-            base = base.then(() => tween(target, properties[i], properties[i + 1]));
+            base = base.then(() => tween(target, prop, options));
         }
     }
 

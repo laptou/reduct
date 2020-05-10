@@ -8,7 +8,7 @@ import Audio from '../resource/audio';
 import Logging from '../logging/logging';
 
 import * as gfx from '../gfx/core';
-import * as animate from '../gfx/animate';
+import * as fx from '../gfx/fx';
 import projector from '../gfx/projector';
 
 import * as core from './core';
@@ -515,7 +515,7 @@ export default function transform(definition) {
                         blocking: blockingNodes.map((id) => stage.saveNode(id))
                     });
                     blockingNodes.forEach((id) => {
-                        animate.fx.error(stage, stage.views[id]);
+                        fx.error(stage, stage.views[id]);
                     });
                     return false;
                 }

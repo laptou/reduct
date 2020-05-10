@@ -1,25 +1,13 @@
 import chroma from 'chroma-js';
-import * as immutable from 'immutable';
 
 import * as action from '../reducer/action';
-import * as level from '../game/level';
 import * as animate from '../gfx/animate/tween';
 import Audio from '../resource/audio';
 import * as gfxCore from '../gfx/core';
-import * as progression from '../game/progression';
-
-import Goal from '../ui/goal';
-import Toolbox from '../ui/toolbox';
-import Sidebar from '../ui/sidebar';
-import SyntaxJournal from '../ui/syntax-journal';
-import FunctionDef from '../ui/functiondef';
-
-import Loader from '../loader';
+import * as fx from '../gfx/fx';
 import Logging from '../logging/logging';
-import Network from '../logging/network';
 
 import BaseTouchRecord from './touchrecord';
-import BaseStage from './basestage';
 
 const DOUBLE_CLICK_THRESHOLD_MS = 250;
 
@@ -134,7 +122,7 @@ export default class TouchRecord extends BaseTouchRecord {
     useToolboxItem() {
         Logging.log('toolbox-remove', this.stage.saveNode(this.topNode));
         this.stage.store.dispatch(action.useToolbox(this.topNode));
-        animate.fx.expandingShape(this.stage, this.stage.getView(this.topNode));
+        fx.expandingShape(this.stage, this.stage.getView(this.topNode));
     }
 
     onstart(mousePos) {
@@ -413,7 +401,7 @@ export default class TouchRecord extends BaseTouchRecord {
             Audio.play('pop');
             this.stage.reductToolbar.update(null, this.topNode);
             this.stage.store.dispatch(action.fillHole(this.hoverNode, this.topNode));
-            animate.fx.expandingShape(this.stage, this.stage.getView(this.topNode));
+            fx.expandingShape(this.stage, this.stage.getView(this.topNode));
         } else if (this.isExpr && this.dragged && this.hoverNode && this.topNode) {
             if (this.fromToolbox) this.useToolboxItem();
 
@@ -460,7 +448,7 @@ export default class TouchRecord extends BaseTouchRecord {
             if (this.stage.toolbox.containsPoint(bottom)
                 && !this.stage.getState().get('toolbox').includes(this.topNode)) {
                 Logging.log('toolbox-reject', this.stage.saveNode(this.topNode));
-                animate.fx.error(this.stage, this.stage.getView(this.topNode));
+                fx.error(this.stage, this.stage.getView(this.topNode));
                 this.stage.feedback.update('#000', ['We can\'t put things back in the toolbox!']);
             }
             this.stage.bumpAwayFromEdges(this.topNode);

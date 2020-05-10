@@ -2,11 +2,11 @@
  * Handy built-in effects.
  */
 
-import Loader from '../../loader';
-import Audio from '../../resource/audio';
-import * as gfx from '../core';
-import * as animate from '../animate';
-import * as primitive from '../primitive';
+import Loader from '../loader';
+import Audio from '../resource/audio';
+import * as gfx from './core';
+import * as animate from './animate';
+import * as primitive from './primitive';
 
 /**
  * An explosion effect.
@@ -43,7 +43,7 @@ export function splosion(stage, pos, options = {}) {
             r: 0
         }, {
             duration: options.duration,
-            easing: animate.Easing.Time((t) => Math.pow(t, 0.5))
+            easing: animate.Easing.Time((t) => t ** 0.5)
         }));
     }
 
@@ -190,22 +190,28 @@ export function shatter(stage, projection, options) {
     return new Promise((resolve, _reject) => {
         animate.chain(
             status,
-            { a: 1 },
-            {
-                duration: options.introDuration || 500,
-                easing: animate.Easing.Cubic.In,
-                callback: () => {
-                    resolve();
+            [
+                { a: 1 },
+                {
+                    duration: options.introDuration || 500,
+                    easing: animate.Easing.Cubic.In,
+                    callback: () => {
+                        resolve();
+                    }
+                }],
+            [
+                {
+                    a: 0,
+                    w: 1.2 * size.w,
+                    h: 1.4 * size.h,
+                    x: pos.x - (0.1 * size.w),
+                    y: pos.y - (0.2 * size.h)
+                },
+                {
+                    duration: options.outroDuration || 800,
+                    easing: animate.Easing.Cubic.Out
                 }
-            },
-            {
-                a: 0,
-                w: 1.2 * size.w,
-                h: 1.4 * size.h,
-                x: pos.x - (0.1 * size.w),
-                y: pos.y - (0.2 * size.h)
-            },
-            { duration: options.outroDuration || 800, easing: animate.Easing.Cubic.Out }
+            ]
         ).then(() => {
             stage.removeEffect(id);
             if (onFullComplete) {

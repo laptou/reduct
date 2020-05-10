@@ -3,6 +3,7 @@ import * as immutable from 'immutable';
 
 import * as action from '../reducer/action';
 import * as level from '../game/level';
+import * as fx from '../gfx/fx';
 import * as animate from '../gfx/animate';
 import Audio from '../resource/audio';
 import * as gfxCore from '../gfx/core';
@@ -627,7 +628,7 @@ export default class Stage extends BaseStage {
                 blocking: missingNodes.map((id) => this.saveNode(id))
             });
             missingNodes.forEach((id) => {
-                animate.fx.error(this, this.getView(id));
+                fx.error(this, this.getView(id));
             });
             this.feedback.update('#000', ['There\'s a hole that needs to be filled in!']);
             return false;
@@ -701,13 +702,13 @@ export default class Stage extends BaseStage {
                     selectedNode,
                     notchPair[0]
                 )) {
-                    animate.fx.blink(this, this.views[parent], {
+                    fx.blink(this, this.views[parent], {
                         times: 2,
                         color: 'magenta',
                         speed: 100,
                         lineWidth: 5
                     });
-                    animate.fx.blink(this, this.views[selectedNode], {
+                    fx.blink(this, this.views[selectedNode], {
                         times: 2,
                         color: 'magenta',
                         speed: 100,
@@ -845,7 +846,7 @@ export default class Stage extends BaseStage {
                 return Promise.resolve(this.getState());
             },
             error: (errorNodeId, reason) => {
-                animate.fx.error(this, this.views[errorNodeId]);
+                fx.error(this, this.views[errorNodeId]);
                 if (reason) {
                     this.feedback.update('#000', [reason]);
                 }
@@ -901,7 +902,7 @@ export default class Stage extends BaseStage {
                 ));
 
                 Promise.all([
-                    animate.fx.keepAlive(this, topNode, animate.tween(this.views[topNode], {
+                    fx.keepAlive(this, topNode, animate.tween(this.views[topNode], {
                         opacity: 0,
                         pos: { y: this.views[topNode].pos.y + 50 },
                         scale: { x: 0, y: 0 }
@@ -909,7 +910,7 @@ export default class Stage extends BaseStage {
                         duration: 1000,
                         easing: animate.Easing.Cubic.Out
                     }).delay(350), true),
-                    animate.fx.emerge(this, this.getState(), bodyPos, bodySize, resultNodeIds)
+                    fx.emerge(this, this.getState(), bodyPos, bodySize, resultNodeIds)
                 ])
                     .then(() => {
                         this.views[topNode].opacity = 1;
@@ -976,7 +977,7 @@ export default class Stage extends BaseStage {
                 continue;
             }
 
-            tweens.push(animate.fx.blink(this, view, {
+            tweens.push(fx.blink(this, view, {
                 times: progression.currentLevel() === 0 ? 2 : 1,
                 color: '#0FF'
             }));
@@ -988,7 +989,7 @@ export default class Stage extends BaseStage {
             .then(() => {
                 const subtweens = [];
                 for (const [_, view] of views) {
-                    subtweens.push(animate.fx.splosion(this, gfxCore.centerPos(view)));
+                    subtweens.push(fx.splosion(this, gfxCore.centerPos(view)));
                 }
                 this.goal.victory();
                 this.store.dispatch(action.victory());
@@ -1088,7 +1089,7 @@ export default class Stage extends BaseStage {
                     thisStar.color = 'gold';
                     const scale = chroma.scale('Spectral').mode('lab');
                     Audio.play('firework2');
-                    return animate.fx.splosion(this, gfxCore.centerPos(thisStar), {
+                    return fx.splosion(this, gfxCore.centerPos(thisStar), {
                         explosionRadius: 600,
                         numOfParticles: 60,
                         duration: 800,

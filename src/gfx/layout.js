@@ -1,14 +1,6 @@
-import * as animate from './animate/tween';
 import { debugDraw, roundedRect } from './core';
 import * as util from './util';
 
-/**
- * @class
- * @alias gfx.layout.hexpand
- */
-export function hexpand(projection) {
-    return expand(projection, { horizontal: true });
-}
 
 /**
  * @class
@@ -27,6 +19,14 @@ export function expand(projection, options) {
         }
     };
     return projection;
+}
+
+/**
+ * @class
+ * @alias gfx.layout.hexpand
+ */
+export function hexpand(projection) {
+    return expand(projection, { horizontal: true });
 }
 
 /**

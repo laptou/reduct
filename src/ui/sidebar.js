@@ -1,9 +1,8 @@
+import * as fx from '../gfx/fx';
 import * as gfx from '../gfx/core';
 import * as animate from '../gfx/animate';
-import * as progression from '../game/progression';
 import { builtins } from '../semantics/defs/builtins';
 
-import Loader from '../loader';
 
 /**
  * Renders the definition sidebar at the left of the screen. Expects
@@ -129,7 +128,7 @@ export default class Sidebar {
             viewId = this.project(state, name, nodeId);
         }
         this.viewMap.set(name, viewId);
-        animate.fx.blink(this.stage, this.stage.getView(viewId), {
+        fx.blink(this.stage, this.stage.getView(viewId), {
             times: 2,
             color: 'magenta',
             speed: 300,

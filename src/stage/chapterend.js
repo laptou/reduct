@@ -1,5 +1,6 @@
 import * as chroma from 'chroma-js';
 
+import * as fx from '../../gfx/fx';
 import * as gfx from '../gfx/core';
 import * as animate from '../gfx/animate';
 import * as progression from '../game/progression';
@@ -198,7 +199,7 @@ export default class ChapterEndStage extends BaseStage {
                             Audio.play('acceptance');
                             const particles = random.getRandInt(20, 50);
                             const rotation = Math.random() * (Math.PI / 2);
-                            return animate.fx.splosion(this, star.pos, {
+                            return fx.splosion(this, star.pos, {
                                 explosionRadius: 500,
                                 numOfParticles: particles,
                                 duration: 600,

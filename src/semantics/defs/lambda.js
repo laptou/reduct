@@ -1,6 +1,5 @@
 import * as core from '../core';
-import * as gfx from '../../gfx/core';
-import * as animate from '../../gfx/animate/tween';
+import * as fx from '../../gfx/fx';
 
 export default {
     lambda: {
@@ -38,7 +37,7 @@ export default {
                 if (node.get('type') === 'lambdaVar') {
                     stage.feedback.update('#000', [`We don't know what ${node.get('name')} is!`]);
                 }
-                animate.fx.error(stage, stage.views[id]);
+                fx.error(stage, stage.views[id]);
             }
         })
     },
@@ -103,7 +102,7 @@ export default {
             },
             onKeyChange: (view, id, exprId, state, stage) => {
                 if (view.dynamicKey === 'enabled') {
-                    animate.fx.blink(stage, view, {
+                    fx.blink(stage, view, {
                         times: 3,
                         speed: 100,
                         color: '#6df902'
@@ -116,7 +115,7 @@ export default {
                         current = nodes.get(current.get('parent'));
                         if (current.get('type') === 'lambda'
                             && nodes.get(current.get('arg')).get('name') === myName) {
-                            animate.fx.blink(stage, stage.getView(current.get('arg')), {
+                            fx.blink(stage, stage.getView(current.get('arg')), {
                                 times: 3,
                                 speed: 100,
                                 color: '#6df902',

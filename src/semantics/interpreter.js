@@ -2,7 +2,8 @@ import * as immutable from 'immutable';
 
 import Audio from '../resource/audio';
 
-import * as animate from '../gfx/animate/tween';
+import * as animate from '../gfx/animate';
+import * as fx from '../../gfx/fx';
 
 import { nextId } from '../reducer/reducer';
 
@@ -86,7 +87,7 @@ export default function(module) {
         }
 
         const scaleCategory = `expr-${exp.get('type')}`;
-        return animate.fx.shatter(stage, stage.views[exp.get('id')], {
+        return fx.shatter(stage, stage.views[exp.get('id')], {
             introDuration: animate.scaleDuration(600, scaleCategory),
             outroDuration: animate.scaleDuration(600, scaleCategory)
         });

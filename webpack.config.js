@@ -1,12 +1,12 @@
-const webpack = require("webpack");
-const path = require("path");
+const webpack = require('webpack');
+const path = require('path');
 
-const HtmlPlugin = require("html-webpack-plugin");
-const TsCheckerPlugin = require("fork-ts-checker-webpack-plugin");
-const CompressionPlugin = require("compression-webpack-plugin");
-const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
-const SriPlugin = require("webpack-subresource-integrity");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const HtmlPlugin = require('html-webpack-plugin');
+const TsCheckerPlugin = require('fork-ts-checker-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const SriPlugin = require('webpack-subresource-integrity');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 /**
  * @typedef {Object} Env
@@ -19,20 +19,20 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
  *  @returns {webpack.Configuration} */
 exports.default = (env) => ({
     context: __dirname,
-    entry: ["./src/index.js"],
-    devtool: env.development ? "source-map" : false,
+    entry: ['./src/index.js'],
+    devtool: env.development ? 'source-map' : false,
     devServer: {
         port: 1234,
-        hot: true,
+        hot: true
     },
     optimization: {
         runtimeChunk: false,
         splitChunks: {
-            chunks: "all",
-        },
+            chunks: 'all'
+        }
     },
     output: {
-        path: path.resolve(__dirname, "dist"),
+        path: path.resolve(__dirname, 'dist')
     },
     module: {
         rules: [
@@ -41,12 +41,12 @@ exports.default = (env) => ({
                 exclude: /node_modules/,
                 use: [
                     {
-                        loader: "babel-loader",
+                        loader: 'babel-loader',
                         options: {
-                            cacheDirectory: true,
-                        },
-                    },
-                ],
+                            cacheDirectory: true
+                        }
+                    }
+                ]
             },
             {
                 test: /\.css$/i,
@@ -55,26 +55,26 @@ exports.default = (env) => ({
                         loader: MiniCssExtractPlugin.loader,
                         options: {
                             esModule: true,
-                            hmr: env.development,
-                        },
+                            hmr: env.development
+                        }
                     }, {
-                        loader: "css-loader",
-                    },
-                ],
+                        loader: 'css-loader'
+                    }
+                ]
             },
             {
                 test: /\.(mp3|mp4|ogg|opus|wav|png)$/i,
-                use: ["file-loader"],
-            },
-        ],
+                use: ['file-loader']
+            }
+        ]
     },
     plugins: [
         new HtmlPlugin({
-            template: "index.html",
+            template: 'index.html'
         }),
         new MiniCssExtractPlugin(),
         new TsCheckerPlugin({
-            workers: TsCheckerPlugin.TWO_CPUS_FREE,
+            workers: TsCheckerPlugin.TWO_CPUS_FREE
             // I don't have time to fix ESLint errors right now.
             // Who the fuck wrote so much unlintable code?!
             // - Ibiyemi Abiodun (iaa34)
@@ -83,21 +83,21 @@ exports.default = (env) => ({
         ...(env.production
             ? [
                 new CompressionPlugin({
-                    threshold: 8192,
+                    threshold: 8192
                 }),
                 new SriPlugin({
-                    hashFuncNames: ["sha384", "sha512"],
-                }),
+                    hashFuncNames: ['sha384', 'sha512']
+                })
             ]
             : []),
         ...(env.analyze
             ? [
-                new BundleAnalyzerPlugin(),
+                new BundleAnalyzerPlugin()
             ]
             : []),
         ...(env.development
             ? [
-                new webpack.HotModuleReplacementPlugin(),
+                new webpack.HotModuleReplacementPlugin()
                 /** eslint errors are currently so many that you can't
                  *  even see the more important errors
                  *  makes you wonder why they even included ESLint in this
@@ -105,11 +105,12 @@ exports.default = (env) => ({
                  *  write spaghetti code */
                 // new EslintPlugin(),
             ]
-            : []),
+            : [])
     ],
     resolve: {
         alias: {
-            "@resources": path.resolve(__dirname, "resources"),
-        },
-    },
+            '@resources': path.resolve(__dirname, 'resources'),
+            '@gfx': path.resolve(__dirname, 'src/gfx')
+        }
+    }
 });

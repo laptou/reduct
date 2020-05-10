@@ -1,5 +1,5 @@
 export enum SemanticItemKind {
-  Expr = "expression"
+  Expr = 'expression'
 }
 
 export interface SemanticDefinition {

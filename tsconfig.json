@@ -15,7 +15,8 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "paths": {
-      "@resources/*": ["../resources/*"]
+      "@resources/*": ["../resources/*"],
+      "@gfx/*": ["gfx/*"]
     }
   }
 }

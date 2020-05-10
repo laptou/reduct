@@ -169,5 +169,15 @@ module.exports = {
         "dist/",
         "resources/",
         "docs/"
-    ]
+    ],
+    "settings": {
+        "import/resolver": {
+            "webpack": {
+                "config": "webpack.config.js",
+                "env": {
+                    "development": true
+                }
+            }
+        }
+    }
 }

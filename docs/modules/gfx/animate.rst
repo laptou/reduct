@@ -45,6 +45,6 @@ Built-in Effects
 ----------------
 
 This module ships with a number of handy effects, accessible through
-``animate.fx``.
+``fx``.
 
 .. autofunction:: fx.splosion

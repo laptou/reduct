@@ -46,10 +46,10 @@ Loader.loadChapters('Elementary', progression.ACTIVE_PROGRESSION_DEFINITION);
 Loader.waitForFonts(['Fira Mono', 'Fira Sans', 'Nanum Pen Script']);
 
 const fetchLevel = (sessionParams) => {
-    const { user_id } = sessionParams;
+    const { user_id: userId } = sessionParams;
     // console.log("Trying to fetch level for user ID " + JSON.stringify(user_id));
     const url = 'https://gdiac.cs.cornell.edu/research_games/php/reduct/last_level.php';
-    const params = { game_id: 7017019, version_id: 6, user_id };
+    const params = { game_id: 7017019, version_id: 6, user_id: userId };
     ajax.jsonp(url, params).then(
         (result) => {
         // console.log(`GDIAC server reports: ${JSON.stringify(result)}`);
@@ -404,7 +404,7 @@ function nextLevel(enableChallenge) {
 function extractFunction(str) {
     const funName = str.match(/function ([a-zA-Z]+)/)[1];
     const funHalfBody = str.match(/>([^>]+)$/)[1];
-    const funBody = `${'{ ' + 'return '}${funHalfBody}`;
+    const funBody = `${'{ return '}${funHalfBody}`;
     const funArgsRegx = /\(([a-zA-Z]+)\) =>/g;
     let funArgs = '';
     let match;

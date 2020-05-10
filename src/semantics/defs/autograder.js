@@ -1,12 +1,9 @@
 import * as immutable from 'immutable';
-import * as progression from '../../game/progression';
+import * as fx from '../../gfx/fx';
 import * as core from '../core';
-import { builtins, genericValidate } from './builtins';
 import * as action from '../../reducer/action';
 import * as gfxCore from '../../gfx/core';
-import * as animate from '../../gfx/animate';
 import * as level from '../../game/level';
-import Loader from '../../loader';
 
 export default {
 
@@ -124,7 +121,7 @@ export default {
                         }
                         if (out != allOutputs[i]) {
                             if (out < 0) {
-                                animate.fx.error(this, stage.views[fExpr.get('id')]);
+                                fx.error(this, stage.views[fExpr.get('id')]);
                                 stage.feedback.update('#000', ['The given function is non-terminating']);
                                 return null;
                             }
@@ -230,7 +227,7 @@ export default {
                 // console.log("finalGoal: " + JSON.stringify(finalGoal.value));
                 // console.log("givenGoal: " + JSON.stringify(fExpr.get("value")));
                 if (finalGoal.value !== fExpr.get('value')) {
-                    animate.fx.error(this, stage.views[expr.get('id')]);
+                    fx.error(this, stage.views[expr.get('id')]);
                     stage.feedback.update('#000', [`This isn't the output I want! I want ${finalGoal.value}`]);
                     return null;
                 }

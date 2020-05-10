@@ -1,7 +1,4 @@
 import * as immutable from 'immutable';
-import * as core from '../core';
-import * as gfx from '../../gfx/core';
-import * as animate from '../../gfx/animate';
 
 // Returns the names of the subexpressions of an array: elem0, elem1, etc.
 // Requires: arr is a hydrated array node or an immutable map for an array node

@@ -1,6 +1,7 @@
 import * as core from '../core';
 import * as gfx from '../../gfx/core';
 import * as animate from '../../gfx/animate';
+import * as fx from '../../gfx/fx';
 
 export default {
     apply: {
@@ -68,7 +69,7 @@ export default {
 
             if (!isCalleeLambda) {
                 return jumpTween
-                    .then(() => animate.fx.shatter(stage, stage.getView(expr.get('id')), {
+                    .then(() => fx.shatter(stage, stage.getView(expr.get('id')), {
                         introDuration,
                         outroDuration
                     }))
