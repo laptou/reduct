@@ -1,70 +1,70 @@
-import * as immutable from "immutable";
-import * as progression from "../../game/progression";
-import * as core from "../core";
-import { builtins, genericValidate } from "./builtins";
-import * as action from "../../reducer/action";
-import * as gfxCore from "../../gfx/core";
-import * as animate from "../../gfx/animate";
-import * as level from "../../game/level";
-import Loader from "../../loader";
+import * as immutable from 'immutable';
+import * as progression from '../../game/progression';
+import * as core from '../core';
+import { builtins, genericValidate } from './builtins';
+import * as action from '../../reducer/action';
+import * as gfxCore from '../../gfx/core';
+import * as animate from '../../gfx/animate';
+import * as level from '../../game/level';
+import Loader from '../../loader';
 
 export default {
 
     autograder: {
-        kind: "expression",
-        fields: ["alienName", "goalId", "color"],
-        subexpressions: ["result"],
+        kind: 'expression',
+        fields: ['alienName', 'goalId', 'color'],
+        subexpressions: ['result'],
         projection: {
-            type: "hbox",
-            color: (expr) => expr.get("color"),
+            type: 'hbox',
+            color: (expr) => expr.get('color'),
             subexpScale: 0.9,
             children: [
                 {
-                    type: "default",
-                    shape: "none",
-                    fields: ["result"],
-                    subexpScale: 1.0,
+                    type: 'default',
+                    shape: 'none',
+                    fields: ['result'],
+                    subexpScale: 1.0
                 },
                 {
-                    type: "sprite",
-                    fields: ["goalId"],
-                    image: (expr) => expr.get("alienName"),
+                    type: 'sprite',
+                    fields: ['goalId'],
+                    image: (expr) => expr.get('alienName'),
                     scale: 0.4,
-                    subexpScale: 1.0,
-                },
-            ],
+                    subexpScale: 1.0
+                }
+            ]
         },
         validateStep: (semant, state, expr) => null,
         smallStep: (semant, stage, state, expr) => {
-            const nodes = state.get("nodes");
+            const nodes = state.get('nodes');
             const max_goals = 5;
 
             const allInputs = stage.input.slice();
             const allOutputs = stage.output.slice();
 
-            const fId = expr.get("result");
-            const fExpr = state.get("nodes").get(fId);
-            const f_type = fExpr.get("type");
-            const goal_id = expr.get("goalId");
-            const color = expr.get("color");
+            const fId = expr.get('result');
+            const fExpr = state.get('nodes').get(fId);
+            const f_type = fExpr.get('type');
+            const goal_id = expr.get('goalId');
+            const color = expr.get('color');
 
             /* Function to convert game definition to JS definition.
         */
             function extractAll() {
-                let funFinal = "";
-                for (const refStr of state.get("globals")) {
-                    const defId = state.getIn(["globals", refStr[0]]);
+                let funFinal = '';
+                for (const refStr of state.get('globals')) {
+                    const defId = state.getIn(['globals', refStr[0]]);
                     const defNode = nodes.get(defId);
                     const defStr = semant.parser.unparse(semant.hydrate(nodes, defNode));
                     const funName = defStr.match(/function ([a-zA-Z]+)/)[1];
                     const funHalfBody = defStr.match(/>([^>]+)$/)[1];
-                    const funBody = `${"{ t--; if(t < 0) return -100000;" + "return "}${funHalfBody}`;
+                    const funBody = `${'{ t--; if(t < 0) return -100000;' + 'return '}${funHalfBody}`;
                     const funArgsRegx = /\(([a-zA-Z]+)\) =>/g;
-                    let funArgs = "";
+                    let funArgs = '';
                     var match;
                     while (match = funArgsRegx.exec(defStr)) {
                         funArgs += match[1];
-                        funArgs += ",";
+                        funArgs += ',';
                     }
                     funArgs = funArgs.slice(0, -1);
                     funFinal += `function ${funName}(${funArgs}) ${funBody}\n`;
@@ -76,7 +76,7 @@ export default {
             /**
         * Generate Input/Output ------------------------------------------------
         */
-            if (f_type == "reference" || f_type == "lambda") {
+            if (f_type == 'reference' || f_type == 'lambda') {
                 const finalExpr = [];
                 const finalOutput = [];
 
@@ -86,11 +86,11 @@ export default {
         * then the previous node.
         */
                 const [cloned_f, added_f] = semant.clone(fId, nodes);
-                const allAdded_f = added_f.concat([ cloned_f ]);
+                const allAdded_f = added_f.concat([cloned_f]);
 
-                const tempFuncNodes = state.get("nodes").withMutations((nodes) => {
+                const tempFuncNodes = state.get('nodes').withMutations((nodes) => {
                     for (const node of allAdded_f) {
-                        nodes.set(node.get("id"), node);
+                        nodes.set(node.get('id'), node);
                     }
                 });
 
@@ -113,20 +113,19 @@ export default {
                         let out = null;
 
 
-                        if (allInputs[i].includes(",")) {
+                        if (allInputs[i].includes(',')) {
                             // console.log(funFinal + funName + allInputs[i]);
                             // console.log(eval(funFinal + funName + allInputs[i]));
                             out = eval(funFinal + funName + allInputs[i]);
-                        }
-                        else {
+                        } else {
                             // console.log(funFinal + funName + "(" + allInputs[i] + ")");
                             // console.log(eval(funFinal + funName + "(" + allInputs[i] + ")"));
                             out = eval(`${funFinal + funName}(${allInputs[i]})`);
                         }
                         if (out != allOutputs[i]) {
                             if (out < 0) {
-                                animate.fx.error(this, stage.views[fExpr.get("id")]);
-                                stage.feedback.update("#000", [ "The given function is non-terminating"]);
+                                animate.fx.error(this, stage.views[fExpr.get('id')]);
+                                stage.feedback.update('#000', ['The given function is non-terminating']);
                                 return null;
                             }
 
@@ -168,7 +167,7 @@ export default {
                     result = semant.apply(result, semant.parser.parse(a, level.MACROS));
                 }
 
-                finalExpr.push(semant.autograder(expr.get("alienName"), goal_id, color, result));
+                finalExpr.push(semant.autograder(expr.get('alienName'), goal_id, color, result));
 
                 /** Now generate expected output
         */
@@ -183,15 +182,15 @@ export default {
                 const o = finalOutput[0];
                 addedOutput.push(...semant.flatten(o).map(immutable.Map));
 
-                const tempOutputNodes = state.get("nodes").withMutations((nodes) => {
+                const tempOutputNodes = state.get('nodes').withMutations((nodes) => {
                     for (const node of addedOutput) {
-                        nodes.set(node.get("id"), node);
+                        nodes.set(node.get('id'), node);
                     }
                 });
 
                 for (const nn of addedOutput) {
-                    newOutputIds.push(nn.get("id"));
-                    stage.views[nn.get("id")] = stage.semantics.project(stage, tempOutputNodes, nn);
+                    newOutputIds.push(nn.get('id'));
+                    stage.views[nn.get('id')] = stage.semantics.project(stage, tempOutputNodes, nn);
                 }
 
                 stage.store.dispatch(action.changeGoal(goal_id, [newOutputIds[0]], addedOutput));
@@ -200,23 +199,23 @@ export default {
         */
                 // Assumes clicks always dispatched to top-level node
                 const origPos = {
-                    x: gfxCore.centerPos(stage.getView(expr.get("id"))).x,
-                    y: gfxCore.centerPos(stage.getView(expr.get("id"))).y,
+                    x: gfxCore.centerPos(stage.getView(expr.get('id'))).x,
+                    y: gfxCore.centerPos(stage.getView(expr.get('id'))).y
                 };
 
 
                 const newInputIds = [];
                 const f1 = finalExpr[0];
                 const addedTarget = semant.flatten(f1).map(immutable.Map);
-                const tempInputNodes = state.get("nodes").withMutations((nodes) => {
+                const tempInputNodes = state.get('nodes').withMutations((nodes) => {
                     for (const node of addedTarget) {
-                        nodes.set(node.get("id"), node);
+                        nodes.set(node.get('id'), node);
                     }
                 });
 
                 for (const aa of addedTarget) {
-                    newInputIds.push(aa.get("id"));
-                    stage.views[aa.get("id")] = stage.semantics.project(stage, tempInputNodes, aa);
+                    newInputIds.push(aa.get('id'));
+                    stage.views[aa.get('id')] = stage.semantics.project(stage, tempInputNodes, aa);
                 }
 
 
@@ -225,15 +224,14 @@ export default {
                 stage.views[newInputIds[0]].pos.x = origPos.x;
                 stage.views[newInputIds[0]].pos.y = origPos.y;
 
-                stage.store.dispatch(action.smallStep(expr.get("id"), [newInputIds[0]], addedTarget));
-            }
-            else {
+                stage.store.dispatch(action.smallStep(expr.get('id'), [newInputIds[0]], addedTarget));
+            } else {
                 const finalGoal = semant.parser.parse(allOutputs[goal_id], level.MACROS);
                 // console.log("finalGoal: " + JSON.stringify(finalGoal.value));
                 // console.log("givenGoal: " + JSON.stringify(fExpr.get("value")));
-                if (finalGoal.value !== fExpr.get("value")) {
-                    animate.fx.error(this, stage.views[expr.get("id")]);
-                    stage.feedback.update("#000", [ `This isn't the output I want! I want ${finalGoal.value}` ]);
+                if (finalGoal.value !== fExpr.get('value')) {
+                    animate.fx.error(this, stage.views[expr.get('id')]);
+                    stage.feedback.update('#000', [`This isn't the output I want! I want ${finalGoal.value}`]);
                     return null;
                 }
 
@@ -244,15 +242,15 @@ export default {
                 const newGoalIds = [];
                 addedGoalNodes.push(...semant.flatten(finalGoal).map(immutable.Map));
 
-                const tempGoalNodes = state.get("nodes").withMutations((nodes) => {
+                const tempGoalNodes = state.get('nodes').withMutations((nodes) => {
                     for (const node of addedGoalNodes) {
-                        nodes.set(node.get("id"), node);
+                        nodes.set(node.get('id'), node);
                     }
                 });
 
                 for (const nn of addedGoalNodes) {
-                    newGoalIds.push(nn.get("id"));
-                    stage.views[nn.get("id")] = stage.semantics.project(stage, tempGoalNodes, nn);
+                    newGoalIds.push(nn.get('id'));
+                    stage.views[nn.get('id')] = stage.semantics.project(stage, tempGoalNodes, nn);
                 }
 
                 stage.store.dispatch(action.changeGoal(goal_id, [newGoalIds[0]], addedGoalNodes));
@@ -260,20 +258,20 @@ export default {
                 /* Return the final expression.
         */
                 const [cloned_fin, added_fin] = semant.clone(finalGoal.id, tempGoalNodes);
-                const allAdded_fin = added_fin.concat([ cloned_fin ]);
+                const allAdded_fin = added_fin.concat([cloned_fin]);
 
-                const tempFinalNodes = state.get("nodes").withMutations((nodes) => {
+                const tempFinalNodes = state.get('nodes').withMutations((nodes) => {
                     for (const node of allAdded_fin) {
-                        nodes.set(node.get("id"), node);
+                        nodes.set(node.get('id'), node);
                     }
                 });
 
                 for (const node of allAdded_fin) {
-                    stage.views[node.get("id")] = stage.semantics.project(stage, tempFinalNodes, node);
+                    stage.views[node.get('id')] = stage.semantics.project(stage, tempFinalNodes, node);
                 }
 
                 return core.makeResult(expr, cloned_fin, semant);
             }
-        },
-    },
+        }
+    }
 };

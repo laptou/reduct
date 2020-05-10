@@ -20,19 +20,18 @@ export function roundRect(
     ctx, x, y, width, height,
     radius = 5, fill = false,
     stroke = true, strokeOpacity = 1,
-    notches = null,
+    notches = null
 ) {
-    if (typeof radius === "number") {
+    if (typeof radius === 'number') {
         radius = {
             tl: radius,
             tr: radius,
             br: radius,
-            bl: radius,
+            bl: radius
         };
-    }
-    else {
+    } else {
         radius = {
-            tl: 5, tr: 5, br: 5, bl: 5, ...radius,
+            tl: 5, tr: 5, br: 5, bl: 5, ...radius
         };
     }
 
@@ -47,30 +46,29 @@ export function roundRect(
         ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
         ctx.lineTo(x, y + radius.tl);
         ctx.quadraticCurveTo(x, y, x + radius.tl, y);
-    }
-    else {
+    } else {
         ctx.moveTo(x + radius.tl, y);
         // Top
-        notches.drawSequence(ctx, "top", x + radius.tl, y, width - radius.tr);
+        notches.drawSequence(ctx, 'top', x + radius.tl, y, width - radius.tr);
         ctx.lineTo(x + width - radius.tr, y);
         ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
         // Right
-        notches.drawSequence(ctx, "right", x + width, y + radius.tr, (height - radius.br - radius.tr));
+        notches.drawSequence(ctx, 'right', x + width, y + radius.tr, (height - radius.br - radius.tr));
         ctx.lineTo(x + width, y + height - radius.br);
         ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
         // Bottom
-        notches.drawSequence(ctx, "bottom", x + width, y, (width - radius.bl));
+        notches.drawSequence(ctx, 'bottom', x + width, y, (width - radius.bl));
         ctx.lineTo(x + radius.bl, y + height);
         ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
         // Left
-        notches.drawSequence(ctx, "left", x, y + height, (height - radius.tl));
+        notches.drawSequence(ctx, 'left', x, y + height, (height - radius.tl));
         ctx.lineTo(x, y + radius.tl);
         ctx.quadraticCurveTo(x, y, x + radius.tl, y);
     }
     ctx.closePath();
     if (fill) ctx.fill();
     // Don't shadow a stroke
-    ctx.shadowColor = "rgba(0,0,0,0)";
+    ctx.shadowColor = 'rgba(0,0,0,0)';
     if (stroke) strokeWithOpacity(ctx, strokeOpacity);
 }
 
@@ -108,7 +106,7 @@ export function drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius, fill, st
  * @param {number?} opacity
  */
 export function strokeWithOpacity(ctx, opacity) {
-    if (typeof opacity === "undefined" || opacity >= 1.0) ctx.stroke();
+    if (typeof opacity === 'undefined' || opacity >= 1.0) ctx.stroke();
     else {
         const a = ctx.globalAlpha;
         ctx.globalAlpha = a * opacity;
@@ -142,8 +140,7 @@ export function setStroke(ctx, stroke) {
     ctx.strokeStyle = stroke.color;
     if (stroke.lineDash) {
         ctx.setLineDash(stroke.lineDash);
-    }
-    else {
+    } else {
         ctx.setLineDash([]);
     }
 

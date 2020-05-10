@@ -2,27 +2,27 @@
  * Custom views for specific expressions.
  */
 
-import * as gfx from "./core";
-import * as animate from "./animate";
-import * as primitive from "./primitive";
-import * as util from "./util";
-import * as random from "../util/random";
+import * as gfx from './core';
+import * as animate from './animate';
+import * as primitive from './primitive';
+import * as util from './util';
+import * as random from '../util/random';
 
 export function argumentBar() {
     const projection = gfx.baseProjection();
-    projection.type = "custom/argumentBar";
+    projection.type = 'custom/argumentBar';
 
-    const txt = gfx.text("", {
-        color: "#888",
+    const txt = gfx.text('', {
+        color: '#888'
     });
 
     projection.prepare = function(id, exprId, state, stage) {
         this.names = [];
         this.size = { w: 0, h: 50 };
 
-        const define = state.getIn([ "nodes", exprId ]);
+        const define = state.getIn(['nodes', exprId]);
 
-        if (define.get("type") === "define" && define.get("params") === "dynamic") {
+        if (define.get('type') === 'define' && define.get('params') === 'dynamic') {
             // let body = state.getIn([ "nodes", define.get("body") ]);
             // while (body.get("type") === "lambda") {
             //     const name = state.getIn([ "nodes", body.get("arg"), "name" ]);
@@ -34,13 +34,12 @@ export function argumentBar() {
             //     body = state.getIn([ "nodes", body.get("body") ]);
             // }
 
-            throw "Dynamic parameter lists are unimplemented.";
-        }
-        else {
+            throw 'Dynamic parameter lists are unimplemented.';
+        } else {
             this.names = [];
-            const params = Array.isArray(define.get("params"))
-                ? define.get("params")
-                : state.getIn([ "nodes", state.getIn([ "globals", define.get("name") ]), "params" ]);
+            const params = Array.isArray(define.get('params'))
+                ? define.get('params')
+                : state.getIn(['nodes', state.getIn(['globals', define.get('name')]), 'params']);
 
             let maxY = 50;
             for (const name of params) {
@@ -61,13 +60,12 @@ export function argumentBar() {
                     // TODO: use padding
                     this.size.w += (childProjection.size.w * childProjection.scale.x) + 20;
                     maxY = Math.max(maxY, childProjection.size.h * childProjection.scale.y);
-                    this.names.push([ null, subexprId ]);
-                }
-                else {
+                    this.names.push([null, subexprId]);
+                } else {
                     txt.text = name;
                     txt.prepare(null, null, state, stage);
                     const size = txt.size.w;
-                    this.names.push([ name, size ]);
+                    this.names.push([name, size]);
                     this.size.w += Math.max(size, 40) + 20;
                 }
             }
@@ -90,7 +88,7 @@ export function argumentBar() {
         const { ctx } = stage;
         ctx.save();
 
-        const [ sx, sy ] = util.absoluteScale(this, offset);
+        const [sx, sy] = util.absoluteScale(this, offset);
         const { x, y } = util.topLeftPos(this, offset);
 
         util.setOpacity(ctx, this.opacity, offset);
@@ -99,7 +97,7 @@ export function argumentBar() {
 
         const dy = sy * 5;
         let dx = 0;
-        for (const [ name, width ] of this.names) {
+        for (const [name, width] of this.names) {
             if (name === null) {
                 const subexprId = width;
                 const subOffset = {
@@ -108,14 +106,13 @@ export function argumentBar() {
                     y,
                     sx: offset.sx * this.scale.x,
                     sy: offset.sy * this.scale.y,
-                    opacity: this.opacity * offset.opacity,
+                    opacity: this.opacity * offset.opacity
                 };
 
                 stage.getView(subexprId).draw(subexprId, subexprId, state, stage, subOffset);
-            }
-            else {
+            } else {
                 const w = sx * Math.max(width, 40);
-                ctx.fillStyle = "#000";
+                ctx.fillStyle = '#000';
                 primitive.roundRect(
                     ctx,
                     x + dx, y + (dy - 3), w, h,
@@ -123,10 +120,10 @@ export function argumentBar() {
                     true,
                     false,
                     1.0,
-                    null,
+                    null
                 );
 
-                ctx.fillStyle = "#555";
+                ctx.fillStyle = '#555';
                 primitive.roundRect(
                     ctx,
                     x + dx, y + dy, w, h,
@@ -134,7 +131,7 @@ export function argumentBar() {
                     true,
                     false,
                     1.0,
-                    null,
+                    null
                 );
 
                 txt.text = name;
@@ -144,7 +141,7 @@ export function argumentBar() {
                     x: x + dx + Math.max(0, (w - width) / 2),
                     y: y + (5 * offset.sy),
                     sx,
-                    sy,
+                    sy
                 });
 
                 dx += w + (20 * sx);
@@ -156,16 +153,16 @@ export function argumentBar() {
     };
 
     projection.children = function* (exprId, state) {
-        const expr = state.getIn([ "nodes", exprId ]);
-        if (expr.get("type") === "define") return;
+        const expr = state.getIn(['nodes', exprId]);
+        if (expr.get('type') === 'define') return;
 
-        let params = expr.get("params");
+        let params = expr.get('params');
 
         if (!params) {
             params = state.getIn([
-                "nodes",
-                state.getIn([ "globals", expr.get("name") ]),
-                "params",
+                'nodes',
+                state.getIn(['globals', expr.get('name')]),
+                'params'
             ]);
         }
 
@@ -175,7 +172,7 @@ export function argumentBar() {
             const subexprField = `arg_${name}`;
             if (expr.get(subexprField)) {
                 const child = expr.get(subexprField);
-                yield [ child, child ];
+                yield [child, child];
             }
         }
     };
@@ -194,7 +191,7 @@ export function fadeMe(projection, onfade) {
             dy: Math.random() - 0.5,
             r: random.getRandInt(2, 8),
             opacity: 1.0,
-            deltaOpacity: -Math.max(3 * Math.random(), 0.8),
+            deltaOpacity: -Math.max(3 * Math.random(), 0.8)
         });
     }
 
@@ -218,14 +215,14 @@ export function fadeMe(projection, onfade) {
         origDraw.call(this, id, exprId, state, stage, offset);
 
         const { x, y } = util.topLeftPos(this, offset);
-        const [ sx, sy ] = util.absoluteScale(projection, offset);
+        const [sx, sy] = util.absoluteScale(projection, offset);
 
         const { ctx } = stage;
         ctx.save();
 
         for (const star of stars) {
             ctx.globalAlpha = offset.opacity * star.opacity * this.opacity;
-            ctx.fillStyle = "#000";
+            ctx.fillStyle = '#000';
             primitive.drawStar(
                 ctx,
                 x + (sx * (this.size.w / 2)) + (this.size.w * sx * 1.2 * star.dx),
@@ -233,9 +230,9 @@ export function fadeMe(projection, onfade) {
                 5,
                 star.r / 2,
                 star.r,
-                true,
+                true
             );
-            ctx.fillStyle = "#0F0";
+            ctx.fillStyle = '#0F0';
             primitive.drawStar(
                 ctx,
                 x + (sx * (this.size.w / 2)) + (this.size.w * sx * 1.2 * star.dx),
@@ -243,7 +240,7 @@ export function fadeMe(projection, onfade) {
                 5,
                 star.r / 2,
                 star.r,
-                true,
+                true
             );
         }
         ctx.restore();

@@ -1,6 +1,6 @@
-import * as gfx from "../gfx/core";
-import * as animate from "../gfx/animate";
-import Loader from "../loader";
+import * as gfx from '../gfx/core';
+import * as animate from '../gfx/animate/tween';
+import Loader from '../loader';
 
 const TOOLBOX_ROW_HEIGHT = 90;
 const TOOLBOX_LEFT_MARGIN = 40;
@@ -18,9 +18,9 @@ export default class Toolbox {
         // background, now it's drawn in canvas, but I never ported
         // over stuff that assumed we had a sprite view
         this.bg = stage.allocateInternal(gfx.layout.sticky(gfx.layout.hexpand(gfx.sprite({
-            image: Loader.images["toolbox-bg"],
-            size: { h: TOOLBOX_ROW_HEIGHT },
-        })), "bottom"));
+            image: Loader.images['toolbox-bg'],
+            size: { h: TOOLBOX_ROW_HEIGHT }
+        })), 'bottom'));
 
         this._firstRender = true;
         this.rows = 1;
@@ -35,7 +35,7 @@ export default class Toolbox {
     get size() {
         return {
             w: this.stage.internalViews[this.bg].size.w,
-            h: this.stage.internalViews[this.bg].size.h,
+            h: this.stage.internalViews[this.bg].size.h
         };
     }
 
@@ -44,20 +44,20 @@ export default class Toolbox {
     }
 
     getNodeAtPos(state, pos) {
-        if (!this.containsPoint(pos)) return [ null, null ];
+        if (!this.containsPoint(pos)) return [null, null];
 
-        for (const nodeId of state.get("toolbox")) {
-            if (!this.stage.semantics.targetable(state, state.get("nodes").get(nodeId))) {
+        for (const nodeId of state.get('toolbox')) {
+            if (!this.stage.semantics.targetable(state, state.get('nodes').get(nodeId))) {
                 continue;
             }
             const projection = this.stage.views[nodeId];
 
             if (projection.containsPoint(pos, this.stage.makeBaseOffset())) {
-                return [ nodeId, nodeId ];
+                return [nodeId, nodeId];
             }
         }
 
-        return [ null, null ];
+        return [null, null];
     }
 
     reset() {
@@ -72,7 +72,7 @@ export default class Toolbox {
         // Figure out how many rows to use
         let x = TOOLBOX_LEFT_MARGIN;
         let rows = 1;
-        for (const nodeId of state.get("toolbox")) {
+        for (const nodeId of state.get('toolbox')) {
             const projection = this.stage.views[nodeId];
             projection.scale = { x: 1, y: 1 };
             projection.prepare(nodeId, nodeId, state, this.stage);
@@ -95,7 +95,7 @@ export default class Toolbox {
     drawBase(state) {
         this.stage.internalViews[this.bg].prepare(null, null, state, this.stage);
         const { ctx } = this.stage;
-        ctx.fillStyle = "#1a3849";
+        ctx.fillStyle = '#1a3849';
         gfx.primitive.roundRect(
             ctx,
             25,
@@ -103,7 +103,7 @@ export default class Toolbox {
             this.stage.internalViews[this.bg].size.w - 50,
             this.stage.internalViews[this.bg].size.h - 10,
             25,
-            true, false,
+            true, false
         );
     }
 
@@ -114,8 +114,8 @@ export default class Toolbox {
         let curRow = 0;
         x = TOOLBOX_LEFT_MARGIN;
         let i = 0;
-        for (const nodeId of state.get("toolbox")) {
-            const node = state.get("nodes").get(nodeId);
+        for (const nodeId of state.get('toolbox')) {
+            const node = state.get('nodes').get(nodeId);
             //  if (!(node.has("__meta") && node.get("__meta").toolbox.unlimited)) {
             const projection = this.stage.views[nodeId];
             if (x + projection.size.w >= this.stage.width - TOOLBOX_RIGHT_MARGIN) {
@@ -128,8 +128,7 @@ export default class Toolbox {
 
             if (this.stage.isSelected(nodeId)) {
                 // Do nothing - don't override position
-            }
-            else if (this._firstRender) {
+            } else if (this._firstRender) {
                 projection.pos.x = x + (this.stage.width / 3);
                 projection.pos.y = nodeY;
                 projection.scale.x = 0;
@@ -138,21 +137,19 @@ export default class Toolbox {
                 animate
                     .tween(projection, {
                         pos: { x },
-                        scale: { x: 1, y: 1 },
+                        scale: { x: 1, y: 1 }
                     }, {
                         easing: animate.Easing.Cubic.Out,
-                        duration: 400,
+                        duration: 400
                     })
                     .delay(200 * Math.log(2 + i));
-            }
-            else if (projection.pos.x !== x && !projection.animating && !this._firstRender) {
+            } else if (projection.pos.x !== x && !projection.animating && !this._firstRender) {
                 animate
                     .tween(projection, { pos: { x, y: nodeY }, anchor: { x: 0, y: 0.5 } }, {
                         duration: 400,
-                        easing: animate.Easing.Cubic.Out,
+                        easing: animate.Easing.Cubic.Out
                     });
-            }
-            else if (!projection.animating) {
+            } else if (!projection.animating) {
                 projection.pos.x = x;
                 projection.pos.y = nodeY;
                 projection.anchor = { x: 0, y: 0.5 };
@@ -163,19 +160,19 @@ export default class Toolbox {
             projection.prepare(nodeId, nodeId, state, this.stage);
 
 
-            if (node.has("__meta") && node.get("__meta").toolbox.unlimited) {
+            if (node.has('__meta') && node.get('__meta').toolbox.unlimited) {
                 projection.draw(nodeId, nodeId, state, this.stage, this.stage.makeBaseOffset({
                     x: 2,
-                    y: 6,
+                    y: 6
                 }));
             }
 
             projection.draw(nodeId, nodeId, state, this.stage, this.stage.makeBaseOffset());
 
-            if (node.has("__meta") && node.get("__meta").toolbox.unlimited) {
+            if (node.has('__meta') && node.get('__meta').toolbox.unlimited) {
                 projection.draw(nodeId, nodeId, state, this.stage, this.stage.makeBaseOffset({
                     x: -2,
-                    y: -6,
+                    y: -6
                 }));
             }
             // }

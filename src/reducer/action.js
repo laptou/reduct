@@ -1,22 +1,22 @@
-import * as immutable from "immutable";
+import * as immutable from 'immutable';
 
-export const USE_TOOLBOX = "use-toolbox";
-export const RAISE = "raise";
-export const DETACH = "detach";
-export const FILL_HOLE = "fill-hole";
-export const ATTACH_NOTCH = "attach-notch";
-export const SMALL_STEP = "small-step";
-export const UNFOLD = "unfold";
-export const BETA_REDUCE = "beta-reduce";
-export const START_LEVEL = "start-level";
-export const VICTORY = "victory";
-export const FADE = "fade";
-export const UNFADE = "unfade";
-export const DEFINE = "define";
-export const ADD_TOOLBOX_ITEM = "add-toolbox-item";
-export const CHANGE_GOAL = "change-goal";
-export const ADD_BOARD_ITEM = "add-board-item";
-export const ADD_GOAL_ITEM = "add-goal-item";
+export const USE_TOOLBOX = 'use-toolbox';
+export const RAISE = 'raise';
+export const DETACH = 'detach';
+export const FILL_HOLE = 'fill-hole';
+export const ATTACH_NOTCH = 'attach-notch';
+export const SMALL_STEP = 'small-step';
+export const UNFOLD = 'unfold';
+export const BETA_REDUCE = 'beta-reduce';
+export const START_LEVEL = 'start-level';
+export const VICTORY = 'victory';
+export const FADE = 'fade';
+export const UNFADE = 'unfade';
+export const DEFINE = 'define';
+export const ADD_TOOLBOX_ITEM = 'add-toolbox-item';
+export const CHANGE_GOAL = 'change-goal';
+export const ADD_BOARD_ITEM = 'add-board-item';
+export const ADD_GOAL_ITEM = 'add-goal-item';
 /**
  * Redux action to start a new level.
  *
@@ -61,7 +61,7 @@ export function startLevel(stage, goal, board, toolbox, globals) {
         }
         _toolbox.push(expr.id);
     }
-    for (const [ name, expr ] of Object.entries(globals)) {
+    for (const [name, expr] of Object.entries(globals)) {
         for (const newExpr of semantics.flatten(expr)) {
             _nodes[newExpr.id] = newExpr;
         }
@@ -74,7 +74,7 @@ export function startLevel(stage, goal, board, toolbox, globals) {
         goal: _goal,
         board: _board,
         toolbox: _toolbox,
-        globals: _globals,
+        globals: _globals
     } = semantics.parser.postParse(_nodes, _goal, _board, _toolbox, _globals));
 
     /* for debugging
@@ -99,7 +99,7 @@ export function startLevel(stage, goal, board, toolbox, globals) {
         goal: _goal,
         board: _board,
         toolbox: _toolbox,
-        globals: _globals,
+        globals: _globals
     };
 }
 
@@ -107,7 +107,7 @@ export function addToolboxItem(newNodeId, newNodes) {
     return {
         type: ADD_TOOLBOX_ITEM,
         newNodeId,
-        addedNodes: newNodes,
+        addedNodes: newNodes
     };
 }
 
@@ -115,7 +115,7 @@ export function addGoalItem(newNodeId, newNodes) {
     return {
         type: ADD_GOAL_ITEM,
         newNodeId,
-        addedNodes: newNodes,
+        addedNodes: newNodes
     };
 }
 
@@ -124,7 +124,7 @@ export function changeGoal(goal_id, newNodeIds, newNodes) {
         type: CHANGE_GOAL,
         goal_id,
         newNodeIds,
-        addedNodes: newNodes,
+        addedNodes: newNodes
     };
 }
 
@@ -132,7 +132,7 @@ export function addBoardItem(newNodeIds, addedNodes) {
     return {
         type: ADD_BOARD_ITEM,
         newNodeIds,
-        addedNodes,
+        addedNodes
     };
 }
 
@@ -147,7 +147,7 @@ export function smallStep(nodeId, newNodeIds, newNodes) {
         type: SMALL_STEP,
         topNodeId: nodeId,
         newNodeIds,
-        addedNodes: newNodes,
+        addedNodes: newNodes
     };
 }
 
@@ -160,7 +160,7 @@ export function unfold(nodeId, newNodeId, addedNodes) {
         type: UNFOLD,
         nodeId,
         newNodeId,
-        addedNodes,
+        addedNodes
     };
 }
 
@@ -177,7 +177,7 @@ export function betaReduce(topNodeId, argNodeId, newNodeIds, addedNodes) {
         topNodeId,
         argNodeId,
         newNodeIds,
-        addedNodes,
+        addedNodes
     };
 }
 
@@ -193,7 +193,7 @@ export function betaReduce(topNodeId, argNodeId, newNodeIds, addedNodes) {
 export function raise(nodeId) {
     return {
         type: RAISE,
-        nodeId,
+        nodeId
     };
 }
 
@@ -203,7 +203,7 @@ export function raise(nodeId) {
 export function detach(nodeId) {
     return {
         type: DETACH,
-        nodeId,
+        nodeId
     };
 }
 
@@ -214,7 +214,7 @@ export function fillHole(holeId, childId) {
     return {
         type: FILL_HOLE,
         holeId,
-        childId,
+        childId
     };
 }
 
@@ -227,7 +227,7 @@ export function attachNotch(parentId, notchIdx, childId, childNotchIdx) {
         parentId,
         childId,
         notchIdx,
-        childNotchIdx,
+        childNotchIdx
     };
 }
 
@@ -239,7 +239,7 @@ export function useToolbox(nodeId, clonedNodeId = null, addedNodes = null) {
         type: USE_TOOLBOX,
         nodeId,
         clonedNodeId,
-        addedNodes,
+        addedNodes
     };
 }
 
@@ -251,7 +251,7 @@ export function useToolbox(nodeId, clonedNodeId = null, addedNodes = null) {
  */
 export function victory() {
     return {
-        type: VICTORY,
+        type: VICTORY
     };
 }
 
@@ -273,7 +273,7 @@ export function unfade(source, nodeId, newNodeId, addedNodes) {
         source,
         nodeId,
         newNodeId,
-        addedNodes,
+        addedNodes
     };
 }
 
@@ -285,7 +285,7 @@ export function fade(source, unfadedId, fadedId) {
         type: FADE,
         source,
         unfadedId,
-        fadedId,
+        fadedId
     };
 }
 
@@ -296,6 +296,6 @@ export function define(name, id) {
     return {
         type: DEFINE,
         name,
-        id,
+        id
     };
 }

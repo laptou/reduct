@@ -1,51 +1,50 @@
-import * as chroma from "chroma-js";
+import * as chroma from 'chroma-js';
 
-import * as gfx from "../gfx/core";
-import * as animate from "../gfx/animate";
-import * as progression from "../game/progression";
-import Audio from "../resource/audio";
-import * as random from "../util/random";
+import * as gfx from '../gfx/core';
+import * as animate from '../gfx/animate';
+import * as progression from '../game/progression';
+import Audio from '../resource/audio';
+import * as random from '../util/random';
 
-import Loader from "../loader";
-import passwordPrompt from "../ui/dialogs/password";
+import Loader from '../loader';
+import passwordPrompt from '../ui/dialogs/password';
 
-import BaseStage from "./basestage";
-import BaseTouchRecord from "./touchrecord";
-import { REQUIRE_PASSWORDS } from "../logging/logging";
+import BaseStage from './basestage';
+import BaseTouchRecord from './touchrecord';
+import { REQUIRE_PASSWORDS } from '../logging/logging';
 
 export default class ChapterEndStage extends BaseStage {
     constructor(...args) {
         super(...args);
 
         this.opacity = 1.0;
-        this.color = "#8ab7db";
+        this.color = '#8ab7db';
 
         this.title = this.allocateInternal(gfx.layout.sticky(
-            gfx.text(progression.isGameEnd() ? "You win!" : "Chapter Finished!", {
+            gfx.text(progression.isGameEnd() ? 'You win!' : 'Chapter Finished!', {
                 fontSize: 96,
-                color: "#FFF",
-                font: gfx.text.script,
+                color: '#FFF',
+                font: gfx.text.script
             }),
-            "top",
+            'top',
             {
-                align: "center",
-                margin: 20,
-            },
+                align: 'center',
+                margin: 20
+            }
         ));
 
         animate.tween(this, {
-            color: "#594764",
+            color: '#594764'
         }, {
             duration: 500,
             setAnimatingFlag: false,
-            easing: animate.Easing.Color(animate.Easing.Cubic.In, this.color, "#594764"),
+            easing: animate.Easing.Color(animate.Easing.Cubic.In, this.color, '#594764')
         });
 
         if (progression.isGameEnd()) {
-            Audio.play("game-complete");
-        }
-        else {
-            Audio.play("chapter-complete");
+            Audio.play('game-complete');
+        } else {
+            Audio.play('chapter-complete');
         }
 
         this.stars = [];
@@ -70,7 +69,7 @@ export default class ChapterEndStage extends BaseStage {
                         size: { h: 15, w: 15 },
                         anchor: { x: 0.5, y: 0.5 },
                         opacity: 0.0,
-                        opacityDelta: 0.01 + (Math.random() / 10),
+                        opacityDelta: 0.01 + (Math.random() / 10)
                     }), x, y);
 
                     const id = this.allocateInternal(star);
@@ -78,7 +77,7 @@ export default class ChapterEndStage extends BaseStage {
                     this.bgStars.push(id);
                     animate.tween(star, { opacity: (0.5 * Math.random()) + 0.3 }, {
                         duration: 2500,
-                        easing: animate.Easing.Cubic.Out,
+                        easing: animate.Easing.Cubic.Out
                     });
                 }
             }
@@ -89,7 +88,7 @@ export default class ChapterEndStage extends BaseStage {
             .progression.linearChapters.length;
         const bandWidth = this.width / numChapters;
 
-        const scale = chroma.scale("Spectral").mode("lab");
+        const scale = chroma.scale('Spectral').mode('lab');
 
         // Center of cluster of stars representing just-finished chapter
         let newStarX = 0;
@@ -121,8 +120,8 @@ export default class ChapterEndStage extends BaseStage {
                 stroke: {
                     color: scale(j / numChapters),
                     lineWidth,
-                    lineDash: [10, 5],
-                },
+                    lineDash: [10, 5]
+                }
             })));
 
             // Add center star
@@ -134,7 +133,7 @@ export default class ChapterEndStage extends BaseStage {
                     anchor: { x: 0.5, y: 0.5 },
                     pos: { x: clusterX, y: clusterY },
                     opacity: lighting ? 0 : 1,
-                    scale: { x: lighting ? 0 : 1, y: lighting ? 0 : 1 },
+                    scale: { x: lighting ? 0 : 1, y: lighting ? 0 : 1 }
                 });
                 this.stars.push(this.allocateInternal(star));
                 newCenterStar = star;
@@ -160,43 +159,43 @@ export default class ChapterEndStage extends BaseStage {
             const col = i % starsPerRow;
             const row = Math.floor(i / starsPerRow);
             const star = gfx.shapes.star({
-                color: "gold",
+                color: 'gold',
                 anchor: { x: 0.5, y: 0.5 },
                 pos: { x: rowStart + (col * spacing), y: colStart + (row * spacing) },
-                scale: { x: 0, y: 0 },
+                scale: { x: 0, y: 0 }
             });
 
             starTweens.push(animate.tween(star, {
-                scale: { x: 1, y: 1 },
+                scale: { x: 1, y: 1 }
             }, {
                 easing: animate.Easing.Anticipate.BackOut(1.8),
                 duration: 500,
-                setAnimatingFlag: false,
+                setAnimatingFlag: false
             }).delay(i * 30));
 
             const id = this.allocateInternal(star);
             this.levelStars.push(id);
-            levelStars.push([ id, star ]);
+            levelStars.push([id, star]);
         }
 
         Promise.all(starTweens)
             .then(() => {
                 const splosions = [];
                 for (let i = 0; i < levelStars.length; i++) {
-                    const [ id, star ] = levelStars[i];
+                    const [id, star] = levelStars[i];
                     splosions.push(animate.tween(star, {
                         pos: {
                             x: newStarX + ((Math.random() - 0.5) * bandWidth),
-                            y: newStarY + ((Math.random() - 0.5) * bandWidth),
+                            y: newStarY + ((Math.random() - 0.5) * bandWidth)
                         },
-                        scale: { x: 0.3, y: 0.3 },
+                        scale: { x: 0.3, y: 0.3 }
                     }, {
                         easing: animate.Easing.Cubic.In,
-                        duration: 500,
+                        duration: 500
                     }).delay(i * 200)
                         .then(() => {
                             this.levelStars.splice(this.levelStars.indexOf(id), 1);
-                            Audio.play("acceptance");
+                            Audio.play('acceptance');
                             const particles = random.getRandInt(20, 50);
                             const rotation = Math.random() * (Math.PI / 2);
                             return animate.fx.splosion(this, star.pos, {
@@ -204,7 +203,7 @@ export default class ChapterEndStage extends BaseStage {
                                 numOfParticles: particles,
                                 duration: 600,
                                 color: (idx) => scale(idx / particles),
-                                angle: (idx) => rotation + (2 * Math.PI * (idx / particles)),
+                                angle: (idx) => rotation + (2 * Math.PI * (idx / particles))
                             });
                         }));
                 }
@@ -213,14 +212,14 @@ export default class ChapterEndStage extends BaseStage {
             .then(() => {
                 animate.tween(newCenterStar, {
                     opacity: 1,
-                    scale: { x: 1, y: 1 },
+                    scale: { x: 1, y: 1 }
                 }, {
                     easing: animate.Easing.Anticipate.BackOut(10),
                     duration: 500,
-                    setAnimatingFlag: false,
+                    setAnimatingFlag: false
                 }).delay(500);
 
-                animate.after(500).then(() => Audio.play("chapter-complete-2"));
+                animate.after(500).then(() => Audio.play('chapter-complete-2'));
             });
 
         animate.infinite((dt) => {
@@ -231,8 +230,7 @@ export default class ChapterEndStage extends BaseStage {
                 if (view.opacity > 1.0) {
                     view.opacity = 1.0;
                     view.opacityDelta *= -1;
-                }
-                else if (view.opacity < 0.2) {
+                } else if (view.opacity < 0.2) {
                     view.opacity = 0.2;
                     view.opacityDelta *= -1;
                 }
@@ -242,46 +240,45 @@ export default class ChapterEndStage extends BaseStage {
         this.draw();
 
         if (!progression.isGameEnd()) {
-            const continueButton = gfx.layout.sticky(gfx.ui.button(this, "Next Chapter", {
-                color: "#e95888",
+            const continueButton = gfx.layout.sticky(gfx.ui.button(this, 'Next Chapter', {
+                color: '#e95888',
                 click: () => {
                     const chapter = progression.nextChapter();
                     if (REQUIRE_PASSWORDS && chapter && chapter.password) {
-                        passwordPrompt("Ask the teacher to continue on!", chapter.password).then(() => {
+                        passwordPrompt('Ask the teacher to continue on!', chapter.password).then(() => {
                             this.continue(false);
                         }, () => {});
-                    }
-                    else {
+                    } else {
                         this.continue(false);
                     }
-                },
-            }), "top", {
-                align: "center",
-                margin: 150,
+                }
+            }), 'top', {
+                align: 'center',
+                margin: 150
             });
             this.continueButtonId = this.allocateInternal(continueButton);
             this.continueButton = this.internalViews[this.continueButtonId];
             this.continueButton.opacity = 0;
             animate.tween(this.continueButton, { opacity: 1 }, {
                 duration: 1000,
-                easing: animate.Easing.Cubic.Out,
+                easing: animate.Easing.Cubic.Out
             }).delay(1000);
 
             if (progression.hasChallengeChapter()) {
-                const challengeButton = gfx.layout.sticky(gfx.ui.button(this, "Try Challenges", {
-                    color: "#e95888",
+                const challengeButton = gfx.layout.sticky(gfx.ui.button(this, 'Try Challenges', {
+                    color: '#e95888',
                     click: () => {
                         this.continue(true);
-                    },
-                }), "top", {
-                    align: "center",
-                    margin: 200,
+                    }
+                }), 'top', {
+                    align: 'center',
+                    margin: 200
                 });
                 this.challengeButtonId = this.allocateInternal(challengeButton);
                 challengeButton.opacity = 0;
                 animate.tween(challengeButton, { opacity: 1 }, {
                     duration: 1000,
-                    easing: animate.Easing.Cubic.Out,
+                    easing: animate.Easing.Cubic.Out
                 }).delay(1000);
             }
         }
@@ -289,27 +286,27 @@ export default class ChapterEndStage extends BaseStage {
 
     continue(challenge) {
         animate.tween(this, {
-            color: "#EEE",
+            color: '#EEE'
         }, {
             duration: 800,
             setAnimatingFlag: false,
-            easing: animate.Easing.Color(animate.Easing.Cubic.In, this.color, "#8ab7db"),
+            easing: animate.Easing.Color(animate.Easing.Cubic.In, this.color, '#8ab7db')
         }).then(() => {
             window.next(challenge, false);
         });
         animate.tween(this, {
-            opacity: 0.0,
+            opacity: 0.0
         }, {
             duration: 500,
             setAnimatingFlag: false,
-            easing: animate.Easing.Cubic.Out,
+            easing: animate.Easing.Cubic.Out
         });
     }
 
     spawnFirework(startPos, targetPos, delay) {
         const firework = gfx.sprite({
-            image: Loader.images["mainmenu-star1"],
-            size: { h: 40, w: 40 },
+            image: Loader.images['mainmenu-star1'],
+            size: { h: 40, w: 40 }
         });
         firework.anchor = { x: 0.5, y: 0.5 };
         firework.pos = startPos;
@@ -317,16 +314,16 @@ export default class ChapterEndStage extends BaseStage {
         animate.tween(firework, { opacity: 0.0 }, {
             reverse: true,
             repeat: 5,
-            duration: 200,
+            duration: 200
         }).delay(delay);
 
         animate.tween(firework.pos, { y: targetPos.y }, {
             duration: 2000,
-            easing: animate.Easing.Projectile(animate.Easing.Linear),
+            easing: animate.Easing.Projectile(animate.Easing.Linear)
         }).delay(delay);
 
         animate.tween(firework.pos, { x: targetPos.x }, {
-            duration: 1000,
+            duration: 1000
         }).delay(delay).then(() => {
             this.stars.shift();
             const scale = { x: 0.1, y: 0.1 };
@@ -339,7 +336,7 @@ export default class ChapterEndStage extends BaseStage {
                 const idx = random.getRandInt(1, 15);
                 const spark = gfx.sprite({
                     image: Loader.images[`mainmenu-star${idx}`],
-                    size: { h: size, w: size },
+                    size: { h: size, w: size }
                 });
                 spark.anchor = { x: 0.5, y: 0.5 };
                 spark.scale = scale;
@@ -349,24 +346,24 @@ export default class ChapterEndStage extends BaseStage {
 
                 animate.tween(spark, { opacity: 1 }, {
                     duration,
-                    easing: animate.Easing.Cubic.Out,
+                    easing: animate.Easing.Cubic.Out
                 }).then(() => {
                     animate.tween(spark, { opacity: 0 }, {
                         duration: duration / 3,
-                        easing: animate.Easing.Cubic.Out,
+                        easing: animate.Easing.Cubic.Out
                     });
                 });
                 animate.tween(spark.pos, {
                     x: spark.pos.x + (rad * Math.cos((i * 2 * Math.PI) / count)),
-                    y: spark.pos.y + (rad * Math.sin((i * 2 * Math.PI) / count)),
+                    y: spark.pos.y + (rad * Math.sin((i * 2 * Math.PI) / count))
                 }, {
                     duration: 1.25 * duration,
-                    easing: animate.Easing.Cubic.Out,
+                    easing: animate.Easing.Cubic.Out
                 });
             }
             return animate.tween(scale, { x: 1, y: 1 }, {
                 duration: 1000,
-                easing: animate.Easing.Cubic.Out,
+                easing: animate.Easing.Cubic.Out
             });
         });
     }
@@ -396,7 +393,7 @@ export default class ChapterEndStage extends BaseStage {
             this.continueButton.prepare(this.continueButtonId, this.continueButtonId, state, this);
             this.continueButton.draw(
                 this.continueButtonId, this.continueButtonId, state, this,
-                this.makeBaseOffset({ opacity: this.opacity }),
+                this.makeBaseOffset({ opacity: this.opacity })
             );
         }
         if (this.challengeButtonId) {
@@ -404,7 +401,7 @@ export default class ChapterEndStage extends BaseStage {
             view.prepare(this.challengeButtonId, this.challengeButtonId, state, this);
             view.draw(
                 this.challengeButtonId, this.challengeButtonId, state, this,
-                this.makeBaseOffset({ opacity: this.opacity }),
+                this.makeBaseOffset({ opacity: this.opacity })
             );
         }
 
@@ -420,24 +417,23 @@ export default class ChapterEndStage extends BaseStage {
 
         if (this.continueButtonId) {
             if (projection.containsPoint(pos, offset)) {
-                return [ this.continueButtonId, this.continueButtonId ];
+                return [this.continueButtonId, this.continueButtonId];
             }
         }
 
         if (this.challengeButtonId) {
             if (this.internalViews[this.challengeButtonId].containsPoint(pos, offset)) {
-                return [ this.challengeButtonId, this.challengeButtonId ];
+                return [this.challengeButtonId, this.challengeButtonId];
             }
         }
-        return [ null, null ];
+        return [null, null];
     }
 
     updateCursor(touchRecord, moved = false) {
         if (touchRecord.hoverNode !== null) {
-            this.setCursor("pointer");
-        }
-        else {
-            this.setCursor("default");
+            this.setCursor('pointer');
+        } else {
+            this.setCursor('default');
         }
     }
 }

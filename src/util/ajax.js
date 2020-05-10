@@ -4,27 +4,26 @@ export function getJSON(path) {
         xhr.onload = function() {
             try {
                 resolve(JSON.parse(xhr.response));
-            }
-            catch (e) {
+            } catch (e) {
                 console.error(path, e);
                 reject(e);
             }
         };
 
-        xhr.open("GET", path);
-        xhr.responseType = "text";
+        xhr.open('GET', path);
+        xhr.responseType = 'text';
         xhr.send();
     });
 }
 
 export function postJSON(path, data) {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", path, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.open('POST', path, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify(data, null, 2));
 }
 
-const PREFIXES = ["jpa", "jpb", "jpc", "jpd"];
+const PREFIXES = ['jpa', 'jpb', 'jpc', 'jpd'];
 let prefixCounter = 0;
 
 export function jsonp(path, params) {
@@ -46,13 +45,13 @@ export function jsonp(path, params) {
         params.callback = callback;
         // Cachebuster
         params._ = Date.now();
-        for (const [ key, val ] of Object.entries(params)) {
+        for (const [key, val] of Object.entries(params)) {
             parts.push(`${key}=${window.encodeURIComponent(val)}`);
         }
-        const query = `?${parts.join("&")}`;
+        const query = `?${parts.join('&')}`;
 
-        const scr = document.createElement("script");
-        scr.setAttribute("src", path + query);
+        const scr = document.createElement('script');
+        scr.setAttribute('src', path + query);
 
         // Set timeout first in case appendChild causes a net::ERR_ABORTED
         window.setTimeout(() => {

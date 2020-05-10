@@ -1,6 +1,6 @@
-import * as gfx from "../gfx/core";
-import * as progression from "../game/progression";
-import Loader from "../loader";
+import * as gfx from '../gfx/core';
+import * as progression from '../game/progression';
+import Loader from '../loader';
 
 /**
  * Draws error messages at the bottom of the screen.
@@ -17,7 +17,7 @@ export default class Feedback {
         const image = Loader.images[chapter.resources.aliens[alienIndex]];
         const alien = stage.allocate(gfx.sprite({
             image,
-            size: { h: 80, w: 80 * (image.frame.w / image.frame.h) },
+            size: { h: 80, w: 80 * (image.frame.w / image.frame.h) }
         }));
         this.stage.views[alien].pos = { x: 5, y: 5 };
 
@@ -25,7 +25,7 @@ export default class Feedback {
         this.contents = [];
 
         const layout = gfx.layout.hbox(() => this.contents, {
-            subexpScale: 1,
+            subexpScale: 1
         }, gfx.baseProjection);
         layout.anchor = { x: 0.5, y: 1 };
         this.container = stage.allocate(layout);
@@ -40,30 +40,29 @@ export default class Feedback {
 
         if (rows.length === 1) {
             this.contents = this._makeRow(color, rows[0]);
-        }
-        else {
+        } else {
             const rowIds = rows
                 .map((items) => this._makeRow(color, items))
                 .map((ids) => this.stage.allocate(gfx.layout.hbox(() => ids, {
-                    subexpScale: 1,
+                    subexpScale: 1
                 }, gfx.baseProjection)));
             this.contents = [
                 this.stage.allocate(gfx.layout.vbox(() => rowIds, {
-                    subexpScale: 1,
-                }, gfx.baseProjection)),
+                    subexpScale: 1
+                }, gfx.baseProjection))
             ];
         }
     }
 
     _makeRow(color, message) {
         return message.map((msgOrId) => {
-            if (typeof msgOrId === "number" || Array.isArray(msgOrId)) {
+            if (typeof msgOrId === 'number' || Array.isArray(msgOrId)) {
                 return msgOrId;
             }
             return this.stage.allocate(gfx.text(msgOrId, {
                 color,
                 font: gfx.text.script,
-                fontSize: 40,
+                fontSize: 40
             }));
         });
     }

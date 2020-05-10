@@ -1,4 +1,4 @@
-import vis from "vis-charts";
+import vis from 'vis-charts';
 
 // Compares arrays like sets.
 function setCompare(arr1, arr2, compareFunc) {
@@ -57,7 +57,7 @@ export default class Network {
     addEdge(from, to, data = null) {
         if (!this.hasEdge(from, to, data)) {
             const new_edge = {
-                from, to, uid: this.unusedEdgeId, ts: (Date.now() - this.startTS),
+                from, to, uid: this.unusedEdgeId, ts: (Date.now() - this.startTS)
             };
             if (data !== null) new_edge.data = data;
             this.edges.push(new_edge);
@@ -99,11 +99,11 @@ export default class Network {
             }
             return false;
         }
-        if ((typeX === "string" && typeY === "string")
-                 || (typeX === "number" && typeY === "number")) {
+        if ((typeX === 'string' && typeY === 'string')
+                 || (typeX === 'number' && typeY === 'number')) {
             return x === y;
         }
-        if (typeX === "object" && typeY === "object") {
+        if (typeX === 'object' && typeY === 'object') {
             if (Object.keys(x).length !== Object.keys(y).length) return false;
             for (const key in x) {
                 if (!(key in y) || !this.compare(x[key], y[key])) return false;
@@ -112,7 +112,7 @@ export default class Network {
         }
         if (typeX !== typeY) return false;
 
-        console.warn("Cannot compare ", x, y, ". Types are odd: ", typeX, typeY);
+        console.warn('Cannot compare ', x, y, '. Types are odd: ', typeX, typeY);
         return false;
     }
 
@@ -126,10 +126,9 @@ export default class Network {
             const n = this.nodes[i];
             for (const key in pattern) {
                 if (key in n) {
-                    if (typeof n[key] === "object") { // TODO: This must be set comparison, not sequences.
+                    if (typeof n[key] === 'object') { // TODO: This must be set comparison, not sequences.
                         if (this.compare(n[key], pattern[key])) matches.push(n);
-                    }
-                    else if (n[key] === pattern[key]) {
+                    } else if (n[key] === pattern[key]) {
                         matches.push(n);
                     }
                 }
@@ -149,7 +148,7 @@ export default class Network {
     }
 
     nodeForId(id) {
-        if (id === null || typeof id === "undefined") return null;
+        if (id === null || typeof id === 'undefined') return null;
         const ns = this.nodesMatching({ id });
         if (ns.length === 0) return null;
         return ns[0];
@@ -180,8 +179,7 @@ export default class Network {
             // console.log('went back to ', dup_id);
             this.addEdge(prevNodeId, dup_id, changeData);
             this.lastNodeId = dup_id; // This is the id of the 'current node' (state) in the 'stack'...
-        }
-        else { // This is a new state.
+        } else { // This is a new state.
             const nid = this.unusedNodeId;
             this.nodes.push({ id: nid, data: stateData, ts: (Date.now() - this.startTS) }); // Add a new node.
             if (prevNodeId !== null) // Add an edge going from prev. node to new one, if prev. node exists.
@@ -198,15 +196,15 @@ export default class Network {
     // For logging minor changes that occur _within_ the current game-state.
     pushAddendumToCurrentState(data) {
         const currentNode = this.lastAddedNode;
-        if ("subchanges" in currentNode) currentNode.subchanges.push(data);
-        else currentNode.subchanges = [ data ];
+        if ('subchanges' in currentNode) currentNode.subchanges.push(data);
+        else currentNode.subchanges = [data];
     }
 
     // Exporting methods
     serialize() {
         return {
             nodes: this.nodes,
-            edges: this.edges,
+            edges: this.edges
         };
     }
 
@@ -215,24 +213,24 @@ export default class Network {
     }
 
     toVisJSNetworkData(toLabel) {
-        const clean = (s) => s.replace(/__(star|rect|tri|triangle|diamond|circle|dot)/g, "");
+        const clean = (s) => s.replace(/__(star|rect|tri|triangle|diamond|circle|dot)/g, '');
         const toEdgeLabel = (e) => {
             const d = e.data;
-            if (typeof d === "object") {
-                if ("before" in d && "after" in d) {
-                    if ("item" in d) return `(${clean(d.before)}) (${clean(d.item)}) -> ${clean(d.after)}`;
+            if (typeof d === 'object') {
+                if ('before' in d && 'after' in d) {
+                    if ('item' in d) return `(${clean(d.before)}) (${clean(d.item)}) -> ${clean(d.after)}`;
                     return `${clean(d.before)} -> ${clean(d.after)}`;
                 }
-                if ("item" in d && "name" in d) return `${d.name}: ${clean(d.item)}`;
+                if ('item' in d && 'name' in d) return `${d.name}: ${clean(d.item)}`;
                 return JSON.stringify(d);
             }
             return d;
         };
 
-        if (typeof toLabel === "undefined") {
+        if (typeof toLabel === 'undefined') {
             toLabel = (n) => {
-                if (typeof n.data === "string") return n.data;
-                let s = n.data.board.map(clean).join(") (");
+                if (typeof n.data === 'string') return n.data;
+                let s = n.data.board.map(clean).join(') (');
                 if (n.data.board.length > 1) s = `(${s})`;
                 return s;
             };
@@ -242,43 +240,41 @@ export default class Network {
         const nodes = new vis.DataSet(this.nodes.map((n) => {
             const v = {
                 id: n.id,
-                label: toLabel(n),
+                label: toLabel(n)
             };
-            if (n.data === "reset" || n.data === "prev"
-                || n.data === "next" || n.data === "change-chapter") {
+            if (n.data === 'reset' || n.data === 'prev'
+                || n.data === 'next' || n.data === 'change-chapter') {
                 // Mark reset state.
                 v.reset = true;
                 v.color = {
-                    background: "#BDAEC6",
-                    border: "#732C7B",
+                    background: '#BDAEC6',
+                    border: '#732C7B',
                     highlight: {
-                        background: "#BDAEC6",
-                        border: "Indigo",
-                    },
+                        background: '#BDAEC6',
+                        border: 'Indigo'
+                    }
                 };
-            }
-            else if (n.data === "victory" // Check for victory state.
+            } else if (n.data === 'victory' // Check for victory state.
                        || (n.id === lastNodeId && n.data
                         && this.compare(n.data.goal, n.data.board))) {
                 v.final = true;
                 v.color = {
-                    background: "Gold",
-                    border: "Orange",
+                    background: 'Gold',
+                    border: 'Orange',
                     highlight: {
-                        background: "Yellow",
-                        border: "OrangeRed",
-                    },
+                        background: 'Yellow',
+                        border: 'OrangeRed'
+                    }
                 };
-            }
-            else if (n.id === 0) { // Mark initial state.
+            } else if (n.id === 0) { // Mark initial state.
                 v.initial = true;
                 v.color = {
-                    background: "LightGreen",
-                    border: "green",
+                    background: 'LightGreen',
+                    border: 'green',
                     highlight: {
-                        background: "Aquamarine",
-                        border: "LightSeaGreen",
-                    },
+                        background: 'Aquamarine',
+                        border: 'LightSeaGreen'
+                    }
                 };
             }
             return v;
@@ -286,11 +282,11 @@ export default class Network {
         const edges = new vis.DataSet(this.edges.map((e) => ({
             from: e.from,
             to: e.to,
-            label: (e.data && e.data !== null) ? toEdgeLabel(e) : undefined,
+            label: (e.data && e.data !== null) ? toEdgeLabel(e) : undefined
         })));
         return {
             nodes,
-            edges,
+            edges
         };
     }
 }

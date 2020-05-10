@@ -1,26 +1,26 @@
-import * as core from "./core";
-import { ES6Parser, makeUnparser } from "../syntax/es6";
-import transform from "./transform";
+import * as core from './core';
+import { ES6Parser, makeUnparser } from '../syntax/es6';
+import transform from './transform';
 
-import apply from "./es6/apply";
-import autograder from "./es6/autograder";
-import array from "./es6/array";
-import binop from "./es6/binop";
-import conditional from "./es6/conditional";
-import define from "./es6/define";
-import lambda from "./es6/lambda";
-import letExpr from "./es6/letExpr";
-import member from "./es6/member";
-import not from "./es6/not";
-import reference from "./es6/reference";
-import value from "./es6/value";
+import apply from './defs/apply';
+import autograder from './defs/autograder';
+import array from './defs/array';
+import binop from './defs/binop';
+import conditional from './defs/conditional';
+import define from './defs/define';
+import lambda from './defs/lambda';
+import letExpr from './defs/letExpr';
+import member from './defs/member';
+import not from './defs/not';
+import reference from './defs/reference';
+import value from './defs/value';
 
 function capitalize(s) {
     return s.charAt(0).toUpperCase() + s.substr(1);
 }
 
 export default transform({
-    name: "ECMAScript 6",
+    name: 'ECMAScript 6',
     parser: {
         parse: (semanticsDefinition) => {
             // gradually introducing class-based model
@@ -30,20 +30,20 @@ export default transform({
         unparse: makeUnparser,
 
         templatizeName: (semant, name) => {
-            const defn = semant.definitionOf("symbol");
+            const defn = semant.definitionOf('symbol');
             const replacements = defn.nameReplacements || [];
 
-            for (const [ key, replacement ] of replacements) {
+            for (const [key, replacement] of replacements) {
                 const Key = capitalize(key);
                 const Replacement = capitalize(replacement);
-                name = name.replace(new RegExp(key, "g"), replacement)
-                    .replace(new RegExp(Key, "g"), Replacement);
+                name = name.replace(new RegExp(key, 'g'), replacement)
+                    .replace(new RegExp(Key, 'g'), Replacement);
             }
             return name;
         },
 
         extractDefines: (semant, expr) => {
-            if (expr.type !== "define") {
+            if (expr.type !== 'define') {
                 return null;
             }
             // needs to be a thunk
@@ -67,19 +67,18 @@ export default transform({
                 };
                 // Flag to the parser that this thunk can take arguments
                 thunk.takesArgs = true;
-            }
-            else {
+            } else {
                 thunk = () => semant.reference(expr.name, []);
             }
-            return [ expr.name, thunk ];
+            return [expr.name, thunk];
         },
 
         extractGlobals: (semant, expr) => {
-            if (expr.type !== "define") {
+            if (expr.type !== 'define') {
                 return null;
             }
             // We have access to expr.params
-            return [ expr.name, expr ];
+            return [expr.name, expr];
         },
 
         extractGlobalNames: (semant, name, expr) => {
@@ -100,9 +99,9 @@ export default transform({
                 };
                 // Flag to the parser that this thunk can take arguments
                 thunk.takesArgs = true;
-                return [ name, thunk ];
+                return [name, thunk];
             }
-            return [ name, () => semant.reference(name) ];
+            return [name, () => semant.reference(name)];
         },
 
         postParse: (nodes, goal, board, toolbox, globals) => ({
@@ -110,8 +109,8 @@ export default transform({
             goal,
             board,
             toolbox,
-            globals,
-        }),
+            globals
+        })
     },
 
     expressions: {
@@ -128,6 +127,6 @@ export default transform({
         ...member,
         ...not,
         ...reference,
-        ...value,
-    },
+        ...value
+    }
 });

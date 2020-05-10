@@ -1,16 +1,16 @@
-import FontFaceObserver from "fontfaceobserver";
-import { Howl } from "howler";
+import FontFaceObserver from 'fontfaceobserver';
+import { Howl } from 'howler';
 
-import * as gfx from "./gfx/core";
-import * as globalProgressions from "./game/progression";
+import * as gfx from './gfx/core';
+import * as globalProgressions from './game/progression';
 
 async function getImage(path) {
     const resolvedPath = await import(`@resources/graphics/${path}`).then((mod) => mod.default);
     return new Promise((resolve, reject) => {
-        const image = document.createElement("img");
-        image.addEventListener("load", () => resolve(image), { once: true });
-        image.addEventListener("error", () => reject(), { once: true });
-        image.setAttribute("src", resolvedPath);
+        const image = document.createElement('img');
+        image.addEventListener('load', () => resolve(image), { once: true });
+        image.addEventListener('error', () => reject(), { once: true });
+        image.setAttribute('src', resolvedPath);
     });
 }
 
@@ -57,9 +57,9 @@ export class LoaderClass {
     async loadImageAtlas(alias, key, imagePath) {
         this.startLoad();
 
-        const [ json, img ] = await Promise.all([
+        const [json, img] = await Promise.all([
             import(`@resources/graphics/${key}.json`),
-            getImage(imagePath),
+            getImage(imagePath)
         ]);
 
         const atlas = new gfx.image.ImageAtlas(alias, json, img);
@@ -76,7 +76,7 @@ export class LoaderClass {
         this.startLoad();
         const data = await import(`@resources/audio/${key}.json`);
         const audioUrls = await Promise.all(
-            data.urls.map((uri) => import(`@resources/audio/${uri}`).then((mod) => mod.default)),
+            data.urls.map((uri) => import(`@resources/audio/${uri}`).then((mod) => mod.default))
         );
 
         await new Promise((resolve, reject) => {
@@ -92,7 +92,7 @@ export class LoaderClass {
 
                     resolve();
                 },
-                onloaderror: reject,
+                onloaderror: reject
             });
         });
 
@@ -116,7 +116,7 @@ export class LoaderClass {
         // definitions, so that buildLevel has access to
         // them. Provide a default alien when not specified.
         const aliens = (json.resources && json.resources.aliens)
-            ? json.resources.aliens : ["alien-function-1"];
+            ? json.resources.aliens : ['alien-function-1'];
         for (const level of json.levels) {
             level.resources = level.resources || { aliens };
         }
@@ -129,19 +129,19 @@ export class LoaderClass {
             language: json.language,
             levels: [],
             dependencies: [],
-            password: json.password,
+            password: json.password
         };
         if (json.resources) d.resources = json.resources;
 
         json.levels.forEach((lvl) => {
             lvl.language = d.language;
             if (json.macros) lvl.macros = json.macros;
-            if (typeof lvl.goal === "string") lvl.goal = [lvl.goal];
+            if (typeof lvl.goal === 'string') lvl.goal = [lvl.goal];
             if (!lvl.toolbox) lvl.toolbox = [];
-            if (typeof lvl.board === "string") lvl.board = [lvl.board];
-            if (typeof lvl.toolbox === "string") lvl.toolbox = [lvl.toolbox];
+            if (typeof lvl.board === 'string') lvl.board = [lvl.board];
+            if (typeof lvl.toolbox === 'string') lvl.toolbox = [lvl.toolbox];
             if (!lvl.defines) lvl.defines = [];
-            else if (typeof lvl.defines === "string") lvl.defines = [lvl.defines];
+            else if (typeof lvl.defines === 'string') lvl.defines = [lvl.defines];
             if (!lvl.globals) lvl.globals = {};
             if (!lvl.syntax) lvl.syntax = [];
             // used for hiding definitions on the sidebar
@@ -150,14 +150,14 @@ export class LoaderClass {
             if (!lvl.input) lvl.input = [];
             if (!lvl.output) lvl.output = [];
             if (!lvl.numTests) lvl.numTests = 0;
-            else if (typeof lvl.syntax === "string") lvl.syntax = [lvl.syntax];
+            else if (typeof lvl.syntax === 'string') lvl.syntax = [lvl.syntax];
 
             if (!lvl.fade) lvl.fade = {};
 
             if (!lvl.animationScales) lvl.animationScales = {};
 
-            if (typeof lvl.showConcreteGoal === "undefined") lvl.showConcreteGoal = true;
-            if (typeof lvl.tutorialUrl === "undefined") lvl.tutorialUrl = null;
+            if (typeof lvl.showConcreteGoal === 'undefined') lvl.showConcreteGoal = true;
+            if (typeof lvl.tutorialUrl === 'undefined') lvl.tutorialUrl = null;
 
             d.levels.push(lvl);
         });
@@ -174,7 +174,7 @@ export class LoaderClass {
             chapters: {},
             levels: [],
             linearChapters: [],
-            syntax: {},
+            syntax: {}
         };
         this.progressions[name] = progression;
         const chapterKeys = Object.keys(definition.digraph);
@@ -218,11 +218,11 @@ export class LoaderClass {
                         const newScales = {
 
                             ...animationScales,
-                            ...level.animationScales,
+                            ...level.animationScales
                         };
                         level.animationScales = Object.assign(
                             animationScales,
-                            level.animationScales,
+                            level.animationScales
                         );
                         animationScales = newScales;
 
@@ -247,7 +247,7 @@ export class LoaderClass {
                 }
             }
 
-            console.error("Loader#loadChapters: Could not finish digraph.");
+            console.error('Loader#loadChapters: Could not finish digraph.');
             break;
         }
 

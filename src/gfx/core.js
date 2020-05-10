@@ -2,29 +2,29 @@
  * @module gfx/core
  */
 
-import * as image from "./image";
-import * as notch from "./notch";
-import * as primitive from "./primitive";
-import * as util from "./util";
+import * as image from './image';
+import * as notch from './notch';
+import * as primitive from './primitive';
+import * as util from './util';
 
-import * as custom from "./custom";
-import * as layout from "./layout";
-import * as shapes from "./shapes";
-import * as ui from "./ui";
-import * as viewport from "./viewport";
+import * as custom from './custom';
+import * as layout from './layout';
+import * as shapes from './shapes';
+import * as ui from './ui';
+import * as viewport from './viewport';
 
 export { image, util };
 
 let DEBUG = false;
 const DEBUG_COLORS = {
-    "hbox": "blue",
-    "vbox": "blue",
-    "text": "green",
-    "custom/argumentBar": "purple",
+    'hbox': 'blue',
+    'vbox': 'blue',
+    'text': 'green',
+    'custom/argumentBar': 'purple'
 };
 
-document.body.addEventListener("keyup", (e) => {
-    if (e.key === "F2") DEBUG = !DEBUG;
+document.body.addEventListener('keyup', (e) => {
+    if (e.key === 'F2') DEBUG = !DEBUG;
 });
 
 /**
@@ -87,7 +87,7 @@ export function baseProjection(options) {
          * @instance
          */
         offset: { x: 0, y: 0 },
-        ...options,
+        ...options
     };
 
     if (options && options.notches) {
@@ -170,12 +170,12 @@ export function baseProjection(options) {
             x: 0,
             y: 0,
             sx: 1,
-            sy: 1,
+            sy: 1
         }); // Assume we are a top level expression
         const offset = this.notchOffset(id, exprId, notchId);
         return {
             x: pos.x + offset.x,
-            y: pos.y + offset.y,
+            y: pos.y + offset.y
         };
     };
 
@@ -184,14 +184,14 @@ export function baseProjection(options) {
 
 export function notchProjection(options) {
     const projection = baseProjection(options);
-    projection.type = "notch";
+    projection.type = 'notch';
 
     projection.prepare = function(id, exprId, state, stage) {
         if (this.notches) {
-            const node = state.getIn([ "nodes", exprId ]);
+            const node = state.getIn(['nodes', exprId]);
             // TODO: don't hardcode this
-            if (node.has("notch0")) {
-                const childId = node.get("notch0");
+            if (node.has('notch0')) {
+                const childId = node.get('notch0');
                 stage.views[childId].prepare(childId, childId, state, stage);
             }
         }
@@ -204,7 +204,7 @@ export function notchProjection(options) {
                 this.size.h = 160;
                 ctx.beginPath();
                 ctx.moveTo(x, y + yOffset);
-                this.notches.drawSequence(ctx, "right", x, y + yOffset, this.size.h);
+                this.notches.drawSequence(ctx, 'right', x, y + yOffset, this.size.h);
                 ctx.lineTo(x, y + this.size.h + yOffset);
                 ctx.closePath();
                 ctx.fill();
@@ -216,23 +216,21 @@ export function notchProjection(options) {
             if (this.highlighted) {
                 primitive.setStroke(ctx, {
                     lineWidth: 4,
-                    color: "magenta",
+                    color: 'magenta'
                 });
-            }
-            else if (this.stroke) {
+            } else if (this.stroke) {
                 primitive.setStroke(ctx, this);
-            }
-            else {
+            } else {
                 primitive.setStroke(ctx, null);
             }
             if (this.color) ctx.fillStyle = this.color;
             draw(0);
             ctx.restore();
 
-            const node = state.getIn([ "nodes", exprId ]);
+            const node = state.getIn(['nodes', exprId]);
             // TODO: don't hardcode this
-            if (node.has("notch0")) {
-                const childId = node.get("notch0");
+            if (node.has('notch0')) {
+                const childId = node.get('notch0');
                 const delta = stage.views[childId].notchOffset(childId, childId, 0);
                 stage.views[childId].anchor.x = 0.0;
                 stage.views[childId].anchor.y = 0.0;
@@ -251,10 +249,10 @@ export function notchProjection(options) {
 
 export function debugDraw(ctx, projection, offset) {
     if (DEBUG) {
-        const [ sx, sy ] = util.absoluteScale(projection, offset);
+        const [sx, sy] = util.absoluteScale(projection, offset);
         const { x, y } = util.topLeftPos(projection, offset);
         ctx.save();
-        ctx.strokeStyle = DEBUG_COLORS[projection.type] || "red";
+        ctx.strokeStyle = DEBUG_COLORS[projection.type] || 'red';
         ctx.lineWidth = 1;
         ctx.strokeRect(x, y,
             projection.size.w * sx,
@@ -268,7 +266,7 @@ export function hoverOutline(id, projection, stage, offset) {
         const { x, y } = util.topLeftPos(projection, offset);
         primitive.setStroke(stage.ctx, {
             lineWidth: 2,
-            color: projection.highlightColor || "yellow",
+            color: projection.highlightColor || 'yellow'
         });
 
         primitive.roundRect(
@@ -279,7 +277,7 @@ export function hoverOutline(id, projection, stage, offset) {
             projection.scale.x * offset.sx * (projection.radius || 15),
             false,
             true,
-            projection.stroke ? projection.stroke.opacity : null,
+            projection.stroke ? projection.stroke.opacity : null
         );
     }
 }
@@ -363,7 +361,7 @@ export function centerPos(projection) {
     const { w, h } = absoluteSize(projection);
     return {
         x: x + (w / 2),
-        y: y + (h / 2),
+        y: y + (h / 2)
     };
 }
 
@@ -389,15 +387,15 @@ export function baseShape(name, defaults, draw, baseShapeOptions = {}) {
             const { ctx } = stage;
             ctx.save();
 
-            const [ sx, sy ] = util.absoluteScale(this, offset);
+            const [sx, sy] = util.absoluteScale(this, offset);
             const { x, y } = util.topLeftPos(this, offset);
 
             util.setOpacity(ctx, this.opacity, offset, this.backgroundOpacity);
 
-            const node = state.getIn([ "nodes", exprId ]);
+            const node = state.getIn(['nodes', exprId]);
 
             if ((this.shadow !== false)
-                && (this.shadow || (node && (!node.get("parent") || !node.get("locked"))))) {
+                && (this.shadow || (node && (!node.get('parent') || !node.get('locked'))))) {
                 ctx.fillStyle = this.shadowColor;
                 draw(ctx, this,
                     x, y + this.shadowOffset * offset.sy,
@@ -414,30 +412,27 @@ export function baseShape(name, defaults, draw, baseShapeOptions = {}) {
             if (this.stroke || this.outerStroke) {
                 shouldStroke = true;
                 primitive.setStroke(ctx, this.stroke || this.outerStroke);
-            }
-            else if (stage.isHovered(id) && (this.highlight !== false)) {
+            } else if (stage.isHovered(id) && (this.highlight !== false)) {
                 primitive.setStroke(ctx, {
                     lineWidth: 2,
-                    color: this.highlightColor || "yellow",
+                    color: this.highlightColor || 'yellow'
                 });
                 shouldStroke = true;
-            }
-            else if (!!(node && node.get("parent") && node.get("locked"))
+            } else if (!!(node && node.get('parent') && node.get('locked'))
                      && this.strokeWhenChild) {
                 // Stroke if we have a parent to make it clearer.
                 primitive.setStroke(ctx, {
                     lineWidth: 1,
-                    color: "gray",
+                    color: 'gray'
                 });
                 shouldStroke = true;
-            }
-            else {
+            } else {
                 primitive.setStroke(ctx, null);
             }
 
-            if (node && !node.get("parent") && stage.semantics.kind(state, node) === "expression") {
-                if (node.get("complete")) {
-                    ctx.shadowColor = "DeepPink";
+            if (node && !node.get('parent') && stage.semantics.kind(state, node) === 'expression') {
+                if (node.get('complete')) {
+                    ctx.shadowColor = 'DeepPink';
                     ctx.shadowBlur = 10;
                     ctx.shadowOffsetY = 0;
                 }
@@ -468,12 +463,12 @@ export function baseShape(name, defaults, draw, baseShapeOptions = {}) {
  * @class
  * @alias gfx.rect
  */
-export const rect = baseShape("roundedRect", {
-    color: "lightgray",
+export const rect = baseShape('roundedRect', {
+    color: 'lightgray',
     radius: 20,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: 4,
-    strokeWhenChild: true,
+    strokeWhenChild: true
 }, (ctx, projection, x, y, w, h, sx, sy, shouldStroke, notches) => {
     ctx.fillRect(x, y, w, h);
     if (shouldStroke) {
@@ -487,12 +482,12 @@ export const rect = baseShape("roundedRect", {
  * @class
  * @alias gfx.roundedRect
  */
-export const roundedRect = baseShape("roundedRect", {
-    color: "lightgray",
+export const roundedRect = baseShape('roundedRect', {
+    color: 'lightgray',
     radius: 18,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: 4,
-    strokeWhenChild: true, // Draw border when child of another expression
+    strokeWhenChild: true // Draw border when child of another expression
 }, (ctx, projection, x, y, w, h, sx, sy, shouldStroke, notches) => {
     primitive.roundRect(
         ctx,
@@ -501,55 +496,55 @@ export const roundedRect = baseShape("roundedRect", {
         !!projection.color,
         shouldStroke,
         projection.stroke ? projection.stroke.opacity : null,
-        notches,
+        notches
     );
 }, {
     notchOffset(id, exprId, notchIdx) {
         const notch = this.notches.get(notchIdx);
         switch (notch.side) {
-        case "left":
+        case 'left':
             return {
                 x: 0,
-                y: this.radius + ((this.size.h - this.radius) * (1 - notch.relpos) * this.scale.y),
+                y: this.radius + ((this.size.h - this.radius) * (1 - notch.relpos) * this.scale.y)
             };
-        case "right":
+        case 'right':
             return {
                 x: (this.size.w * this.scale.x),
-                y: ((this.radius + ((this.size.h - (this.radius * 2)) * notch.relpos)) * this.scale.y),
+                y: ((this.radius + ((this.size.h - (this.radius * 2)) * notch.relpos)) * this.scale.y)
             };
-        case "top":
+        case 'top':
             return {
                 x: this.radius + ((this.size.w - (this.radius * 2)) * notch.relpos),
-                y: 0,
+                y: 0
             };
-        case "bottom":
+        case 'bottom':
             return {
                 x: this.radius + ((this.size.w - (this.radius * 2)) * (1 - notch.relpos)),
-                y: this.size.h,
+                y: this.size.h
             };
         default:
             throw `roundedRect#notchOffset: unrecognized side ${notch.side}`;
         }
-    },
+    }
 });
 
 /**
  * @class
  * @alias gfx.hexaRect
  */
-export const hexaRect = baseShape("hexaRect", {
-    color: "lightgray",
+export const hexaRect = baseShape('hexaRect', {
+    color: 'lightgray',
     radius: 20,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: 4,
-    strokeWhenChild: true, // Draw border when child of another expression
+    strokeWhenChild: true // Draw border when child of another expression
 }, (ctx, projection, x, y, w, h, sx, sy, shouldStroke) => {
     primitive.hexaRect(
         ctx,
         x, y, w, h, Math.min(25, w / 2), h / 2,
         !!projection.color,
         shouldStroke,
-        projection.stroke ? projection.stroke.opacity : null,
+        projection.stroke ? projection.stroke.opacity : null
     );
 });
 
@@ -566,12 +561,12 @@ export function dynamic(mapping, keyFunc, options) {
     for (const childProjection of Object.values(mapping)) {
         projection = Object.assign(projection, childProjection);
     }
-    projection.type = "dynamic";
+    projection.type = 'dynamic';
 
-    if (typeof keyFunc === "string") {
+    if (typeof keyFunc === 'string') {
         const field = keyFunc;
         keyFunc = function(state, exprId) {
-            const expr = state.getIn([ "nodes", exprId ]);
+            const expr = state.getIn(['nodes', exprId]);
             return expr.get(field);
         };
     }
@@ -585,7 +580,7 @@ export function dynamic(mapping, keyFunc, options) {
         this.dynamicKey = newKey;
 
         let proj = mapping.__default__;
-        if (typeof mapping[this.dynamicKey] !== "undefined") {
+        if (typeof mapping[this.dynamicKey] !== 'undefined') {
             proj = mapping[this.dynamicKey];
         }
         this.children = proj.children;
@@ -597,11 +592,10 @@ export function dynamic(mapping, keyFunc, options) {
     };
 
     projection.draw = function(id, exprId, state, stage, offset) {
-        if (typeof mapping[this.dynamicKey] !== "undefined") {
+        if (typeof mapping[this.dynamicKey] !== 'undefined') {
             this.children = mapping[this.dynamicKey].children;
             mapping[this.dynamicKey].draw.call(this, id, exprId, state, stage, offset);
-        }
-        else {
+        } else {
             this.children = mapping.__default__.children;
             mapping.__default__.draw.call(this, id, exprId, state, stage, offset);
         }
@@ -617,16 +611,16 @@ export function dynamic(mapping, keyFunc, options) {
  * @alias gfx.dynamicProperty
  */
 export function dynamicProperty(projection, keyFunc, mappings) {
-    if (typeof keyFunc === "string") {
+    if (typeof keyFunc === 'string') {
         const field = keyFunc;
         keyFunc = function(state, exprId) {
-            const expr = state.getIn([ "nodes", exprId ]);
+            const expr = state.getIn(['nodes', exprId]);
             return expr.get(field);
         };
     }
 
     const origPrepare = projection.prepare;
-    let lastKey = "default";
+    let lastKey = 'default';
     let lastTween = null;
 
     projection.prepare = function(id, exprId, state, stage) {
@@ -635,12 +629,11 @@ export function dynamicProperty(projection, keyFunc, mappings) {
             lastKey = fieldVal;
 
             const props = mappings[fieldVal];
-            for (const [ prop, val ] of Object.entries(props)) {
-                if (typeof val === "function") {
+            for (const [prop, val] of Object.entries(props)) {
+                if (typeof val === 'function') {
                     if (lastTween) lastTween.completed();
                     lastTween = val(this);
-                }
-                else {
+                } else {
                     this[prop] = val;
                 }
             }
@@ -652,10 +645,10 @@ export function dynamicProperty(projection, keyFunc, mappings) {
     return projection;
 }
 
-export { default as text } from "./text";
+export { default as text } from './text';
 
-export { default as decal } from "./decal";
-export * from "./sprite";
+export { default as decal } from './decal';
+export * from './sprite';
 export {
-    custom, layout, primitive, shapes, ui, viewport,
+    custom, layout, primitive, shapes, ui, viewport
 };

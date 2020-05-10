@@ -1,4 +1,4 @@
-import * as gfx from "../gfx/core";
+import * as gfx from '../gfx/core';
 
 /**
  * Handle the play/pause/big-step toolbar for reducing expressions.
@@ -21,7 +21,7 @@ export default class ReductToolbar {
 
         // TODO: move this somewhere else
         // Remove any toolbars from the previous level
-        for (const el of document.querySelectorAll(".reduct-toolbar:not(.reduct-toolbar-proto)")) {
+        for (const el of document.querySelectorAll('.reduct-toolbar:not(.reduct-toolbar-proto)')) {
             el.remove();
         }
 
@@ -31,46 +31,43 @@ export default class ReductToolbar {
     update(id, prevId = null) {
         const state = this.stage.getState();
         if (id !== null && (prevId === null || !this.ids.has(prevId))) {
-            if (this.stage.semantics.kind(state, state.getIn([ "nodes", id ])) !== "expression") {
+            if (this.stage.semantics.kind(state, state.getIn(['nodes', id])) !== 'expression') {
                 return;
             }
 
-            const elToolbar = document.querySelector(".reduct-toolbar-proto").cloneNode(true);
-            elToolbar.classList.remove("reduct-toolbar-proto");
+            const elToolbar = document.querySelector('.reduct-toolbar-proto').cloneNode(true);
+            elToolbar.classList.remove('reduct-toolbar-proto');
             elToolbar.dataset.id = id;
 
             document.body.appendChild(elToolbar);
             this.ids.set(id, { el: elToolbar, shouldStop: false });
 
-            const btnFfwd = elToolbar.querySelector(".toolbar-ffwd");
-            const btnPlayPause = elToolbar.querySelector(".toolbar-play, .toolbar-pause");
+            const btnFfwd = elToolbar.querySelector('.toolbar-ffwd');
+            const btnPlayPause = elToolbar.querySelector('.toolbar-play, .toolbar-pause');
 
-            btnFfwd.addEventListener("click", () => this.ffwd(parseInt(elToolbar.dataset.id, 10)));
-            btnPlayPause.addEventListener("click", () => {
+            btnFfwd.addEventListener('click', () => this.ffwd(parseInt(elToolbar.dataset.id, 10)));
+            btnPlayPause.addEventListener('click', () => {
                 this.playing = !this.playing;
 
                 if (!this.playing) {
-                    elToolbar.classList.remove("reduct-toolbar-playing");
+                    elToolbar.classList.remove('reduct-toolbar-playing');
                     this.pause(parseInt(elToolbar.dataset.id, 10));
-                }
-                else {
-                    elToolbar.classList.add("reduct-toolbar-playing");
+                } else {
+                    elToolbar.classList.add('reduct-toolbar-playing');
                     this.play(parseInt(elToolbar.dataset.id, 10));
                 }
 
                 // Reposition buttons
                 this.drawImpl(this.stage.getState());
             });
-        }
-        else if (this.ids.has(prevId)) {
+        } else if (this.ids.has(prevId)) {
             const idRecord = this.ids.get(prevId);
             this.ids.delete(prevId);
             if (id !== null
-                && this.stage.semantics.kind(state, state.getIn([ "nodes", id ])) === "expression") {
+                && this.stage.semantics.kind(state, state.getIn(['nodes', id])) === 'expression') {
                 this.ids.set(id, idRecord);
                 idRecord.el.dataset.id = id;
-            }
-            else {
+            } else {
                 idRecord.el.remove();
             }
         }
@@ -80,10 +77,10 @@ export default class ReductToolbar {
         const offsetX = this.stage.sidebarWidth;
         const offsetY = this.stage.canvas.offsetTop;
 
-        const board = state.get("board");
+        const board = state.get('board');
         const toDelete = [];
 
-        for (const [ id, { el: toolbar } ] of this.ids.entries()) {
+        for (const [id, { el: toolbar }] of this.ids.entries()) {
             if (!board.includes(id)) {
                 toDelete.push(id);
                 continue;
@@ -122,7 +119,7 @@ export default class ReductToolbar {
         if (this.ids.has(id)) {
             this.ids.get(id).shouldStop = false;
         }
-        this.stage.step(this.stage.getState(), id, "multi", this._shouldStop);
+        this.stage.step(this.stage.getState(), id, 'multi', this._shouldStop);
     }
 
     pause(id) {
@@ -136,7 +133,7 @@ export default class ReductToolbar {
         if (this.ids.has(id)) {
             this.ids.get(id).shouldStop = false;
         }
-        this.stage.step(this.stage.getState(), id, "big");
+        this.stage.step(this.stage.getState(), id, 'big');
     }
 
     skip(id) {
@@ -144,6 +141,6 @@ export default class ReductToolbar {
         if (this.ids.has(id)) {
             this.ids.get(id).shouldStop = false;
         }
-        this.stage.step(this.stage.getState(), id, "big");
+        this.stage.step(this.stage.getState(), id, 'big');
     }
 }

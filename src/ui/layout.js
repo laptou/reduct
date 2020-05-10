@@ -1,7 +1,7 @@
-import * as numeric from "numeric";
+import * as numeric from 'numeric';
 
-import * as gfx from "../gfx/core";
-import * as progression from "../game/progression";
+import * as gfx from '../gfx/core';
+import * as progression from '../game/progression';
 
 /**
  * Seeded random number gen code from olsn @
@@ -126,8 +126,7 @@ export function ianPacking(stage, bounds, nodeIds) {
             const key = `${i} ${j}`;
             if (key in pairwiseCalcs) {
                 pairwiseTotals[i] += pairwiseCalcs[key];
-            }
-            else {
+            } else {
                 pairwiseCalcs[key] = computePairwiseDist(candidates[i], candidates[j]);
                 pairwiseTotals[i] += pairwiseCalcs[key];
             }
@@ -180,13 +179,13 @@ export function repulsorPacking(stage, bounds, nodeIds) {
             cx: pos1.x,
             cy: pos1.y,
             w: sz1.w,
-            h: sz1.h,
+            h: sz1.h
         };
         const aabb2 = {
             cx: pos2.x,
             cy: pos2.y,
             w: sz2.w,
-            h: sz2.h,
+            h: sz2.h
         };
 
         const d = edgeDistance(aabb1, aabb2);
@@ -291,13 +290,13 @@ function aabbSides(aabb) {
 
     return [
         // Top
-        [ { x, y }, { x: w, y: 0 } ],
+        [{ x, y }, { x: w, y: 0 }],
         // Left
-        [ { x, y }, { x: 0, y: h } ],
+        [{ x, y }, { x: 0, y: h }],
         // Right
-        [ { x: x + w, y: y + h }, { x: 0, y: -h } ],
+        [{ x: x + w, y: y + h }, { x: 0, y: -h }],
         // Bottom
-        [ { x: x + w, y: y + h }, { x: -w, y: 0 } ],
+        [{ x: x + w, y: y + h }, { x: -w, y: 0 }]
     ];
 }
 
@@ -328,7 +327,7 @@ function raySegmentIntersect(p, r, q, s) {
                 return {
                     x: p.x + (t0 * r.x),
                     y: p.y + (t0 * r.y),
-                    t: t0,
+                    t: t0
                 };
             }
         }
@@ -346,7 +345,7 @@ function raySegmentIntersect(p, r, q, s) {
             x: p.x + (t * r.x),
             y: p.y + (t * r.y),
             t,
-            u,
+            u
         };
     }
     // Non-parallel and non-intersecting
@@ -372,7 +371,7 @@ function edgeDistance(aabb1, aabb2) {
     let t1 = 1000000;
     let point2;
     let t2 = 1000000;
-    for (const [ q, s ] of aabbSides(aabb1)) {
+    for (const [q, s] of aabbSides(aabb1)) {
         const result = raySegmentIntersect(p, r, q, s);
         if (result && result.t < t1) {
             point1 = result;
@@ -380,7 +379,7 @@ function edgeDistance(aabb1, aabb2) {
         }
     }
 
-    for (const [ q, s ] of aabbSides(aabb2)) {
+    for (const [q, s] of aabbSides(aabb2)) {
         const result = raySegmentIntersect(p, r, q, s);
         if (result && result.t < t2) {
             point2 = result;
@@ -423,12 +422,12 @@ export function optimizationPacking(stage, bounds, nodeIds) {
                     cx: x1,
                     cy: y1,
                     w: sz1.w,
-                    h: sz1.h,
+                    h: sz1.h
                 }, {
                     cx: x2,
                     cy: y2,
                     w: sz2.w,
-                    h: sz2.h,
+                    h: sz2.h
                 });
                 result += 1 / Math.exp(Math.sqrt(pairwiseDistance) / (Math.max(bounds.w, bounds.h) / 5));
                 // result += 1 / (1 + Math.abs(pairwiseDistance));
@@ -474,7 +473,7 @@ export function optimizationPacking(stage, bounds, nodeIds) {
     for (const id of nodeIds) {
         positions.set(id, {
             x: solution[i],
-            y: solution[i + 1],
+            y: solution[i + 1]
         });
         i += 2;
     }

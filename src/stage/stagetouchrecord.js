@@ -1,25 +1,25 @@
-import chroma from "chroma-js";
-import * as immutable from "immutable";
+import chroma from 'chroma-js';
+import * as immutable from 'immutable';
 
-import * as action from "../reducer/action";
-import * as level from "../game/level";
-import * as animate from "../gfx/animate";
-import Audio from "../resource/audio";
-import * as gfxCore from "../gfx/core";
-import * as progression from "../game/progression";
+import * as action from '../reducer/action';
+import * as level from '../game/level';
+import * as animate from '../gfx/animate/tween';
+import Audio from '../resource/audio';
+import * as gfxCore from '../gfx/core';
+import * as progression from '../game/progression';
 
-import Goal from "../ui/goal";
-import Toolbox from "../ui/toolbox";
-import Sidebar from "../ui/sidebar";
-import SyntaxJournal from "../ui/syntax-journal";
-import FunctionDef from "../ui/functiondef";
+import Goal from '../ui/goal';
+import Toolbox from '../ui/toolbox';
+import Sidebar from '../ui/sidebar';
+import SyntaxJournal from '../ui/syntax-journal';
+import FunctionDef from '../ui/functiondef';
 
-import Loader from "../loader";
-import Logging from "../logging/logging";
-import Network from "../logging/network";
+import Loader from '../loader';
+import Logging from '../logging/logging';
+import Network from '../logging/network';
 
-import BaseTouchRecord from "./touchrecord";
-import BaseStage from "./basestage";
+import BaseTouchRecord from './touchrecord';
+import BaseStage from './basestage';
 
 const DOUBLE_CLICK_THRESHOLD_MS = 250;
 
@@ -51,7 +51,7 @@ export default class TouchRecord extends BaseTouchRecord {
             this.stage.getView(id).outerStroke = null;
         }
 
-        for (const [ tween, isExpand ] of this.dropTweens.values()) {
+        for (const [tween, isExpand] of this.dropTweens.values()) {
             if (isExpand) {
                 tween.completed();
                 tween.undo();
@@ -67,30 +67,30 @@ export default class TouchRecord extends BaseTouchRecord {
 
     startHighlight() {
         const state = this.stage.getState();
-        const nodes = state.get("nodes");
+        const nodes = state.get('nodes');
 
         const topNode = nodes.get(this.topNode);
-        const highlightSidebar = topNode.get("type") === "define";
+        const highlightSidebar = topNode.get('type') === 'define';
 
         // sidebar highlighting for defines
         let sidebarScale = null;
         let sidebarHoverScale = null;
         if (highlightSidebar) {
-            sidebarScale = chroma.scale([ "#8ab7db", "OrangeRed" ]).mode("lab");
-            sidebarHoverScale = chroma.scale([ "#8ab7db", "gold" ]).mode("lab");
+            sidebarScale = chroma.scale(['#8ab7db', 'OrangeRed']).mode('lab');
+            sidebarHoverScale = chroma.scale(['#8ab7db', 'gold']).mode('lab');
 
             const indicator = this.stage.getView(this.stage.sidebar.indicator);
             indicator.tween = animate.tween(indicator, {
                 padding: { top: 50, bottom: 50 },
-                opacity: 1,
+                opacity: 1
             }, {
                 duration: 300,
-                easing: animate.Easing.Cubic.In,
+                easing: animate.Easing.Cubic.In
             });
         }
 
         // highlighting droppable targets for the topNode
-        state.get("board").forEach((id) => {
+        state.get('board').forEach((id) => {
             if (id === this.topNode) return;
 
             this.dropTargets = this.dropTargets.concat(this.stage.semantics.search(
@@ -100,7 +100,7 @@ export default class TouchRecord extends BaseTouchRecord {
                     const other = nodes.get(subId);
                     const compatible = this.stage.semantics.notchesCompatible(topNode, other);
                     return droppable || (compatible && compatible.length > 0);
-                },
+                }
             ));
         });
 
@@ -112,14 +112,13 @@ export default class TouchRecord extends BaseTouchRecord {
             for (const targetId of this.dropTargets) {
                 const view = this.stage.getView(targetId);
                 const stroke = {
-                    color: targetId === this.hoverNode ? "gold" : "#02d8f9",
-                    lineWidth: 3 + (1.5 * Math.cos(time / 750)),
+                    color: targetId === this.hoverNode ? 'gold' : '#02d8f9',
+                    lineWidth: 3 + (1.5 * Math.cos(time / 750))
                 };
 
-                if (state.getIn([ "nodes", targetId, "type" ]) === "lambdaArg") {
+                if (state.getIn(['nodes', targetId, 'type']) === 'lambdaArg') {
                     view.outerStroke = stroke;
-                }
-                else {
+                } else {
                     view.stroke = stroke;
                 }
             }
@@ -133,7 +132,7 @@ export default class TouchRecord extends BaseTouchRecord {
     }
 
     useToolboxItem() {
-        Logging.log("toolbox-remove", this.stage.saveNode(this.topNode));
+        Logging.log('toolbox-remove', this.stage.saveNode(this.topNode));
         this.stage.store.dispatch(action.useToolbox(this.topNode));
         animate.fx.expandingShape(this.stage, this.stage.getView(this.topNode));
     }
@@ -147,15 +146,15 @@ export default class TouchRecord extends BaseTouchRecord {
         if (this.stage.alreadyWon) return;
 
         super.onstart(mousePos);
-        this.isExpr = this.stage.getState().get("nodes").has(this.topNode);
+        this.isExpr = this.stage.getState().get('nodes').has(this.topNode);
         if (this.isExpr && this.topNode) {
             this.stage.store.dispatch(action.raise(this.topNode));
 
             const state = this.stage.getState();
-            const selected = state.getIn([ "nodes", this.topNode ]);
+            const selected = state.getIn(['nodes', this.topNode]);
             this.clonable = this.fromToolbox
-                && selected.has("__meta")
-                && selected.get("__meta").toolbox.unlimited;
+                && selected.has('__meta')
+                && selected.get('__meta').toolbox.unlimited;
         }
 
         const referenceId = this.stage.getReferenceNameAtPos(mousePos);
@@ -194,7 +193,7 @@ export default class TouchRecord extends BaseTouchRecord {
                 }
 
                 if (this.isExpr && !this.dragged && this.fromToolbox) {
-                    Logging.log("toolbox-dragout", this.stage.saveNode(this.topNode));
+                    Logging.log('toolbox-dragout', this.stage.saveNode(this.topNode));
                 }
 
                 if (!this.dragged) {
@@ -206,7 +205,7 @@ export default class TouchRecord extends BaseTouchRecord {
                 if (this.isExpr && this.fromToolbox) {
                     const resultNode = this.stage.cloneToolboxItem(this.topNode);
                     if (resultNode !== null) {
-                        Logging.log("toolbox-remove", this.stage.saveNode(this.topNode));
+                        Logging.log('toolbox-remove', this.stage.saveNode(this.topNode));
                         this.stage.views[this.topNode].opacity = 1.0;
                         // Selected node was an __unlimited node
                         this.topNode = resultNode;
@@ -221,7 +220,7 @@ export default class TouchRecord extends BaseTouchRecord {
                 const view = this.stage.getView(this.topNode);
                 this.stage.views[this.topNode].anchor = {
                     x: this.dragAnchor.x,
-                    y: this.dragAnchor.y,
+                    y: this.dragAnchor.y
                 };
                 view.pos.x = mousePos.x;
                 view.pos.y = mousePos.y;
@@ -244,7 +243,7 @@ export default class TouchRecord extends BaseTouchRecord {
                 this.dragAnchor = this.stage.computeDragAnchor(
                     this.dragStart,
                     newSelected,
-                    newSelected,
+                    newSelected
                 );
             }
         }
@@ -258,24 +257,23 @@ export default class TouchRecord extends BaseTouchRecord {
             && (this.hoverNode === null || !this.stage.semantics.droppable(
                 this.stage.getState(),
                 this.topNode,
-                this.hoverNode,
+                this.hoverNode
             ))
             && oldHover !== null && this.hoverStartPos
             && gfxCore.distance(mousePos, this.hoverStartPos) < 50) {
             this.hoverNode = oldHover;
-        }
-        else if (this.topNode !== null && this.hoverNode !== null) {
+        } else if (this.topNode !== null && this.hoverNode !== null) {
             this.hoverStartPos = { ...mousePos };
         }
 
         if (this.isExpr && this.topNode && this.hoverNode) {
             const state = this.stage.getState();
-            const holeExprType = state.getIn([ "nodes", this.hoverNode, "type" ]);
-            const holeType = state.getIn([ "nodes", this.hoverNode, "ty" ]);
-            const exprType = state.getIn([ "nodes", this.topNode, "ty" ]);
+            const holeExprType = state.getIn(['nodes', this.hoverNode, 'type']);
+            const holeType = state.getIn(['nodes', this.hoverNode, 'ty']);
+            const exprType = state.getIn(['nodes', this.topNode, 'ty']);
             // TODO: don't hardcode these checks
-            if ((holeExprType !== "missing"
-                 && holeExprType !== "lambdaArg")
+            if ((holeExprType !== 'missing'
+                 && holeExprType !== 'lambdaArg')
                 || (holeType && exprType && holeType !== exprType)) {
                 this.hoverNode = null;
             }
@@ -305,7 +303,7 @@ export default class TouchRecord extends BaseTouchRecord {
                         const tb = Math.min(Math.max((targetSize.h - curSize.h) / 1.5, 10), 30);
 
                         if (this.dropTweens.has(this.hoverNode)) {
-                            const [ tween, isExpand ] = this.dropTweens.get(this.hoverNode);
+                            const [tween, isExpand] = this.dropTweens.get(this.hoverNode);
                             tween.completed();
                             if (isExpand) {
                                 tween.undo();
@@ -316,15 +314,15 @@ export default class TouchRecord extends BaseTouchRecord {
                                 left: view.padding.left + lr,
                                 right: view.padding.right + lr,
                                 top: view.padding.top + tb,
-                                bottom: view.padding.bottom + tb,
-                            },
+                                bottom: view.padding.bottom + tb
+                            }
                         }, {
                             duration: 600,
                             easing: animate.Easing.Cubic.Out,
                             // Don't override layout
-                            setAnimatingFlag: false,
+                            setAnimatingFlag: false
                         });
-                        this.dropTweens.set(this.hoverNode, [ tween, true ]);
+                        this.dropTweens.set(this.hoverNode, [tween, true]);
                     }
                 }
             }
@@ -349,21 +347,20 @@ export default class TouchRecord extends BaseTouchRecord {
             if (this.hoverNode) {
                 if (this.scaleAnimation) this.scaleAnimation.cancel();
                 this.scaleAnimation = animate.tween(this.stage.getView(this.topNode), {
-                    scale: { x: 0.6, y: 0.6 },
+                    scale: { x: 0.6, y: 0.6 }
                 }, {
                     easing: animate.Easing.Cubic.Out,
                     setAnimatingFlag: false,
-                    duration: 300,
+                    duration: 300
                 });
-            }
-            else if (this.stage.getView(this.topNode).scale.x < 1) {
+            } else if (this.stage.getView(this.topNode).scale.x < 1) {
                 if (this.scaleAnimation) this.scaleAnimation.cancel();
                 this.scaleAnimation = animate.tween(this.stage.getView(this.topNode), {
-                    scale: { x: 1, y: 1 },
+                    scale: { x: 1, y: 1 }
                 }, {
                     easing: animate.Easing.Cubic.Out,
                     setAnimatingFlag: false,
-                    duration: 300,
+                    duration: 300
                 });
             }
         }
@@ -381,8 +378,7 @@ export default class TouchRecord extends BaseTouchRecord {
             if (view && view.onclick) {
                 view.onclick();
             }
-        }
-        else if (this.isExpr) {
+        } else if (this.isExpr) {
             // Clear any feedback messages
             this.stage.feedback.clear();
         }
@@ -397,7 +393,7 @@ export default class TouchRecord extends BaseTouchRecord {
             view.pos = cp;
         }
 
-        if (this.isExpr && !this.dragged && this.topNode !== null && !this.fromToolbox && state.get("board").includes(this.topNode)) {
+        if (this.isExpr && !this.dragged && this.topNode !== null && !this.fromToolbox && state.get('board').includes(this.topNode)) {
             if (Date.now() - this.currTime < 10000) {
                 // Click on object to reduce; always targets toplevel node
                 if (this.stage.functionDef) {
@@ -405,24 +401,20 @@ export default class TouchRecord extends BaseTouchRecord {
                 }
                 this.stage.step(state, this.topNode);
             }
-        }
-        else if (this.isExpr && this.stage.snapNotches(this.topNode)) {
+        } else if (this.isExpr && this.stage.snapNotches(this.topNode)) {
             // Prioritize snapping over filling
-        }
-        else if (mousePos.sidebar && this.isExpr && this.stage.dropDefines(this.topNode)) {
+        } else if (mousePos.sidebar && this.isExpr && this.stage.dropDefines(this.topNode)) {
             // Drop definitions in sidebar to activate them
-        }
-        else if (this.isExpr && this.dragged && this.hoverNode
-                 && this.stage.semantics.droppable(state, this.topNode, this.hoverNode) === "hole") {
+        } else if (this.isExpr && this.dragged && this.hoverNode
+                 && this.stage.semantics.droppable(state, this.topNode, this.hoverNode) === 'hole') {
             // Drag something into hole
             if (this.fromToolbox) this.useToolboxItem();
 
-            Audio.play("pop");
+            Audio.play('pop');
             this.stage.reductToolbar.update(null, this.topNode);
             this.stage.store.dispatch(action.fillHole(this.hoverNode, this.topNode));
             animate.fx.expandingShape(this.stage, this.stage.getView(this.topNode));
-        }
-        else if (this.isExpr && this.dragged && this.hoverNode && this.topNode) {
+        } else if (this.isExpr && this.dragged && this.hoverNode && this.topNode) {
             if (this.fromToolbox) this.useToolboxItem();
 
             // Clear application previews (otherwise they stick around
@@ -432,8 +424,7 @@ export default class TouchRecord extends BaseTouchRecord {
             const arg = this.topNode;
             const target = this.hoverNode;
             this.stage.betaReduce(state, target, arg);
-        }
-        else if (this.isExpr && this.dragged && this.fromToolbox) {
+        } else if (this.isExpr && this.dragged && this.fromToolbox) {
             const projection = this.stage.views[this.topNode];
             let useItem = true;
             // Allow items to be placed back in toolbox if and only if
@@ -449,15 +440,13 @@ export default class TouchRecord extends BaseTouchRecord {
             if (useItem) {
                 // Take item out of toolbox
                 this.useToolboxItem();
+            } else {
+                Logging.log('toolbox-addback', this.stage.saveNode(this.topNode));
             }
-            else {
-                Logging.log("toolbox-addback", this.stage.saveNode(this.topNode));
-            }
-        }
-        else if (this.isExpr && !this.dragged && this.topNode !== null && this.fromToolbox) {
+        } else if (this.isExpr && !this.dragged && this.topNode !== null && this.fromToolbox) {
             return; // unimplemented
-            const node = state.getIn(["nodes", this.topNode]);
-            if (node.get("name") == "Library") {
+            const node = state.getIn(['nodes', this.topNode]);
+            if (node.get('name') == 'Library') {
                 this.stage.library(state, this.topNode);
             }
         }
@@ -469,10 +458,10 @@ export default class TouchRecord extends BaseTouchRecord {
             const topLeft = gfxCore.absolutePos(projection);
             const bottom = { x: 0, y: topLeft.y + projection.size.h };
             if (this.stage.toolbox.containsPoint(bottom)
-                && !this.stage.getState().get("toolbox").includes(this.topNode)) {
-                Logging.log("toolbox-reject", this.stage.saveNode(this.topNode));
+                && !this.stage.getState().get('toolbox').includes(this.topNode)) {
+                Logging.log('toolbox-reject', this.stage.saveNode(this.topNode));
                 animate.fx.error(this.stage, this.stage.getView(this.topNode));
-                this.stage.feedback.update("#000", [ "We can't put things back in the toolbox!" ]);
+                this.stage.feedback.update('#000', ['We can\'t put things back in the toolbox!']);
             }
             this.stage.bumpAwayFromEdges(this.topNode);
             this.stage.views[this.topNode].opacity = 1.0;

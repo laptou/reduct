@@ -1,7 +1,7 @@
-import * as gfx from "../gfx/core";
-import * as animate from "../gfx/animate";
+import * as gfx from '../gfx/core';
+import * as animate from '../gfx/animate/tween';
 
-import Audio from "../resource/audio";
+import Audio from '../resource/audio';
 
 /**
  * Handles drawing the expanded version of a name.
@@ -21,34 +21,34 @@ export default class FunctionDef {
         animate.after(delay)
             .then(() => animate.tween(this.view, { opacity: 0.8 }, {
                 duration: 350,
-                easing: animate.Easing.Cubic.In,
+                easing: animate.Easing.Cubic.In
             }))
             .then(() => animate.after(100))
             .then(() => {
-                this.audioId = Audio.play("202753__sheepfilms__slide-whistle-3");
+                this.audioId = Audio.play('202753__sheepfilms__slide-whistle-3');
                 animate.tween(this.view, {
                     pos: {
                         x: centerPos.x,
-                        y: centerPos.y + (absSize.h / 2) + 5,
+                        y: centerPos.y + (absSize.h / 2) + 5
                     },
-                    scale: { x: 1.0, y: 1.0 },
+                    scale: { x: 1.0, y: 1.0 }
                 }, {
                     duration: 2000,
-                    easing: animate.Easing.Cubic.InOut,
+                    easing: animate.Easing.Cubic.InOut
                 });
             });
     }
 
     cancel() {
         if (this.audioId) {
-            Audio.stop("202753__sheepfilms__slide-whistle-3", this.audioId);
+            Audio.stop('202753__sheepfilms__slide-whistle-3', this.audioId);
         }
     }
 
     project() {
         const view = { ...this.stage.views[this.id] };
         view.shadow = false;
-        view.stroke = { lineWidth: 1, color: "gray" };
+        view.stroke = { lineWidth: 1, color: 'gray' };
         view.opacity = 0;
         view.scale = { x: 0.5, y: 0.5 };
         view.pos = { x: 0, y: 0 };
@@ -65,7 +65,7 @@ export default class FunctionDef {
             y: 0,
             sx: 1,
             sy: 1,
-            opacity: 1,
+            opacity: 1
         };
     }
 

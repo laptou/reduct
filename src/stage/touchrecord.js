@@ -58,7 +58,7 @@ export default class BaseTouchRecord {
     findHoverNode(pos) {
         const before = this.hoverNode;
         this.prevHoverNode = before;
-        const [ _, target ] = this.stage.getNodeAtPos(pos, this.topNode);
+        const [_, target] = this.stage.getNodeAtPos(pos, this.topNode);
         this.hoverNode = target;
         this.hoverSidebar = pos.sidebar;
         this.stage.draw();

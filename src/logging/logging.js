@@ -1,11 +1,11 @@
-import fileSaver from "file-saver";
+import fileSaver from 'file-saver';
 
-import * as level from "../game/level";
-import * as action from "../reducer/action";
-import * as undoAction from "../reducer/undo";
-import * as ajax from "../util/ajax";
-import * as random from "../util/random";
-import VERSION_ID from "../version";
+import * as level from '../game/level';
+import * as action from '../reducer/action';
+import * as undoAction from '../reducer/undo';
+import * as ajax from '../util/ajax';
+import * as random from '../util/random';
+import VERSION_ID from '../version';
 
 /* TODO:
  * User ID tracking: sync with GDIAC server
@@ -17,15 +17,15 @@ import VERSION_ID from "../version";
  */
 
 const GAME_ID = 7017019;
-const IS_LOCAL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+const IS_LOCAL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
-const REMOTE_LOGGER_URL = "https://gdiac.cs.cornell.edu/research_games/php/reduct/";
-const LOCAL_LOGGER_URL = "//localhost:3333";
+const REMOTE_LOGGER_URL = 'https://gdiac.cs.cornell.edu/research_games/php/reduct/';
+const LOCAL_LOGGER_URL = '//localhost:3333';
 const URLS = {
-    PAGE_LOAD: "page_load.php",
-    QUEST_START: "player_quest.php",
-    QUEST_END: "player_quest_end.php",
-    ACTION: "player_action.php",
+    PAGE_LOAD: 'page_load.php',
+    QUEST_START: 'player_quest.php',
+    QUEST_END: 'player_quest_end.php',
+    ACTION: 'player_action.php'
 };
 
 export const VICTORY_LEVEL_ID = -1;
@@ -35,9 +35,9 @@ export const TITLE_LEVEL_ID = -2;
 export const REQUIRE_PASSWORDS = false;
 
 const params = new URL(window.location).searchParams;
-export const DEVELOPMENT_BUILD = typeof params.get("nodev") !== "string" && (
-    typeof params.get("dev") === "string"
-        || process.env.NODE_ENV !== "production");
+export const DEVELOPMENT_BUILD = typeof params.get('nodev') !== 'string' && (
+    typeof params.get('dev') === 'string'
+        || process.env.NODE_ENV !== 'production');
 
 class Logger {
     constructor() {
@@ -46,7 +46,7 @@ class Logger {
 
         this.info(`reduct-redux v${VERSION_ID} (debug: ${DEVELOPMENT_BUILD})`);
         this.info(`Environment: ${process.env.NODE_ENV}`);
-        this.config("debug", DEVELOPMENT_BUILD);
+        this.config('debug', DEVELOPMENT_BUILD);
 
         // GDIAC server variables
         this.currentUserId = null;
@@ -61,7 +61,7 @@ class Logger {
 
         this.staticLog = [];
 
-        if (this.config("static")) {
+        if (this.config('static')) {
             // Before closing page, save the static log
             window.onbeforeunload = () => {
                 window.localStorage.static_log = JSON.stringify(this.staticLog);
@@ -70,7 +70,7 @@ class Logger {
             // Deserialize static log
             if (window.localStorage.static_log) {
                 this.staticLog = JSON.parse(window.localStorage.static_log);
-                this.info("Loaded prior play data from localStorage.");
+                this.info('Loaded prior play data from localStorage.');
             }
         }
 
@@ -78,25 +78,25 @@ class Logger {
     }
 
     get enabled() {
-        return this.config("enabled");
+        return this.config('enabled');
     }
 
     toggle() {
-        return this.config("enabled", !this.config("enabled"));
+        return this.config('enabled', !this.config('enabled'));
     }
 
     clearStaticLog() {
         delete window.localStorage.static_log;
         this.staticLog = [];
-        console.log("Cleared prior play data from localStorage.");
+        console.log('Cleared prior play data from localStorage.');
     }
 
     startSession() {
         if (!this.enabled) {
-            this.info("Starting session with no logging.");
+            this.info('Starting session with no logging.');
             return Promise.resolve();
         }
-        const player_id = document.getElementById("player_id");
+        const player_id = document.getElementById('player_id');
         if (player_id && player_id.value) {
             this.currentUserId = player_id.value;
         }
@@ -110,13 +110,13 @@ class Logger {
         params.user_id = this.currentUserId;
         params.session_id = this.currentSessionId;
 
-        this.info(`Trying to start ${this.config("offline") ? "offline" : "online"} session with user ID ${this.currentUserId}.`);
+        this.info(`Trying to start ${this.config('offline') ? 'offline' : 'online'} session with user ID ${this.currentUserId}.`);
 
-        if (this.config("offline")) {
+        if (this.config('offline')) {
             return this.startOfflineSession(params);
         }
 
-        return ajax.jsonp(this.getUrl("PAGE_LOAD"), params).then((response) => {
+        return ajax.jsonp(this.getUrl('PAGE_LOAD'), params).then((response) => {
             // TODO: also accept server UID?
             this.currentSessionId = response.session_id || this.currentSessionId;
             this.info(`Starting online session with user ID ${this.currentUserId}.`);
@@ -124,10 +124,10 @@ class Logger {
 
             return ({
                 user_id: this.currentUserId,
-                session_id: this.currentSessionid,
+                session_id: this.currentSessionid
             });
         }).catch(() => {
-            this.info("Contacting remote server failed");
+            this.info('Contacting remote server failed');
             return this.startOfflineSession(params);
         });
     }
@@ -146,7 +146,7 @@ class Logger {
         }
 
         if (!this.isSessionStarted) {
-            this.warn("@ Logging#startTask: unknown user ID or session ID!");
+            this.warn('@ Logging#startTask: unknown user ID or session ID!');
             return Promise.reject();
         }
         if (this.isTaskStarted) {
@@ -164,13 +164,13 @@ class Logger {
         params.quest_id = taskId;
         if (data) params.quest_detail = JSON.stringify(data);
 
-        this.logStatic("startTask", params, false);
-        if (this.config("offline")) {
+        this.logStatic('startTask', params, false);
+        if (this.config('offline')) {
             return Promise.resolve();
         }
         // Don't wait for server response (especially since we're
         // generating our own task ID)
-        ajax.jsonp(this.getUrl("QUEST_START"), params).catch(() => null);
+        ajax.jsonp(this.getUrl('QUEST_START'), params).catch(() => null);
         return Promise.resolve();
     }
 
@@ -186,7 +186,7 @@ class Logger {
         }
 
         if (!this.isTaskStarted) {
-            this.warn("@ Logging#endTask: no task was begun.");
+            this.warn('@ Logging#endTask: no task was begun.');
             return Promise.reject();
         }
 
@@ -200,13 +200,13 @@ class Logger {
         this.actionSequenceId = 1;
         this.taskSequenceId++;
 
-        this.logStatic("endTask", params, false);
-        if (this.config("offline")) {
+        this.logStatic('endTask', params, false);
+        if (this.config('offline')) {
             return Promise.resolve();
         }
         if (params.quest_id >= 0) {
             Logging.info(`Reporting completion of level ${params.quest_id} to remote server`);
-            ajax.jsonp(this.getUrl("QUEST_END"), params).catch(() => null);
+            ajax.jsonp(this.getUrl('QUEST_END'), params).catch(() => null);
         }
         return Promise.resolve();
     }
@@ -230,11 +230,10 @@ class Logger {
         this.actionSequenceId++;
 
         let numericActionId = actionId;
-        if (typeof actionId === "string") {
+        if (typeof actionId === 'string') {
             if (actionId in this.ACTIONS) {
                 numericActionId = this.ACTIONS[actionId];
-            }
-            else {
+            } else {
                 this.warn(`@ Logging#log: unknown action ${actionId}`);
                 numericActionId = 10000; // Unknown action
             }
@@ -244,15 +243,15 @@ class Logger {
         const staticParams = { action_id: actionId, ...params };
         const remoteParams = { action_id: numericActionId, ...params };
 
-        this.logStatic("action", staticParams, false);
+        this.logStatic('action', staticParams, false);
         if (!this.isTaskStarted) {
             return Promise.reject();
         }
 
-        if (this.config("offline")) {
+        if (this.config('offline')) {
             return Promise.resolve();
         }
-        ajax.jsonp(this.getUrl("ACTION"), remoteParams).catch(() => null);
+        ajax.jsonp(this.getUrl('ACTION'), remoteParams).catch(() => null);
         return Promise.resolve();
     }
 
@@ -269,74 +268,66 @@ class Logger {
             const after = level.serialize(afterState, semantics);
 
             if (act.type === action.DETACH) {
-                this.log("detached-expr", {
+                this.log('detached-expr', {
                     before,
                     after,
-                    item: saveNode(act.nodeId),
+                    item: saveNode(act.nodeId)
                 });
-            }
-            else if (act.type === undoAction.UNDO) {
-                this.log("undo", {
+            } else if (act.type === undoAction.UNDO) {
+                this.log('undo', {
                     before,
-                    after,
+                    after
                 });
-            }
-            else if (act.type === undoAction.REDO) {
-                this.log("redo", {
+            } else if (act.type === undoAction.REDO) {
+                this.log('redo', {
                     before,
-                    after,
+                    after
                 });
-            }
-            else if (act.type === action.FILL_HOLE) {
+            } else if (act.type === action.FILL_HOLE) {
                 let parent = act.holeId;
-                const nodes = beforeState.get("nodes");
-                while (nodes.get(parent).has("parent")) {
-                    parent = nodes.get(parent).get("parent");
+                const nodes = beforeState.get('nodes');
+                while (nodes.get(parent).has('parent')) {
+                    parent = nodes.get(parent).get('parent');
                 }
 
                 const savedParent = saveNode(parent, nodes);
 
-                this.log("placed-expr", {
+                this.log('placed-expr', {
                     before,
                     after,
-                    field: nodes.get(act.holeId).get("parentField"),
+                    field: nodes.get(act.holeId).get('parentField'),
                     item: saveNode(act.childId),
-                    target: savedParent,
+                    target: savedParent
                 });
-            }
-            else if (act.type === action.ATTACH_NOTCH) {
-                this.log("attached-expr", {
+            } else if (act.type === action.ATTACH_NOTCH) {
+                this.log('attached-expr', {
                     before,
                     after,
-                    parent: saveNode(act.parentId, beforeState.get("nodes")),
+                    parent: saveNode(act.parentId, beforeState.get('nodes')),
                     item: saveNode(act.childId),
                     parentNotchIdx: act.notchIdx,
-                    childNotchIdx: act.childNotchIdx,
+                    childNotchIdx: act.childNotchIdx
                 });
-            }
-            else if (act.type === action.VICTORY) {
-                pushState("victory", "victory");
+            } else if (act.type === action.VICTORY) {
+                pushState('victory', 'victory');
                 return returnValue;
-            }
-            else if (act.type === action.FADE) {
-                this.log("fade", {
+            } else if (act.type === action.FADE) {
+                this.log('fade', {
                     item: saveNode(act.fadedId),
-                    fromLevel: beforeState.getIn([ "nodes", act.unfadedId, "fadeLevel" ]),
-                    toLevel: afterState.getIn([ "nodes", act.fadedId, "fadeLevel" ]),
+                    fromLevel: beforeState.getIn(['nodes', act.unfadedId, 'fadeLevel']),
+                    toLevel: afterState.getIn(['nodes', act.fadedId, 'fadeLevel'])
                 });
-            }
-            else if (act.type === action.UNFOLD) {
-                this.log("unfold", {
+            } else if (act.type === action.UNFOLD) {
+                this.log('unfold', {
                     before,
                     after,
                     item: saveNode(act.nodeId),
-                    replacement: saveNode(act.newNodeId),
+                    replacement: saveNode(act.newNodeId)
                 });
-            }
-            else if (act.type === action.DEFINE) {
-                this.log("define", {
+            } else if (act.type === action.DEFINE) {
+                this.log('define', {
                     name: act.name,
-                    body: saveNode(act.id),
+                    body: saveNode(act.id)
                 });
             }
 
@@ -351,21 +342,21 @@ class Logger {
     }
 
     downloadStaticLog() {
-        const blob = new window.Blob([ JSON.stringify(this.staticLog, null, 2) ], {
-            type: "application/json;charset=utf-8",
+        const blob = new window.Blob([JSON.stringify(this.staticLog, null, 2)], {
+            type: 'application/json;charset=utf-8'
         });
         fileSaver.saveAs(blob, `log_${new Date().getTime().toString()}.json`);
     }
 
     toggleStateGraph() {
-        this.config("stateGraph", !this.config("stateGraph"));
+        this.config('stateGraph', !this.config('stateGraph'));
         this.saveConfig();
     }
 
     /* ~~~~~~~~~ PRIVATE METHODS ~~~~~~~~~ */
 
     getUrl(key) {
-        if (this.config("local")) {
+        if (this.config('local')) {
             return `${LOCAL_LOGGER_URL}/${URLS[key]}`;
         }
         return `${REMOTE_LOGGER_URL}/${URLS[key]}`;
@@ -377,17 +368,17 @@ class Logger {
 
         this.info(`Starting offline session, user ID = ${this.currentUserId}.`);
 
-        this.logStatic("startSession", {
+        this.logStatic('startSession', {
             ...params,
             session_id: this.currentSessionId,
-            message: "static_session",
+            message: 'static_session'
         }, false);
 
         this.saveState();
 
         return Promise.resolve({
             user_id: this.currentUserId,
-            session_id: this.currentSessionid,
+            session_id: this.currentSessionid
         });
     }
 
@@ -414,28 +405,28 @@ class Logger {
     }
 
     info(text) {
-        console.info(`%c${text}`, "background: darkgreen; color: #eee");
+        console.info(`%c${text}`, 'background: darkgreen; color: #eee');
     }
 
     debug(text) {
-        if (!this.config("debug")) return;
+        if (!this.config('debug')) return;
 
-        console.debug(`%c${text}`, "background: purple; color: #eee", "background: inherit; color: inherit");
+        console.debug(`%c${text}`, 'background: purple; color: #eee', 'background: inherit; color: inherit');
     }
 
     warn(text) {
-        console.warn(`%c${text}`, "background: #dd6b00; color: #eee");
+        console.warn(`%c${text}`, 'background: #dd6b00; color: #eee');
     }
 
     logStatic(funcname, data, uploaded) {
         if (!uploaded) {
-            data.error_message = "This log failed to upload to the server.";
+            data.error_message = 'This log failed to upload to the server.';
         }
 
-        this.staticLog.push([ funcname, data ]);
+        this.staticLog.push([funcname, data]);
 
-        if (this.config("local")) {
-            ajax.postJSON(LOCAL_LOGGER_URL, [ funcname, data ]);
+        if (this.config('local')) {
+            ajax.postJSON(LOCAL_LOGGER_URL, [funcname, data]);
         }
     }
 
@@ -445,7 +436,7 @@ class Logger {
      * @param {*} value The value to set. Omit this parameter to get the current value instead.
      */
     config(key, value) {
-        if (typeof value !== "undefined") {
+        if (typeof value !== 'undefined') {
             this._config[key] = value;
             this.saveConfig();
         }
@@ -459,7 +450,7 @@ class Logger {
             local: false, // Are we logging to a local server?
             static: true, // Are we saving events to the in-browser cache?
             offline: false, // Are we only saving events offline?
-            stateGraph: false, // Are we displaying a dynamic state graph?
+            stateGraph: false // Are we displaying a dynamic state graph?
         };
     }
 
@@ -467,7 +458,7 @@ class Logger {
         if (window.localStorage.loggingConfig) {
             this._config = Object.assign(
                 this._config,
-                JSON.parse(window.localStorage.loggingConfig),
+                JSON.parse(window.localStorage.loggingConfig)
             );
         }
     }
@@ -492,47 +483,47 @@ class Logger {
 }
 
 Logger.prototype.ACTIONS = {
-    "state-save": 1,
-    "state-restore": 2,
-    "victory": 3,
-    "bag-spill": 4,
-    "clicked-to-continue": 5,
-    "reduction-lambda": 6,
-    "reduction": 7,
-    "faded-expr": 8,
-    "detached-expr": 9,
-    "detach-commit": 10,
-    "toolbox-dragout": 11,
-    "toolbox-remove": 12,
-    "moved": 13,
-    "placed-expr": 14,
-    "bag-add": 15,
-    "toolbox-reject": 16,
-    "toolbox-addback": 17,
-    "game-complete": 18,
+    'state-save': 1,
+    'state-restore': 2,
+    'victory': 3,
+    'bag-spill': 4,
+    'clicked-to-continue': 5,
+    'reduction-lambda': 6,
+    'reduction': 7,
+    'faded-expr': 8,
+    'detached-expr': 9,
+    'detach-commit': 10,
+    'toolbox-dragout': 11,
+    'toolbox-remove': 12,
+    'moved': 13,
+    'placed-expr': 14,
+    'bag-add': 15,
+    'toolbox-reject': 16,
+    'toolbox-addback': 17,
+    'game-complete': 18,
     // NEW ACTIONS FOR REDUCT-REDUX
-    "state-path-save": 99,
-    "undo": 100,
-    "redo": 101,
-    "reduction-error": 102,
-    "reduction-lambda-failed": 103,
-    "tutorial-state-next": 104,
-    "attached-expr": 105,
-    "attached-expr-failed": 106,
-    "fade": 107,
-    "unfold": 108,
-    "unfold-start": 109,
-    "unfold-cancel": 110,
+    'state-path-save': 99,
+    'undo': 100,
+    'redo': 101,
+    'reduction-error': 102,
+    'reduction-lambda-failed': 103,
+    'tutorial-state-next': 104,
+    'attached-expr': 105,
+    'attached-expr-failed': 106,
+    'fade': 107,
+    'unfold': 108,
+    'unfold-start': 109,
+    'unfold-cancel': 110,
     // State graph quickly grows beyond what we can store in one
     // logging call, so we split it up and log a record at the end
-    "state-path-save-nodes": 111,
-    "state-path-save-edges": 112,
-    "state-path-save-graph": 113,
-    "dead-end": 114,
-    "define": 115,
-    "define-failed": 115,
-    "tutorial-skip": 116,
-    "theme": 117,
+    'state-path-save-nodes': 111,
+    'state-path-save-edges': 112,
+    'state-path-save-graph': 113,
+    'dead-end': 114,
+    'define': 115,
+    'define-failed': 115,
+    'tutorial-skip': 116,
+    'theme': 117
 };
 
 const Logging = new Logger();

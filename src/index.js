@@ -1,31 +1,31 @@
-import "@resources/style/index.css";
+import '@resources/style/index.css';
 
-import vis from "vis-charts";
-import { createStore, applyMiddleware } from "redux";
+import vis from 'vis-charts';
+import { createStore, applyMiddleware } from 'redux';
 
-import fileSaver from "file-saver";
-import * as immutable from "immutable";
-import * as gfx from "./gfx/core";
-import * as animate from "./gfx/animate";
-import * as reducer from "./reducer/reducer";
-import * as level from "./game/level";
-import * as progression from "./game/progression";
-import * as action from "./reducer/action";
-import es6 from "./semantics/es6";
-import Stage from "./stage/stage";
-import TutorialStage from "./stage/tutorial";
-import ChapterEndStage from "./stage/chapterend";
-import TitleStage from "./stage/title";
-import CompleteStage from "./stage/complete";
-import LevelStage from "./stage/lvlStage";
-import passwordPrompt from "./ui/dialogs/password";
-import ConsentDialog from "./ui/dialogs/consent";
-import TutorialDialog from "./ui/dialogs/tutorial";
+import fileSaver from 'file-saver';
+import * as immutable from 'immutable';
+import * as gfx from './gfx/core';
+import * as animate from './gfx/animate';
+import * as reducer from './reducer/reducer';
+import * as level from './game/level';
+import * as progression from './game/progression';
+import * as action from './reducer/action';
+import es6 from './semantics/es6';
+import Stage from './stage/stage';
+import TutorialStage from './stage/tutorial';
+import ChapterEndStage from './stage/chapterend';
+import TitleStage from './stage/title';
+import CompleteStage from './stage/complete';
+import LevelStage from './stage/lvlStage';
+import passwordPrompt from './ui/dialogs/password';
+import ConsentDialog from './ui/dialogs/consent';
+import TutorialDialog from './ui/dialogs/tutorial';
 
-import Loader from "./loader";
-import Logging, { TITLE_LEVEL_ID, DEVELOPMENT_BUILD } from "./logging/logging";
+import Loader from './loader';
+import Logging, { TITLE_LEVEL_ID, DEVELOPMENT_BUILD } from './logging/logging';
 
-import * as ajax from "./util/ajax";
+import * as ajax from './util/ajax';
 
 // Whether the game will ask for (valid) user ids
 const USER_IDS = false;
@@ -38,26 +38,26 @@ window.progression = progression;
 window.devMode = 1;
 
 // Load assets.
-Loader.loadAudioSprite("sounds", "output");
-Loader.loadImageAtlas("spritesheet", "assets", "assets.png");
-Loader.loadImageAtlas("titlesprites", "title-assets", "title-assets.png");
-Loader.loadImageAtlas("menusprites", "menu-assets", "menu-assets.png");
-Loader.loadChapters("Elementary", progression.ACTIVE_PROGRESSION_DEFINITION);
-Loader.waitForFonts([ "Fira Mono", "Fira Sans", "Nanum Pen Script" ]);
+Loader.loadAudioSprite('sounds', 'output');
+Loader.loadImageAtlas('spritesheet', 'assets', 'assets.png');
+Loader.loadImageAtlas('titlesprites', 'title-assets', 'title-assets.png');
+Loader.loadImageAtlas('menusprites', 'menu-assets', 'menu-assets.png');
+Loader.loadChapters('Elementary', progression.ACTIVE_PROGRESSION_DEFINITION);
+Loader.waitForFonts(['Fira Mono', 'Fira Sans', 'Nanum Pen Script']);
 
 const fetchLevel = (sessionParams) => {
     const { user_id } = sessionParams;
     // console.log("Trying to fetch level for user ID " + JSON.stringify(user_id));
-    const url = "https://gdiac.cs.cornell.edu/research_games/php/reduct/last_level.php";
+    const url = 'https://gdiac.cs.cornell.edu/research_games/php/reduct/last_level.php';
     const params = { game_id: 7017019, version_id: 6, user_id };
     ajax.jsonp(url, params).then(
         (result) => {
         // console.log(`GDIAC server reports: ${JSON.stringify(result)}`);
             const { message, level } = result;
-            if (message == "success" && level > 0) {
+            if (message == 'success' && level > 0) {
                 progression.setLevel(level);
             }
-        },
+        }
     );
 };
 
@@ -74,25 +74,23 @@ window.startup = async () => {
             Logging.saveState();
         }
 
-        Logging.config("enabled", consented);
+        Logging.config('enabled', consented);
 
         let sessionParams;
 
         if (consented) {
-            Logging.config("offline", false);
+            Logging.config('offline', false);
             sessionParams = await Logging.startSession();
-        }
-        else {
+        } else {
             sessionParams = await Logging.startOfflineSession();
         }
 
         fetchLevel(sessionParams);
         initialize();
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
-        document.querySelector("#consent-id-error").style.display = "block";
-        setTimeout(() => document.querySelector("#player_id").focus(), 250);
+        document.querySelector('#consent-id-error').style.display = 'block';
+        setTimeout(() => document.querySelector('#player_id').focus(), 250);
         window.startup(); // try again
     }
 };
@@ -106,52 +104,51 @@ let canvas;
 
 function toggleDev() {
     window.devMode = (window.devMode + 1) % 2;
-    const nav = document.querySelector("#nav");
-    const devEls = document.querySelectorAll(".dev");
-    if (nav.style.display === "none") {
-        nav.style.display = "flex";
+    const nav = document.querySelector('#nav');
+    const devEls = document.querySelectorAll('.dev');
+    if (nav.style.display === 'none') {
+        nav.style.display = 'flex';
         for (let i = 0; i < devEls.length; i++) {
-            devEls[i].style.display = "block";
+            devEls[i].style.display = 'block';
         }
-    }
-    else {
-        nav.style.display = "none";
+    } else {
+        nav.style.display = 'none';
     }
 }
 
 function bindSpecialKeys() {
-    document.body.addEventListener("keyup", (e) => {
+    document.body.addEventListener('keyup', (e) => {
         if (e.ctrlKey) {
             switch (e.code) {
-            case "F6":
+            case 'F6':
                 window.prev();
                 e.preventDefault();
                 break;
-            case "F7":
+            case 'F7':
                 window.next();
                 e.preventDefault();
                 break;
-            case "F8":
+            case 'F8':
                 toggleDev();
                 e.preventDefault();
                 break;
-            case "F9":
-                document.querySelector("#goto-level").classList.add("visible");
-                document.querySelector("#goto-level input").value = "";
-                document.querySelector("#goto-level input").focus();
+            case 'F9':
+                document.querySelector('#goto-level').classList.add('visible');
+                document.querySelector('#goto-level input').value = '';
+                document.querySelector('#goto-level input').focus();
                 e.preventDefault();
                 break;
-            case "F10":
-                window.localStorage.version = "";
+            case 'F10':
+                window.localStorage.version = '';
                 Logging.resetState();
                 Logging.clearStaticLog();
                 Logging.saveState();
                 e.preventDefault();
                 window.location.reload();
                 break;
-            case "F11":
-                document.querySelector("#add-node").classList.add("visible");
-                document.querySelector("#add-node input").focus();
+            case 'F11':
+                document.querySelector('#add-node').classList.add('visible');
+                document.querySelector('#add-node input').focus();
                 e.preventDefault();
                 break;
             default: break;
@@ -165,16 +162,16 @@ function initialize() {
         toggleDev();
     }
 
-    document.querySelector("#loading-container").remove();
+    document.querySelector('#loading-container').remove();
 
     bindSpecialKeys();
 
-    canvas = document.createElement("canvas");
+    canvas = document.createElement('canvas');
     document.body.appendChild(canvas);
 
     if (gfx.viewport.IS_PHONE) {
-        document.body.classList.add("mobile-phone");
-        canvas.style.width = "100%";
+        document.body.classList.add('mobile-phone');
+        canvas.style.width = '100%';
     }
 
     // Reducer needs access to the views in order to save their state
@@ -191,8 +188,8 @@ function initialize() {
             (...args) => stg.saveState(...args),
             (...args) => stg.pushState(...args),
             (...args) => stg.saveNode(...args),
-            es6,
-        )),
+            es6
+        ))
     );
     stg = new TitleStage(startGame, canvas, 800, 600, store, views, es6);
     window.stage = stg;
@@ -204,18 +201,18 @@ function initialize() {
     });
 
     // TODO: resize scene as whole, then resize stage
-    window.addEventListener("resize", () => {
+    window.addEventListener('resize', () => {
         stg.resize();
     });
 
     // TODO: dispatch events to scene, then to stage
-    canvas.addEventListener("mousedown", (e) => stg._mousedown(e));
-    canvas.addEventListener("mousemove", (e) => stg._mousemove(e));
-    canvas.addEventListener("mouseup", (e) => stg._mouseup(e));
+    canvas.addEventListener('mousedown', (e) => stg._mousedown(e));
+    canvas.addEventListener('mousemove', (e) => stg._mousemove(e));
+    canvas.addEventListener('mouseup', (e) => stg._mouseup(e));
 
-    canvas.addEventListener("touchstart", (e) => stg._touchstart(e));
-    canvas.addEventListener("touchmove", (e) => stg._touchmove(e));
-    canvas.addEventListener("touchend", (e) => stg._touchend(e));
+    canvas.addEventListener('touchstart', (e) => stg._touchstart(e));
+    canvas.addEventListener('touchmove', (e) => stg._touchmove(e));
+    canvas.addEventListener('touchend', (e) => stg._touchend(e));
 
     // When the state changes, redraw the state.
     store.subscribe(() => {
@@ -229,19 +226,18 @@ function initialize() {
                 stg.animateVictory(matching).then(() => {
                     persistGraph();
 
-                    Logging.log("victory", {
-                        final_state: finalState,
+                    Logging.log('victory', {
+                        final_state: finalState
                         // TODO: track num of moves via undo stack?
                         // num_of_moves: undefined,
                     });
 
                     nextLevel();
                 });
-            }
-            else if (stg.semantics
+            } else if (stg.semantics
                      && !stg.semantics.mightBeCompleted(state, (s) => level.checkVictory(s, es6))) {
-                Logging.log("dead-end", {
-                    final_state: level.serialize(state, es6),
+                Logging.log('dead-end', {
+                    final_state: level.serialize(state, es6)
                 });
                 stg.animateStuck();
             }
@@ -252,14 +248,14 @@ function initialize() {
 
     window.stage = stg;
 
-    document.querySelector("#download-log").addEventListener("click", () => {
+    document.querySelector('#download-log').addEventListener('click', () => {
         Logging.downloadStaticLog();
     });
-    document.querySelector("#toggle-graph").addEventListener("click", () => {
+    document.querySelector('#toggle-graph').addEventListener('click', () => {
         Logging.toggleStateGraph();
         window.updateStateGraph();
     });
-    document.querySelector("#capture-graph").addEventListener("click", () => {
+    document.querySelector('#capture-graph').addEventListener('click', () => {
         captureState();
     });
 
@@ -270,15 +266,15 @@ function initialize() {
     };
 
     for (const chapterName of Loader.progressions.Elementary.linearChapters) {
-        const option = document.createElement("option");
-        option.setAttribute("value", Loader.progressions.Elementary.chapters[chapterName].startIdx);
+        const option = document.createElement('option');
+        option.setAttribute('value', Loader.progressions.Elementary.chapters[chapterName].startIdx);
         option.innerText = `Chapter: ${chapterName}`;
-        document.querySelector("#chapter").appendChild(option);
+        document.querySelector('#chapter').appendChild(option);
     }
-    document.querySelector("#chapter").addEventListener("change", () => {
-        passwordPrompt("Ask the teacher to skip this level!", "cornell").then(() => {
-            if (stg.pushState) stg.pushState("change-chapter");
-            const lvl = window.parseInt(document.querySelector("#chapter").value, 10);
+    document.querySelector('#chapter').addEventListener('change', () => {
+        passwordPrompt('Ask the teacher to skip this level!', 'cornell').then(() => {
+            if (stg.pushState) stg.pushState('change-chapter');
+            const lvl = window.parseInt(document.querySelector('#chapter').value, 10);
             start(() => progression.jumpToLevel(lvl));
         }, () => {});
     });
@@ -310,7 +306,7 @@ function persistGraph() {
                 const attempt = {
                     graphSequenceID: __monotonic,
                     payloadSequenceID: counter,
-                    partialData: [ array[serialized] ],
+                    partialData: [array[serialized]]
                 };
 
                 while (JSON.stringify(attempt).length < MAX_BLOB_LENGTH
@@ -329,15 +325,14 @@ function persistGraph() {
 
             return counter - 1;
         };
-        const lastNodeCounter = persistArray(graph.nodes, "state-path-save-nodes");
-        const lastEdgeCounter = persistArray(graph.edges, "state-path-save-edges");
-        Logging.log("state-path-save-graph", {
-            "nodePayloadSequenceIDEnd": lastNodeCounter,
-            "edgePayloadSequenceIDEnd": lastEdgeCounter,
-            "graphSequenceId": __monotonic,
+        const lastNodeCounter = persistArray(graph.nodes, 'state-path-save-nodes');
+        const lastEdgeCounter = persistArray(graph.edges, 'state-path-save-edges');
+        Logging.log('state-path-save-graph', {
+            nodePayloadSequenceIDEnd: lastNodeCounter,
+            edgePayloadSequenceIDEnd: lastEdgeCounter,
+            graphSequenceId: __monotonic
         });
-    }
-    finally {
+    } finally {
         __monotonic += 1;
     }
 }
@@ -357,8 +352,7 @@ async function start(updateLevel, options = {}) {
 
     try {
         await Logging.transitionToTask(progression.currentLevel(), levelDefinition);
-    }
-    finally { // Show tutorial if present
+    } finally { // Show tutorial if present
         if (levelDefinition.tutorial) {
             const diag = new TutorialDialog();
             await diag.load(levelDefinition.tutorial);
@@ -371,15 +365,14 @@ async function start(updateLevel, options = {}) {
 
         // Sync chapter dropdown with current level
         let prevOption = null;
-        for (const option of document.querySelectorAll("#chapter option")) {
-            if (window.parseInt(option.getAttribute("value"), 10) <= progression.currentLevel()) {
+        for (const option of document.querySelectorAll('#chapter option')) {
+            if (window.parseInt(option.getAttribute('value'), 10) <= progression.currentLevel()) {
                 prevOption = option;
-            }
-            else {
+            } else {
                 break;
             }
         }
-        document.querySelector("#chapter").value = prevOption.getAttribute("value");
+        document.querySelector('#chapter').value = prevOption.getAttribute('value');
     }
 
     // Reset buttons
@@ -398,14 +391,12 @@ function showChapterEnd() {
 function nextLevel(enableChallenge) {
     if (progression.isChapterEnd() && !(stg instanceof ChapterEndStage)) {
         if (progression.isGameEnd()) {
-            Logging.log("game-complete");
+            Logging.log('game-complete');
         }
         showChapterEnd();
-    }
-    else if (enableChallenge) {
+    } else if (enableChallenge) {
         start(() => progression.nextChallengeLevel());
-    }
-    else {
+    } else {
         start(() => progression.nextLevel());
     }
 }
@@ -413,13 +404,13 @@ function nextLevel(enableChallenge) {
 function extractFunction(str) {
     const funName = str.match(/function ([a-zA-Z]+)/)[1];
     const funHalfBody = str.match(/>([^>]+)$/)[1];
-    const funBody = `${"{ " + "return "}${funHalfBody}`;
+    const funBody = `${'{ ' + 'return '}${funHalfBody}`;
     const funArgsRegx = /\(([a-zA-Z]+)\) =>/g;
-    let funArgs = "";
+    let funArgs = '';
     let match;
     while (match = funArgsRegx.exec(str)) {
         funArgs += match[1];
-        funArgs += ",";
+        funArgs += ',';
     }
     funArgs = funArgs.slice(0, -1);
     const funFinal = `function ${funName}(${funArgs}) ${funBody}`;
@@ -438,12 +429,12 @@ window.init = function init() {
 };
 
 window.reset = function reset() {
-    if (stg.pushState) stg.pushState("reset");
+    if (stg.pushState) stg.pushState('reset');
     start();
 };
 window.next = function next(challenge, prompt = true) {
     const doNext = () => {
-        if (stg.pushState) stg.pushState("next");
+        if (stg.pushState) stg.pushState('next');
         nextLevel(challenge);
     };
     if (challenge) {
@@ -452,27 +443,26 @@ window.next = function next(challenge, prompt = true) {
     }
 
     if (prompt) {
-        passwordPrompt("Ask the teacher to skip this level!", "cornell")
+        passwordPrompt('Ask the teacher to skip this level!', 'cornell')
             .then(() => doNext(), () => {});
-    }
-    else {
+    } else {
         doNext();
     }
 };
 window.prev = function prev() {
-    if (stg.pushState) stg.pushState("prev");
+    if (stg.pushState) stg.pushState('prev');
     start(() => progression.prevLevel());
 };
 
 window.jumpToLevel = function(lev) {
-    const d = document.querySelector("#goto-level");
-    d.classList.remove("visible");
+    const d = document.querySelector('#goto-level');
+    d.classList.remove('visible');
     progression.jumpToLevel(lev);
     window.prev();
 };
 
 window.captureState = function () {
-    const format = "board,goal,textgoal,toolbox,defines,globals,syntax,animationScales";
+    const format = 'board,goal,textgoal,toolbox,defines,globals,syntax,animationScales';
 
     const re = /\s*,\s*/;
     const fields = format.split(re);
@@ -484,59 +474,54 @@ window.captureState = function () {
     const newLvl = curStateNode.data;
 
     // forming new input string
-    let newInput = "";
+    let newInput = '';
     const fieldsLen = fields.length;
     let curField = 0;
     for (const f of fields) {
         if (newLvl[f]) {
             if (Array.isArray(newLvl[f])) {
-                newInput += "\"[";
+                newInput += '"[';
                 let curIndex = 0;
                 const lenArray = newLvl[f].length;
                 for (const subField of newLvl[f]) {
-                    newInput += "\'";
+                    newInput += '\'';
 
                     // reformatting functions
-                    if (subField.includes("function")) {
+                    if (subField.includes('function')) {
                         newInput += extractFunction(subField);
-                    }
-                    else {
+                    } else {
                         newInput += subField;
                     }
 
-                    newInput += "\'";
+                    newInput += '\'';
 
                     if (curIndex < lenArray - 1) {
-                        newInput += ",";
+                        newInput += ',';
                     }
                     curIndex++;
                 }
-                newInput += "]\"";
-            }
-            else {
+                newInput += ']"';
+            } else {
                 newInput += newLvl[f];
             }
-        }
-        else if (f == "textgoal") {
+        } else if (f == 'textgoal') {
             newInput += `"${prompt(`Type the value for ${f}:`)}"`;
-        }
-        else if (f == "globals" || f == "animationScales") {
-            newInput += "{}";
-        }
-        else if (f == "syntax") {
-            newInput += "[]";
+        } else if (f == 'globals' || f == 'animationScales') {
+            newInput += '{}';
+        } else if (f == 'syntax') {
+            newInput += '[]';
         }
 
         if (curField < fieldsLen - 1) {
-            newInput += ",";
+            newInput += ',';
         }
         curField++;
     }
 
     // Printing the result
     const saveString = `${format}\n${newInput}`;
-    const blob = new window.Blob([ saveString ], {
-        type: "application/csv;charset=utf-8",
+    const blob = new window.Blob([saveString], {
+        type: 'application/csv;charset=utf-8'
     });
     fileSaver.saveAs(blob, `level_${progression.currentLevel() + 1}.csv`);
 
@@ -545,16 +530,16 @@ window.captureState = function () {
 };
 
 window.addNodeToBoard = function() {
-    const d = document.querySelector("#add-node");
-    d.classList.remove("visible");
+    const d = document.querySelector('#add-node');
+    d.classList.remove('visible');
 
-    const stringOfNodes = document.querySelector("#targetNodeToAdd").value;
-    const place = document.querySelector("#targetPlace").value;
+    const stringOfNodes = document.querySelector('#targetNodeToAdd').value;
+    const place = document.querySelector('#targetPlace').value;
 
     // storing current value for this session.
-    const option = document.createElement("option");
-    option.setAttribute("value", stringOfNodes);
-    document.querySelector("#valueOptions").appendChild(option);
+    const option = document.createElement('option');
+    option.setAttribute('value', stringOfNodes);
+    document.querySelector('#valueOptions').appendChild(option);
 
     const newMacros = level.MACROS;
 
@@ -568,7 +553,7 @@ window.addNodeToBoard = function() {
             .map((expr) => es6.parser.extractDefines(es6, expr))
             .filter((name) => name !== null);
 
-        for (const [ name, expr ] of newNames) {
+        for (const [name, expr] of newNames) {
             newMacros[name] = expr;
         }
 
@@ -578,19 +563,19 @@ window.addNodeToBoard = function() {
         const flattened_s = es6.flatten(parsed_s).map(immutable.Map);
 
         // create temporary nodes
-        const tempNodes = st.get("nodes").withMutations((nodes) => {
+        const tempNodes = st.get('nodes').withMutations((nodes) => {
             for (const node of flattened_s) {
-                nodes.set(node.get("id"), node);
+                nodes.set(node.get('id'), node);
             }
         });
 
         // define views
         for (const aa of flattened_s) {
-            newInputIds.push(aa.get("id"));
-            views[aa.get("id")] = es6.project(stg, tempNodes, aa);
+            newInputIds.push(aa.get('id'));
+            views[aa.get('id')] = es6.project(stg, tempNodes, aa);
         }
 
-        if (place === "board") {
+        if (place === 'board') {
             // define location
             stg.views[newInputIds[0]].anchor.x = 0.5;
             stg.views[newInputIds[0]].anchor.y = 0.5;
@@ -599,11 +584,9 @@ window.addNodeToBoard = function() {
 
             // dispatch
             stg.store.dispatch(action.addBoardItem([newInputIds[0]], flattened_s));
-        }
-        else if (place === "toolbox") {
+        } else if (place === 'toolbox') {
             stg.store.dispatch(action.addToolboxItem(newInputIds[0], flattened_s));
-        }
-        else if (place === "goal") {
+        } else if (place === 'goal') {
             stg.store.dispatch(action.addGoalItem(newInputIds[0], flattened_s));
         }
     }
@@ -613,36 +596,36 @@ window.addNodeToBoard = function() {
 };
 
 window.updateStateGraph = function updateStateGraph(networkData) {
-    if (!document.querySelector("#state-graph")) {
-        const ctr = document.createElement("div");
-        ctr.setAttribute("id", "state-graph");
+    if (!document.querySelector('#state-graph')) {
+        const ctr = document.createElement('div');
+        ctr.setAttribute('id', 'state-graph');
         document.body.appendChild(ctr);
     }
-    const container = document.querySelector("#state-graph");
+    const container = document.querySelector('#state-graph');
 
 
-    if (!Logging.config("stateGraph")) {
-        container.style.display = "none";
+    if (!Logging.config('stateGraph')) {
+        container.style.display = 'none';
         return;
     }
-    container.style.display = "unset";
+    container.style.display = 'unset';
 
     if (!networkData) return;
 
     const options = {
         edges: {
             arrows: {
-                to: { enabled: true, scaleFactor: 1 },
+                to: { enabled: true, scaleFactor: 1 }
             },
             font: {
-                color: "lightgray",
+                color: 'lightgray',
                 strokeWidth: 0,
-                background: "#222",
-            },
+                background: '#222'
+            }
         },
         nodes: {
-            shape: "box",
-        },
+            shape: 'box'
+        }
     };
     return new vis.Network(container, networkData, options);
 };

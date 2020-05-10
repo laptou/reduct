@@ -1,13 +1,13 @@
-import * as gfx from "../gfx/core";
-import * as animate from "../gfx/animate";
-import * as progression from "../game/progression";
-import Audio from "../resource/audio";
-import Logging from "../logging/logging";
+import * as gfx from '../gfx/core';
+import * as animate from '../gfx/animate/tween';
+import * as progression from '../game/progression';
+import Audio from '../resource/audio';
+import Logging from '../logging/logging';
 
-import Loader from "../loader";
+import Loader from '../loader';
 
-import BaseStage from "./basestage";
-import BaseTouchRecord from "./touchrecord";
+import BaseStage from './basestage';
+import BaseTouchRecord from './touchrecord';
 
 
 export default class CompleteStage extends BaseStage {
@@ -15,37 +15,37 @@ export default class CompleteStage extends BaseStage {
         super(...args);
 
         this.startGame = startGame;
-        this.color = "#8ab7db";
+        this.color = '#8ab7db';
 
         // allocating title ID
         const title = gfx.layout.sticky(
             gfx.layout.ratioSizer(gfx.sprite({
                 image: Loader.images.reduct_title,
-                size: { h: 213, w: 899 },
+                size: { h: 213, w: 899 }
             }), 213 / 899, 0.6),
-            "center",
-            {},
+            'center',
+            {}
         );
         title.opacity = 0;
         this.title = this.allocateInternal(title);
 
-        const label = this.allocate(gfx.text("Back", {
+        const label = this.allocate(gfx.text('Back', {
             fontSize: 30,
-            font: gfx.text.script,
+            font: gfx.text.script
         }));
 
         const backButton = gfx.layout.sticky(gfx.ui.button(this, () => [label], {
-            color: "#e95888",
+            color: '#e95888',
             subexpScale: 1,
             anchor: {
                 x: 0,
-                y: 0,
+                y: 0
             },
             click: () => {
                 progression.setLevel(progression.currentLevel());
                 this.animateStart();
-            },
-        }), "top", {});
+            }
+        }), 'top', {});
 
         this.backButton = this.allocate(backButton);
         backButton.opacity = 0.0;
@@ -62,50 +62,48 @@ export default class CompleteStage extends BaseStage {
 
             const label = this.allocate(gfx.text(`${chapterName}`, {
                 fontSize: 30,
-                font: gfx.text.script,
+                font: gfx.text.script
             }));
 
             if (lvl < curLvl && endLvl < curLvl) {
                 const button = gfx.ui.button(this, () => [label], {
-                    color: "#e95888",
+                    color: '#e95888',
                     anchor: {
                         x: 0,
-                        y: 0,
+                        y: 0
                     },
                     subexpScale: 1,
                     click: () => {
                         window.lvlStage(chapterName);
-                    },
+                    }
                 });
                 buttons.push(this.allocate(button));
-            }
-            else if (lvl <= curLvl && curLvl <= endLvl) {
+            } else if (lvl <= curLvl && curLvl <= endLvl) {
                 const button = gfx.ui.button(this, () => [label], {
-                    color: "#ffcc00",
+                    color: '#ffcc00',
                     anchor: {
                         x: 0,
-                        y: 0,
+                        y: 0
                     },
                     subexpScale: 1,
                     click: () => {
                         window.lvlStage(chapterName);
-                    },
+                    }
                 });
                 buttons.push(this.allocate(button));
-            }
-            else {
+            } else {
                 const button = gfx.ui.button(this, () => [label], {
                     shadow: true,
                     anchor: {
                         x: 0,
-                        y: 0,
+                        y: 0
                     },
                     subexpScale: 1,
                     click: () => {
                         if (window.devMode) {
                             window.lvlStage(chapterName);
                         }
-                    },
+                    }
                 });
                 buttons.push(this.allocate(button));
             }
@@ -127,15 +125,14 @@ export default class CompleteStage extends BaseStage {
                     padding: {
                         inner: 20,
                         top: stage.height / 2,
-                        left: 100 + numLayouts * 200,
-                    },
+                        left: 100 + numLayouts * 200
+                    }
                 }, gfx.baseProjection);
 
                 myLayouts[numLayouts].opacity = 0.0;
                 stage.myLayouts.push(stage.allocate(myLayouts[numLayouts]));
                 numLayouts++;
-            }
-            else {
+            } else {
                 workButtons = arrayButtons.slice(0, 5);
 
                 myLayouts[numLayouts] = gfx.layout.vbox(() => workButtons, {
@@ -143,8 +140,8 @@ export default class CompleteStage extends BaseStage {
                     padding: {
                         inner: 20,
                         top: stage.height / 2,
-                        left: 100 + (numLayouts) * 200,
-                    },
+                        left: 100 + (numLayouts) * 200
+                    }
                 }, gfx.baseProjection);
 
                 myLayouts[numLayouts].opacity = 0.0;
@@ -162,52 +159,52 @@ export default class CompleteStage extends BaseStage {
 
         // ** Startup Animations ** //
 
-        this.state = "initializing";
+        this.state = 'initializing';
         animate.tween(this, {
-            color: "#FFF",
+            color: '#FFF'
         }, {
             duration: 500,
             setAnimatingFlag: false,
-            easing: animate.Easing.Color(animate.Easing.Cubic.In, this.color, "#FFF"),
+            easing: animate.Easing.Color(animate.Easing.Cubic.In, this.color, '#FFF')
         })
             .then(() => animate.tween(title, {
-                opacity: 1.0,
+                opacity: 1.0
             }, {
                 duration: 500,
-                easing: animate.Easing.Cubic.Out,
+                easing: animate.Easing.Cubic.Out
             }).delay(1000))
             .then(() => Promise.all([
                 animate.tween(title, {
                     scale: { x: 0.7, y: 0.7 },
-                    sticky: { marginY: -180 },
+                    sticky: { marginY: -180 }
                 }, {
                     duration: 800,
-                    easing: animate.Easing.Cubic.Out,
+                    easing: animate.Easing.Cubic.Out
                 }),
                 animate.tween(backButton, {
-                    opacity: 1.0,
+                    opacity: 1.0
                 }, {
                     duration: 1000,
-                    easing: animate.Easing.Cubic.Out,
-                }),
+                    easing: animate.Easing.Cubic.Out
+                })
             ]))
             .then(() => {
                 for (let i = 0; i < myLayouts.length; i++) {
                     animate.tween(myLayouts[i], {
-                        opacity: 1.0,
+                        opacity: 1.0
                     }, {
                         duration: 1000,
-                        easing: animate.Easing.Cubic.Out,
+                        easing: animate.Easing.Cubic.Out
                     });
                 }
             })
             .then(() => {
-                this.state = "initialized";
+                this.state = 'initialized';
             });
     }
 
     _mouseup(e) {
-        if (this.state === "initializing") {
+        if (this.state === 'initializing') {
             this.fastForward();
         }
 
@@ -216,8 +213,8 @@ export default class CompleteStage extends BaseStage {
 
     fastForward() {
         animate.clock.cancelAll();
-        this.state = "initialized";
-        this.color = "#FFF";
+        this.state = 'initialized';
+        this.color = '#FFF';
         const title = this.getView(this.title);
         title.opacity = 1.0;
         title.scale = { x: 0.7, y: 0.7 };
@@ -230,43 +227,43 @@ export default class CompleteStage extends BaseStage {
     }
 
     animateStart() {
-        this.state = "transitioning";
+        this.state = 'transitioning';
 
 
         Promise.all([
             animate.tween(this.getView(this.title), {
                 scale: { x: 0.4, y: 0.4 },
-                opacity: 0.5,
+                opacity: 0.5
             }, {
                 duration: 800,
-                easing: animate.Easing.Cubic.In,
+                easing: animate.Easing.Cubic.In
             }),
             animate.tween(this.getView(this.title), {
-                sticky: { marginY: -this.height },
+                sticky: { marginY: -this.height }
             }, {
                 duration: 500,
-                easing: animate.Easing.Anticipate.BackIn(1.5),
+                easing: animate.Easing.Anticipate.BackIn(1.5)
             }),
             animate.tween(this.getView(this.backButton), {
-                opacity: 0,
+                opacity: 0
             }, {
                 duration: 500,
-                easing: animate.Easing.Cubic.In,
+                easing: animate.Easing.Cubic.In
             }),
             animate.tween(this, {
-                color: "#8ab7db",
+                color: '#8ab7db'
             }, {
                 duration: 500,
                 setAnimatingFlag: false,
-                easing: animate.Easing.Color(animate.Easing.Cubic.In, this.color, "#8ab7db"),
-            }),
+                easing: animate.Easing.Color(animate.Easing.Cubic.In, this.color, '#8ab7db')
+            })
         ]).then(() => {
             for (let i = 0; i < this.myLayouts.length; i++) {
                 animate.tween(this.getView(this.myLayouts[i]), {
-                    opacity: 0,
+                    opacity: 0
                 }, {
                     duration: 500,
-                    easing: animate.Easing.Cubic.In,
+                    easing: animate.Easing.Cubic.In
                 });
             }
         })
@@ -295,7 +292,7 @@ export default class CompleteStage extends BaseStage {
     }
 
     getNodeAtPos(pos, selectedId = null) {
-        if (this.state !== "initialized") return [ null, null ];
+        if (this.state !== 'initialized') return [null, null];
 
         const offset = this.makeBaseOffset();
         const backLayout = this.getView(this.backButton);
@@ -305,7 +302,7 @@ export default class CompleteStage extends BaseStage {
             const topLeft = gfx.util.topLeftPos(backLayout, offset);
             const subpos = {
                 x: pos.x - topLeft.x,
-                y: pos.y - topLeft.y,
+                y: pos.y - topLeft.y
             };
 
             return [this.backButton, this.backButton];
@@ -315,20 +312,19 @@ export default class CompleteStage extends BaseStage {
         for (const id of this.buttons) {
             const button = this.getView(id);
             if (button.containsPoint(pos, offset)) {
-                return [ id, id ];
+                return [id, id];
             }
         }
 
 
-        return [ null, null ];
+        return [null, null];
     }
 
     updateCursor(touchRecord, moved = false) {
         if (touchRecord.hoverNode !== null) {
-            this.setCursor("pointer");
-        }
-        else {
-            this.setCursor("default");
+            this.setCursor('pointer');
+        } else {
+            this.setCursor('default');
         }
     }
 }

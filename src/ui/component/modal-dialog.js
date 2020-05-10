@@ -1,4 +1,4 @@
-import { EventEmitter } from "events";
+import { EventEmitter } from 'events';
 
 /**
  * @typedef {Object} ModalOverlayOptions
@@ -22,7 +22,7 @@ export default class ModalDialog extends EventEmitter {
         this.visible = false;
         this.el = el;
         this.options = { allowSoftDismiss: true, ...options };
-        this.innerEl = el.querySelector(".modal-dialog-inner");
+        this.innerEl = el.querySelector('.modal-dialog-inner');
 
         this.onBackgroundClick = this.onBackgroundClick.bind(this);
         this.onTransitionEnd = this.onTransitionEnd.bind(this);
@@ -34,7 +34,7 @@ export default class ModalDialog extends EventEmitter {
      */
     show() {
         if (this.dismissed) {
-            throw new Error("This tutorial was already dismissed. Create a new Tutorial object.");
+            throw new Error('This tutorial was already dismissed. Create a new Tutorial object.');
         }
 
         if (this.autoplay) {
@@ -46,9 +46,9 @@ export default class ModalDialog extends EventEmitter {
 
         const { el, innerEl } = this;
 
-        innerEl.addEventListener("click", ModalDialog.onDialogClick);
-        el.addEventListener("click", this.onBackgroundClick);
-        el.classList.add("visible");
+        innerEl.addEventListener('click', ModalDialog.onDialogClick);
+        el.addEventListener('click', this.onBackgroundClick);
+        el.classList.add('visible');
 
         return this;
     }
@@ -59,21 +59,21 @@ export default class ModalDialog extends EventEmitter {
      */
     dismiss() {
         const {
-            el, innerEl,
+            el, innerEl
         } = this;
 
         // make this invisible
-        el.classList.remove("visible");
+        el.classList.remove('visible');
         this.visible = false;
 
         // remove event handlers
-        el.removeEventListener("click", this.onDismissClick);
-        innerEl.removeEventListener("click", ModalDialog.onDialogClick);
+        el.removeEventListener('click', this.onDismissClick);
+        innerEl.removeEventListener('click', ModalDialog.onDialogClick);
 
         // TODO: wait for CSS transition?
 
         // emit dismiss event
-        this.emit("dismiss");
+        this.emit('dismiss');
         this.dismissed = true;
 
         return this;
@@ -86,7 +86,7 @@ export default class ModalDialog extends EventEmitter {
     wait() {
         return new Promise((resolve) => {
             if (!this.visible) resolve();
-            this.once("dismiss", resolve);
+            this.once('dismiss', resolve);
         });
     }
 
@@ -111,6 +111,6 @@ export default class ModalDialog extends EventEmitter {
      * @private
      */
     onTransitionEnd() {
-        this.el.classList.remove("transitioning");
+        this.el.classList.remove('transitioning');
     }
 }

@@ -7,7 +7,7 @@ export class ImageAtlas {
         for (const frameName of Object.keys(atlas.frames)) {
             const frame = atlas.frames[frameName];
             // Convert resource-name.png to resource-name
-            const resourceName = frameName.split(".")[0];
+            const resourceName = frameName.split('.')[0];
             const resource = new ImageAtlasProxy(resourceName, this, frame.frame);
             result.push({ name: resourceName, image: resource });
         }
@@ -69,7 +69,7 @@ export class ImageAtlasProxy {
 
     get backingImage() {
         throw {
-            "error": "Can't get the backing image of an image in an image atlas",
+            error: 'Can\'t get the backing image of an image in an image atlas'
         };
     }
 

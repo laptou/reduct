@@ -1,7 +1,7 @@
-import * as gfx from "../gfx/core";
-import * as progression from "../game/progression";
-import * as undo from "../reducer/undo";
-import Loader from "../loader";
+import * as gfx from '../gfx/core';
+import * as progression from '../game/progression';
+import * as undo from '../reducer/undo';
+import Loader from '../loader';
 
 /**
  * Renders the undo/redo/reset buttons and the level display at the
@@ -14,52 +14,52 @@ export default class Navbar {
 
         this.reset = stage.allocate(gfx.ui.imageButton({
             normal: Loader.images.blureset,
-            hover: Loader.images["blureset-hover"],
-            active: Loader.images["blureset-down"],
+            hover: Loader.images['blureset-hover'],
+            active: Loader.images['blureset-down']
         }, {
             click: () => {
                 window.reset();
             },
-            size: { w: 65, h: 65 },
+            size: { w: 65, h: 65 }
         }));
 
         this.undo = stage.allocate(gfx.ui.imageButton({
             normal: Loader.images.bluundo,
-            hover: Loader.images["bluundo-hover"],
-            active: Loader.images["bluundo-down"],
+            hover: Loader.images['bluundo-hover'],
+            active: Loader.images['bluundo-down']
         }, {
             click: () => {
                 this.stage.store.dispatch(undo.undo());
                 this.stage.unstuck();
             },
-            size: { w: 65, h: 65 },
+            size: { w: 65, h: 65 }
         }));
 
         this.redo = stage.allocate(gfx.ui.imageButton({
             normal: Loader.images.bluredo,
-            hover: Loader.images["bluredo-hover"],
-            active: Loader.images["bluredo-down"],
+            hover: Loader.images['bluredo-hover'],
+            active: Loader.images['bluredo-down']
         }, {
             click: () => {
                 this.stage.store.dispatch(undo.redo());
             },
-            size: { w: 65, h: 65 },
+            size: { w: 65, h: 65 }
         }));
 
         this.start = stage.allocate(gfx.ui.imageButton({
-            normal: Loader.images["btn-hamburger-default"],
-            hover: Loader.images["btn-hamburger-hover"],
-            active: Loader.images["btn-hamburger-down"],
+            normal: Loader.images['btn-hamburger-default'],
+            hover: Loader.images['btn-hamburger-hover'],
+            active: Loader.images['btn-hamburger-down']
         }, {
             click: () => {
                 window.lvlStage(progression.currentChapter().key);
             },
-            size: { w: 65, h: 65 },
+            size: { w: 65, h: 65 }
         }));
 
-        this.buttons = [ this.undo, this.reset, this.redo, this.start ];
+        this.buttons = [this.undo, this.reset, this.redo, this.start];
 
-        const topButtons = [ this.undo, this.reset, this.redo, this.start ];
+        const topButtons = [this.undo, this.reset, this.redo, this.start];
 
         const topRow = stage.allocate(gfx.layout.hbox(
             () => topButtons,
@@ -68,13 +68,13 @@ export default class Navbar {
                 padding: {
                     left: 0,
                     right: 0,
-                    inner: 10,
-                },
+                    inner: 10
+                }
             },
-            gfx.baseProjection,
+            gfx.baseProjection
         ));
         this.container = stage.allocate(gfx.layout.vbox(
-            () => [ topRow ],
+            () => [topRow],
             {
                 subexpScale: 1,
                 padding: {
@@ -82,26 +82,26 @@ export default class Navbar {
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    inner: 5,
+                    inner: 5
                 },
                 highlight: false,
                 color: null,
-                anchor: { x: 1, y: 1 },
+                anchor: { x: 1, y: 1 }
             },
-            gfx.roundedRect,
+            gfx.roundedRect
         ));
         const chapter = stage.allocate(gfx.text(`Chapter ${progression.chapterIdx() + 1}`, {
             font: gfx.text.sans,
-            color: "#FFF",
+            color: '#FFF'
         }));
         const level = stage.allocate(gfx.text(`Level ${progression.currentLevel() + 1}`, {
             font: gfx.text.sans,
-            color: "#FFF",
+            color: '#FFF'
         }));
         this.levelDisplay = stage.allocate(gfx.layout.vbox(
             () => [
                 chapter,
-                level,
+                level
             ],
             {
                 subexpScale: 1,
@@ -110,14 +110,14 @@ export default class Navbar {
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    inner: 5,
+                    inner: 5
                 },
                 anchor: { x: 1, y: 1 },
                 horizontalAlign: 0,
                 highlight: false,
-                color: null,
+                color: null
             },
-            gfx.roundedRect,
+            gfx.roundedRect
         ));
     }
 
@@ -129,7 +129,7 @@ export default class Navbar {
         const container = this.stage.getView(this.container);
         return {
             w: container.size.w,
-            h: container.size.h,
+            h: container.size.h
         };
     }
 
@@ -138,35 +138,35 @@ export default class Navbar {
     }
 
     getNodeAtPos(state, pos) {
-        if (!this.containsPoint(pos)) return [ null, null ];
+        if (!this.containsPoint(pos)) return [null, null];
 
         const result = this.stage.testNodeAtPos(
             state, pos, this.container, this.container,
             null, this.stage.makeBaseOffset(),
-            (viewId) => this.buttons.includes(viewId),
+            (viewId) => this.buttons.includes(viewId)
         );
         if (result) {
-            return [ result[1], result[1] ];
+            return [result[1], result[1]];
         }
-        return [ null, null ];
+        return [null, null];
     }
 
     drawImpl(state) {
-        const rawState = this.stage.store.getState().get("program");
-        this.stage.getView(this.undo).enabled = rawState.get("$past").size > 0;
-        this.stage.getView(this.redo).enabled = rawState.get("$future").size > 0;
+        const rawState = this.stage.store.getState().get('program');
+        this.stage.getView(this.undo).enabled = rawState.get('$past').size > 0;
+        this.stage.getView(this.redo).enabled = rawState.get('$future').size > 0;
 
         const levelDisplay = this.stage.getView(this.levelDisplay);
         levelDisplay.pos.x = this.stage.width - 25;
         levelDisplay.pos.y = 100;
         levelDisplay.prepare(
             this.levelDisplay, this.levelDisplay,
-            state, this.stage,
+            state, this.stage
         );
         this.stage.getView(this.levelDisplay).draw(
             this.levelDisplay, this.levelDisplay,
             state, this.stage,
-            this.stage.makeBaseOffset(),
+            this.stage.makeBaseOffset()
         );
 
         const container = this.stage.getView(this.container);
@@ -174,17 +174,17 @@ export default class Navbar {
         container.pos.y = 100;
         container.prepare(
             this.container, this.container,
-            state, this.stage,
+            state, this.stage
         );
         container.draw(
             this.container, this.container,
             state, this.stage,
-            this.stage.makeBaseOffset(),
+            this.stage.makeBaseOffset()
         );
     }
 
     animateStuck() {
-        this.stage.getView(this.container).color = "#FFF";
+        this.stage.getView(this.container).color = '#FFF';
     }
 
     unstuck() {

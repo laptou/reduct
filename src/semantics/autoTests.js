@@ -41,7 +41,7 @@ function addEight(x) {
     return add(8, x);
 }
 function isTriangle(x) {
-    return (x) == ("triangle");
+    return (x) == ('triangle');
 }
 function isZero(x) {
     return (x) == (0);
@@ -68,7 +68,7 @@ function countToFive(x) {
     return ((x) == (5)) ? (x) : (countToFive((x) + (1)));
 }
 function isStar(x) {
-    return (x) == ("star");
+    return (x) == ('star');
 }
 function difference(x, y) {
     return y;

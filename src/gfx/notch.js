@@ -11,10 +11,9 @@ export class NotchSet {
         const notches = this.notches
             .filter((n) => n.side === side)
             .sort((a, b) => a.relpos - b.relpos);
-        if (side === "left" || side === "right") {
+        if (side === 'left' || side === 'right') {
             notches.forEach((n) => n.drawVertical(ctx, x, y, len));
-        }
-        else {
+        } else {
             notches.forEach((n) => n.drawHorizontal(ctx, x, y, len));
         }
     }
@@ -31,7 +30,7 @@ export class Notch {
     }
 
     get direction() {
-        if (this.side === "left" || this.side === "bottom") {
+        if (this.side === 'left' || this.side === 'bottom') {
             return -1;
         }
         return 1;
@@ -58,10 +57,10 @@ export class Notch {
 
 export function parseDescription(description) {
     let relpos = 0.5;
-    if (typeof description.relpos !== "undefined") {
+    if (typeof description.relpos !== 'undefined') {
         relpos = description.relpos;
     }
-    return new Notch(description.side, description.shape, 10, 10, relpos, description.type === "inset");
+    return new Notch(description.side, description.shape, 10, 10, relpos, description.type === 'inset');
 }
 
 export function parseDescriptions(descriptions) {

@@ -1,11 +1,11 @@
-import { Howler } from "howler";
+import { Howler } from 'howler';
 
-import Loader from "../loader";
+import Loader from '../loader';
 
 class AudioEngine {
     constructor() {
         this.muted = false;
-        if (window.localStorage.muted === "true") {
+        if (window.localStorage.muted === 'true') {
             this.muted = true;
         }
     }
@@ -45,7 +45,7 @@ class AudioEngine {
 
             const sound = queue.pop();
             const id = this.play(sound);
-            Loader.sounds[sound].on("end", step, id);
+            Loader.sounds[sound].on('end', step, id);
         };
         step();
     }
@@ -53,20 +53,19 @@ class AudioEngine {
     mute() {
         Howler.mute(true);
         this.muted = true;
-        window.localStorage.muted = "true";
+        window.localStorage.muted = 'true';
     }
 
     unmute() {
         Howler.mute(false);
         this.muted = false;
-        window.localStorage.muted = "false";
+        window.localStorage.muted = 'false';
     }
 
     toggleMute() {
         if (this.muted) {
             this.unmute();
-        }
-        else {
+        } else {
             this.mute();
         }
     }

@@ -1,6 +1,6 @@
-import * as animate from "./animate";
-import { debugDraw, roundedRect } from "./core";
-import * as util from "./util";
+import * as animate from './animate/tween';
+import { debugDraw, roundedRect } from './core';
+import * as util from './util';
 
 /**
  * @class
@@ -39,8 +39,8 @@ export function sticky(projection, direction, options) {
         margin: 0,
         marginX: 0,
         marginY: 0,
-        align: "left",
-        ...options || {},
+        align: 'left',
+        ...options || {}
     };
     projection.prepare = function(id, exprId, state, stage) {
         origPrepare.call(this, id, exprId, state, stage);
@@ -50,29 +50,25 @@ export function sticky(projection, direction, options) {
         const w = this.size.w * this.scale.x;
         const h = this.size.h * this.scale.y;
 
-        if (direction === "bottom") {
+        if (direction === 'bottom') {
             this.pos.y = stage.height - h - this.sticky.margin;
-        }
-        else if (direction === "top") {
+        } else if (direction === 'top') {
             this.pos.y = this.sticky.margin + this.sticky.marginY;
-        }
-        else if (direction === "left") {
+        } else if (direction === 'left') {
             this.pos.x = 0;
-        }
-        else if (direction === "center") {
+        } else if (direction === 'center') {
             this.pos.x = ((stage.width - w) / 2) + this.sticky.marginX;
             let hFactor = 0.5;
-            if (typeof this.sticky.hAlign === "number") {
+            if (typeof this.sticky.hAlign === 'number') {
                 hFactor = this.sticky.hAlign;
             }
             this.pos.y = ((stage.height / 2) - (h * hFactor)) + this.sticky.marginY;
         }
 
-        if (direction === "top" || direction === "bottom") {
-            if (this.sticky.align === "center") {
+        if (direction === 'top' || direction === 'bottom') {
+            if (this.sticky.align === 'center') {
                 this.pos.x = (stage.width - w) / 2;
-            }
-            else if (this.sticky.align === "right") {
+            } else if (this.sticky.align === 'right') {
                 this.pos.x = stage.width - w - this.sticky.marginX;
             }
         }
@@ -87,34 +83,34 @@ export function sticky(projection, direction, options) {
 export function hbox(childrenFunc, options = {}, baseProjection = roundedRect) {
     if (options && options.padding) {
         options.padding = {
-            left: 10, inner: 5, right: 10, top: 0, bottom: 0, ...options.padding,
+            left: 10, inner: 5, right: 10, top: 0, bottom: 0, ...options.padding
         };
     }
 
     const projection = baseProjection({
         padding: {
-            left: 10, inner: 5, right: 10, top: 0, bottom: 0,
+            left: 10, inner: 5, right: 10, top: 0, bottom: 0
         },
         subexpScale: 0.85,
-        ...options,
+        ...options
     });
     const baseDraw = projection.draw;
     const basePrepare = projection.prepare;
 
     projection.baseType = projection.type;
-    projection.type = "hbox";
+    projection.type = 'hbox';
 
     projection.prepare = function(id, exprId, state, stage) {
         basePrepare.call(this, id, exprId, state, stage);
         let x = this.padding.left;
 
-        let maxY = typeof this.minHeight === "number" ? this.minHeight : 40;
-        for (const [ childId, subexprId ] of this.children(exprId, state)) {
+        let maxY = typeof this.minHeight === 'number' ? this.minHeight : 40;
+        for (const [childId, subexprId] of this.children(exprId, state)) {
             const childProjection = stage.views[childId];
 
             childProjection.parent = this;
 
-            if (typeof childProjection.animating !== "number" || childProjection.animating === 0) {
+            if (typeof childProjection.animating !== 'number' || childProjection.animating === 0) {
                 childProjection.pos.x = x;
                 childProjection.anchor.x = 0;
                 childProjection.anchor.y = 0;
@@ -128,9 +124,9 @@ export function hbox(childrenFunc, options = {}, baseProjection = roundedRect) {
         }
         this.size.w = x - this.padding.inner + this.padding.right;
         this.size.h = maxY + this.padding.top + this.padding.bottom;
-        for (const [ childId ] of this.children(exprId, state)) {
+        for (const [childId] of this.children(exprId, state)) {
             const childProjection = stage.views[childId];
-            if (typeof childProjection.animating === "number" && childProjection.animating > 0) continue;
+            if (typeof childProjection.animating === 'number' && childProjection.animating > 0) continue;
 
             childProjection.pos.y = (this.size.h * this.scale.y - childProjection.size.h * childProjection.scale.y * this.scale.y) / 2;
         }
@@ -138,7 +134,7 @@ export function hbox(childrenFunc, options = {}, baseProjection = roundedRect) {
     projection.draw = function(id, exprId, state, stage, offset) {
         baseDraw.call(this, id, exprId, state, stage, offset);
 
-        const [ sx, sy ] = util.absoluteScale(this, offset);
+        const [sx, sy] = util.absoluteScale(this, offset);
         const { x, y } = util.topLeftPos(this, offset);
 
         const subOffset = {
@@ -147,10 +143,10 @@ export function hbox(childrenFunc, options = {}, baseProjection = roundedRect) {
             y,
             sx: offset.sx * this.scale.x,
             sy: offset.sy * this.scale.y,
-            opacity: this.opacity * offset.opacity,
+            opacity: this.opacity * offset.opacity
         };
 
-        for (const [ childId, subexprId ] of this.children(exprId, state)) {
+        for (const [childId, subexprId] of this.children(exprId, state)) {
             stage.views[childId].draw(childId, subexprId, state, stage, subOffset);
         }
 
@@ -169,30 +165,30 @@ export function hbox(childrenFunc, options = {}, baseProjection = roundedRect) {
 export function vbox(childrenFunc, options = {}, baseProjection = roundedRect) {
     if (options && options.padding) {
         options.padding = {
-            top: 5, left: 0, inner: 5, right: 0, bottom: 5, ...options.padding,
+            top: 5, left: 0, inner: 5, right: 0, bottom: 5, ...options.padding
         };
     }
     const projection = baseProjection({
         horizontalAlign: 0.5,
         padding: {
-            top: 5, left: 0, inner: 5, right: 0, bottom: 5,
+            top: 5, left: 0, inner: 5, right: 0, bottom: 5
         },
         subexpScale: 0.85,
         ellipsize: false,
-        ...options,
+        ...options
     });
     const baseDraw = projection.draw;
     const basePrepare = projection.prepare;
-    projection.type = "vbox";
+    projection.type = 'vbox';
 
     projection.isEllipsized = function(id, exprId, state) {
-        const parent = state.getIn([ "nodes", exprId, "parent" ]);
-        const parent2 = state.getIn([ "nodes", parent, "parent" ]);
+        const parent = state.getIn(['nodes', exprId, 'parent']);
+        const parent2 = state.getIn(['nodes', parent, 'parent']);
         return this.ellipsize
             && (id === exprId) // Are we the top-level projection for this expression?
             && parent && parent2
-            && state.getIn([ "nodes", exprId, "type" ]) === state.getIn([ "nodes", parent, "type"])
-            && state.getIn([ "nodes", parent, "type" ]) === state.getIn([ "nodes", parent2, "type"]);
+            && state.getIn(['nodes', exprId, 'type']) === state.getIn(['nodes', parent, 'type'])
+            && state.getIn(['nodes', parent, 'type']) === state.getIn(['nodes', parent2, 'type']);
     };
 
     projection.prepare = function(id, exprId, state, stage) {
@@ -207,7 +203,7 @@ export function vbox(childrenFunc, options = {}, baseProjection = roundedRect) {
         let maxX = 50;
         let y = this.padding.top;
 
-        for (const [ childId, subexprId ] of this.children(exprId, state)) {
+        for (const [childId, subexprId] of this.children(exprId, state)) {
             const childProjection = stage.views[childId];
 
             childProjection.parent = this;
@@ -224,7 +220,7 @@ export function vbox(childrenFunc, options = {}, baseProjection = roundedRect) {
         }
         this.size.w = maxX + this.padding.left + this.padding.right;
         this.size.h = y - this.padding.inner + this.padding.bottom;
-        for (const [ childId ] of this.children(exprId, state)) {
+        for (const [childId] of this.children(exprId, state)) {
             const childProjection = stage.views[childId];
             if (childProjection.animating) continue;
 
@@ -239,12 +235,12 @@ export function vbox(childrenFunc, options = {}, baseProjection = roundedRect) {
         const { x, y } = util.topLeftPos(this, offset);
 
         if (this.isEllipsized(id, exprId, state)) {
-            const [ sx, sy ] = util.absoluteScale(this, offset);
+            const [sx, sy] = util.absoluteScale(this, offset);
             const { ctx } = stage;
 
             ctx.save();
             ctx.globalAlpha = offset.opacity * this.opacity;
-            ctx.fillStyle = "gray";
+            ctx.fillStyle = 'gray';
             const r = 5 * Math.min(sx, sy);
             const w = sx * (this.size.w - (4 * r));
             const h = sy * this.size.h;
@@ -264,9 +260,9 @@ export function vbox(childrenFunc, options = {}, baseProjection = roundedRect) {
             y,
             sx: offset.sx * this.scale.x,
             sy: offset.sy * this.scale.y,
-            opacity: this.opacity * offset.opacity,
+            opacity: this.opacity * offset.opacity
         };
-        for (const [ childId, subexprId ] of this.children(exprId, state)) {
+        for (const [childId, subexprId] of this.children(exprId, state)) {
             stage.views[childId].draw(childId, subexprId, state, stage, subOffset);
         }
     };
@@ -286,14 +282,13 @@ export function previewer(projection) {
                 pos: this.pos,
                 scale: {
                     x: this.scale.x,
-                    y: this.scale.y,
+                    y: this.scale.y
                 },
                 shadow: false,
                 anchor: this.anchor,
-                opacity: 1,
+                opacity: 1
             };
-        }
-        else if (!this.preview) {
+        } else if (!this.preview) {
             delete this.prevPreview;
         }
         if (this.preview) {

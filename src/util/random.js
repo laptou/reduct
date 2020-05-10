@@ -5,8 +5,8 @@ export function getRandInt(min, max) {
 }
 
 export function getRandString(length) {
-    const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let result = "";
+    const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
     for (let i = 0; i < length; i++) {
         result += alphabet[getRandInt(0, alphabet.length)];
     }

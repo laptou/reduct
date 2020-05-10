@@ -1,8 +1,8 @@
-import wordWrap from "word-wrap";
+import wordWrap from 'word-wrap';
 
-import { baseProjection, debugDraw } from "./core";
-import * as primitive from "./primitive";
-import * as util from "./util";
+import { baseProjection, debugDraw } from './core';
+import * as primitive from './primitive';
+import * as util from './util';
 
 // TODO: make this part of the stage instead?
 const TEXT_SIZE_CACHE = {};
@@ -17,24 +17,23 @@ export default function text(txt, options) {
         text: txt,
         fontSize: 28,
         font: text.mono,
-        color: "#000",
-        type: "text",
+        color: '#000',
+        type: 'text',
         wrapWidth: null,
-        ...options,
+        ...options
     });
 
     projection.prepare = function(id, exprId, state, stage) {
-        let curText = typeof this.text === "function" ? this.text(state, exprId) : this.text;
+        let curText = typeof this.text === 'function' ? this.text(state, exprId) : this.text;
 
         if (this.wrapWidth !== null) {
             curText = wordWrap(curText, {
                 indent: 0,
                 width: this.wrapWidth,
-                trim: true,
-            }).split("\n");
-        }
-        else {
-            curText = [ curText ];
+                trim: true
+            }).split('\n');
+        } else {
+            curText = [curText];
         }
 
         let h = 0;
@@ -58,7 +57,7 @@ export default function text(txt, options) {
     projection.draw = function(id, exprId, state, stage, offset) {
         const { ctx } = stage;
 
-        const [ sx, sy ] = util.absoluteScale(this, offset);
+        const [sx, sy] = util.absoluteScale(this, offset);
 
         ctx.save();
 
@@ -68,7 +67,7 @@ export default function text(txt, options) {
 
         ctx.scale(sx, sy);
         ctx.fillStyle = this.color;
-        ctx.textBaseline = "alphabetic";
+        ctx.textBaseline = 'alphabetic';
         ctx.font = `${this.fontSize}px ${this.font}`;
 
         let dy = 0;
@@ -76,14 +75,14 @@ export default function text(txt, options) {
             ctx.fillText(
                 line,
                 (offset.x + (this.pos.x * offset.sx)) / sx,
-                ((dy + offset.y + (this.pos.y * offset.sy)) / sy) + this.fontSize,
+                ((dy + offset.y + (this.pos.y * offset.sy)) / sy) + this.fontSize
             );
             if (this.stroke) {
                 primitive.setStroke(ctx, this.stroke);
                 ctx.strokeText(
                     line,
                     (offset.x + (this.pos.x * offset.sx)) / sx,
-                    ((dy + offset.y + (this.pos.y * offset.sy)) / sy) + this.fontSize,
+                    ((dy + offset.y + (this.pos.y * offset.sy)) / sy) + this.fontSize
                 );
             }
             dy += this.fontSize * 1.35;
@@ -96,11 +95,10 @@ export default function text(txt, options) {
 
             if (this.outerStroke) {
                 primitive.setStroke(ctx, this.outerStroke);
-            }
-            else {
+            } else {
                 primitive.setStroke(ctx, {
                     lineWidth: 2,
-                    color: this.highlightColor || "yellow",
+                    color: this.highlightColor || 'yellow'
                 });
             }
 
@@ -112,7 +110,7 @@ export default function text(txt, options) {
                 this.scale.x * offset.sx * (this.radius || 15),
                 false,
                 true,
-                this.stroke,
+                this.stroke
             );
             ctx.restore();
         }
@@ -121,6 +119,6 @@ export default function text(txt, options) {
 }
 
 // Font family definitions
-text.mono = "'Fira Mono', Consolas, Monaco, monospace";
-text.sans = "'Fira Sans', Arial, sans-serif";
-text.script = "'Nanum Pen Script', 'Comic Sans', cursive";
+text.mono = '\'Fira Mono\', Consolas, Monaco, monospace';
+text.sans = '\'Fira Sans\', Arial, sans-serif';
+text.script = '\'Nanum Pen Script\', \'Comic Sans\', cursive';

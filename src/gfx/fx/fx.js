@@ -2,23 +2,23 @@
  * Handy built-in effects.
  */
 
-import Loader from "../../loader";
-import Audio from "../../resource/audio";
-import * as gfx from "../core";
-import * as animate from "../animate";
-import * as primitive from "../primitive";
+import Loader from '../../loader';
+import Audio from '../../resource/audio';
+import * as gfx from '../core';
+import * as animate from '../animate';
+import * as primitive from '../primitive';
 
 /**
  * An explosion effect.
  */
 export function splosion(stage, pos, options = {}) {
     options = {
-        color: "gold",
+        color: 'gold',
         numOfParticles: 20,
         explosionRadius: 100,
         duration: 600,
         angle: (_idx) => Math.random() * Math.PI * 2,
-        ...options,
+        ...options
     };
     const parts = [];
     const tweens = [];
@@ -30,7 +30,7 @@ export function splosion(stage, pos, options = {}) {
         const record = {
             x: pos.x,
             y: pos.y,
-            r: Math.floor(minRadius + ((maxRadius - minRadius) * Math.random())),
+            r: Math.floor(minRadius + ((maxRadius - minRadius) * Math.random()))
         };
         parts.push(record);
 
@@ -40,10 +40,10 @@ export function splosion(stage, pos, options = {}) {
         tweens.push(animate.tween(record, {
             x: pos.x + (rad * Math.cos(theta)),
             y: pos.y + (rad * Math.sin(theta)),
-            r: 0,
+            r: 0
         }, {
             duration: options.duration,
-            easing: animate.Easing.Time((t) => Math.pow(t, 0.5)),
+            easing: animate.Easing.Time((t) => Math.pow(t, 0.5))
         }));
     }
 
@@ -51,24 +51,24 @@ export function splosion(stage, pos, options = {}) {
         prepare: () => {},
         draw: () => {
             const { ctx } = stage;
-            if (typeof options.color === "string") ctx.fillStyle = options.color;
+            if (typeof options.color === 'string') ctx.fillStyle = options.color;
             ctx.save();
             let i = 0;
             for (const record of parts) {
                 ctx.beginPath();
-                if (typeof options.color === "function") ctx.fillStyle = options.color(i);
+                if (typeof options.color === 'function') ctx.fillStyle = options.color(i);
                 ctx.arc(
                     record.x + record.r,
                     record.y + record.r,
                     record.r,
-                    0, 2 * Math.PI,
+                    0, 2 * Math.PI
                 );
                 ctx.fill();
                 i += 1;
             }
             ctx.restore();
         },
-        containsPoint: () => false,
+        containsPoint: () => false
     });
 
     return Promise.all(tweens).then(() => {
@@ -79,28 +79,28 @@ export function splosion(stage, pos, options = {}) {
 export function blink(stage, projection, opts) {
     const options = {
         times: 1,
-        color: "#F00",
+        color: '#F00',
         speed: 600,
         lineWidth: 3,
         background: false,
-        field: "stroke",
-        ...opts,
+        field: 'stroke',
+        ...opts
     };
 
-    if (!projection.color) projection.color = "black";
+    if (!projection.color) projection.color = 'black';
 
     if (options.background) {
         if (!projection.__origColor) {
             projection.__origColor = projection.color;
         }
 
-        const bgColor = typeof options.background === "string" ? options.background : options.color;
+        const bgColor = typeof options.background === 'string' ? options.background : options.color;
 
         animate.tween(projection, { color: bgColor }, {
             reverse: true,
             repeat: options.times * 2,
             duration: options.speed,
-            easing: animate.Easing.Color(animate.Easing.Linear, projection.color, bgColor),
+            easing: animate.Easing.Color(animate.Easing.Linear, projection.color, bgColor)
         }).then(() => {
             projection.color = projection.__origColor;
         });
@@ -120,12 +120,12 @@ export function blink(stage, projection, opts) {
             },
             set(newValue) {
                 updatedStroke = newValue;
-            },
+            }
         });
         return animate.tween(tempStroke, { lineWidth: options.lineWidth }, {
             reverse: true,
             repeat: options.times * 2,
-            duration: options.speed,
+            duration: options.speed
         }).then(() => {
             delete projection[options.field];
             projection[options.field] = updatedStroke;
@@ -145,7 +145,7 @@ export function shatter(stage, projection, options) {
         y: pos.y,
         w: size.w,
         h: size.h,
-        a: 0,
+        a: 0
     };
 
     const { ctx } = stage;
@@ -156,10 +156,10 @@ export function shatter(stage, projection, options) {
             status.w, status.h,
             projection.radius,
             true,
-            true,
+            true
         );
     };
-    if (projection.baseType === "hexaRect") {
+    if (projection.baseType === 'hexaRect') {
         primitive = (offset) => {
             gfx.primitive.hexaRect(
                 ctx,
@@ -167,7 +167,7 @@ export function shatter(stage, projection, options) {
                 status.w, status.h,
                 Math.min(25, status.w / 2), status.h / 2,
                 true,
-                true,
+                true
             );
         };
     }
@@ -177,14 +177,14 @@ export function shatter(stage, projection, options) {
         draw: () => {
             ctx.save();
             ctx.globalAlpha = status.a;
-            ctx.strokeStyle = "white";
+            ctx.strokeStyle = 'white';
             ctx.lineWidth = 3;
-            ctx.fillStyle = "black";
+            ctx.fillStyle = 'black';
             primitive(4);
-            ctx.fillStyle = "white";
+            ctx.fillStyle = 'white';
             primitive(0);
             ctx.restore();
-        },
+        }
     });
 
     return new Promise((resolve, _reject) => {
@@ -196,16 +196,16 @@ export function shatter(stage, projection, options) {
                 easing: animate.Easing.Cubic.In,
                 callback: () => {
                     resolve();
-                },
+                }
             },
             {
                 a: 0,
                 w: 1.2 * size.w,
                 h: 1.4 * size.h,
                 x: pos.x - (0.1 * size.w),
-                y: pos.y - (0.2 * size.h),
+                y: pos.y - (0.2 * size.h)
             },
-            { duration: options.outroDuration || 800, easing: animate.Easing.Cubic.Out },
+            { duration: options.outroDuration || 800, easing: animate.Easing.Cubic.Out }
         ).then(() => {
             stage.removeEffect(id);
             if (onFullComplete) {
@@ -218,7 +218,7 @@ export function shatter(stage, projection, options) {
 export function poof(stage, projection) {
     const pos = gfx.centerPos(projection);
     const status = { t: 0.0 };
-    const images = [ "poof0", "poof1", "poof2", "poof3", "poof4" ]
+    const images = ['poof0', 'poof1', 'poof2', 'poof3', 'poof4']
         .map((key) => Loader.images[key]);
 
     const { ctx } = stage;
@@ -230,27 +230,27 @@ export function poof(stage, projection) {
             images[idx].draw(
                 ctx,
                 pos.x - 45, pos.y - 45,
-                90, 90,
+                90, 90
             );
             ctx.restore();
-        },
+        }
     });
 
     return animate.tween(status, { t: 1.0 }, {
-        duration: 500,
+        duration: 500
     }).then(() => {
         stage.removeEffect(id);
     });
 }
 
 export function error(stage, projection) {
-    Audio.play("negative_2");
+    Audio.play('negative_2');
     return blink(stage, projection, {
         times: 3,
         speed: 350,
-        color: "#F00",
+        color: '#F00',
         lineWidth: 5,
-        background: "orange",
+        background: 'orange'
     });
 }
 
@@ -280,7 +280,7 @@ export function emerge(stage, state, bodyPos, bodySize, resultIds) {
         (ap.x + (as.w / 2)) - (maxWidth / 2),
         y - emergeDistance,
         maxWidth,
-        totalHeight,
+        totalHeight
     );
 
     emergeDistance = y - (maxHeight / 2) - safeY;
@@ -298,15 +298,15 @@ export function emerge(stage, state, bodyPos, bodySize, resultIds) {
 
         tweens.push(animate.tween(resultView, {
             pos: {
-                y: resultView.pos.y - emergeDistance,
+                y: resultView.pos.y - emergeDistance
             },
             scale: {
                 x: 1,
-                y: 1,
-            },
+                y: 1
+            }
         }, {
             duration: 1000,
-            easing: animate.Easing.Cubic.Out,
+            easing: animate.Easing.Cubic.Out
         }));
         y += sz.h + spacing;
     }
@@ -319,10 +319,10 @@ export function expandingShape(stage, projection, options = {}) {
     const state = {
         pos: centerPos,
         size: gfx.absoluteSize(projection),
-        color: options.color || "white",
+        color: options.color || 'white',
         scale: { x: 1, y: 1 },
         radius: projection.radius || 0,
-        opacity: 1,
+        opacity: 1
     };
 
     const { ctx } = stage;
@@ -337,19 +337,19 @@ export function expandingShape(stage, projection, options = {}) {
                 state.pos.x - (w / 2), state.pos.y - (h / 2),
                 w, h,
                 state.scale.x * state.radius,
-                false, true, state.opacity,
+                false, true, state.opacity
             );
-        },
+        }
     });
 
     return animate.tween(state, {
         scale: {
             x: 4,
-            y: 4,
+            y: 4
         },
-        opacity: 0,
+        opacity: 0
     }, {
-        duration: options.duration || 500,
+        duration: options.duration || 500
     }).then(() => {
         stage.removeEffect(id);
     });
@@ -367,7 +367,7 @@ export function keepAlive(stage, id, promise, under = false) {
         },
         draw: () => {
             stage.getView(id).draw(id, id, stage.getState(), stage, stage.makeBaseOffset());
-        },
+        }
     });
 
     return promise.then((args) => {

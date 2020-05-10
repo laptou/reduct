@@ -1,49 +1,49 @@
-import * as immutable from "immutable";
-import * as gfx from "../gfx/core";
-import * as animate from "../gfx/animate";
-import * as progression from "../game/progression";
-import Audio from "../resource/audio";
-import Logging from "../logging/logging";
-import Loader from "../loader";
-import es6 from "../semantics/es6";
-import BaseStage from "./basestage";
-import BaseTouchRecord from "./touchrecord";
+import * as immutable from 'immutable';
+import * as gfx from '../gfx/core';
+import * as animate from '../gfx/animate';
+import * as progression from '../game/progression';
+import Audio from '../resource/audio';
+import Logging from '../logging/logging';
+import Loader from '../loader';
+import es6 from '../semantics/es6';
+import BaseStage from './basestage';
+import BaseTouchRecord from './touchrecord';
 
 export default class LevelStage extends BaseStage {
     constructor(startGame, chapterName, ...args) {
         super(...args);
 
         this.startGame = startGame;
-        this.color = "#8ab7db";
+        this.color = '#8ab7db';
 
         // allocating title ID
         const title = gfx.layout.sticky(
             gfx.layout.ratioSizer(gfx.text(`${chapterName}`, {
                 fontSize: 200,
-                font: gfx.text.script,
+                font: gfx.text.script
             }), 213 / 899, 0.6),
-            "center",
-            {},
+            'center',
+            {}
         );
         title.opacity = 0;
         this.title = this.allocateInternal(title);
 
-        const label = this.allocate(gfx.text("Chapter List", {
+        const label = this.allocate(gfx.text('Chapter List', {
             fontSize: 30,
-            font: gfx.text.script,
+            font: gfx.text.script
         }));
 
         const backButton = gfx.layout.sticky(gfx.ui.button(this, () => [label], {
-            color: "#e95888",
+            color: '#e95888',
             subexpScale: 1,
             anchor: {
                 x: 0,
-                y: 0,
+                y: 0
             },
             click: () => {
                 window.init();
-            },
-        }), "top", {});
+            }
+        }), 'top', {});
 
         this.backButton = this.allocate(backButton);
         backButton.opacity = 0.0;
@@ -58,45 +58,43 @@ export default class LevelStage extends BaseStage {
         for (let beginLvl = start; beginLvl <= end; beginLvl++) {
             const label = this.allocate(gfx.text(`Level: ${beginLvl + 1}`, {
                 fontSize: 20,
-                font: gfx.text.mono,
+                font: gfx.text.mono
             }));
 
             if (beginLvl < curLvl) {
                 const button = gfx.ui.button(this, () => [label], {
-                    color: "#e95888",
+                    color: '#e95888',
                     anchor: {
                         x: 0,
-                        y: 0,
+                        y: 0
                     },
                     subexpScale: 1,
                     click: () => {
                         progression.setLevel(beginLvl);
                         this.animateStart();
-                    },
+                    }
                 });
                 buttons.push(this.allocate(button));
-            }
-            else if (beginLvl == curLvl) {
+            } else if (beginLvl == curLvl) {
                 const button = gfx.ui.button(this, () => [label], {
-                    color: "#ffcc00",
+                    color: '#ffcc00',
                     anchor: {
                         x: 0,
-                        y: 0,
+                        y: 0
                     },
                     subexpScale: 1,
                     click: () => {
                         progression.setLevel(beginLvl);
                         this.animateStart();
-                    },
+                    }
                 });
                 buttons.push(this.allocate(button));
-            }
-            else {
+            } else {
                 const button = gfx.ui.button(this, () => [label], {
                     shadow: true,
                     anchor: {
                         x: 0,
-                        y: 0,
+                        y: 0
                     },
                     subexpScale: 1,
                     click: () => {
@@ -104,7 +102,7 @@ export default class LevelStage extends BaseStage {
                             progression.setLevel(beginLvl);
                             this.animateStart();
                         }
-                    },
+                    }
                 });
                 buttons.push(this.allocate(button));
             }
@@ -126,15 +124,14 @@ export default class LevelStage extends BaseStage {
                     padding: {
                         inner: 20,
                         top: stage.height + numLayouts * 100,
-                        left: 250,
-                    },
+                        left: 250
+                    }
                 }, gfx.baseProjection);
 
                 myLayouts[numLayouts].opacity = 0.0;
                 stage.myLayouts.push(stage.allocate(myLayouts[numLayouts]));
                 numLayouts++;
-            }
-            else {
+            } else {
                 workButtons = arrayButtons.slice(0, 5);
 
                 myLayouts[numLayouts] = gfx.layout.hbox(() => workButtons, {
@@ -142,8 +139,8 @@ export default class LevelStage extends BaseStage {
                     padding: {
                         inner: 20,
                         top: stage.height + numLayouts * 100,
-                        left: 250,
-                    },
+                        left: 250
+                    }
                 }, gfx.baseProjection);
 
                 myLayouts[numLayouts].opacity = 0.0;
@@ -205,52 +202,52 @@ export default class LevelStage extends BaseStage {
 
         // ** Startup Animations ** //
 
-        this.state = "initializing";
+        this.state = 'initializing';
         animate.tween(this, {
-            color: "#FFF",
+            color: '#FFF'
         }, {
             duration: 500,
             setAnimatingFlag: false,
-            easing: animate.Easing.Color(animate.Easing.Cubic.In, this.color, "#FFF"),
+            easing: animate.Easing.Color(animate.Easing.Cubic.In, this.color, '#FFF')
         })
             .then(() => animate.tween(title, {
-                opacity: 1.0,
+                opacity: 1.0
             }, {
                 duration: 500,
-                easing: animate.Easing.Cubic.Out,
+                easing: animate.Easing.Cubic.Out
             }).delay(1000))
             .then(() => Promise.all([
                 animate.tween(title, {
                     scale: { x: 0.7, y: 0.7 },
-                    sticky: { marginY: -180 },
+                    sticky: { marginY: -180 }
                 }, {
                     duration: 800,
-                    easing: animate.Easing.Cubic.Out,
+                    easing: animate.Easing.Cubic.Out
                 }),
                 animate.tween(backButton, {
-                    opacity: 1.0,
+                    opacity: 1.0
                 }, {
                     duration: 1000,
-                    easing: animate.Easing.Cubic.Out,
-                }),
+                    easing: animate.Easing.Cubic.Out
+                })
             ]))
             .then(() => {
                 for (let i = 0; i < myLayouts.length; i++) {
                     animate.tween(myLayouts[i], {
-                        opacity: 1.0,
+                        opacity: 1.0
                     }, {
                         duration: 1000,
-                        easing: animate.Easing.Cubic.Out,
+                        easing: animate.Easing.Cubic.Out
                     });
                 }
             })
             .then(() => {
-                this.state = "initialized";
+                this.state = 'initialized';
             });
     }
 
     _mouseup(e) {
-        if (this.state === "initializing") {
+        if (this.state === 'initializing') {
             this.fastForward();
         }
 
@@ -259,8 +256,8 @@ export default class LevelStage extends BaseStage {
 
     fastForward() {
         animate.clock.cancelAll();
-        this.state = "initialized";
-        this.color = "#FFF";
+        this.state = 'initialized';
+        this.color = '#FFF';
         const title = this.getView(this.title);
         title.opacity = 1.0;
         title.scale = { x: 0.7, y: 0.7 };
@@ -273,43 +270,43 @@ export default class LevelStage extends BaseStage {
     }
 
     animateStart() {
-        this.state = "transitioning";
+        this.state = 'transitioning';
 
 
         Promise.all([
             animate.tween(this.getView(this.title), {
                 scale: { x: 0.4, y: 0.4 },
-                opacity: 0.5,
+                opacity: 0.5
             }, {
                 duration: 800,
-                easing: animate.Easing.Cubic.In,
+                easing: animate.Easing.Cubic.In
             }),
             animate.tween(this.getView(this.title), {
-                sticky: { marginY: -this.height },
+                sticky: { marginY: -this.height }
             }, {
                 duration: 500,
-                easing: animate.Easing.Anticipate.BackIn(1.5),
+                easing: animate.Easing.Anticipate.BackIn(1.5)
             }),
             animate.tween(this.getView(this.backButton), {
-                opacity: 0,
+                opacity: 0
             }, {
                 duration: 500,
-                easing: animate.Easing.Cubic.In,
+                easing: animate.Easing.Cubic.In
             }),
             animate.tween(this, {
-                color: "#8ab7db",
+                color: '#8ab7db'
             }, {
                 duration: 500,
                 setAnimatingFlag: false,
-                easing: animate.Easing.Color(animate.Easing.Cubic.In, this.color, "#8ab7db"),
-            }),
+                easing: animate.Easing.Color(animate.Easing.Cubic.In, this.color, '#8ab7db')
+            })
         ]).then(() => {
             for (let i = 0; i < this.myLayouts.length; i++) {
                 animate.tween(this.getView(this.myLayouts[i]), {
-                    opacity: 0,
+                    opacity: 0
                 }, {
                     duration: 500,
-                    easing: animate.Easing.Cubic.In,
+                    easing: animate.Easing.Cubic.In
                 });
             }
         })
@@ -338,7 +335,7 @@ export default class LevelStage extends BaseStage {
     }
 
     getNodeAtPos(pos, selectedId = null) {
-        if (this.state !== "initialized") return [ null, null ];
+        if (this.state !== 'initialized') return [null, null];
 
         const offset = this.makeBaseOffset();
         const backLayout = this.getView(this.backButton);
@@ -348,7 +345,7 @@ export default class LevelStage extends BaseStage {
             const topLeft = gfx.util.topLeftPos(backLayout, offset);
             const subpos = {
                 x: pos.x - topLeft.x,
-                y: pos.y - topLeft.y,
+                y: pos.y - topLeft.y
             };
 
             return [this.backButton, this.backButton];
@@ -358,19 +355,18 @@ export default class LevelStage extends BaseStage {
         for (const id of this.buttons) {
             const button = this.getView(id);
             if (button.containsPoint(pos, offset)) {
-                return [ id, id ];
+                return [id, id];
             }
         }
 
-        return [ null, null ];
+        return [null, null];
     }
 
     updateCursor(touchRecord, moved = false) {
         if (touchRecord.hoverNode !== null) {
-            this.setCursor("pointer");
-        }
-        else {
-            this.setCursor("default");
+            this.setCursor('pointer');
+        } else {
+            this.setCursor('default');
         }
     }
 }

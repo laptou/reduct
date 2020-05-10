@@ -1,38 +1,38 @@
-import VERSION from "../version";
+import VERSION from '../version';
 
 export const PROGRESSIONS = {
-    "Elementary": {
-        dir: "levels-progression/",
+    Elementary: {
+        dir: 'levels-progression/',
         digraph: {
-            "functions": ["replication"],
-            "replication": ["multiargument"],
-            "multiargument": ["booleans-intro"],
-            "booleans-intro": ["application"],
-            "application": ["definition"],
-            "definition": ["testing"],
-            "testing": ["lists-intro"],
-            "lists-intro": ["lists-query"],
-            "lists-query": ["higher-order-functions"],
-            "higher-order-functions": ["define-challenges"],
-            "define-challenges": ["recursion-basics"],
-            "recursion-basics": ["recursion-higher-order"],
-            "recursion-higher-order": ["remove-first"],
-            "remove-first": ["count-all"],
-            "count-all": ["list-functions"],
-            "list-functions": ["strings"],
-            "strings": ["letExpr"],
-            "letExpr": ["play"],
-            "play": [],
+            'functions': ['replication'],
+            'replication': ['multiargument'],
+            'multiargument': ['booleans-intro'],
+            'booleans-intro': ['application'],
+            'application': ['definition'],
+            'definition': ['testing'],
+            'testing': ['lists-intro'],
+            'lists-intro': ['lists-query'],
+            'lists-query': ['higher-order-functions'],
+            'higher-order-functions': ['define-challenges'],
+            'define-challenges': ['recursion-basics'],
+            'recursion-basics': ['recursion-higher-order'],
+            'recursion-higher-order': ['remove-first'],
+            'remove-first': ['count-all'],
+            'count-all': ['list-functions'],
+            'list-functions': ['strings'],
+            'strings': ['letExpr'],
+            'letExpr': ['play'],
+            'play': []
         },
         settings: { // This sets global flags.
-            "__ALLOW_PARTIAL_REPLICATION": false,
-            "__ALLOW_SKIPPING": true,
-            "__ALLOW_ARRAY_EVENTS": false,
-        },
-    },
+            __ALLOW_PARTIAL_REPLICATION: false,
+            __ALLOW_SKIPPING: true,
+            __ALLOW_ARRAY_EVENTS: false
+        }
+    }
 };
 
-export const ACTIVE_PROGRESSION = "Elementary";
+export const ACTIVE_PROGRESSION = 'Elementary';
 
 export const ACTIVE_PROGRESSION_DEFINITION = PROGRESSIONS[ACTIVE_PROGRESSION];
 
@@ -68,7 +68,7 @@ export function nextLevel() {
     }
     currentLevelIdx = Math.min(
         currentLevelIdx + 1,
-        ACTIVE_PROGRESSION_DEFINITION.progression.levels.length - 1,
+        ACTIVE_PROGRESSION_DEFINITION.progression.levels.length - 1
     );
     save();
 }
@@ -76,7 +76,7 @@ export function nextLevel() {
 export function nextChallengeLevel() {
     currentLevelIdx = Math.min(
         currentLevelIdx + 1,
-        ACTIVE_PROGRESSION_DEFINITION.progression.levels.length - 1,
+        ACTIVE_PROGRESSION_DEFINITION.progression.levels.length - 1
     );
     save();
 }
@@ -151,7 +151,7 @@ export function hasChallengeChapter() {
 }
 
 export function learnSyntax(name) {
-    if (learnedSyntaxes.indexOf(name) === -1) {
+    if (!learnedSyntaxes.includes(name)) {
         learnedSyntaxes.push(name);
     }
     save();
@@ -172,10 +172,10 @@ const __fadeOverrides = {};
 export function getFadeLevel(exprType, level = null) {
     level = level === null ? currentLevel() : level;
     const fadeLevels = ACTIVE_PROGRESSION_DEFINITION.progression.levels[level].fade;
-    if (typeof __fadeOverrides[exprType] === "number") {
+    if (typeof __fadeOverrides[exprType] === 'number') {
         return __fadeOverrides[exprType];
     }
-    if (typeof fadeLevels[exprType] === "number") {
+    if (typeof fadeLevels[exprType] === 'number') {
         return fadeLevels[exprType];
     }
     return 0;
@@ -195,8 +195,7 @@ export function overrideFadeLevel(cb) {
     currentLevelIdx -= 1;
     try {
         cb();
-    }
-    finally {
+    } finally {
         currentLevelIdx += 1;
     }
 }

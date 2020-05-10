@@ -1,11 +1,11 @@
-import { baseProjection, hoverOutline, debugDraw } from "./core";
-import * as primitive from "./primitive";
-import * as util from "./util";
+import { baseProjection, hoverOutline, debugDraw } from './core';
+import * as primitive from './primitive';
+import * as util from './util';
 
 // TODO: use these helpers everywhere
 function shadow(ctx, exprId, projection, state, f) {
-    const node = state.getIn([ "nodes", exprId ]);
-    if (projection.shadow || (node && (!node.get("parent") || !node.get("locked")))) {
+    const node = state.getIn(['nodes', exprId]);
+    if (projection.shadow || (node && (!node.get('parent') || !node.get('locked')))) {
         ctx.fillStyle = projection.shadowColor;
         f(projection.shadowOffset);
         ctx.fill();
@@ -17,9 +17,9 @@ function drawPrimitive(exprId, projection, state, stage, offset,
     const { ctx } = stage;
     ctx.save();
 
-    const node = state.getIn([ "nodes", exprId ]);
-    const hasParent = node && Number.isInteger(node.get("parent"));
-    const locked = !node || node.get("locked");
+    const node = state.getIn(['nodes', exprId]);
+    const hasParent = node && Number.isInteger(node.get('parent'));
+    const locked = !node || node.get('locked');
     let stroke = false;
 
     util.setOpacity(ctx, projection.opacity, offset);
@@ -27,13 +27,12 @@ function drawPrimitive(exprId, projection, state, stage, offset,
     if (projection.stroke) {
         primitive.setStroke(ctx, projection);
         stroke = true;
-    }
-    else if (hasParent && !locked) {
-        const [ sx, sy ] = util.absoluteScale(projection, offset);
-        ctx.fillStyle = "#000";
+    } else if (hasParent && !locked) {
+        const [sx, sy] = util.absoluteScale(projection, offset);
+        ctx.fillStyle = '#000';
         primitive.setStroke(ctx, {
             lineWidth: 2,
-            color: projection.highlightColor || "yellow",
+            color: projection.highlightColor || 'yellow'
         });
         primitive.roundRect(
             ctx,
@@ -42,9 +41,9 @@ function drawPrimitive(exprId, projection, state, stage, offset,
             offset.sx * projection.scale.x * projection.size.w,
             offset.sy * projection.scale.y * projection.size.h,
             sx * 22,
-            true, stage.isHovered(exprId), null,
+            true, stage.isHovered(exprId), null
         );
-        ctx.fillStyle = "#555";
+        ctx.fillStyle = '#555';
         primitive.roundRect(
             ctx,
             offset.x + projection.pos.x * offset.sx,
@@ -52,13 +51,12 @@ function drawPrimitive(exprId, projection, state, stage, offset,
             offset.sx * projection.scale.x * projection.size.w,
             offset.sy * projection.scale.y * projection.size.h,
             sx * 22,
-            true, stage.isHovered(exprId), null,
+            true, stage.isHovered(exprId), null
         );
-    }
-    else if ((!hasParent || !locked) && stage.isHovered(exprId)) {
+    } else if ((!hasParent || !locked) && stage.isHovered(exprId)) {
         primitive.setStroke(ctx, {
             lineWidth: 2,
-            color: projection.highlightColor || "yellow",
+            color: projection.highlightColor || 'yellow'
         });
 
         stroke = true;
@@ -79,10 +77,10 @@ function drawPrimitive(exprId, projection, state, stage, offset,
 function shapeProjection(options) {
     return Object.assign(baseProjection(), {
         size: { w: 50, h: 50 },
-        color: "gold",
-        shadowColor: "#000",
+        color: 'gold',
+        shadowColor: '#000',
         shadowOffset: 4,
-        shadow: true, // Always draw shadow
+        shadow: true // Always draw shadow
     }, options);
 }
 
@@ -92,11 +90,11 @@ function shapeProjection(options) {
  */
 export function triangle(options = {}) {
     const projection = shapeProjection(options);
-    projection.type = "triangle";
+    projection.type = 'triangle';
 
     projection.draw = function(id, exprId, state, stage, offset) {
         const { ctx } = stage;
-        const [ sx, sy ] = util.absoluteScale(this, offset);
+        const [sx, sy] = util.absoluteScale(this, offset);
         drawPrimitive(exprId, this, state, stage, offset, (dy) => {
             let w = offset.sx * this.scale.x * this.size.w;
             let h = offset.sy * this.scale.y * this.size.h;
@@ -122,11 +120,11 @@ export function triangle(options = {}) {
  */
 export function circle(options = {}) {
     const projection = shapeProjection(options);
-    projection.type = "circle";
+    projection.type = 'circle';
 
     projection.draw = function(id, exprId, state, stage, offset) {
         const { ctx } = stage;
-        const [ sx, sy ] = util.absoluteScale(this, offset);
+        const [sx, sy] = util.absoluteScale(this, offset);
         drawPrimitive(exprId, this, state, stage, offset, (dy) => {
             let w = offset.sx * this.scale.x * this.size.w;
             let h = offset.sy * this.scale.y * this.size.h;
@@ -150,11 +148,11 @@ export function circle(options = {}) {
  */
 export function rectangle(options = {}) {
     const projection = shapeProjection(options);
-    projection.type = "rectangle";
+    projection.type = 'rectangle';
 
     projection.draw = function(id, exprId, state, stage, offset) {
         const { ctx } = stage;
-        const [ sx, sy ] = util.absoluteScale(this, offset);
+        const [sx, sy] = util.absoluteScale(this, offset);
         let w = offset.sx * this.scale.x * this.size.w;
         let h = offset.sy * this.scale.y * this.size.h;
         let { x, y } = util.topLeftPos(this, offset);
@@ -179,11 +177,11 @@ export function rectangle(options = {}) {
  */
 export function star(options = {}) {
     const projection = shapeProjection(options);
-    projection.type = "star";
+    projection.type = 'star';
 
     projection.draw = function(id, exprId, state, stage, offset) {
         const { ctx } = stage;
-        const [ sx, sy ] = util.absoluteScale(this, offset);
+        const [sx, sy] = util.absoluteScale(this, offset);
         let w = offset.sx * this.scale.x * this.size.w;
         let h = offset.sy * this.scale.y * this.size.h;
         let { x, y } = util.topLeftPos(this, offset);

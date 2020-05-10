@@ -1,36 +1,36 @@
-import ModalDialog from "../component/modal-dialog";
+import ModalDialog from '../component/modal-dialog';
 
 // Report whether a player id is acceptable
 function playerIdOK() {
-    const id = parseInt(document.getElementById("player_id").value, 10);
+    const id = parseInt(document.getElementById('player_id').value, 10);
     if ((id >= 56000 && id < 58000) || id === 1234 || id === 513) return true;
     return false;
 }
 export default class ConsentDialog extends ModalDialog {
     constructor() {
-        const el = document.querySelector("#consent");
+        const el = document.querySelector('#consent');
         super(el);
 
         this.onAllow = this.onAllow.bind(this);
         this.onReject = this.onReject.bind(this);
 
-        this.btnAllow = el.querySelector("#consent-agree");
-        this.btnReject = el.querySelector("#consent-disagree");
+        this.btnAllow = el.querySelector('#consent-agree');
+        this.btnReject = el.querySelector('#consent-disagree');
     }
 
     show() {
         super.show();
 
-        this.btnAllow.addEventListener("click", this.onAllow);
-        this.btnReject.addEventListener("click", this.onReject);
+        this.btnAllow.addEventListener('click', this.onAllow);
+        this.btnReject.addEventListener('click', this.onReject);
 
         return this;
     }
 
     dismiss() {
         // remove event handlers
-        this.btnAllow.removeEventListener("click", this.onAllow);
-        this.btnReject.removeEventListener("click", this.onReject);
+        this.btnAllow.removeEventListener('click', this.onAllow);
+        this.btnReject.removeEventListener('click', this.onReject);
 
         super.dismiss();
 
@@ -46,21 +46,21 @@ export default class ConsentDialog extends ModalDialog {
     wait() {
         return new Promise((resolve) => {
             if (!this.visible) resolve(false);
-            this.once("allow", () => resolve(true));
-            this.once("deny", () => resolve(false));
-            this.once("dismiss", () => resolve());
+            this.once('allow', () => resolve(true));
+            this.once('deny', () => resolve(false));
+            this.once('dismiss', () => resolve());
         });
     }
 
     /** @private */
     onAllow() {
-        this.emit("allow");
+        this.emit('allow');
         this.dismiss();
     }
 
     /** @private */
     onReject() {
-        this.emit("reject");
+        this.emit('reject');
         this.dismiss();
     }
 }

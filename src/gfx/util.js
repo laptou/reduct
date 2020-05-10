@@ -1,7 +1,7 @@
 export function absoluteScale(projection, offset) {
     return [
         projection.scale.x * offset.sx,
-        projection.scale.y * offset.sy,
+        projection.scale.y * offset.sy
     ];
 }
 
@@ -12,7 +12,7 @@ export function topLeftPos(projection, offset) {
     const relY = projection.pos.y - (projection.anchor.y * relH);
     return {
         x: offset.x + projection.offset.x + (relX * offset.sx),
-        y: offset.y + projection.offset.y + (relY * offset.sy),
+        y: offset.y + projection.offset.y + (relY * offset.sy)
     };
 }
 
@@ -25,16 +25,16 @@ export function genericChildrenFunc(childrenFunc) {
 
             let subexprId = childId;
             if (Array.isArray(childId)) {
-                [ childId, subexprId ] = childId;
+                [childId, subexprId] = childId;
             }
-            yield [ childId, subexprId ];
+            yield [childId, subexprId];
         }
     };
 }
 
 export function setOpacity(ctx, opacity, offset, opacity2) {
-    const selfOpacity = typeof opacity === "undefined" ? 1.0 : opacity;
-    const offsetOpacity = typeof offset.opacity === "undefined" ? 1.0 : offset.opacity;
-    const extraOpacity = typeof opacity2 === "undefined" ? 1.0 : opacity2;
+    const selfOpacity = typeof opacity === 'undefined' ? 1.0 : opacity;
+    const offsetOpacity = typeof offset.opacity === 'undefined' ? 1.0 : offset.opacity;
+    const extraOpacity = typeof opacity2 === 'undefined' ? 1.0 : opacity2;
     ctx.globalAlpha = selfOpacity * offsetOpacity * extraOpacity;
 }

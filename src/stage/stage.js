@@ -1,30 +1,30 @@
-import * as chroma from "chroma-js";
-import * as immutable from "immutable";
+import * as chroma from 'chroma-js';
+import * as immutable from 'immutable';
 
-import * as action from "../reducer/action";
-import * as level from "../game/level";
-import * as animate from "../gfx/animate";
-import Audio from "../resource/audio";
-import * as gfxCore from "../gfx/core";
-import * as progression from "../game/progression";
-import { builtins } from "../semantics/es6/builtins";
+import * as action from '../reducer/action';
+import * as level from '../game/level';
+import * as animate from '../gfx/animate';
+import Audio from '../resource/audio';
+import * as gfxCore from '../gfx/core';
+import * as progression from '../game/progression';
+import { builtins } from '../semantics/defs/builtins';
 
-import Feedback from "../ui/feedback";
-import Goal from "../ui/goal";
-import Navbar from "../ui/navbar";
-import Toolbox from "../ui/toolbox";
-import ReductToolbar from "../ui/reduct-toolbar";
-import Sidebar from "../ui/sidebar";
-import StuckEffect from "../ui/stuck";
-import SyntaxJournal from "../ui/syntax-journal";
-import FunctionDef from "../ui/functiondef";
+import Feedback from '../ui/feedback';
+import Goal from '../ui/goal';
+import Navbar from '../ui/navbar';
+import Toolbox from '../ui/toolbox';
+import ReductToolbar from '../ui/reduct-toolbar';
+import Sidebar from '../ui/sidebar';
+import StuckEffect from '../ui/stuck';
+import SyntaxJournal from '../ui/syntax-journal';
+import FunctionDef from '../ui/functiondef';
 
-import Loader from "../loader";
-import Logging from "../logging/logging";
-import Network from "../logging/network";
+import Loader from '../loader';
+import Logging from '../logging/logging';
+import Network from '../logging/network';
 
-import BaseStage from "./basestage";
-import StageTouchRecord from "./stagetouchrecord";
+import BaseStage from './basestage';
+import StageTouchRecord from './stagetouchrecord';
 
 /**
  * Handle drawing responsibilites for Reduct.
@@ -33,7 +33,7 @@ export default class Stage extends BaseStage {
     constructor(canvas, width, height, store, views, semantics) {
         super(canvas, width, height, store, views, semantics);
 
-        document.querySelector("#chapter").style.display = "block";
+        document.querySelector('#chapter').style.display = 'block';
 
         this.sidebarWidth = 0;
 
@@ -41,7 +41,7 @@ export default class Stage extends BaseStage {
         this.alreadyWon = false;
 
         this.timer = null;
-        this.color = "#FFF";
+        this.color = '#FFF';
 
         this.feedback = new Feedback(this);
         this.navbar = new Navbar(this);
@@ -66,7 +66,7 @@ export default class Stage extends BaseStage {
         // List of possible output values for autotesting
         this.output = [];
         // Keep track of the reduction mode.
-        this.mode = "over";
+        this.mode = 'over';
     }
 
     get touchRecordClass() {
@@ -90,17 +90,16 @@ export default class Stage extends BaseStage {
                 // if curRoot is NULL, set both TopNode and TargetNode
                 curRoot = curExprId;
                 res = curExprId;
-            }
-            else if (targetable(curProjId, curExprId)) {
+            } else if (targetable(curProjId, curExprId)) {
                 // else, just set the targetNode
                 res = curExprId;
             }
 
             const subpos = {
                 x: curPos.x - topLeft.x,
-                y: curPos.y - topLeft.y,
+                y: curPos.y - topLeft.y
             };
-            for (const [ childId, subexprId ] of projection.children(curExprId, state)) {
+            for (const [childId, subexprId] of projection.children(curExprId, state)) {
                 const subresult = this.testNodeAtPos(
                     state,
                     subpos,
@@ -111,16 +110,16 @@ export default class Stage extends BaseStage {
                         x: 0,
                         y: 0,
                         sx: curOffset.sx * projection.scale.x,
-                        sy: curOffset.sy * projection.scale.y,
+                        sy: curOffset.sy * projection.scale.y
                     },
-                    targetable,
+                    targetable
                 );
                 if (subresult) {
                     return subresult;
                 }
             }
             if (res) {
-                return [ curRoot, res ];
+                return [curRoot, res];
             }
         }
         return null;
@@ -130,7 +129,7 @@ export default class Stage extends BaseStage {
        [curProjId] is located under [curPos].
     */
     testExprAtPos(state, curPos, curProjId, curExprId, curRoot, curOffset) {
-        const curNode = state.getIn([ "nodes", curExprId ]);
+        const curNode = state.getIn(['nodes', curExprId]);
         const projection = this.getView(curProjId);
         let res = null;
 
@@ -140,8 +139,7 @@ export default class Stage extends BaseStage {
                 // if curRoot is NULL, set both TopNode and TargetNode
                 curRoot = curExprId;
                 res = curExprId;
-            }
-            else if (curNode && this.semantics.targetable(state, curNode)) {
+            } else if (curNode && this.semantics.targetable(state, curNode)) {
                 // else, just set the targetNode
                 res = curExprId;
             }
@@ -154,9 +152,9 @@ export default class Stage extends BaseStage {
 
             const subpos = {
                 x: curPos.x - topLeft.x,
-                y: curPos.y - topLeft.y,
+                y: curPos.y - topLeft.y
             };
-            for (const [ childId, subexprId ] of projection.children(curExprId, state)) {
+            for (const [childId, subexprId] of projection.children(curExprId, state)) {
                 const subresult = this.testExprAtPos(
                     state,
                     subpos,
@@ -167,15 +165,15 @@ export default class Stage extends BaseStage {
                         x: 0,
                         y: 0,
                         sx: curOffset.sx * projection.scale.x,
-                        sy: curOffset.sy * projection.scale.y,
-                    },
+                        sy: curOffset.sy * projection.scale.y
+                    }
                 );
                 if (subresult) {
                     return subresult;
                 }
             }
             if (res) {
-                return [ curRoot, res ];
+                return [curRoot, res];
             }
         }
         return null;
@@ -187,20 +185,20 @@ export default class Stage extends BaseStage {
     getNodeAtPos(pos, selectedId = null) {
         if (this.alreadyWon) {
             // If already won or stuck, only allow interaction with navbar
-            [ result, root ] = this.navbar.getNodeAtPos(state, pos);
+            [result, root] = this.navbar.getNodeAtPos(state, pos);
             if (result) {
-                return [ root, result, true ];
+                return [root, result, true];
             }
-            return [ null, null, false ];
+            return [null, null, false];
         }
 
         if (this.syntaxJournal.isOpen) {
-            const [ result, root ] = this.syntaxJournal.getNodeAtPos(state, pos);
+            const [result, root] = this.syntaxJournal.getNodeAtPos(state, pos);
             if (result) {
-                return [ root, result, true ];
+                return [root, result, true];
             }
 
-            return [ null, null, false ];
+            return [null, null, false];
         }
 
         const state = this.getState();
@@ -208,31 +206,31 @@ export default class Stage extends BaseStage {
         let result = null;
         let root = null;
 
-        for (const nodeId of state.get("board").toArray().reverse()) {
+        for (const nodeId of state.get('board').toArray().reverse()) {
             if (nodeId === selectedId) continue;
 
             const res = this.testExprAtPos(state, pos, nodeId, nodeId, null, this.makeBaseOffset());
             if (res) {
-                [ root, result ] = res;
+                [root, result] = res;
                 break;
             }
         }
 
         if (!result && !root) {
-            [ result, root ] = this.toolbox.getNodeAtPos(state, pos);
+            [result, root] = this.toolbox.getNodeAtPos(state, pos);
             if (result) {
-                return [ root, result, true ];
+                return [root, result, true];
             }
-            [ result, root ] = this.syntaxJournal.getNodeAtPos(state, pos);
+            [result, root] = this.syntaxJournal.getNodeAtPos(state, pos);
             if (result) {
-                return [ root, result, true ];
+                return [root, result, true];
             }
-            [ result, root ] = this.navbar.getNodeAtPos(state, pos);
+            [result, root] = this.navbar.getNodeAtPos(state, pos);
             if (result) {
-                return [ root, result, true ];
+                return [root, result, true];
             }
         }
-        return [ root, result, false ];
+        return [root, result, false];
     }
 
     /* Similar to testNodeAtPos or testExprAtPos but additionally,
@@ -241,21 +239,21 @@ export default class Stage extends BaseStage {
     getReferenceNameAtPos(pos) {
         const state = this.getState();
         const check = (curPos, curProjId, curExprId, curRoot, curOffset) => {
-            const curNode = state.getIn([ "nodes", curExprId ]);
+            const curNode = state.getIn(['nodes', curExprId]);
             const projection = this.views[curProjId];
             let res = null;
 
             const topLeft = gfxCore.util.topLeftPos(projection, curOffset);
             if (projection.containsPoint(curPos, curOffset)) {
-                if (curNode && curNode.get("type") == "reference") {
+                if (curNode && curNode.get('type') == 'reference') {
                     res = curExprId;
                 }
 
                 const subpos = {
                     x: curPos.x - topLeft.x,
-                    y: curPos.y - topLeft.y,
+                    y: curPos.y - topLeft.y
                 };
-                for (const [ childId, subexprId ] of projection.children(curExprId, state)) {
+                for (const [childId, subexprId] of projection.children(curExprId, state)) {
                     const subresult = check(
                         subpos,
                         childId,
@@ -265,8 +263,8 @@ export default class Stage extends BaseStage {
                             x: 0,
                             y: 0,
                             sx: curOffset.sx * projection.scale.x,
-                            sy: curOffset.sy * projection.scale.y,
-                        },
+                            sy: curOffset.sy * projection.scale.y
+                        }
                     );
                     if (subresult) {
                         return subresult;
@@ -281,7 +279,7 @@ export default class Stage extends BaseStage {
 
         let result = null;
 
-        for (const nodeId of state.get("board").toArray().reverse()) {
+        for (const nodeId of state.get('board').toArray().reverse()) {
             const res = check(pos, nodeId, nodeId, null, this.makeBaseOffset());
             if (res) {
                 result = res;
@@ -300,8 +298,8 @@ export default class Stage extends BaseStage {
     saveState(changeData = null) {
         const state = level.serialize(this.getState(), this.semantics);
         const changed = this.stateGraph.push(state, changeData);
-        Logging.log("state-save", state);
-        Logging.log("state-path-save", this.stateGraph.serialize());
+        Logging.log('state-save', state);
+        Logging.log('state-path-save', this.stateGraph.serialize());
 
         if (changed && window.updateStateGraph) {
             // See index.js
@@ -310,7 +308,7 @@ export default class Stage extends BaseStage {
     }
 
     saveNode(id, nodes = null) {
-        nodes = nodes === null ? this.getState().get("nodes") : nodes;
+        nodes = nodes === null ? this.getState().get('nodes') : nodes;
         return this.semantics.parser.unparse(this.semantics.hydrate(nodes, nodes.get(id)));
     }
 
@@ -319,8 +317,8 @@ export default class Stage extends BaseStage {
      */
     pushState(label, edge = null) {
         this.stateGraph.push(label, edge);
-        Logging.log("state-save", label);
-        Logging.log("state-path-save", this.stateGraph.serialize());
+        Logging.log('state-save', label);
+        Logging.log('state-path-save', this.stateGraph.serialize());
         if (window.updateStateGraph) {
             window.updateStateGraph(this.stateGraph.toVisJSNetworkData());
         }
@@ -336,7 +334,7 @@ export default class Stage extends BaseStage {
             window.clearTimeout(this.timer);
         }
         this.timer = window.setTimeout(() => {
-            for (const id of this.getState().get("board")) {
+            for (const id of this.getState().get('board')) {
                 this.bumpAwayFromEdges(id);
             }
         }, 500);
@@ -351,8 +349,7 @@ export default class Stage extends BaseStage {
         const showSidebar = this.sidebar.startLevel(state, hideGlobals);
         if (showSidebar) {
             this.sidebarWidth = 200;
-        }
-        else {
+        } else {
             this.sidebarWidth = 0;
         }
 
@@ -365,7 +362,7 @@ export default class Stage extends BaseStage {
     }
 
     getState() {
-        return this.store.getState().getIn([ "program", "$present" ]);
+        return this.store.getState().getIn(['program', '$present']);
     }
 
     getMousePos(e) {
@@ -381,7 +378,7 @@ export default class Stage extends BaseStage {
 
         this.ctx.save();
         this.ctx.translate(this.sidebarWidth, 0);
-        this.ctx.fillStyle = "#8ab7db";
+        this.ctx.fillStyle = '#8ab7db';
         this.ctx.fillRect(0, 0, this.width, this.height);
         this.ctx.fillStyle = this.color;
         gfxCore.primitive.roundRect(
@@ -390,7 +387,7 @@ export default class Stage extends BaseStage {
             this.width - 50,
             this.height - this.toolbox.size.h - 50 - 100,
             25,
-            true, false,
+            true, false
         );
 
         this.toolbox.drawBase(state);
@@ -404,7 +401,7 @@ export default class Stage extends BaseStage {
             }
         }
 
-        for (const nodeId of state.get("board")) {
+        for (const nodeId of state.get('board')) {
             this.drawProjection(state, nodeId);
         }
 
@@ -440,37 +437,37 @@ export default class Stage extends BaseStage {
      */
     cloneToolboxItem(selectedNode) {
         const state = this.getState();
-        const selected = state.getIn([ "nodes", selectedNode ]);
+        const selected = state.getIn(['nodes', selectedNode]);
         // TODO: fix this check/use Record
-        if (selected.has("__meta") && selected.get("__meta").toolbox.unlimited) {
+        if (selected.has('__meta') && selected.get('__meta').toolbox.unlimited) {
             // If node has __meta indicating infinite uses,
             // clone instead.
-            const [ clonedNode, addedNodes ] = this.semantics.clone(
+            const [clonedNode, addedNodes] = this.semantics.clone(
                 selectedNode,
-                state.get("nodes"),
+                state.get('nodes')
             );
             // make clone include result in addedNodes
-            const allAddedNodes = addedNodes.concat([ clonedNode ]);
+            const allAddedNodes = addedNodes.concat([clonedNode]);
 
-            const tempNodes = state.get("nodes").withMutations((nodes) => {
+            const tempNodes = state.get('nodes').withMutations((nodes) => {
                 for (const node of allAddedNodes) {
-                    nodes.set(node.get("id"), node);
+                    nodes.set(node.get('id'), node);
                 }
             });
             for (const node of allAddedNodes) {
-                this.views[node.get("id")] = this.semantics.project(this, tempNodes, node);
+                this.views[node.get('id')] = this.semantics.project(this, tempNodes, node);
             }
-            this.views[clonedNode.get("id")].pos.x = this.views[selectedNode].pos.x;
-            this.views[clonedNode.get("id")].pos.y = this.views[selectedNode].pos.y;
+            this.views[clonedNode.get('id')].pos.x = this.views[selectedNode].pos.x;
+            this.views[clonedNode.get('id')].pos.y = this.views[selectedNode].pos.y;
 
-            Audio.play("place_from_toolbox");
+            Audio.play('place_from_toolbox');
 
             this.store.dispatch(action.useToolbox(
                 selectedNode,
-                clonedNode.get("id"),
-                allAddedNodes,
+                clonedNode.get('id'),
+                allAddedNodes
             ));
-            return clonedNode.get("id");
+            return clonedNode.get('id');
         }
         return null;
     }
@@ -478,12 +475,12 @@ export default class Stage extends BaseStage {
     /** Check whether a node is detachable from its parent. */
     isDetachable(targetNode) {
         const state = this.getState();
-        const target = state.getIn([ "nodes", targetNode ]);
+        const target = state.getIn(['nodes', targetNode]);
         if (!target) {
             return false;
         }
-        if (!target.get("locked") && target.get("parent") && target.get("type") !== "missing") {
-            return this.semantics.detachable(state, target.get("parent"), targetNode);
+        if (!target.get('locked') && target.get('parent') && target.get('type') !== 'missing') {
+            return this.semantics.detachable(state, target.get('parent'), targetNode);
         }
         return false;
     }
@@ -516,14 +513,14 @@ export default class Stage extends BaseStage {
             pos.x,
             pos.y,
             sz.w,
-            sz.h,
+            sz.h
         );
         animate.tween(currentView.pos, {
             x: safeX + (currentView.anchor.x * sz.w),
-            y: safeY + (currentView.anchor.y * sz.h),
+            y: safeY + (currentView.anchor.y * sz.h)
         }, {
             duration: 250,
-            easing: animate.Easing.Cubic.Out,
+            easing: animate.Easing.Cubic.Out
         });
     }
 
@@ -532,22 +529,21 @@ export default class Stage extends BaseStage {
      */
     highlightNotches(id) {
         const state = this.getState();
-        const nodes = state.get("nodes");
+        const nodes = state.get('nodes');
         const selected = nodes.get(id);
         if (selected && this.semantics.hasNotches(selected)) {
-            for (const nodeId of state.get("board")) {
+            for (const nodeId of state.get('board')) {
                 const node = nodes.get(nodeId);
                 const compatible = this.semantics.notchesCompatible(selected, node);
                 if (compatible && compatible.length > 0) {
-                    for (const [ selNotchIdx, nodeNotchIdx ] of compatible) {
+                    for (const [selNotchIdx, nodeNotchIdx] of compatible) {
                         const distance = gfxCore.distance(
                             this.views[nodeId].notchPos(nodeId, nodeId, nodeNotchIdx),
-                            this.views[id].notchPos(id, id, selNotchIdx),
+                            this.views[id].notchPos(id, id, selNotchIdx)
                         );
                         if (distance < 50) {
                             this.views[nodeId].highlighted = true;
-                        }
-                        else {
+                        } else {
                             this.views[nodeId].highlighted = false;
                         }
                     }
@@ -560,22 +556,22 @@ export default class Stage extends BaseStage {
         if (target === prevTarget) return;
 
         const state = this.getState();
-        const nodes = state.get("nodes");
+        const nodes = state.get('nodes');
 
         if (prevTarget !== null) {
             const prevTargetNode = nodes.get(prevTarget);
-            if (prevTargetNode.has("parent") && nodes.get(prevTargetNode.get("parent")).has("body")) {
+            if (prevTargetNode.has('parent') && nodes.get(prevTargetNode.get('parent')).has('body')) {
                 // Clear previous preview
                 this.semantics.map(
                     nodes,
-                    nodes.get(prevTargetNode.get("parent")).get("body"),
+                    nodes.get(prevTargetNode.get('parent')).get('body'),
                     (nodes, id) => {
                         if (this.views[id]) {
                             delete this.views[id].preview;
                         }
-                        return [ nodes.get(id), nodes ];
+                        return [nodes.get(id), nodes];
                     },
-                    () => true,
+                    () => true
                 );
             }
         }
@@ -584,17 +580,17 @@ export default class Stage extends BaseStage {
 
         if (this.semantics.search(
             nodes, arg,
-            (_, id) => nodes.get(id).get("type") === "missing",
+            (_, id) => nodes.get(id).get('type') === 'missing'
         ).length > 0) {
             return;
         }
 
         const targetNode = nodes.get(target);
-        if (targetNode.get("type") !== "lambdaArg") return;
+        if (targetNode.get('type') !== 'lambdaArg') return;
 
-        const lambdaBody = nodes.get(targetNode.get("parent")).get("body");
+        const lambdaBody = nodes.get(targetNode.get('parent')).get('body');
 
-        const targetName = targetNode.get("name");
+        const targetName = targetNode.get('name');
         this.semantics.searchNoncapturing(nodes, targetName, lambdaBody).forEach((id) => {
             if (this.views[id]) {
                 this.views[id].preview = arg;
@@ -607,40 +603,40 @@ export default class Stage extends BaseStage {
      */
     dropDefines(selectedNode) {
         const state = this.getState();
-        const nodes = state.get("nodes");
+        const nodes = state.get('nodes');
 
-        if (nodes.get(selectedNode).get("type") !== "define") {
+        if (nodes.get(selectedNode).get('type') !== 'define') {
             return false;
         }
 
         const missingNodes = this.semantics.search(
             nodes,
             selectedNode,
-            (nodes, id) => nodes.get(id).get("type") === "missing",
+            (nodes, id) => nodes.get(id).get('type') === 'missing'
         ).filter((id) => {
             const node = nodes.get(id);
-            if (!node.get("parent")) return true;
-            const parent = nodes.get(node.get("parent"));
-            const substepFilter = this.semantics.interpreter.substepFilter(parent.get("type"));
-            return substepFilter(this.semantics, state, parent, node.get("parentField"));
+            if (!node.get('parent')) return true;
+            const parent = nodes.get(node.get('parent'));
+            const substepFilter = this.semantics.interpreter.substepFilter(parent.get('type'));
+            return substepFilter(this.semantics, state, parent, node.get('parentField'));
         });
 
         if (missingNodes.length > 0) {
-            Logging.log("define-failed", {
+            Logging.log('define-failed', {
                 item: this.saveNode(selectedNode),
-                blocking: missingNodes.map((id) => this.saveNode(id)),
+                blocking: missingNodes.map((id) => this.saveNode(id))
             });
             missingNodes.forEach((id) => {
                 animate.fx.error(this, this.getView(id));
             });
-            this.feedback.update("#000", [ "There's a hole that needs to be filled in!" ]);
+            this.feedback.update('#000', ['There\'s a hole that needs to be filled in!']);
             return false;
         }
 
-        const name = nodes.getIn([ selectedNode, "name" ]);
+        const name = nodes.getIn([selectedNode, 'name']);
         this.store.dispatch(action.define(name, selectedNode));
         this.sidebar.addGlobal(this.getState(), name);
-        Audio.play("playcard");
+        Audio.play('playcard');
     }
 
     /**
@@ -649,8 +645,8 @@ export default class Stage extends BaseStage {
     snapNotches(selectedNode) {
         const state = this.getState();
 
-        const board = state.get("board");
-        const nodes = state.get("nodes");
+        const board = state.get('board');
+        const nodes = state.get('nodes');
 
         for (const nodeId of board) {
             if (this.views[nodeId].highlighted) {
@@ -663,28 +659,27 @@ export default class Stage extends BaseStage {
             let leastDistance = 9999;
             let closestNotch = null;
 
-            for (const nodeId of state.get("board")) {
+            for (const nodeId of state.get('board')) {
                 if (nodeId === selectedNode) continue;
 
                 const node = nodes.get(nodeId);
                 const compatible = this.semantics.notchesCompatible(selected, node);
                 // TODO: actually check distance to notch
                 if (compatible && compatible.length > 0) {
-                    for (const [ selNotchIdx, nodeNotchIdx ] of compatible) {
+                    for (const [selNotchIdx, nodeNotchIdx] of compatible) {
                         const distance = gfxCore.distance(
                             this.views[nodeId].notchPos(nodeId, nodeId, nodeNotchIdx),
-                            this.views[selectedNode].notchPos(selectedNode, selectedNode, selNotchIdx),
+                            this.views[selectedNode].notchPos(selectedNode, selectedNode, selNotchIdx)
                         );
                         if (distance < 50) {
                             this.views[nodeId].highlighted = true;
-                        }
-                        else {
+                        } else {
                             this.views[nodeId].highlighted = false;
                         }
 
                         if (distance < leastDistance) {
                             leastDistance = distance;
-                            closestNotch = [ nodeId, compatible ];
+                            closestNotch = [nodeId, compatible];
                         }
                     }
                 }
@@ -692,10 +687,10 @@ export default class Stage extends BaseStage {
 
             if (leastDistance <= 150 && closestNotch !== null) {
                 // TODO: actually check the matched notches
-                const [ parent, notchPair ] = closestNotch;
+                const [parent, notchPair] = closestNotch;
                 // Don't reattach to the same notch
                 this.views[parent].highlighted = false;
-                if (selected.get("parent") === parent) {
+                if (selected.get('parent') === parent) {
                     return false;
                 }
 
@@ -704,19 +699,19 @@ export default class Stage extends BaseStage {
                     this.getState(),
                     parent,
                     selectedNode,
-                    notchPair[0],
+                    notchPair[0]
                 )) {
                     animate.fx.blink(this, this.views[parent], {
                         times: 2,
-                        color: "magenta",
+                        color: 'magenta',
                         speed: 100,
-                        lineWidth: 5,
+                        lineWidth: 5
                     });
                     animate.fx.blink(this, this.views[selectedNode], {
                         times: 2,
-                        color: "magenta",
+                        color: 'magenta',
                         speed: 100,
-                        lineWidth: 5,
+                        lineWidth: 5
                     });
                     this.store.dispatch(action.attachNotch(parent, 0, selectedNode, 0));
                     return true;
@@ -730,10 +725,10 @@ export default class Stage extends BaseStage {
      * Helper that handles animation and updating the store for a small-step.
      */
     step(state, selectedNode, overrideMode = null, shouldStop = null) {
-        const nodes = state.get("nodes");
+        const nodes = state.get('nodes');
         const node = nodes.get(selectedNode);
 
-        if (this.semantics.kind(state, node) !== "expression") {
+        if (this.semantics.kind(state, node) !== 'expression') {
             return;
         }
 
@@ -749,10 +744,10 @@ export default class Stage extends BaseStage {
             time += dt;
             for (const id of reducing) {
                 this.views[id].stroke = {
-                    color: "lightblue",
+                    color: 'lightblue',
                     lineWidth: 5,
                     lineDash: [5, 10],
-                    lineDashOffset: time,
+                    lineDashOffset: time
                 };
             }
         });
@@ -769,7 +764,7 @@ export default class Stage extends BaseStage {
         // Assumes clicks always dispatched to top-level node
         let origPos = {
             x: gfxCore.centerPos(this.getView(selectedNode)).x,
-            y: gfxCore.centerPos(this.getView(selectedNode)).y,
+            y: gfxCore.centerPos(this.getView(selectedNode)).y
         };
 
         const mode = overrideMode || this.mode;
@@ -778,17 +773,17 @@ export default class Stage extends BaseStage {
                 if (this.alreadyWon) return Promise.resolve(this.getState());
 
                 if (newNodeIds.length !== 1) {
-                    throw new Error("Stepping to produce multiple expressions is currently unsupported.");
+                    throw new Error('Stepping to produce multiple expressions is currently unsupported.');
                 }
 
                 const state = this.getState();
-                const tempNodes = state.get("nodes").withMutations((nodes) => {
+                const tempNodes = state.get('nodes').withMutations((nodes) => {
                     for (const node of addedNodes) {
-                        nodes.set(node.get("id"), node);
+                        nodes.set(node.get('id'), node);
                     }
                 });
 
-                const origNode = state.getIn([ "nodes", selectedNode ]);
+                const origNode = state.getIn(['nodes', selectedNode]);
                 const origNodeDefn = this.semantics.definitionOf(origNode);
                 if (origNodeDefn && origNodeDefn.stepPosition) {
                     origPos = origNodeDefn.stepPosition(this.semantics, this, state, origNode);
@@ -799,7 +794,7 @@ export default class Stage extends BaseStage {
                 // view hierarchy. (We also can't run prepare() since
                 // that might relayout things.)
                 for (const node of addedNodes) {
-                    this.views[node.get("id")] = this.semantics.project(this, tempNodes, node);
+                    this.views[node.get('id')] = this.semantics.project(this, tempNodes, node);
                 }
 
                 // Preserve position
@@ -810,9 +805,9 @@ export default class Stage extends BaseStage {
 
                 let act = action.smallStep(topNodeId, newNodeIds, addedNodes);
 
-                Logging.log("reduction", {
+                Logging.log('reduction', {
                     before: this.saveNode(topNodeId),
-                    after: newNodeIds.map((id) => this.saveNode(id, tempNodes)),
+                    after: newNodeIds.map((id) => this.saveNode(id, tempNodes))
                 });
                 if (!recordUndo) {
                     act = action.skipUndo(act);
@@ -820,29 +815,29 @@ export default class Stage extends BaseStage {
                 this.store.dispatch(act);
 
 
-                for (const topViewId of this.getState().get("board")) {
+                for (const topViewId of this.getState().get('board')) {
                     // Make sure result stays on screen
                     this.bumpAwayFromEdges(topViewId);
                 }
 
-                const updatedNodes = this.getState().get("nodes");
+                const updatedNodes = this.getState().get('nodes');
 
                 let prevNodeId = topNodeId;
-                while (updatedNodes.getIn([ prevNodeId, "parent" ])) {
-                    prevNodeId = updatedNodes.getIn([ prevNodeId, "parent" ]);
+                while (updatedNodes.getIn([prevNodeId, 'parent'])) {
+                    prevNodeId = updatedNodes.getIn([prevNodeId, 'parent']);
                 }
 
                 // TODO: actually handle multiple new nodes
                 for (const id of newNodeIds) {
                     let n = updatedNodes.get(id);
-                    while (n.has("parent")) {
-                        n = updatedNodes.get(n.get("parent"));
+                    while (n.has('parent')) {
+                        n = updatedNodes.get(n.get('parent'));
                     }
-                    reducing.push(n.get("id"));
-                    this._currentlyReducing[n.get("id")] = true;
+                    reducing.push(n.get('id'));
+                    this._currentlyReducing[n.get('id')] = true;
 
-                    this.reductToolbar.update(n.get("id"), prevNodeId);
-                    if (shouldStop && shouldStop(n.get("id"))) {
+                    this.reductToolbar.update(n.get('id'), prevNodeId);
+                    if (shouldStop && shouldStop(n.get('id'))) {
                         return Promise.reject();
                     }
                 }
@@ -852,20 +847,20 @@ export default class Stage extends BaseStage {
             error: (errorNodeId, reason) => {
                 animate.fx.error(this, this.views[errorNodeId]);
                 if (reason) {
-                    this.feedback.update("#000", [ reason ]);
+                    this.feedback.update('#000', [reason]);
                 }
-                Logging.log("reduction-error", {
+                Logging.log('reduction-error', {
                     clicked: this.saveNode(selectedNode),
                     cause: this.saveNode(errorNodeId),
-                    reason,
+                    reason
                 });
-            },
+            }
         }).catch((_errorNodeId) => {
             // Ignore reduction errors, the reducer already handled it
         }).finally(finishReducing);
 
-        if (this.mode === "big") {
-            this.mode = "over";
+        if (this.mode === 'big') {
+            this.mode = 'over';
         }
     }
 
@@ -874,21 +869,21 @@ export default class Stage extends BaseStage {
      */
     betaReduce(state, target, arg) {
         // debugger;
-        const result = this.semantics.interpreter.betaReduce(this, state, target, [ arg ]);
+        const result = this.semantics.interpreter.betaReduce(this, state, target, [arg]);
         if (result) {
-            const [ topNode, resultNodeIds, newNodes ] = result;
+            const [topNode, resultNodeIds, newNodes] = result;
             const origExp = this.saveNode(topNode);
             const origArg = this.saveNode(arg);
-            const tempNodes = state.get("nodes").withMutations((nodes) => {
+            const tempNodes = state.get('nodes').withMutations((nodes) => {
                 for (const node of newNodes) {
-                    nodes.set(node.get("id"), node);
+                    nodes.set(node.get('id'), node);
                 }
             });
 
-            const topNodeRecord = state.getIn([ "nodes", topNode ]);
-            if (topNodeRecord.get("body") && this.views[topNodeRecord.get("body")]) {
-                const body = topNodeRecord.get("body");
-                Audio.play("371270__mafon2__water-drip-2");
+            const topNodeRecord = state.getIn(['nodes', topNode]);
+            if (topNodeRecord.get('body') && this.views[topNodeRecord.get('body')]) {
+                const body = topNodeRecord.get('body');
+                Audio.play('371270__mafon2__water-drip-2');
 
                 this.views[topNode].pos = gfxCore.centerPos(this.views[topNode]);
                 this.views[topNode].anchor = { x: 0.5, y: 0.5 };
@@ -897,24 +892,24 @@ export default class Stage extends BaseStage {
                 const bodySize = gfxCore.absoluteSize(this.views[body]);
                 // Project after measuring sizes
                 for (const node of newNodes) {
-                    this.views[node.get("id")] = this.semantics.project(this, tempNodes, node);
+                    this.views[node.get('id')] = this.semantics.project(this, tempNodes, node);
                 }
 
                 this.store.dispatch(action.betaReduce(
                     topNode, arg,
-                    resultNodeIds, newNodes,
+                    resultNodeIds, newNodes
                 ));
 
                 Promise.all([
                     animate.fx.keepAlive(this, topNode, animate.tween(this.views[topNode], {
                         opacity: 0,
                         pos: { y: this.views[topNode].pos.y + 50 },
-                        scale: { x: 0, y: 0 },
+                        scale: { x: 0, y: 0 }
                     }, {
                         duration: 1000,
-                        easing: animate.Easing.Cubic.Out,
+                        easing: animate.Easing.Cubic.Out
                     }).delay(350), true),
-                    animate.fx.emerge(this, this.getState(), bodyPos, bodySize, resultNodeIds),
+                    animate.fx.emerge(this, this.getState(), bodyPos, bodySize, resultNodeIds)
                 ])
                     .then(() => {
                         this.views[topNode].opacity = 1;
@@ -928,39 +923,37 @@ export default class Stage extends BaseStage {
 
                 animate.tween(this.views[arg], { opacity: 0 }, {
                     duration: 250,
-                    easing: animate.Easing.Cubic.Out,
+                    easing: animate.Easing.Cubic.Out
                 });
-            }
-            else {
+            } else {
                 for (const newNodeId of resultNodeIds) {
                     this.views[newNodeId].pos.x = this.views[topNode].pos.x;
                     this.views[newNodeId].pos.y = this.views[topNode].pos.y;
                 }
-                Audio.play("371270__mafon2__water-drip-2");
+                Audio.play('371270__mafon2__water-drip-2');
 
                 // Project after measuring sizes
                 for (const node of newNodes) {
-                    this.views[node.get("id")] = this.semantics.project(this, tempNodes, node);
+                    this.views[node.get('id')] = this.semantics.project(this, tempNodes, node);
                 }
 
                 this.store.dispatch(action.betaReduce(topNode, arg, resultNodeIds, newNodes));
             }
 
-            Logging.log("reduction-lambda", {
+            Logging.log('reduction-lambda', {
                 before: origExp,
                 applied: origArg,
-                after: resultNodeIds.map((id) => this.saveNode(id, tempNodes)),
+                after: resultNodeIds.map((id) => this.saveNode(id, tempNodes))
             });
-        }
-        else {
+        } else {
             let applyTarget = target;
-            const targetNode = state.get("nodes").get(target);
-            if (targetNode.has("parent")) {
-                applyTarget = targetNode.get("parent");
+            const targetNode = state.get('nodes').get(target);
+            if (targetNode.has('parent')) {
+                applyTarget = targetNode.get('parent');
             }
-            Logging.log("reduction-lambda-failed", {
+            Logging.log('reduction-lambda-failed', {
                 target: this.saveNode(applyTarget),
-                arg: this.saveNode(arg),
+                arg: this.saveNode(arg)
             });
         }
     }
@@ -970,42 +963,42 @@ export default class Stage extends BaseStage {
         const state = this.getState();
         const tweens = [];
         const views = [];
-        for (const nodeId of state.get("goal").concat(state.get("board"))) {
-            views.push([ nodeId, this.views[nodeId] ]);
+        for (const nodeId of state.get('goal').concat(state.get('board'))) {
+            views.push([nodeId, this.views[nodeId]]);
         }
         for (const nodeId of this.goal.animatedNodes()) {
-            views.push([ nodeId, this.views[nodeId] ]);
+            views.push([nodeId, this.views[nodeId]]);
         }
 
-        for (const [ nodeId, view ] of views) {
-            if (state.getIn([ "nodes", nodeId ])
-                && this.semantics.ignoreForVictory(state, state.getIn([ "nodes", nodeId ]))) {
+        for (const [nodeId, view] of views) {
+            if (state.getIn(['nodes', nodeId])
+                && this.semantics.ignoreForVictory(state, state.getIn(['nodes', nodeId]))) {
                 continue;
             }
 
             tweens.push(animate.fx.blink(this, view, {
                 times: progression.currentLevel() === 0 ? 2 : 1,
-                color: "#0FF",
+                color: '#0FF'
             }));
         }
 
-        Audio.play("matching-the-goal2");
+        Audio.play('matching-the-goal2');
 
         return Promise.all(tweens)
             .then(() => {
                 const subtweens = [];
-                for (const [ _, view ] of views) {
+                for (const [_, view] of views) {
                     subtweens.push(animate.fx.splosion(this, gfxCore.centerPos(view)));
                 }
                 this.goal.victory();
                 this.store.dispatch(action.victory());
-                Audio.play("firework1");
+                Audio.play('firework1');
                 return Promise.all(subtweens);
             })
             .then(() => {
                 const title = gfxCore.sprite({
                     image: Loader.images.you_win,
-                    size: { w: 509, h: 110 },
+                    size: { w: 509, h: 110 }
                 });
                 const titleId = this.allocate(title);
 
@@ -1013,7 +1006,7 @@ export default class Stage extends BaseStage {
                 const chapter = progression.currentChapter();
                 for (let i = 0; i < chapter.levels.length; i++) {
                     const star = gfxCore.shapes.star({
-                        color: (progression.currentLevel() > chapter.startIdx + i) ? "gold" : "gray",
+                        color: (progression.currentLevel() > chapter.startIdx + i) ? 'gold' : 'gray'
                     });
                     star.opacity = 0;
 
@@ -1025,18 +1018,18 @@ export default class Stage extends BaseStage {
                     animate.tween(star, { opacity: 1 }, {
                         easing: animate.Easing.Cubic.In,
                         duration: 300,
-                        setAnimatingFlag: false,
+                        setAnimatingFlag: false
                     }).delay(delay);
                     starList.push(this.allocate(star));
                 }
 
-                const rows = [ titleId ];
+                const rows = [titleId];
                 const layout = gfxCore.layout.sticky(
                     gfxCore.layout.vbox(() => rows, {
-                        subexpScale: 1,
+                        subexpScale: 1
                     }, gfxCore.baseProjection),
-                    "center",
-                    {},
+                    'center',
+                    {}
                 );
                 const layoutId = this.allocate(layout);
 
@@ -1047,7 +1040,7 @@ export default class Stage extends BaseStage {
                     rows.push(this.allocate(gfxCore.layout.hbox(
                         () => starList.slice(j, j + starsPerRow),
                         {},
-                        gfxCore.baseProjection,
+                        gfxCore.baseProjection
                     )));
                     i += starsPerRow;
                 }
@@ -1062,61 +1055,61 @@ export default class Stage extends BaseStage {
                         const state = this.getState();
                         const offset = this.makeBaseOffset();
                         layout.draw(layoutId, null, state, this, offset);
-                    },
+                    }
                 });
-                Audio.play("325805__wagna__collect");
+                Audio.play('325805__wagna__collect');
 
                 const thisStar = this.getView(starList[progression.currentLevel() - chapter.startIdx]);
                 thisStar.offset.y = 600;
                 thisStar.opacity = 0;
                 return Promise.all([
                     animate.tween(thisStar, {
-                        color: "#F00",
+                        color: '#F00'
                     }, {
                         duration: 1500,
                         setAnimatingFlag: false,
-                        easing: animate.Easing.Color(animate.Easing.Cubic.In, thisStar.color, "#F00"),
+                        easing: animate.Easing.Color(animate.Easing.Cubic.In, thisStar.color, '#F00')
                     }),
                     animate.tween(thisStar, {
-                        offset: { y: 0 },
+                        offset: { y: 0 }
                     }, {
                         duration: 1500,
                         setAnimatingFlag: false,
-                        easing: animate.Easing.Anticipate.BackOut(1.2),
+                        easing: animate.Easing.Anticipate.BackOut(1.2)
                     }),
                     animate.tween(thisStar, {
-                        opacity: 1,
+                        opacity: 1
                     }, {
                         duration: 500,
                         setAnimatingFlag: false,
-                        easing: animate.Easing.Cubic.In,
-                    }),
+                        easing: animate.Easing.Cubic.In
+                    })
                 ]).then(() => {
-                    thisStar.color = "gold";
-                    const scale = chroma.scale("Spectral").mode("lab");
-                    Audio.play("firework2");
+                    thisStar.color = 'gold';
+                    const scale = chroma.scale('Spectral').mode('lab');
+                    Audio.play('firework2');
                     return animate.fx.splosion(this, gfxCore.centerPos(thisStar), {
                         explosionRadius: 600,
                         numOfParticles: 60,
                         duration: 800,
                         color: (idx) => scale(idx / 60.0),
-                        angle: (idx) => 2 * Math.PI * (idx / 60.0),
+                        angle: (idx) => 2 * Math.PI * (idx / 60.0)
                     });
                 }).then(() => Promise.all([
                     animate.tween(title, {
-                        opacity: 0,
+                        opacity: 0
                     }, {
                         duration: 200,
                         setAnimatingFlag: false,
-                        easing: animate.Easing.Cubic.In,
+                        easing: animate.Easing.Cubic.In
                     }),
                     animate.tween(layout, {
-                        opacity: 0,
+                        opacity: 0
                     }, {
                         duration: 200,
                         setAnimatingFlag: false,
-                        easing: animate.Easing.Cubic.In,
-                    }),
+                        easing: animate.Easing.Cubic.In
+                    })
                 ]));
             });
     }
@@ -1136,8 +1129,7 @@ export default class Stage extends BaseStage {
                     this.removeEffect(id);
                     this._stuckFxId = null;
                 });
-            }
-            else {
+            } else {
                 this._stuckFxId = null;
             }
         }
@@ -1166,31 +1158,31 @@ export default class Stage extends BaseStage {
             const image = Loader.images[defn.header];
             const sprite = gfxCore.sprite({
                 image,
-                size: { w: image.naturalWidth, h: image.naturalHeight },
+                size: { w: image.naturalWidth, h: image.naturalHeight }
             });
             const id = this.allocateInternal(sprite);
 
             sprite.opacity = 0;
             sprite.pos = {
                 x: this.width / 2,
-                y: this.height / 2,
+                y: this.height / 2
             };
             sprite.anchor = { x: 0.5, y: 0.5 };
             animate.tween(sprite, { opacity: 1 }, {
                 duration: 800,
-                easing: animate.Easing.Cubic.Out,
+                easing: animate.Easing.Cubic.Out
             }).then(() => {
                 animate.tween(sprite.scale, { x: 0.1, y: 0.1 }, {
                     duration: 1000,
-                    easing: animate.Easing.Cubic.Out,
+                    easing: animate.Easing.Cubic.Out
                 });
 
                 return animate.tween(sprite.pos, {
                     x: journalButton.pos.x + (journalButton.size.w / 2),
-                    y: journalButton.pos.y + (journalButton.size.h / 2),
+                    y: journalButton.pos.y + (journalButton.size.h / 2)
                 }, {
                     duration: 2000,
-                    easing: animate.Easing.Cubic.InOut,
+                    easing: animate.Easing.Cubic.InOut
                 });
             }).then(() => {
                 journalButton.highlight();
@@ -1207,31 +1199,30 @@ export default class Stage extends BaseStage {
      * Show the definition of the given reference under its view.
      */
     showReferenceDefinition(state, referenceId, immediate = false) {
-        const referenceNameNode = state.getIn([ "nodes", referenceId ]);
-        const name = referenceNameNode.get("name");
+        const referenceNameNode = state.getIn(['nodes', referenceId]);
+        const name = referenceNameNode.get('name');
         if (builtins.has(name)) return;
-        const functionNodeId = state.get("globals").get(name);
-        const functionNode = state.get("nodes").get(functionNodeId);
+        const functionNodeId = state.get('globals').get(name);
+        const functionNode = state.get('nodes').get(functionNodeId);
         if (!functionNode) return;
 
-        const type = functionNode.get("type");
-        if (type === "define") {
-            const functionBodyId = state.get("nodes").get(functionNodeId).get("body");
+        const type = functionNode.get('type');
+        if (type === 'define') {
+            const functionBodyId = state.get('nodes').get(functionNodeId).get('body');
             this.functionDef = new FunctionDef(
                 this,
                 name,
                 functionBodyId,
                 referenceId,
-                immediate ? 0 : 500,
+                immediate ? 0 : 500
             );
-        }
-        else {
+        } else {
             this.functionDef = new FunctionDef(
                 this,
                 name,
                 functionNodeId,
                 referenceId,
-                immediate ? 0 : 500,
+                immediate ? 0 : 500
             );
         }
     }
@@ -1243,7 +1234,7 @@ export default class Stage extends BaseStage {
     hideReferenceDefinition(mousePos) {
         if (this.functionDef && mousePos) {
             const state = this.getState();
-            const nodes = state.get("nodes");
+            const nodes = state.get('nodes');
             const contains = this.functionDef.containsPoint(state, mousePos);
             if (contains) {
                 const body = this.semantics.hydrate(nodes, nodes.get(this.functionDef.id));
@@ -1252,7 +1243,7 @@ export default class Stage extends BaseStage {
 
                 const origRef = nodes.get(this.functionDef.referenceId);
                 const subexprs = this.semantics.subexpressions(origRef);
-                const hasArgs = subexprs.some((field) => nodes.getIn([ origRef.get(field), "type" ]) !== "missing");
+                const hasArgs = subexprs.some((field) => nodes.getIn([origRef.get(field), 'type']) !== 'missing');
 
                 let result = body;
 
@@ -1260,7 +1251,7 @@ export default class Stage extends BaseStage {
                     for (const field of subexprs) {
                         const hydrated = this.semantics.hydrate(
                             nodes,
-                            nodes.get(origRef.get(field)),
+                            nodes.get(origRef.get(field))
                         );
                         result = this.semantics.apply(result, hydrated);
                     }
@@ -1268,42 +1259,41 @@ export default class Stage extends BaseStage {
 
                 // Add parent field so that when projected, the
                 // unfolded reference isn't hoverable
-                if (origRef.get("parent")) {
-                    result.parent = origRef.get("parent");
-                    result.parentField = origRef.get("parentField");
+                if (origRef.get('parent')) {
+                    result.parent = origRef.get('parent');
+                    result.parentField = origRef.get('parentField');
                 }
 
                 const fullNodes = this.semantics.flatten(result).map((n) => {
                     n.locked = true;
                     return immutable.Map(n);
                 });
-                const tempNodes = state.get("nodes").withMutations((n) => {
+                const tempNodes = state.get('nodes').withMutations((n) => {
                     for (const node of fullNodes) {
-                        n.set(node.get("id"), node);
+                        n.set(node.get('id'), node);
                     }
                 });
                 for (const node of fullNodes) {
-                    this.views[node.get("id")] = this.semantics.project(this, tempNodes, node);
+                    this.views[node.get('id')] = this.semantics.project(this, tempNodes, node);
                 }
 
-                const newView = this.views[fullNodes[0].get("id")];
+                const newView = this.views[fullNodes[0].get('id')];
                 const oldView = this.views[this.functionDef.referenceId];
                 newView.anchor.x = oldView.anchor.x;
                 newView.anchor.y = oldView.anchor.y;
                 newView.pos.x = oldView.pos.x;
                 newView.pos.y = oldView.pos.y;
 
-                Audio.play("208111__planman__poof-of-smoke");
+                Audio.play('208111__planman__poof-of-smoke');
                 this.store.dispatch(action.unfold(
                     this.functionDef.referenceId,
-                    fullNodes[0].get("id"),
-                    fullNodes,
+                    fullNodes[0].get('id'),
+                    fullNodes
                 ));
-            }
-            else {
+            } else {
                 this.functionDef.cancel();
-                Logging.log("unfold-cancel", {
-                    item: this.saveNode(this.functionDef.referenceId),
+                Logging.log('unfold-cancel', {
+                    item: this.saveNode(this.functionDef.referenceId)
                 });
             }
             this.functionDef = null;
@@ -1326,7 +1316,7 @@ export default class Stage extends BaseStage {
             draw: () => {
                 this.getView(unfadedId)
                     .draw(unfadedId, unfadedId, this.getState(), this, this.makeBaseOffset());
-            },
+            }
         });
 
         this.getView(fadedId).opacity = 0;
@@ -1334,17 +1324,17 @@ export default class Stage extends BaseStage {
 
         return Promise.all([
             animate.tween(this.getView(unfadedId), {
-                opacity: 0,
+                opacity: 0
             }, {
                 duration: 2000,
-                easing: animate.Easing.Cubic.InOut,
+                easing: animate.Easing.Cubic.InOut
             }),
             animate.tween(this.getView(fadedId), {
-                opacity: 1,
+                opacity: 1
             }, {
                 duration: 2000,
-                easing: animate.Easing.Cubic.InOut,
-            }),
+                easing: animate.Easing.Cubic.InOut
+            })
         ]).then(() => {
             this.removeEffect(fxId);
         });
@@ -1352,7 +1342,7 @@ export default class Stage extends BaseStage {
 
     library(state, topNode) {
         return; // unimplemented right now.
-        console.log("In stage");
+        console.log('In stage');
         this.syntaxJournal.open();
     }
 
@@ -1370,7 +1360,7 @@ export default class Stage extends BaseStage {
         }
 
         if (this.syntaxJournal.isOpen) {
-            const [ topNode ] = this.syntaxJournal.getNodeAtPos(this.getState(), pos);
+            const [topNode] = this.syntaxJournal.getNodeAtPos(this.getState(), pos);
             if (topNode === null) {
                 this.syntaxJournal.close();
             }
@@ -1392,7 +1382,7 @@ export default class Stage extends BaseStage {
         }
 
         if (this.syntaxJournal.isOpen) {
-            const [ topNode ] = this.syntaxJournal.getNodeAtPos(this.getState(), pos);
+            const [topNode] = this.syntaxJournal.getNodeAtPos(this.getState(), pos);
             if (topNode === null) {
                 this.syntaxJournal.close();
             }

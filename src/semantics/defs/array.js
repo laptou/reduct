@@ -1,14 +1,14 @@
-import * as immutable from "immutable";
-import * as core from "../core";
-import * as gfx from "../../gfx/core";
-import * as animate from "../../gfx/animate";
+import * as immutable from 'immutable';
+import * as core from '../core';
+import * as gfx from '../../gfx/core';
+import * as animate from '../../gfx/animate';
 
 // Returns the names of the subexpressions of an array: elem0, elem1, etc.
 // Requires: arr is a hydrated array node or an immutable map for an array node
 function arraySubexprs(module, arr) {
-    const n = typeof arr.length === "number"
+    const n = typeof arr.length === 'number'
         ? arr.length
-        : arr.get("length");
+        : arr.get('length');
     const result = [];
     for (let i = 0; i < n; i++) {
         result.push(`elem${i}`);
@@ -22,34 +22,34 @@ function arrayDisplayParts(expr) {
     const a = arraySubexprs(null, immutable.Map(expr));
     const result = [];
     let first = true;
-    result.push("'['");
+    result.push('\'[\'');
     for (const e of a) {
-        if (!first) result.push("','");
+        if (!first) result.push('\',\'');
         first = false;
         result.push(e);
     }
-    result.push("']'");
+    result.push('\']\'');
     return result;
 }
 
 export default {
     array: {
         kind: (arr, semant, state) => {
-            const nodes = state.get("nodes");
+            const nodes = state.get('nodes');
             for (const field of semant.subexpressions(arr)) {
                 const subexp = nodes.get(arr.get(field));
-                if (semant.kind(state, subexp) == "expression"
-                    || subexp.get("type") == "missing") {
-                    return "expression";
+                if (semant.kind(state, subexp) == 'expression'
+                    || subexp.get('type') == 'missing') {
+                    return 'expression';
                 }
             }
-            return "value";
+            return 'value';
         },
-        type: "array",
-        fields: ["length"],
+        type: 'array',
+        fields: ['length'],
         subexpressions: arraySubexprs,
         projection: {
-            type: "default",
+            type: 'default',
             fields: arrayDisplayParts,
             subexpScale: 0.9,
             padding: {
@@ -57,10 +57,10 @@ export default {
                 bottom: 3.5,
                 left: 1,
                 right: 1,
-                inner: 4,
+                inner: 4
             },
-            color: "#bec",
+            color: '#bec'
         },
-        complete: true,
-    },
+        complete: true
+    }
 };

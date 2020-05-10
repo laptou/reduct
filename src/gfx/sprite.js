@@ -1,6 +1,6 @@
-import { baseProjection, debugDraw } from "./core";
-import * as primitive from "./primitive";
-import * as util from "./util";
+import { baseProjection, debugDraw } from './core';
+import * as primitive from './primitive';
+import * as util from './util';
 
 /**
  * @class
@@ -8,7 +8,7 @@ import * as util from "./util";
  */
 export function sprite(options = {}) {
     const projection = baseProjection(options);
-    projection.type = "sprite";
+    projection.type = 'sprite';
     projection.size.w = (options.size && options.size.w) ? options.size.w : 50;
     projection.size.h = (options.size && options.size.h) ? options.size.h : 50;
 
@@ -17,7 +17,7 @@ export function sprite(options = {}) {
         const { ctx } = stage;
         ctx.save();
 
-        const [ sx, sy ] = util.absoluteScale(this, offset);
+        const [sx, sy] = util.absoluteScale(this, offset);
 
         util.setOpacity(ctx, this.opacity, offset);
         const width = sx * this.size.w;
@@ -27,7 +27,7 @@ export function sprite(options = {}) {
             offset.x + ((this.pos.x * offset.sx) - (this.anchor.x * width)),
             offset.y + ((this.pos.y * offset.sy) - (this.anchor.y * height)),
             width,
-            height,
+            height
         );
 
         debugDraw(ctx, this, offset);
@@ -51,9 +51,9 @@ export function exprify(projection) {
         const { ctx } = stage;
         ctx.save();
 
-        const node = state.getIn([ "nodes", exprId ]);
-        const hasParent = node && Number.isInteger(node.get("parent"));
-        const locked = !node || node.get("locked");
+        const node = state.getIn(['nodes', exprId]);
+        const hasParent = node && Number.isInteger(node.get('parent'));
+        const locked = !node || node.get('locked');
 
         const { x, y } = util.topLeftPos(this, offset);
         const w = offset.sx * this.scale.x * this.size.w;
@@ -63,13 +63,12 @@ export function exprify(projection) {
             glowColor = this.stroke.color;
             primitive.setStroke(ctx, this);
             glowBreak = Math.min(0.7 + (0.2 * (this.stroke.lineWidth / 4)), 1.0);
-        }
-        else if (hasParent && !locked) {
-            const [ sx, sy ] = util.absoluteScale(this, offset);
-            ctx.fillStyle = "#000";
+        } else if (hasParent && !locked) {
+            const [sx, sy] = util.absoluteScale(this, offset);
+            ctx.fillStyle = '#000';
             primitive.setStroke(ctx, {
                 lineWidth: 2,
-                color: this.highlightColor || "yellow",
+                color: this.highlightColor || 'yellow'
             });
             primitive.roundRect(
                 ctx,
@@ -77,22 +76,21 @@ export function exprify(projection) {
                 x, y - 2,
                 w, h + 8,
                 sx * 22,
-                true, stage.isHovered(exprId), null,
+                true, stage.isHovered(exprId), null
             );
-            ctx.fillStyle = "#555";
+            ctx.fillStyle = '#555';
             primitive.roundRect(
                 ctx,
                 x, y - 4,
                 w, h + 8,
                 sx * 22,
-                true, stage.isHovered(exprId), null,
+                true, stage.isHovered(exprId), null
             );
-        }
-        else if ((!hasParent || !locked) && stage.isHovered(exprId)) {
-            glowColor = this.highlightColor || "yellow";
+        } else if ((!hasParent || !locked) && stage.isHovered(exprId)) {
+            glowColor = this.highlightColor || 'yellow';
             primitive.setStroke(ctx, {
                 lineWidth: 0.5,
-                color: glowColor,
+                color: glowColor
             });
         }
 
@@ -105,8 +103,8 @@ export function exprify(projection) {
 
             const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(tw, th) / 2);
             gradient.addColorStop(0, glowColor);
-            gradient.addColorStop(glowBreak, "rgba(255, 255, 255, 0.7)");
-            gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+            gradient.addColorStop(glowBreak, 'rgba(255, 255, 255, 0.7)');
+            gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
             ctx.fillStyle = gradient;
 
             ctx.globalAlpha = offset.opacity * this.opacity;
@@ -131,7 +129,7 @@ export function exprify(projection) {
  */
 export function patch3(childFunc, options = {}) {
     const projection = baseProjection();
-    projection.type = "3patch";
+    projection.type = '3patch';
 
     projection.prepare = function(id, exprId, state, stage) {
         const childId = childFunc(id, state);
@@ -164,7 +162,7 @@ export function patch3(childFunc, options = {}) {
         const { ctx } = stage;
         ctx.save();
 
-        let [ sx, sy ] = util.absoluteScale(this, offset);
+        let [sx, sy] = util.absoluteScale(this, offset);
         sx *= this.imageScale;
         sy *= this.imageScale;
 
@@ -177,7 +175,7 @@ export function patch3(childFunc, options = {}) {
             offset.x + (this.pos.x * offset.sx),
             topY,
             sx * options.left.naturalWidth,
-            sy * options.left.naturalHeight,
+            sy * options.left.naturalHeight
         );
 
         let x = offset.x + (this.pos.x * offset.sx) + (sx * options.left.naturalWidth);
@@ -192,7 +190,7 @@ export function patch3(childFunc, options = {}) {
         options.right.draw(
             ctx, x - 1, topY,
             sx * options.right.naturalWidth,
-            sy * options.right.naturalHeight,
+            sy * options.right.naturalHeight
         );
 
         const childId = childFunc(id, state);
@@ -202,7 +200,7 @@ export function patch3(childFunc, options = {}) {
             y: offset.y + (this.pos.y * offset.sy),
             sx: offset.sx * this.scale.x,
             sy: offset.sy * this.scale.y,
-            opacity: this.opacity,
+            opacity: this.opacity
         };
         stage.views[childId].draw(childId, exprId, state, stage, subOffset);
 

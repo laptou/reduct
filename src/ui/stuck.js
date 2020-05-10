@@ -1,7 +1,7 @@
-import * as animate from "../gfx/animate";
-import * as level from "../game/level";
+import * as animate from '../gfx/animate';
+import * as level from '../game/level';
 
-import Audio from "../resource/audio";
+import Audio from '../resource/audio';
 
 /**
  * An effect (see :ref:`Stage`) for when the user is stuck.
@@ -12,12 +12,12 @@ export default class StuckEffect {
         this.stage = stage;
         this.opacity = 0.0;
 
-        Audio.play("stuck");
+        Audio.play('stuck');
         animate.tween(this, {
-            opacity: 0.5,
+            opacity: 0.5
         }, {
             duration: 1000,
-            easing: animate.Easing.Cubic.Out,
+            easing: animate.Easing.Cubic.Out
         }).then(() => this.highlightMismatches());
 
         this.infinite = null;
@@ -32,10 +32,10 @@ export default class StuckEffect {
         }
 
         return animate.tween(this, {
-            opacity: 0,
+            opacity: 0
         }, {
             duration: 400,
-            easing: animate.Easing.Cubic.Out,
+            easing: animate.Easing.Cubic.Out
         });
     }
 
@@ -48,42 +48,42 @@ export default class StuckEffect {
             reverseMatching[matching[id]] = id;
         });
 
-        const board = state.get("board")
-            .filter((n) => !this.stage.semantics.ignoreForVictory(state, state.getIn([ "nodes", n ])));
-        const goal = state.get("goal");
+        const board = state.get('board')
+            .filter((n) => !this.stage.semantics.ignoreForVictory(state, state.getIn(['nodes', n])));
+        const goal = state.get('goal');
 
         const blinkers = [];
-        const msg = [ [ "Oh no, we're stuck!" ] ];
+        const msg = [['Oh no, we\'re stuck!']];
 
-        const extraMsg = [ "We have extra things: " ];
+        const extraMsg = ['We have extra things: '];
         for (const id of board) {
-            if (typeof reverseMatching[id] === "undefined") {
+            if (typeof reverseMatching[id] === 'undefined') {
                 blinkers.push(id);
                 // Clone view to avoid messing up positioning
-                extraMsg.push([ this.stage.allocate({
+                extraMsg.push([this.stage.allocate({
 
                     ...this.stage.getView(id),
                     pos: { x: 0, y: 0 },
                     anchor: { x: 0, y: 0 },
-                    animating: 0,
-                }), id ]);
-                this.stage.getView(id).stroke = { color: "#F00", lineWidth: 0 };
+                    animating: 0
+                }), id]);
+                this.stage.getView(id).stroke = { color: '#F00', lineWidth: 0 };
             }
         }
 
-        const missingMsg = [ "We're still missing:" ];
+        const missingMsg = ['We\'re still missing:'];
         for (const id of goal) {
-            if (typeof matching[id] === "undefined") {
+            if (typeof matching[id] === 'undefined') {
                 blinkers.push(id);
                 // Clone view to avoid messing up positioning
-                missingMsg.push([ this.stage.allocate({
+                missingMsg.push([this.stage.allocate({
 
                     ...this.stage.getView(id),
                     pos: { x: 0, y: 0 },
-                    animating: 0,
-                }), id ]);
+                    animating: 0
+                }), id]);
 
-                this.stage.getView(id).stroke = { color: "#F00", lineWidth: 0 };
+                this.stage.getView(id).stroke = { color: '#F00', lineWidth: 0 };
             }
         }
 
@@ -99,8 +99,8 @@ export default class StuckEffect {
         if (extraMsg.length > 1) msg.push(extraMsg);
         if (missingMsg.length > 1) msg.push(missingMsg);
 
-        msg.push([ "Reset or undo and keep trying!" ]);
-        this.stage.feedback.update("#FFF", ...msg);
+        msg.push(['Reset or undo and keep trying!']);
+        this.stage.feedback.update('#FFF', ...msg);
     }
 
     prepare() {
@@ -111,7 +111,7 @@ export default class StuckEffect {
         const { ctx, width, height } = this.stage;
 
         ctx.save();
-        ctx.fillStyle = "#000";
+        ctx.fillStyle = '#000';
         ctx.globalAlpha = this.opacity;
         ctx.fillRect(0, 0, width, height);
         ctx.restore();

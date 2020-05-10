@@ -2,10 +2,10 @@
  * Handle drawing responsibilites for Reduct.
  * @module BaseStage
  */
-import * as gfxCore from "../gfx/core";
-import { nextId } from "../reducer/reducer";
+import * as gfxCore from '../gfx/core';
+import { nextId } from '../reducer/reducer';
 
-import TouchRecord from "./touchrecord";
+import TouchRecord from './touchrecord';
 
 export default class BaseStage {
     constructor(canvas, width, height, store, views, semantics) {
@@ -27,29 +27,29 @@ export default class BaseStage {
         this._height = height;
 
         this.canvas = canvas;
-        this.canvas.setAttribute("width", this.width);
-        this.canvas.setAttribute("height", this.height);
+        this.canvas.setAttribute('width', this.width);
+        this.canvas.setAttribute('height', this.height);
 
         /** The canvas drawing context. */
-        this.ctx = this.canvas.getContext("2d");
+        this.ctx = this.canvas.getContext('2d');
 
         this.computeDimensions();
 
         /** The background color. */
-        this.color = "#EEEEEE";
+        this.color = '#EEEEEE';
 
         this._redrawPending = false;
         this._drawFunc = null;
 
         this._touches = new Map();
 
-        this._touches.set("mouse", new (this.touchRecordClass)(
+        this._touches.set('mouse', new (this.touchRecordClass)(
             this,
             null,
             null,
             false,
             { dx: 0, dy: 0 },
-            { x: 0, y: 0 },
+            { x: 0, y: 0 }
         ));
     }
 
@@ -64,20 +64,18 @@ export default class BaseStage {
 
     /** Compute and resize the canvas when the window is resized. */
     computeDimensions() {
-        this._height = window.innerHeight - document.querySelector("#nav").offsetHeight;
+        this._height = window.innerHeight - document.querySelector('#nav').offsetHeight;
         if (gfxCore.viewport.IS_PHONE) {
             this._width = window.innerWidth * 0.75;
             this._height *= 0.75;
-        }
-        else if (gfxCore.viewport.IS_TABLET) {
+        } else if (gfxCore.viewport.IS_TABLET) {
             this._width = window.innerWidth;
-        }
-        else {
+        } else {
             this._width = Math.max(window.innerWidth, 1200);
             this._height = Math.max(this._height, 600);
         }
-        this.canvas.setAttribute("width", this._width);
-        this.canvas.setAttribute("height", this._height);
+        this.canvas.setAttribute('width', this._width);
+        this.canvas.setAttribute('height', this._height);
         const scale = window.devicePixelRatio ? window.devicePixelRatio : 1;
         this.scale = scale; // number of screen pixels per CSS pixel
         this.canvas.style.width = `${this._width}px`;
@@ -172,7 +170,7 @@ export default class BaseStage {
      * Get the current Redux state.
      */
     getState() {
-        return this.store.getState().getIn([ "program", "$present" ]);
+        return this.store.getState().getIn(['program', '$present']);
     }
 
     /**
@@ -185,7 +183,7 @@ export default class BaseStage {
             sx: 1,
             sy: 1,
             opacity: 1,
-            ...opt,
+            ...opt
         };
     }
 
@@ -235,7 +233,7 @@ export default class BaseStage {
      * TODO: return all possible nodes?
      */
     getNodeAtPos(pos, selectedId = null) {
-        return [ null, null ];
+        return [null, null];
     }
 
     computeDragAnchor(pos, topNode, targetNode) {
@@ -307,28 +305,23 @@ export default class BaseStage {
             && touchRecord.isExpr
             && touchRecord.topNode !== null
             && touchRecord.hoverNode !== null) {
-            this.setCursor("copy");
-        }
-        else if (touchRecord.topNode !== null) {
+            this.setCursor('copy');
+        } else if (touchRecord.topNode !== null) {
             if (touchRecord.isExpr) {
-                this.setCursor("grabbing");
+                this.setCursor('grabbing');
             }
-        }
-        else if (touchRecord.hoverNode !== null) {
-            const node = this.getState().getIn([ "nodes", touchRecord.hoverNode ]);
+        } else if (touchRecord.hoverNode !== null) {
+            const node = this.getState().getIn(['nodes', touchRecord.hoverNode]);
             const view = this.getView(touchRecord.hoverNode);
-            if (view && view.onmousedown && (typeof view.enabled === "undefined" || view.enabled)) {
-                this.setCursor("pointer");
+            if (view && view.onmousedown && (typeof view.enabled === 'undefined' || view.enabled)) {
+                this.setCursor('pointer');
+            } else if (node && this.semantics.kind(this.getState(), node) === 'expression') {
+                this.setCursor('pointer');
+            } else if (node) {
+                this.setCursor('grab');
             }
-            else if (node && this.semantics.kind(this.getState(), node) === "expression") {
-                this.setCursor("pointer");
-            }
-            else if (node) {
-                this.setCursor("grab");
-            }
-        }
-        else {
-            this.setCursor("default");
+        } else {
+            this.setCursor('default');
         }
     }
 
@@ -337,7 +330,7 @@ export default class BaseStage {
 
         for (const touch of e.changedTouches) {
             const pos = this.getMousePos(touch);
-            const [ topNode, targetNode, fromToolbox ] = this.getNodeAtPos(pos);
+            const [topNode, targetNode, fromToolbox] = this.getNodeAtPos(pos);
             if (topNode === null) continue;
 
             const dragAnchor = this.computeDragAnchor(pos, topNode, targetNode);
@@ -348,7 +341,7 @@ export default class BaseStage {
                 targetNode,
                 fromToolbox,
                 dragAnchor,
-                pos,
+                pos
             );
             touchRecord.onstart(pos);
             this._touches.set(touch.identifier, touchRecord);
@@ -379,14 +372,14 @@ export default class BaseStage {
 
     _mousedown(e) {
         const pos = this.getMousePos(e);
-        const [ topNode, targetNode, fromToolbox ] = this.getNodeAtPos(pos);
+        const [topNode, targetNode, fromToolbox] = this.getNodeAtPos(pos);
         if (topNode === null) return null;
 
 
         const dragAnchor = this.computeDragAnchor(pos, topNode, targetNode);
 
 
-        const touch = this._touches.get("mouse");
+        const touch = this._touches.get('mouse');
         touch.reset();
         touch.topNode = topNode;
         touch.targetNode = targetNode;
@@ -404,8 +397,8 @@ export default class BaseStage {
     }
 
     _mousemove(e) {
-        const buttons = typeof e.buttons !== "undefined" ? e.buttons : e.which;
-        const mouse = this._touches.get("mouse");
+        const buttons = typeof e.buttons !== 'undefined' ? e.buttons : e.which;
+        const mouse = this._touches.get('mouse');
         mouse.onmove(buttons > 0, this.getMousePos(e));
 
         this.updateCursor(mouse, true);
@@ -414,7 +407,7 @@ export default class BaseStage {
     }
 
     _mouseup(e) {
-        const mouse = this._touches.get("mouse");
+        const mouse = this._touches.get('mouse');
         mouse.onend(this.getState(), this.getMousePos(e));
         mouse.reset();
         this.updateCursor(mouse);

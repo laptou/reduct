@@ -1,29 +1,29 @@
-import * as gfx from "../gfx/core";
-import * as animate from "../gfx/animate";
-import * as progression from "../game/progression";
-import Audio from "../resource/audio";
-import Logging from "../logging/logging";
+import * as gfx from '../gfx/core';
+import * as animate from '../gfx/animate/tween';
+import * as progression from '../game/progression';
+import Audio from '../resource/audio';
+import Logging from '../logging/logging';
 
-import Loader from "../loader";
+import Loader from '../loader';
 
-import BaseStage from "./basestage";
-import BaseTouchRecord from "./touchrecord";
+import BaseStage from './basestage';
+import BaseTouchRecord from './touchrecord';
 
 export default class TitleStage extends BaseStage {
     constructor(startGame, ...args) {
         super(...args);
 
         this.startGame = startGame;
-        this.color = "#8ab7db";
+        this.color = '#8ab7db';
 
         // allocating title ID
         const title = gfx.layout.sticky(
             gfx.layout.ratioSizer(gfx.sprite({
                 image: Loader.images.reduct_title,
-                size: { h: 213, w: 899 },
+                size: { h: 213, w: 899 }
             }), 213 / 899, 0.6),
-            "center",
-            {},
+            'center',
+            {}
         );
         title.opacity = 0;
         this.title = this.allocateInternal(title);
@@ -32,108 +32,108 @@ export default class TitleStage extends BaseStage {
 
         // allocating shape, food, etc... IDs
         const shapeIds = [
-            gfx.shapes.star(), gfx.shapes.triangle(),
+            gfx.shapes.star(), gfx.shapes.triangle()
         ].map((view) => this.allocate(view));
         const foodIds = [
             Loader.images.food_1,
-            Loader.images.food_2,
+            Loader.images.food_2
         ].map((image) => this.allocate(gfx.sprite({
             image,
             size: image.naturalHeight / image.naturalWidth > 1.5
                 ? {
                     w: 25,
-                    h: (image.naturalHeight / image.naturalWidth) * 25,
+                    h: (image.naturalHeight / image.naturalWidth) * 25
                 }
                 : {
                     w: 50,
-                    h: (image.naturalHeight / image.naturalWidth) * 50,
-                },
+                    h: (image.naturalHeight / image.naturalWidth) * 50
+                }
         })));
         const sportsIds = [
             Loader.images.sport_1,
-            Loader.images.sport_2,
+            Loader.images.sport_2
         ].map((image) => this.allocate(gfx.sprite({
             image,
             size: image.naturalHeight / image.naturalWidth > 1.5
                 ? {
                     w: 25,
-                    h: (image.naturalHeight / image.naturalWidth) * 25,
+                    h: (image.naturalHeight / image.naturalWidth) * 25
                 }
                 : {
                     w: 50,
-                    h: (image.naturalHeight / image.naturalWidth) * 50,
-                },
+                    h: (image.naturalHeight / image.naturalWidth) * 50
+                }
         })));
         const animalIds = [
             Loader.images.animal_dog,
-            Loader.images.animal_orca,
+            Loader.images.animal_orca
         ].map((image) => this.allocate(gfx.sprite({
             image,
             size: image.naturalHeight / image.naturalWidth > 1.5
                 ? {
                     w: 25,
-                    h: (image.naturalHeight / image.naturalWidth) * 25,
+                    h: (image.naturalHeight / image.naturalWidth) * 25
                 }
                 : {
                     w: 50,
-                    h: (image.naturalHeight / image.naturalWidth) * 50,
-                },
+                    h: (image.naturalHeight / image.naturalWidth) * 50
+                }
         })));
 
         const views = [
             [0, gfx.layout.hbox(
                 () => shapeIds,
                 {
-                    subexpScale: 1.0,
+                    subexpScale: 1.0
                 },
-                gfx.baseProjection,
+                gfx.baseProjection
             )],
             [1, gfx.layout.hbox(
                 () => foodIds,
                 {
-                    subexpScale: 1.0,
+                    subexpScale: 1.0
                 },
-                gfx.baseProjection,
+                gfx.baseProjection
             )],
             [2, gfx.layout.hbox(
                 () => sportsIds,
                 {
-                    subexpScale: 1.0,
+                    subexpScale: 1.0
                 },
-                gfx.baseProjection,
+                gfx.baseProjection
             )],
             [3, gfx.layout.hbox(
                 () => animalIds,
                 {
-                    subexpScale: 1.0,
+                    subexpScale: 1.0
                 },
-                gfx.baseProjection,
-            )],
+                gfx.baseProjection
+            )]
         ];
 
         // allocating button ID
-        for (const [ symbolFadeLevel, view ] of views) {
+        for (const [symbolFadeLevel, view] of views) {
             const theme = this.allocate(view);
-            const label = this.allocate(gfx.text("I like", {
+            const label = this.allocate(gfx.text('I like', {
                 fontSize: 50,
-                font: gfx.text.script,
+                font: gfx.text.script
             }));
-            const label2 = this.allocate(gfx.text("!", {
+            const label2 = this.allocate(gfx.text('!', {
                 fontSize: 50,
-                font: gfx.text.script,
+                font: gfx.text.script
             }));
-            const button = gfx.ui.button(this, () => [ label, theme, label2 ], {
-                color: "#e95888",
+            const button = gfx.ui.button(this, () => [label, theme, label2], {
+                color: '#e95888',
                 anchor: {
                     x: 0,
-                    y: 0,
+                    y: 0
                 },
                 subexpScale: 1,
                 click: () => {
-                    Logging.log("theme", symbolFadeLevel);
-                    progression.forceFadeLevel("symbol", symbolFadeLevel);
+                    Logging.log('theme', symbolFadeLevel);
+                    progression.forceFadeLevel('symbol', symbolFadeLevel);
                     this.animateStart();
-                },
+                }
             });
 
             buttons.push(this.allocate(button));
@@ -145,52 +145,52 @@ export default class TitleStage extends BaseStage {
         const layout = gfx.layout.sticky(gfx.layout.vbox(() => buttons, {
             subexpScale: 1.0,
             padding: {
-                inner: 20,
-            },
-        }, gfx.baseProjection), "center", {
-            hAlign: 0.0,
+                inner: 20
+            }
+        }, gfx.baseProjection), 'center', {
+            hAlign: 0.0
         });
         layout.opacity = 0.0;
         this.layout = this.allocate(layout);
 
         // ** Startup Animations ** //
 
-        this.state = "initializing";
+        this.state = 'initializing';
         animate.tween(this, {
-            color: "#FFF",
+            color: '#FFF'
         }, {
             duration: 500,
             setAnimatingFlag: false,
-            easing: animate.Easing.Color(animate.Easing.Cubic.In, this.color, "#FFF"),
+            easing: animate.Easing.Color(animate.Easing.Cubic.In, this.color, '#FFF')
         })
             .then(() => animate.tween(title, {
-                opacity: 1.0,
+                opacity: 1.0
             }, {
                 duration: 500,
-                easing: animate.Easing.Cubic.Out,
+                easing: animate.Easing.Cubic.Out
             }).delay(1000))
             .then(() => Promise.all([
                 animate.tween(title, {
                     scale: { x: 0.7, y: 0.7 },
-                    sticky: { marginY: -180 },
+                    sticky: { marginY: -180 }
                 }, {
                     duration: 800,
-                    easing: animate.Easing.Cubic.Out,
+                    easing: animate.Easing.Cubic.Out
                 }),
                 animate.tween(layout, {
-                    opacity: 1.0,
+                    opacity: 1.0
                 }, {
                     duration: 1000,
-                    easing: animate.Easing.Cubic.Out,
-                }),
+                    easing: animate.Easing.Cubic.Out
+                })
             ]))
             .then(() => {
-                this.state = "initialized";
+                this.state = 'initialized';
             });
     }
 
     _mouseup(e) {
-        if (this.state === "initializing") {
+        if (this.state === 'initializing') {
             this.fastForward();
         }
 
@@ -199,8 +199,8 @@ export default class TitleStage extends BaseStage {
 
     fastForward() {
         animate.clock.cancelAll();
-        this.state = "initialized";
-        this.color = "#FFF";
+        this.state = 'initialized';
+        this.color = '#FFF';
         const title = this.getView(this.title);
         title.opacity = 1.0;
         title.scale = { x: 0.7, y: 0.7 };
@@ -209,35 +209,35 @@ export default class TitleStage extends BaseStage {
     }
 
     animateStart() {
-        this.state = "transitioning";
+        this.state = 'transitioning';
 
         Promise.all([
             animate.tween(this.getView(this.title), {
                 scale: { x: 0.4, y: 0.4 },
-                opacity: 0.5,
+                opacity: 0.5
             }, {
                 duration: 800,
-                easing: animate.Easing.Cubic.In,
+                easing: animate.Easing.Cubic.In
             }),
             animate.tween(this.getView(this.title), {
-                sticky: { marginY: -this.height },
+                sticky: { marginY: -this.height }
             }, {
                 duration: 500,
-                easing: animate.Easing.Anticipate.BackIn(1.5),
+                easing: animate.Easing.Anticipate.BackIn(1.5)
             }),
             animate.tween(this.getView(this.layout), {
-                opacity: 0,
+                opacity: 0
             }, {
                 duration: 500,
-                easing: animate.Easing.Cubic.In,
+                easing: animate.Easing.Cubic.In
             }),
             animate.tween(this, {
-                color: "#8ab7db",
+                color: '#8ab7db'
             }, {
                 duration: 500,
                 setAnimatingFlag: false,
-                easing: animate.Easing.Color(animate.Easing.Cubic.In, this.color, "#8ab7db"),
-            }),
+                easing: animate.Easing.Color(animate.Easing.Cubic.In, this.color, '#8ab7db')
+            })
         ]).then(() => this.startGame());
     }
 
@@ -258,7 +258,7 @@ export default class TitleStage extends BaseStage {
     }
 
     getNodeAtPos(pos, selectedId = null) {
-        if (this.state !== "initialized") return [ null, null ];
+        if (this.state !== 'initialized') return [null, null];
 
         const offset = this.makeBaseOffset();
         const buttonLayout = this.getView(this.layout);
@@ -266,26 +266,25 @@ export default class TitleStage extends BaseStage {
             const topLeft = gfx.util.topLeftPos(buttonLayout, offset);
             const subpos = {
                 x: pos.x - topLeft.x,
-                y: pos.y - topLeft.y,
+                y: pos.y - topLeft.y
             };
 
             for (const id of this.buttons) {
                 const button = this.getView(id);
                 if (button.containsPoint(subpos, offset)) {
-                    return [ id, id ];
+                    return [id, id];
                 }
             }
         }
 
-        return [ null, null ];
+        return [null, null];
     }
 
     updateCursor(touchRecord, moved = false) {
         if (touchRecord.hoverNode !== null) {
-            this.setCursor("pointer");
-        }
-        else {
-            this.setCursor("default");
+            this.setCursor('pointer');
+        } else {
+            this.setCursor('default');
         }
     }
 }

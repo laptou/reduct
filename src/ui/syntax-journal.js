@@ -1,48 +1,48 @@
-import * as immutable from "immutable";
-import * as gfx from "../gfx/core";
-import * as animate from "../gfx/animate";
-import * as progression from "../game/progression";
-import Loader from "../loader";
-import * as action from "../reducer/action";
-import { nextId } from "../reducer/reducer";
+import * as immutable from 'immutable';
+import * as gfx from '../gfx/core';
+import * as animate from '../gfx/animate';
+import * as progression from '../game/progression';
+import Loader from '../loader';
+import * as action from '../reducer/action';
+import { nextId } from '../reducer/reducer';
 
 export default class SyntaxJournal {
     constructor(stage) {
         this.stage = stage;
 
         const syntaxJournal = gfx.layout.sticky(gfx.ui.imageButton({
-            normal: Loader.images["journal-default"],
-            hover: Loader.images["journal-hover"],
-            active: Loader.images["journal-mousedown"],
+            normal: Loader.images['journal-default'],
+            hover: Loader.images['journal-hover'],
+            active: Loader.images['journal-mousedown']
         }, {
-            click: () => this.stage.syntaxJournal.toggle(),
-        }), "bottom", {
-            align: "right",
+            click: () => this.stage.syntaxJournal.toggle()
+        }), 'bottom', {
+            align: 'right'
         });
         syntaxJournal.size = { w: 79, h: 78 };
         this.button = stage.allocateInternal(syntaxJournal);
 
         this.overlay = stage.allocateInternal(gfx.layout.expand(gfx.rect({
-            color: "#000",
-            opacity: 0.7,
+            color: '#000',
+            opacity: 0.7
         }), {
             horizontal: true,
-            vertical: true,
+            vertical: true
         }));
 
         this.background = stage.allocateInternal(gfx.layout.sticky(gfx.sprite({
-            image: Loader.images["journal-bg"],
-            size: { w: 558, h: 534 },
-        }), "center"));
+            image: Loader.images['journal-bg'],
+            size: { w: 558, h: 534 }
+        }), 'center'));
 
         this.next = stage.allocateInternal(gfx.layout.sticky(gfx.ui.imageButton({
-            normal: Loader.images["journal-default"],
-            hover: Loader.images["journal-hover"],
-            active: Loader.images["journal-mousedown"],
+            normal: Loader.images['journal-default'],
+            hover: Loader.images['journal-hover'],
+            active: Loader.images['journal-mousedown']
         }, {
-            click: () => console.log("letsgo"),
-        }), "center", {
-            marginX: 270,
+            click: () => console.log('letsgo')
+        }), 'center', {
+            marginX: 270
         }));
 
         /* this.if_dog = stage.allocate(gfx.layout.sticky(gfx.ui.imageButton({
@@ -56,45 +56,44 @@ export default class SyntaxJournal {
         })); */
 
         this.prev = stage.allocateInternal(gfx.layout.sticky(gfx.ui.imageButton({
-            normal: Loader.images["btn-back-default"],
-            hover: Loader.images["btn-back-hover"],
-            active: Loader.images["btn-back-down"],
+            normal: Loader.images['btn-back-default'],
+            hover: Loader.images['btn-back-hover'],
+            active: Loader.images['btn-back-down']
         }, {
-            click: () => this.stage.syntaxJournal.showBox(),
-        }), "center", {
-            marginX: -250,
+            click: () => this.stage.syntaxJournal.showBox()
+        }), 'center', {
+            marginX: -250
         }));
 
-        this.state = "closed";
+        this.state = 'closed';
 
         this.syntaxes = {};
         this.currentSyntax = 5;
     }
 
     getNodeAtPos(state, pos) {
-        if (this.state === "closed") {
+        if (this.state === 'closed') {
             const journal = this.stage.internalViews[this.button];
             if (journal.containsPoint(pos, {
-                x: 0, y: 0, sx: 1, sy: 1,
+                x: 0, y: 0, sx: 1, sy: 1
             })) {
-                return [ this.button, this.button ];
+                return [this.button, this.button];
             }
-        }
-        else {
+        } else {
             const prev = this.stage.getView(this.prev);
             const next = this.stage.getView(this.next);
             if (this.showBack && prev.containsPoint(pos, {
-                x: 0, y: 0, sx: 1, sy: 1,
+                x: 0, y: 0, sx: 1, sy: 1
             })) {
-                return [ this.prev, this.prev ];
+                return [this.prev, this.prev];
             }
             if (this.showForward && next.containsPoint(pos, {
-                x: 0, y: 0, sx: 1, sy: 1,
+                x: 0, y: 0, sx: 1, sy: 1
             })) {
-                return [ this.next, this.next ];
+                return [this.next, this.next];
             }
         }
-        return [ null, null ];
+        return [null, null];
     }
 
     drawBase(state) {
@@ -103,7 +102,7 @@ export default class SyntaxJournal {
             x: 0,
             y: 0,
             sx: 1,
-            sy: 1,
+            sy: 1
         });
     }
 
@@ -123,7 +122,7 @@ export default class SyntaxJournal {
                 y: 0,
                 sx: 1,
                 sy: 1,
-                opacity: bg.opacity,
+                opacity: bg.opacity
             };
 
             this.stage.drawInternalProjection(state, this.overlay);
@@ -165,7 +164,7 @@ export default class SyntaxJournal {
 
             const { ctx } = this.stage;
             ctx.save();
-            ctx.globalCompositeOperation = "multiply";
+            ctx.globalCompositeOperation = 'multiply';
 
             this.project();
 
@@ -186,11 +185,11 @@ export default class SyntaxJournal {
     }
 
     get isOpen() {
-        return this.state === "open";
+        return this.state === 'open';
     }
 
     open() {
-        this.state = "open";
+        this.state = 'open';
 
         const overlay = this.stage.getView(this.overlay);
         const bg = this.stage.getView(this.background);
@@ -199,11 +198,11 @@ export default class SyntaxJournal {
 
         animate.tween(overlay, { opacity: 0.7 }, {
             duration: 500,
-            easing: animate.Easing.Cubic.In,
+            easing: animate.Easing.Cubic.In
         });
         animate.tween(bg, { opacity: 1.0 }, {
             duration: 500,
-            easing: animate.Easing.Cubic.In,
+            easing: animate.Easing.Cubic.In
         }).delay(300);
     }
 
@@ -213,21 +212,20 @@ export default class SyntaxJournal {
 
         animate.tween(overlay, { opacity: 0 }, {
             duration: 500,
-            easing: animate.Easing.Cubic.Out,
+            easing: animate.Easing.Cubic.Out
         });
         animate.tween(bg, { opacity: 0 }, {
             duration: 500,
-            easing: animate.Easing.Cubic.Out,
+            easing: animate.Easing.Cubic.Out
         }).then(() => {
-            this.state = "closed";
+            this.state = 'closed';
         });
     }
 
     toggle() {
-        if (this.state === "open") {
+        if (this.state === 'open') {
             this.close();
-        }
-        else {
+        } else {
             this.open();
         }
     }
@@ -242,21 +240,20 @@ export default class SyntaxJournal {
                 const image = Loader.images[defn.header];
                 const sprite = gfx.sprite({
                     image,
-                    size: { w: image.naturalWidth, h: image.naturalHeight },
+                    size: { w: image.naturalWidth, h: image.naturalHeight }
                 });
                 children.push(this.stage.allocate(sprite));
 
                 for (const item of defn.contents) {
-                    if (typeof item === "string") {
+                    if (typeof item === 'string') {
                         children.push(this.stage.allocate(gfx.text(item, {
-                            font: gfx.text.script,
+                            font: gfx.text.script
                         })));
-                    }
-                    else if (item.image) {
+                    } else if (item.image) {
                         const img = Loader.images[item.image];
                         const itemSprite = gfx.sprite({
                             image: img,
-                            size: { w: img.naturalWidth, h: img.naturalHeight },
+                            size: { w: img.naturalWidth, h: img.naturalHeight }
                         });
                         children.push(this.stage.allocate(itemSprite));
                     }
@@ -271,10 +268,10 @@ export default class SyntaxJournal {
                             left: 0,
                             right: 0,
                             bottom: 0,
-                            inner: 10,
-                        },
+                            inner: 10
+                        }
                     },
-                    gfx.baseProjection,
+                    gfx.baseProjection
                 );
                 container.anchor = { x: 0.5, y: 0 };
                 this.syntaxes[syntax] = this.stage.allocate(container);

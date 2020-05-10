@@ -1,9 +1,9 @@
-import * as gfx from "../gfx/core";
-import * as animate from "../gfx/animate";
-import * as progression from "../game/progression";
-import { builtins } from "../semantics/es6/builtins";
+import * as gfx from '../gfx/core';
+import * as animate from '../gfx/animate';
+import * as progression from '../game/progression';
+import { builtins } from '../semantics/defs/builtins';
 
-import Loader from "../loader";
+import Loader from '../loader';
 
 /**
  * Renders the definition sidebar at the left of the screen. Expects
@@ -14,41 +14,41 @@ export default class Sidebar {
     constructor(stage) {
         this.stage = stage;
 
-        this.color = "#8ab7db";
+        this.color = '#8ab7db';
 
         this.viewMap = new Map();
         this.fullWidth = 100;
 
         this._tween = null;
-        this.status = "closed";
+        this.status = 'closed';
 
         const gradient = stage.ctx.createLinearGradient(0, 0, 15, 0);
-        gradient.addColorStop(0, "rgba(0,0,0,0)");
-        gradient.addColorStop(1, "#8ab7db");
+        gradient.addColorStop(0, 'rgba(0,0,0,0)');
+        gradient.addColorStop(1, '#8ab7db');
         this.gradient = gradient;
 
         // Make a dashed-outline to serve as a placeholder indicator
         this.indicator = this.stage.allocate(gfx.layout.hbox(() => [], {
             notches: [{
-                side: "left",
-                type: "inset",
-                shape: "wedge",
-                relpos: 0.8,
+                side: 'left',
+                type: 'inset',
+                shape: 'wedge',
+                relpos: 0.8
             }],
             stroke: {
                 lineWidth: 5,
-                color: "#000",
-                lineDash: [10, 5],
+                color: '#000',
+                lineDash: [10, 5]
             },
             padding: {
                 top: 0,
                 bottom: 0,
                 left: 100,
-                right: 100,
+                right: 100
             },
             color: null,
             opacity: 0,
-            minHeight: 0,
+            minHeight: 0
         }));
 
         this.showing = false;
@@ -60,7 +60,7 @@ export default class Sidebar {
             indicator.tween.completed();
             indicator.tween = null;
         }
-        indicator.stroke.color = "#000";
+        indicator.stroke.color = '#000';
         indicator.opacity = 0;
         indicator.padding.top = 0;
         indicator.padding.bottom = 0;
@@ -68,16 +68,16 @@ export default class Sidebar {
 
     startLevel(state, hideGlobals = []) {
         // Only show globals if they have a reference on the board
-        const nodes = state.get("nodes");
-        const globals = state.get("globals");
+        const nodes = state.get('nodes');
+        const globals = state.get('globals');
 
         const names = new Set();
 
-        for (const id of state.get("toolbox").concat(state.get("board"))) {
+        for (const id of state.get('toolbox').concat(state.get('board'))) {
             this.stage.semantics.search(nodes, id, (_, nid) => {
                 const expr = nodes.get(nid);
-                if (expr.get("type") === "reference" && globals.has(expr.get("name")) && !hideGlobals.includes(expr.get("name"))) {
-                    names.add(expr.get("name"));
+                if (expr.get('type') === 'reference' && globals.has(expr.get('name')) && !hideGlobals.includes(expr.get('name'))) {
+                    names.add(expr.get('name'));
                 }
             });
         }
@@ -89,11 +89,11 @@ export default class Sidebar {
         while (newNames.size > 0 && count < 5) {
             const nextNames = new Set();
             for (const name of newNames) {
-                const id = state.get("globals").get(name);
+                const id = state.get('globals').get(name);
                 this.stage.semantics.search(nodes, id, (_, nid) => {
                     const expr = nodes.get(nid);
-                    if (expr.get("type") === "reference" && globals.has(expr.get("name")) && !hideGlobals.includes(expr.get("name"))) {
-                        const name = expr.get("name");
+                    if (expr.get('type') === 'reference' && globals.has(expr.get('name')) && !hideGlobals.includes(expr.get('name'))) {
+                        const name = expr.get('name');
                         if (!names.has(name)) {
                             names.add(name);
                             nextNames.add(name);
@@ -113,28 +113,27 @@ export default class Sidebar {
         }
 
         this.showing = names.size > 0
-            || state.get("board")
-                .some((id) => state.getIn([ "nodes", id, "type" ]) === "define");
+            || state.get('board')
+                .some((id) => state.getIn(['nodes', id, 'type']) === 'define');
         return this.showing;
     }
 
     addGlobal(state, name) {
-        const nodeId = state.getIn([ "globals", name ]);
+        const nodeId = state.getIn(['globals', name]);
         let viewId = nodeId;
         if (this.stage.getView(nodeId)) {
             const view = this.stage.getView(viewId);
             view.anchor = { x: 0, y: 0 };
             view.pos.x += this.stage.sidebarWidth;
-        }
-        else {
+        } else {
             viewId = this.project(state, name, nodeId);
         }
         this.viewMap.set(name, viewId);
         animate.fx.blink(this.stage, this.stage.getView(viewId), {
             times: 2,
-            color: "magenta",
+            color: 'magenta',
             speed: 300,
-            lineWidth: 5,
+            lineWidth: 5
         });
     }
 
@@ -149,18 +148,17 @@ export default class Sidebar {
             return;
         }
 
-        if (this.status === "closed") {
-            this.status = "open";
+        if (this.status === 'closed') {
+            this.status = 'open';
             this._tween = animate.tween(this.stage, { sidebarWidth: this.fullWidth }, {
                 duration: 500,
-                easing: animate.Easing.Cubic.Out,
+                easing: animate.Easing.Cubic.Out
             });
-        }
-        else {
-            this.status = "closed";
+        } else {
+            this.status = 'closed';
             this._tween = animate.tween(this.stage, { sidebarWidth: 100 }, {
                 duration: 500,
-                easing: animate.Easing.Cubic.Out,
+                easing: animate.Easing.Cubic.Out
             });
         }
     }
@@ -178,12 +176,12 @@ export default class Sidebar {
 
         this.stage.getView(this.indicator).pos = {
             x: 10,
-            y: curY,
+            y: curY
         };
         this.stage.drawProjection(state, this.indicator, offset);
         curY += gfx.absoluteSize(this.stage.getView(this.indicator)).h + 10;
 
-        for (const [ key ] of state.get("globals")) {
+        for (const [key] of state.get('globals')) {
             if (!this.viewMap.has(key)) {
                 continue;
             }
@@ -205,10 +203,10 @@ export default class Sidebar {
     }
 
     project(state, name, id) {
-        const nodes = state.get("nodes");
+        const nodes = state.get('nodes');
 
         let result = null;
-        const queue = [ id ];
+        const queue = [id];
         while (queue.length > 0) {
             const subId = queue.pop();
             if (result === null) result = subId;

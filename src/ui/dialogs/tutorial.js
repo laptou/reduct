@@ -1,5 +1,5 @@
-import VideoPlayer from "../component/video-player";
-import ModalDialog from "../component/modal-dialog";
+import VideoPlayer from '../component/video-player';
+import ModalDialog from '../component/modal-dialog';
 
 
 /**
@@ -8,11 +8,11 @@ import ModalDialog from "../component/modal-dialog";
  */
 export default class TutorialDialog extends ModalDialog {
     constructor(autoplay = true) {
-        const container = document.querySelector("#tutorial");
+        const container = document.querySelector('#tutorial');
         super(container, { allowSoftDismiss: true });
 
         this.autoplay = autoplay;
-        this.btnSkip = container.querySelector("#tutorial-continue");
+        this.btnSkip = container.querySelector('#tutorial-continue');
         this.videoPlayer = null;
 
         this.onSkipClick = this.onSkipClick.bind(this);
@@ -20,11 +20,11 @@ export default class TutorialDialog extends ModalDialog {
 
     async load(key) {
         this.videoPlayer = new VideoPlayer(
-            this.el.querySelector(".video-player"),
+            this.el.querySelector('.video-player'),
             // eslint-disable-next-line import/no-dynamic-require
             await import(`@resources/videos/${key}.mp4`)
                 .then((mod) => mod.default)
-                .catch((err) => console.error("failed to load tutorial", err)),
+                .catch((err) => console.error('failed to load tutorial', err))
         );
         return this;
     }
@@ -47,7 +47,7 @@ export default class TutorialDialog extends ModalDialog {
     show() {
         super.show();
 
-        this.btnSkip.addEventListener("click", this.onSkipClick);
+        this.btnSkip.addEventListener('click', this.onSkipClick);
         if (this.autoplay) {
             this.play();
         }
@@ -61,7 +61,7 @@ export default class TutorialDialog extends ModalDialog {
      */
     dismiss() {
         // remove event handlers
-        this.btnSkip.removeEventListener("click", this.onSkipClick);
+        this.btnSkip.removeEventListener('click', this.onSkipClick);
         this.videoPlayer?.pause();
         this.videoPlayer?.detach();
 

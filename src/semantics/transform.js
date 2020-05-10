@@ -1,26 +1,26 @@
 /**
  * @module transform
  */
-import * as immutable from "immutable";
+import * as immutable from 'immutable';
 
-import * as progression from "../game/progression";
-import Audio from "../resource/audio";
-import Logging from "../logging/logging";
+import * as progression from '../game/progression';
+import Audio from '../resource/audio';
+import Logging from '../logging/logging';
 
-import * as gfx from "../gfx/core";
-import * as animate from "../gfx/animate";
-import projector from "../gfx/projector";
+import * as gfx from '../gfx/core';
+import * as animate from '../gfx/animate';
+import projector from '../gfx/projector';
 
-import * as core from "./core";
-import * as meta from "./meta";
-import makeInterpreter from "./interpreter";
+import * as core from './core';
+import * as meta from './meta';
+import makeInterpreter from './interpreter';
 
-import { nextId } from "../reducer/reducer";
+import { nextId } from '../reducer/reducer';
 
 const NotchRecord = immutable.Record({
-    side: "left",
-    shape: "wedge",
-    type: "inset",
+    side: 'left',
+    shape: 'wedge',
+    type: 'inset'
 });
 
 /**
@@ -43,10 +43,10 @@ export default function transform(definition) {
 
     /** Get the definition of the given expression, accounting for fade level. */
     module.definitionOf = function getDefinition(exprOrType, fadeLevel = null) {
-        const type = exprOrType.get ? exprOrType.get("type") : (exprOrType.type || exprOrType);
+        const type = exprOrType.get ? exprOrType.get('type') : (exprOrType.type || exprOrType);
         const result = module.definition.expressions[type];
         if (Array.isArray(result)) {
-            return result[typeof fadeLevel === "number" ? fadeLevel : progression.getFadeLevel(type)];
+            return result[typeof fadeLevel === 'number' ? fadeLevel : progression.getFadeLevel(type)];
         }
         return result;
     };
@@ -59,7 +59,7 @@ export default function transform(definition) {
      */
     module.vtuple = function vtuple(children) {
         const result = {
-            type: "vtuple", kind: "expression", locked: true, numChildren: children.length,
+            type: 'vtuple', kind: 'expression', locked: true, numChildren: children.length
         };
         let i = 0;
         for (const child of children) {
@@ -69,11 +69,11 @@ export default function transform(definition) {
         return result;
     };
 
-    module.projections.vtuple = [ function(_stage, _expr) {
+    module.projections.vtuple = [function(_stage, _expr) {
         return gfx.layout.vbox((id, state) => {
-            const node = state.getIn([ "nodes", id ]);
+            const node = state.getIn(['nodes', id]);
             const result = [];
-            for (let i = 0; i < node.get("numChildren"); i++) {
+            for (let i = 0; i < node.get('numChildren'); i++) {
                 result.push(node.get(`child${i}`));
             }
             return result;
@@ -83,19 +83,19 @@ export default function transform(definition) {
                 inner: 5,
                 bottom: 0,
                 left: 0,
-                right: 0,
+                right: 0
             },
             strokeWhenChild: false,
-            subexpScale: 1,
+            subexpScale: 1
         });
-    } ];
+    }];
 
     module.constructors = {};
-    for (const [ exprName, exprDefinitions ] of Object.entries(definition.expressions)) {
+    for (const [exprName, exprDefinitions] of Object.entries(definition.expressions)) {
         module.constructors[exprName] = [];
         module.projections[exprName] = [];
 
-        const defns = Array.isArray(exprDefinitions) ? exprDefinitions : [ exprDefinitions ];
+        const defns = Array.isArray(exprDefinitions) ? exprDefinitions : [exprDefinitions];
 
         let fadeLevel = 0;
         for (const exprDefinition of defns) {
@@ -103,10 +103,10 @@ export default function transform(definition) {
             fadeLevel += 1;
             const ctor = function(...params) {
                 const result = { type: exprName, locked: true };
-                if (typeof exprDefinition.locked !== "undefined") {
+                if (typeof exprDefinition.locked !== 'undefined') {
                     result.locked = exprDefinition.locked;
                 }
-                if (typeof exprDefinition.notches !== "undefined") {
+                if (typeof exprDefinition.notches !== 'undefined') {
                     result.notches = immutable.List(exprDefinition.notches.map((n) => new NotchRecord(n)));
                 }
 
@@ -114,17 +114,17 @@ export default function transform(definition) {
                 for (const fieldName of exprDefinition.fields) {
                     result[fieldName] = params[argPointer++];
                 }
-                const subexprs = core.getField(exprDefinition, "subexpressions", module, immutable.Map(result));
+                const subexprs = core.getField(exprDefinition, 'subexpressions', module, immutable.Map(result));
                 for (const fieldName of subexprs) {
                     result[fieldName] = params[argPointer++];
                 }
                 result.fadeLevel = innerFadeLevel;
                 return result;
             };
-            Object.defineProperty(ctor, "name", { value: exprName });
+            Object.defineProperty(ctor, 'name', { value: exprName });
             module.constructors[exprName].push(ctor);
 
-            if (typeof exprDefinition.notches !== "undefined") {
+            if (typeof exprDefinition.notches !== 'undefined') {
                 exprDefinition.projection.notches = exprDefinition.notches;
             }
 
@@ -135,7 +135,7 @@ export default function transform(definition) {
             const ctors = module.constructors[exprName];
             return ctors[progression.getFadeLevel(exprName)](...params);
         };
-        Object.defineProperty(module[exprName], "name", { value: exprName });
+        Object.defineProperty(module[exprName], 'name', { value: exprName });
     }
 
     /**
@@ -143,31 +143,31 @@ export default function transform(definition) {
      * The expression may be represented in either hydrated or immutable form.
      */
     module.subexpressions = function subexpressions(expr) {
-        const type = expr.type || expr.get("type");
-        if (type === "vtuple") {
+        const type = expr.type || expr.get('type');
+        if (type === 'vtuple') {
             const result = [];
-            const nc = expr.get ? expr.get("numChildren") : expr.numChildren;
+            const nc = expr.get ? expr.get('numChildren') : expr.numChildren;
             for (let i = 0; i < nc; i++) {
                 result.push(`child${i}`);
             }
             return result;
         }
-        if (type === "array") {
+        if (type === 'array') {
             const result = [];
-            const nc = expr.get ? expr.get("length") : expr.length;
+            const nc = expr.get ? expr.get('length') : expr.length;
             for (let i = 0; i < nc; i++) {
                 result.push(`elem${i}`);
             }
             return result;
         }
 
-        const fadeLevel = expr.get ? expr.get("fadeLevel") : expr.fadeLevel;
+        const fadeLevel = expr.get ? expr.get('fadeLevel') : expr.fadeLevel;
 
         const defn = module.definitionOf(type, fadeLevel);
         if (!defn) throw `semantics.subexpressions: Unrecognized expression type ${type}`;
 
         const subexprBase = defn.reductionOrder || defn.subexpressions;
-        const subexprs = typeof subexprBase === "function"
+        const subexprs = typeof subexprBase === 'function'
             ? subexprBase(module, expr)
             : defn.reductionOrder || defn.subexpressions;
         // Handle notches
@@ -193,7 +193,7 @@ export default function transform(definition) {
      * @param expr - The immutable expression to create a view for.
      */
     module.project = function project(stage, nodes, expr) {
-        const type = expr.get("type");
+        const type = expr.get('type');
         if (!module.projections[type]) throw `semantics.project: Unrecognized expression type ${type}`;
         return module.projections[type][progression.getFadeLevel(type)](stage, nodes, expr);
     };
@@ -206,32 +206,32 @@ export default function transform(definition) {
         const result = [];
         module.map(nodes, exprId, (nodes, id) => {
             const node = nodes.get(id);
-            if (node.get("type") === "lambdaVar" && node.get("name") === targetName) {
+            if (node.get('type') === 'lambdaVar' && node.get('name') === targetName) {
                 result.push(id);
-                return [ node, nodes ];
+                return [node, nodes];
             }
-            return [ node, nodes ];
+            return [node, nodes];
         }, (nodes, node) => (
-            node.get("type") !== "lambda"
-                    || nodes.get(node.get("arg")).get("name") !== targetName));
+            node.get('type') !== 'lambda'
+                    || nodes.get(node.get('arg')).get('name') !== targetName));
         return result;
     };
 
     /** Determine if a level could possibly be completed. */
     module.mightBeCompleted = function(state, checkVictory) {
-        const nodes = state.get("nodes");
-        const board = state.get("board");
-        const toolbox = state.get("toolbox");
+        const nodes = state.get('nodes');
+        const board = state.get('board');
+        const toolbox = state.get('toolbox');
 
         const remainingNodes = board.concat(toolbox);
 
         const containsReduceableExpr = remainingNodes.some((id) => {
             const node = nodes.get(id);
             const kind = module.kind(state, node);
-            return kind === "expression"
-                || kind === "statement"
-                || node.get("type") === "lambda"
-                || node.get("type") === "reference";
+            return kind === 'expression'
+                || kind === 'statement'
+                || node.get('type') === 'lambda'
+                || node.get('type') === 'reference';
         });
 
         if (containsReduceableExpr) {
@@ -247,8 +247,8 @@ export default function transform(definition) {
         // Only one thing in toolbox - does using it complete the level?
         if (toolbox.size === 1) {
             return checkVictory(state.withMutations((s) => {
-                s.set("toolbox", immutable.List());
-                s.set("board", remainingNodes);
+                s.set('toolbox', immutable.List());
+                s.set('board', remainingNodes);
             }));
         }
 
@@ -275,8 +275,8 @@ export default function transform(definition) {
 
         for (const subset of powerset(toolbox.toArray())) {
             const matching = checkVictory(state.withMutations((s) => {
-                s.set("toolbox", toolbox.filter((i) => subset.indexOf(i) === -1));
-                s.set("board", board.concat(immutable.List(subset)));
+                s.set('toolbox', toolbox.filter((i) => subset.indexOf(i) === -1));
+                s.set('board', board.concat(immutable.List(subset)));
             }));
             if (matching && Object.keys(matching).length > 0) {
                 return true;
@@ -295,7 +295,7 @@ export default function transform(definition) {
 
     /** Check for equality of fields (but not of subexpressions). */
     module.shallowEqual = function shallowEqual(n1, n2) {
-        if (n1.get("type") !== n2.get("type")) return false;
+        if (n1.get('type') !== n2.get('type')) return false;
 
         for (const field of module.definitionOf(n1).fields) {
             if (n1.get(field) !== n2.get(field)) return false;
@@ -308,9 +308,9 @@ export default function transform(definition) {
     module.deepEqual = function deepEqual(nodes, n1, n2) {
         if (!module.shallowEqual(n1, n2)) return false;
 
-        if (n1.get("type") === "array") {
-            if (n1.get("length") !== n2.get("length")) return false;
-            for (let i = 0; i < n1.get("length"); i++) {
+        if (n1.get('type') === 'array') {
+            if (n1.get('length') !== n2.get('length')) return false;
+            for (let i = 0; i < n1.get('length'); i++) {
                 const e1 = nodes.get(n1.get(`elem${i}`));
                 const e2 = nodes.get(n2.get(`elem${i}`));
 
@@ -326,25 +326,24 @@ export default function transform(definition) {
      */
     module.droppable = function(state, itemId, targetId) {
         // TODO: don't hardcode these checks
-        const item = state.getIn([ "nodes", itemId ]);
-        const target = state.getIn([ "nodes", targetId ]);
+        const item = state.getIn(['nodes', itemId]);
+        const target = state.getIn(['nodes', targetId]);
 
-        if (item.get("type") === "define") {
+        if (item.get('type') === 'define') {
             return false;
         }
-        if (target.get("type") === "missing") {
+        if (target.get('type') === 'missing') {
             // Use type inference to decide whether hole can be filled
-            const holeType = target.get("ty");
-            const exprType = item.get("ty");
+            const holeType = target.get('ty');
+            const exprType = item.get('ty');
             if (!holeType || !exprType || holeType === exprType) {
-                return "hole";
+                return 'hole';
             }
-        }
-        else if (target.get("type") === "lambdaArg"
-                && !state.getIn([ "nodes", target.get("parent"), "parent" ])
+        } else if (target.get('type') === 'lambdaArg'
+                && !state.getIn(['nodes', target.get('parent'), 'parent'])
                 // Lambda vars can't be dropped into lambda args
-                && item.get("type") !== "lambdaVar") {
-            return "arg";
+                && item.get('type') !== 'lambdaVar') {
+            return 'arg';
         }
         return false;
     };
@@ -354,16 +353,16 @@ export default function transform(definition) {
      */
     module.targetable = function(state, expr) {
         const defn = module.definitionOf(expr);
-        if (defn && defn.targetable && typeof defn.targetable === "function") {
+        if (defn && defn.targetable && typeof defn.targetable === 'function') {
             return defn.targetable(module, state, expr);
         }
-        return !expr.get("parent") || !expr.get("locked") || (defn && defn.alwaysTargetable);
+        return !expr.get('parent') || !expr.get('locked') || (defn && defn.alwaysTargetable);
     };
 
     /** Get the kind of an expression (e.g., "expression", "value", "statement"). */
     module.kind = function(state, expr) {
         const def = module.definitionOf(expr);
-        return core.getField(def, "kind", expr, module, state);
+        return core.getField(def, 'kind', expr, module, state);
     };
 
     /** Turn an immutable expression into a mutable one (recursively). */
@@ -391,54 +390,50 @@ export default function transform(definition) {
     module.collectTypes = function collectTypes(state, rootExpr) {
         const result = new Map();
         const completeness = new Map();
-        const nodes = state.get("nodes");
+        const nodes = state.get('nodes');
 
         // Update the type map with the type for the expression.
         const update = function update(id, ty) {
             if (!result.has(id)) {
                 result.set(id, ty);
-            }
-            else {
+            } else {
                 const prevTy = result.get(id);
-                if (prevTy === "unknown") {
+                if (prevTy === 'unknown') {
                     result.set(id, ty);
-                }
-                else if (prevTy !== ty) {
-                    result.set(id, "error");
+                } else if (prevTy !== ty) {
+                    result.set(id, 'error');
                 }
             }
         };
 
-        const completeKind = (kind) => kind !== "expression" && kind !== "placeholder";
+        const completeKind = (kind) => kind !== 'expression' && kind !== 'placeholder';
 
         const step = function step(expr) {
-            const id = expr.get("id");
+            const id = expr.get('id');
 
             for (const field of module.subexpressions(expr)) {
                 step(nodes.get(expr.get(field)));
             }
 
-            const type = expr.get("type");
+            const type = expr.get('type');
             const exprDefn = module.definitionOf(type);
             if (!exprDefn) {
-                if (type !== "vtuple") console.warn(`No expression definition for ${type}`);
-            }
-            else {
+                if (type !== 'vtuple') console.warn(`No expression definition for ${type}`);
+            } else {
                 const typeDefn = exprDefn.type;
-                if (typeof typeDefn === "function") {
+                if (typeof typeDefn === 'function') {
                     const { types, complete } = typeDefn(module, state, result, expr);
                     completeness.set(
                         id,
                         complete && module.subexpressions(expr)
                             .map((field) => completeness.get(expr.get(field))
-                                 || module.kind(state, nodes.get(expr.get(field))) !== "expression")
-                            .every((x) => x),
+                                 || module.kind(state, nodes.get(expr.get(field))) !== 'expression')
+                            .every((x) => x)
                     );
                     for (const entry of types.entries()) {
                         update(...entry);
                     }
-                }
-                else if (typeof typeDefn === "undefined") {
+                } else if (typeof typeDefn === 'undefined') {
                     // TODO: define constants/typing module
                     // result[id].add("unknown");
                     completeness.set(
@@ -446,10 +441,9 @@ export default function transform(definition) {
                         module.subexpressions(expr)
                             .map((field) => completeness.get(expr.get(field))
                                  || completeKind(module.kind(state, nodes.get(expr.get(field)))))
-                            .every((x) => x),
+                            .every((x) => x)
                     );
-                }
-                else {
+                } else {
                     completeness.set(id, true);
                     update(id, typeDefn);
                 }
@@ -463,13 +457,13 @@ export default function transform(definition) {
 
     /** Check whether a node has any notches. */
     module.hasNotches = function(node) {
-        return node.get("notches");
+        return node.get('notches');
     };
 
     /** Check whether two nodes have an ycompatible notches. */
     module.notchesCompatible = function(node1, node2) {
-        const notches1 = node1.get("notches");
-        const notches2 = node2.get("notches");
+        const notches1 = node1.get('notches');
+        const notches2 = node2.get('notches');
         const result = [];
         if (notches1 && notches2) {
             for (let i = 0; i < notches1.size; i++) {
@@ -477,14 +471,14 @@ export default function transform(definition) {
                     const notch1 = notches1.get(i);
                     const notch2 = notches2.get(j);
                     if (notch1.shape !== notch2.shape) continue;
-                    if (notch1.type === "inset" && notch2.type !== "outset") continue;
-                    if (notch1.type === "outset" && notch2.type !== "inset") continue;
+                    if (notch1.type === 'inset' && notch2.type !== 'outset') continue;
+                    if (notch1.type === 'outset' && notch2.type !== 'inset') continue;
 
-                    if ((notch1.side === "left" && notch2.side === "right")
-                        || (notch1.side === "right" && notch2.side === "left")
-                        || (notch1.side === "top" && notch2.side === "bottom")
-                        || (notch1.side === "bottom" && notch2.side === "top")) {
-                        result.push([ i, j ]);
+                    if ((notch1.side === 'left' && notch2.side === 'right')
+                        || (notch1.side === 'right' && notch2.side === 'left')
+                        || (notch1.side === 'top' && notch2.side === 'bottom')
+                        || (notch1.side === 'bottom' && notch2.side === 'top')) {
+                        result.push([i, j]);
                     }
                 }
             }
@@ -494,7 +488,7 @@ export default function transform(definition) {
 
     /** Check whether two notches on two nodes can attach. */
     module.notchesAttachable = function(stage, state, parentId, childId, notchPair) {
-        const nodes = state.get("nodes");
+        const nodes = state.get('nodes');
         const parent = nodes.get(parentId);
 
         // Prevent double-attaching
@@ -505,20 +499,20 @@ export default function transform(definition) {
         if (defn && defn.notches && defn.notches[notchPair[0]]) {
             const notchDefn = defn.notches[notchPair[0]];
             if (notchDefn.canAttach) {
-                const [ canAttach, blockingNodes ] = notchDefn.canAttach(
+                const [canAttach, blockingNodes] = notchDefn.canAttach(
                     module,
                     state,
                     parentId,
                     childId,
-                    notchPair,
+                    notchPair
                 );
                 if (!canAttach) {
-                    Logging.log("attached-expr-failed", {
+                    Logging.log('attached-expr-failed', {
                         parent: stage.saveNode(parentId),
                         item: stage.saveNode(childId),
                         parentNotchIdx: notchPair[0],
                         childNotchIdx: notchPair[1],
-                        blocking: blockingNodes.map((id) => stage.saveNode(id)),
+                        blocking: blockingNodes.map((id) => stage.saveNode(id))
                     });
                     blockingNodes.forEach((id) => {
                         animate.fx.error(stage, stage.views[id]);
@@ -532,10 +526,10 @@ export default function transform(definition) {
 
     /** Check whether a node is detachable from its parent. */
     module.detachable = function(state, parentId, childId) {
-        const nodes = state.get("nodes");
+        const nodes = state.get('nodes');
         const defn = module.definitionOf(nodes.get(parentId));
-        const parentField = nodes.get(childId).get("parentField");
-        if (parentField.slice(0, 5) !== "notch") {
+        const parentField = nodes.get(childId).get('parentField');
+        if (parentField.slice(0, 5) !== 'notch') {
             return true;
         }
         const notchIdx = window.parseInt(parentField.slice(5), 10);
@@ -546,7 +540,7 @@ export default function transform(definition) {
                     module,
                     state,
                     parentId,
-                    childId,
+                    childId
                 );
             }
         }
@@ -559,7 +553,7 @@ export default function transform(definition) {
      */
     module.ignoreForVictory = function(state, node) {
         const defn = module.definitionOf(node);
-        return module.kind(state, node) === "syntax" || (defn && defn.ignoreForVictory);
+        return module.kind(state, node) === 'syntax' || (defn && defn.ignoreForVictory);
     };
 
     /** Compare two nodes for equality (recursively). */
