@@ -1,5 +1,5 @@
 import * as gfx from '../gfx/core';
-import * as animate from '../gfx/animate/tween';
+import * as animate from '../gfx/animate';
 import Loader from '../loader';
 
 const TOOLBOX_ROW_HEIGHT = 90;

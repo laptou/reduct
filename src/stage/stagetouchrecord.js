@@ -1,7 +1,7 @@
 import chroma from 'chroma-js';
 
 import * as action from '../reducer/action';
-import * as animate from '../gfx/animate/tween';
+import * as animate from '../gfx/animate';
 import Audio from '../resource/audio';
 import * as gfxCore from '../gfx/core';
 import * as fx from '../gfx/fx';

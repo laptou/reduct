@@ -110,8 +110,8 @@ exports.default = (env) => ({
     resolve: {
         extensions: ['.ts', '.js', '.json'],
         alias: {
-            '@resources': path.resolve(__dirname, 'resources'),
-            '@gfx': path.resolve(__dirname, 'src/gfx')
+            '@resources': path.resolve(__dirname, 'resources/'),
+            '@gfx': path.resolve(__dirname, 'src/gfx/')
         }
     }
 });

@@ -80,6 +80,7 @@ module.exports = {
         "@typescript-eslint/unbound-method": [
             "warn"
         ],
+        "@typescript-eslint/no-unused-expressions": ["warn"],
         "indent": [
             "error",
             4,
@@ -115,6 +116,7 @@ module.exports = {
                 "argsIgnorePattern": "^_"
             }
         ],
+        "no-unused-expressions": "off", // replaced by typescript-eslint variant
         "func-names": "off",
         "no-plusplus": "off",
         "no-param-reassign": "off",
@@ -124,6 +126,7 @@ module.exports = {
             "error",
             "consistent"
         ],
+
         // semantic rules
         'accessor-pairs': ['error'],
         'grouped-accessor-pairs': ['error', 'getBeforeSet'],

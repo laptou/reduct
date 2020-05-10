@@ -1,5 +1,5 @@
 import * as gfx from '../gfx/core';
-import * as animate from '../gfx/animate/tween';
+import * as animate from '../gfx/animate';
 import * as progression from '../game/progression';
 import Audio from '../resource/audio';
 import Logging from '../logging/logging';

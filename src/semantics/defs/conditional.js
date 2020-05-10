@@ -1,6 +1,6 @@
 import * as core from '../core';
 import * as gfx from '../../gfx/core';
-import * as animate from '../../gfx/animate/tween';
+import * as animate from '../../gfx/animate';
 
 export default {
     conditional: {

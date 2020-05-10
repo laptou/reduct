@@ -7,21 +7,30 @@ import ModalDialog from '../component/modal-dialog';
  * @member {Boolean} active Whether this Tutorial is currently active.
  */
 export default class TutorialDialog extends ModalDialog {
-    constructor(autoplay = true) {
-        const container = document.querySelector('#tutorial');
+    private videoPlayer: VideoPlayer | null;
+
+    private readonly btnSkip: Element;
+
+    public autoplay: boolean;
+
+    public constructor(autoplay = true) {
+        const container = document.querySelector('#tutorial')!;
         super(container, { allowSoftDismiss: true });
 
         this.autoplay = autoplay;
-        this.btnSkip = container.querySelector('#tutorial-continue');
+        this.btnSkip = container.querySelector('#tutorial-continue')!;
         this.videoPlayer = null;
 
         this.onSkipClick = this.onSkipClick.bind(this);
     }
 
-    async load(key) {
+    private onSkipClick() {
+        this.dismiss();
+    }
+
+    public async load(key: string) {
         this.videoPlayer = new VideoPlayer(
-            this.el.querySelector('.video-player'),
-            // eslint-disable-next-line import/no-dynamic-require
+            this.el.querySelector('.video-player')!,
             await import(`@resources/videos/${key}.mp4`)
                 .then((mod) => mod.default)
                 .catch((err) => console.error('failed to load tutorial', err))
@@ -32,21 +41,18 @@ export default class TutorialDialog extends ModalDialog {
     /**
      * Starts playing the tutorial.
      */
-    play() {
+    public play() {
         this.videoPlayer?.play();
     }
 
-    pause() {
+    public pause() {
         this.videoPlayer?.pause();
     }
 
-    /**
-     * Shows the tutorial to the user.
-     * @returns {this} `this`
-     */
-    show() {
+    public show(): this {
         super.show();
 
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         this.btnSkip.addEventListener('click', this.onSkipClick);
         if (this.autoplay) {
             this.play();
@@ -59,19 +65,13 @@ export default class TutorialDialog extends ModalDialog {
      * Dismisses the tutorial and cleans up event handlers.
      * @returns {this} `this`
      */
-    dismiss() {
+    public dismiss() {
         // remove event handlers
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         this.btnSkip.removeEventListener('click', this.onSkipClick);
         this.videoPlayer?.pause();
         this.videoPlayer?.detach();
 
         return super.dismiss();
-    }
-
-    /**
-     * @private
-     */
-    onSkipClick() {
-        this.dismiss();
     }
 }
