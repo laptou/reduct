@@ -1,5 +1,5 @@
 import type Clock from '../clock';
-import type { Easing } from '../easing';
+import { Easing, Linear } from '../easing';
 
 export enum TweenStatus {
     Running,
@@ -38,32 +38,35 @@ export type TweenOptions = {
  * The base class for a tween.
  */
 export abstract class Tween<O extends TweenOptions = TweenOptions> {
-    private readonly promise: Promise<void>;
+    /**
+     * The underlying Promise object of this tween, which is
+     * resolved when the tween finishes.
+     */
+    private readonly _promise: Promise<void>;
+
+    private readonly _options: TweenOptions;
 
     private resolve!: () => void;
 
     private reject!: () => void;
 
-    protected readonly options: O;
-
     public clock: Clock;
 
     public status: TweenStatus;
 
-    public constructor(clock: Clock, options: O) {
-        this.clock = clock;
-        this.options = options;
-        /**
-       * The underlying Promise object of this tween, which is
-       * resolved when the tween finishes.
-       */
-        this.promise = new Promise((resolve, reject) => {
+    public constructor(clock: Clock, options?: O) {
+        this._options = { duration: 300, easing: Linear, ...options };
+
+        this._promise = new Promise((resolve, reject) => {
             this.resolve = resolve;
             this.reject = reject;
         });
 
+        this.clock = clock;
         this.status = TweenStatus.Running;
     }
+
+    protected get options(): O { return this._options as O; }
 
     /**
      * A convenience function to register a callback for when the
@@ -74,7 +77,7 @@ export abstract class Tween<O extends TweenOptions = TweenOptions> {
         fulfilled: (() => T | PromiseLike<T>),
         rejected?: (() => any | PromiseLike<any>)
     ) {
-        return this.promise.then(fulfilled, rejected);
+        return this._promise.then(fulfilled, rejected);
     }
 
     /**
