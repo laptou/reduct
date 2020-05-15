@@ -1,6 +1,6 @@
 // import Map as ImMap to avoid conflicting with built-in
 // Map type, and the others for consistency
-import { List as ImList, Record as ImRecord, Map as ImMap } from 'immutable';
+import { List as ImList, Map as ImMap } from 'immutable';
 import { compose } from 'redux';
 import { combineReducers } from 'redux-immutable';
 
@@ -12,10 +12,10 @@ import { ActionKind } from './action';
 import type { RNode, RId, Im } from './types';
 
 export interface RState {
-    nodes: ImMap<RId, Im<Node>>;
-    goal: ImList<Im<Node>>;
-    board: ImList<Im<Node>>;
-    toolbox: ImList<Im<Node>>;
+    nodes: ImMap<RId, Im<RNode>>;
+    goal: ImList<RId>;
+    board: ImList<RId>;
+    toolbox: ImList<RId>;
     globals: ImMap<string, RId>;
 }
 
@@ -39,8 +39,8 @@ export function nextId(): RId {
 // To speed up type checking, we only type check nodes that have
 // changed.
 let dirty = new Set();
-function markDirty(nodes: ImList<Im<RNode>>, id: RId) {
-    let expr = nodes.get(id);
+function markDirty(nodes: ImMap<number, Im<RNode>>, id: RId) {
+    let expr = nodes.get(id)!; // warning: assuming node w/ given ID exists
     let parentId = expr.get('parent');
 
     // travel to the root node
@@ -88,7 +88,7 @@ export function reduct(semantics, views, restorePos) {
         }
         case ActionKind.SmallStep: {
             // console.log("@@SMALL_STEP_REDUCE@@");
-            const oldNode = state.getIn(['nodes', act.topNodeId]);
+            const oldNode: Im<RNode> = state.getIn(['nodes', act.topNodeId]);
 
             let newNodes = state.get('nodes')
                 .withMutations((n) => {
@@ -104,10 +104,10 @@ export function reduct(semantics, views, restorePos) {
                 console.log('Cannot small-step a child expression to multiple new expressions.');
                 // TODO: handle this more gracefully? Create a vtuple?
             } else {
-                const parent = newNodes.get(oldNode.get('parent'))
+                const parent = newNodes.get(oldNode.get('parent'))!
                     .set(oldNode.get('parentField'), act.newNodeIds[0]);
 
-                const child = newNodes.get(act.newNodeIds[0]).withMutations((nn) => {
+                const child = newNodes.get(act.newNodeIds[0])!.withMutations((nn) => {
                     nn.set('parent', parent.get('id'));
                     nn.set('parentField', oldNode.get('parentField'));
                 });

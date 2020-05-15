@@ -21,7 +21,7 @@ export interface RNode {
 }
 
 export interface RExpr {
-  
+
 }
 
 /**
@@ -45,4 +45,13 @@ export interface Im<T> extends ImMap<keyof T, T[keyof T]> {
 
   merge<K = keyof T, V = T[K]>(...iterables: ImIterable<K, V>[]): Map<keyof T | K, T[keyof T] | V>;
   merge<V>(...iterables: {[key: string]: V}[]): Map<keyof T | string, T[keyof T] | V>;
+
+  map(
+    mapper: (value?: T[keyof T], key?: keyof T, iter?: this) => T[keyof T],
+    context?: any
+  ): this;
+  map<M>(
+    mapper: (value?: T[keyof T], key?: keyof T, iter?: this) => M,
+    context?: any
+  ): ImMap<keyof T, T[keyof T] | M>;
 }

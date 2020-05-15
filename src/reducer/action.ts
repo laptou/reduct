@@ -1,5 +1,5 @@
 import { List as ImList, Map as ImMap } from 'immutable';
-import { Im, RNode, RId } from './types';
+import type { Im, RNode, RId } from './types';
 
 export enum ActionKind {
     UseToolbox,
@@ -23,10 +23,10 @@ export enum ActionKind {
 
 export interface StartLevelAction {
     type: ActionKind.StartLevel;
-    nodes: ImMap<RId, Im<Node>>;
-    goal: ImList<Im<Node>>;
-    board: ImList<Im<Node>>;
-    toolbox: ImList<Im<Node>>;
+    nodes: ImMap<RId, Im<RNode>>;
+    goal: ImList<RId>;
+    board: ImList<RId>;
+    toolbox: ImList<RId>;
     globals: ImMap<string, RId>;
 }
 

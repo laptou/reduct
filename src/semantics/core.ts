@@ -1,5 +1,5 @@
 import * as immutable from 'immutable';
-import { RNode } from '@/reducer/types';
+import type { RNode } from '@/reducer/types';
 
 export function genericFlatten(
     getNextId: () => number,
