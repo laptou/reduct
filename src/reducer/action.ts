@@ -1,4 +1,5 @@
-import * as immutable from 'immutable';
+import { List as ImList, Map as ImMap } from 'immutable';
+import { Im, RNode, RId } from './types';
 
 export enum ActionKind {
     UseToolbox,
@@ -20,6 +21,15 @@ export enum ActionKind {
     ChangeGoal,
 }
 
+export interface StartLevelAction {
+    type: ActionKind.StartLevel;
+    nodes: ImMap<RId, Im<Node>>;
+    goal: ImList<Im<Node>>;
+    board: ImList<Im<Node>>;
+    toolbox: ImList<Im<Node>>;
+    globals: ImMap<string, RId>;
+}
+
 
 /**
  * Redux action to start a new level.
@@ -38,14 +48,14 @@ export enum ActionKind {
  * @param {Array} toolbox - List of (mutable) expressions for the toolbox.
  * @param {Object} globals - Map of (mutable) expressions for globals.
  */
-export function startLevel(stage, goal, board, toolbox, globals) {
+export function startLevel(stage, goal, board, toolbox, globals): StartLevelAction {
     const { semantics } = stage;
 
-    let _nodes = {};
-    let _goal = [];
-    let _board = [];
-    let _toolbox = [];
-    let _globals = {};
+    let _nodes: Record<number, RNode> = {};
+    let _goal: RId[] = [];
+    let _board: RId[] = [];
+    let _toolbox: RId[] = [];
+    let _globals: Record<string, RId> = {};
 
     for (const expr of goal) {
         for (const newExpr of semantics.flatten(expr)) {
@@ -81,22 +91,16 @@ export function startLevel(stage, goal, board, toolbox, globals) {
         globals: _globals
     } = semantics.parser.postParse(_nodes, _goal, _board, _toolbox, _globals));
 
-    /* for debugging
-    console.log("nodes after flattening:");
-    console.log(_nodes);
-    console.log("globals after flattening:");
-    console.log(_globals);
-    */
-
-    const finalNodes = immutable.Map().withMutations((fn) => {
-        for (const node of Object.values(_nodes)) {
-            fn.set(node.id, immutable.Map(node));
-        }
-    });
+    const finalNodes = ImMap(
+        Object
+            .values(_nodes)
+            .map((node: RNode) => [node.id, ImMap(node)])
+    );
 
     finalNodes.forEach((node, nodeId) => {
         stage.views[nodeId] = semantics.project(stage, finalNodes, node);
     });
+
     return {
         type: ActionKind.StartLevel,
         nodes: finalNodes,

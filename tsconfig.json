@@ -16,7 +16,7 @@
     "resolveJsonModule": true,
     "paths": {
       "@resources/*": ["../resources/*"],
-      "@gfx/*": ["gfx/*"]
+      "@/*": ["*"],
     }
   }
 }

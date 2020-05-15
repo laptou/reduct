@@ -11,20 +11,28 @@ import { undoable } from './undo';
 import { ActionKind } from './action';
 import type { RNode, RId, Im } from './types';
 
+export interface RState {
+    nodes: ImMap<RId, Im<Node>>;
+    goal: ImList<Im<Node>>;
+    board: ImList<Im<Node>>;
+    toolbox: ImList<Im<Node>>;
+    globals: ImMap<string, RId>;
+}
+
 const initialProgram = ImMap({
     nodes: ImMap(),
     goal: ImList(),
     board: ImList(),
     toolbox: ImList(),
     globals: ImMap()
-});
+}) as unknown as Im<RState>;
 
 let idCounter = 0;
 
 /**
  * Returns the next unique ID. Used to assign IDs to nodes and views.
  */
-export function nextId() {
+export function nextId(): RId {
     return idCounter++;
 }
 

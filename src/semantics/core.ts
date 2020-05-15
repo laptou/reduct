@@ -1,11 +1,15 @@
 import * as immutable from 'immutable';
+import { RNode } from '@/reducer/types';
 
-export function genericFlatten(nextId, subexpressions) {
-    return function flatten(expr) {
-        expr.id = nextId();
+export function genericFlatten(
+    getNextId: () => number,
+    getSubExpressions: (node: RNode) => string[]
+) {
+    return function flatten(expr: RNode) {
+        expr.id = getNextId();
         let result = [expr];
 
-        for (const field of subexpressions(expr)) {
+        for (const field of getSubExpressions(expr)) {
             // Record the ID of the parent, as well as which field of
             // the parent we are stored in.
 
@@ -21,18 +25,18 @@ export function genericFlatten(nextId, subexpressions) {
 /** Apply the function f to node [nodeId] and all of its
 * subexpressions.
 */
-export function genericMap(subexpressions) {
+export function genericMap(getSubExpressions: (node: RNode) => string[]) {
     const innerMap = function(nodes, nodeId, f, filter = null, top = true) {
         let currentStore = nodes;
         if (top) currentStore = currentStore.asMutable();
         const currentNode = nodes.get(nodeId);
 
-        if (filter && !filter(currentStore, currentNode)) {
+        if (!filter?.(currentStore, currentNode)) {
             return [currentNode, currentStore];
         }
 
         const node = currentNode.withMutations((n) => {
-            for (const field of subexpressions(n)) {
+            for (const field of getSubExpressions(n)) {
                 const [newNode, newStore] = innerMap(currentStore, n.get(field), f, filter, false);
                 currentStore = newStore.set(newNode.get('id'), newNode);
                 n.set(field, newNode.get('id'));

@@ -20,6 +20,10 @@ export interface RNode {
   parentField: string;
 }
 
+export interface RExpr {
+  
+}
+
 /**
  * A definition to make ImmutableJS maps play nicer
  * with TypeScript.
