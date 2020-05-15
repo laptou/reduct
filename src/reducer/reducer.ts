@@ -4,20 +4,14 @@ import { List as ImList, Map as ImMap } from 'immutable';
 import { compose } from 'redux';
 import { combineReducers } from 'redux-immutable';
 
+import { RId, RNode } from '@/semantics/defs';
 import * as actions from './action';
 import * as gfx from '../gfx/core';
 import * as animate from '../gfx/animate';
 import { undoable } from './undo';
 import { ActionKind } from './action';
-import type { RNode, RId, Im } from './types';
-
-export interface RState {
-    nodes: ImMap<RId, Im<RNode>>;
-    goal: ImList<RId>;
-    board: ImList<RId>;
-    toolbox: ImList<RId>;
-    globals: ImMap<string, RId>;
-}
+import { RState } from './state';
+import { Im } from '@/util/im';
 
 const initialProgram = ImMap({
     nodes: ImMap(),

@@ -1,4 +1,5 @@
 import * as immutable from 'immutable';
+import { ExprDefinition } from '.';
 
 // Returns the names of the subexpressions of an array: elem0, elem1, etc.
 // Requires: arr is a hydrated array node or an immutable map for an array node
@@ -29,35 +30,34 @@ function arrayDisplayParts(expr) {
     return result;
 }
 
-export default {
-    array: {
-        kind: (arr, semant, state) => {
-            const nodes = state.get('nodes');
-            for (const field of semant.subexpressions(arr)) {
-                const subexp = nodes.get(arr.get(field));
-                if (semant.kind(state, subexp) == 'expression'
+// eslint-disable-next-line import/prefer-default-export
+export const array: ExprDefinition = {
+    kind: (arr, semant, state) => {
+        const nodes = state.get('nodes');
+        for (const field of semant.subexpressions(arr)) {
+            const subexp = nodes.get(arr.get(field));
+            if (semant.kind(state, subexp) == 'expression'
                     || subexp.get('type') == 'missing') {
-                    return 'expression';
-                }
+                return 'expression';
             }
-            return 'value';
+        }
+        return 'value';
+    },
+    type: 'array',
+    fields: ['length'],
+    subexpressions: arraySubexprs,
+    projection: {
+        type: 'default',
+        fields: arrayDisplayParts,
+        subexpScale: 0.9,
+        padding: {
+            top: 3.5,
+            bottom: 3.5,
+            left: 1,
+            right: 1,
+            inner: 4
         },
-        type: 'array',
-        fields: ['length'],
-        subexpressions: arraySubexprs,
-        projection: {
-            type: 'default',
-            fields: arrayDisplayParts,
-            subexpScale: 0.9,
-            padding: {
-                top: 3.5,
-                bottom: 3.5,
-                left: 1,
-                right: 1,
-                inner: 4
-            },
-            color: '#bec'
-        },
-        complete: true
-    }
+        color: '#bec'
+    },
+    complete: true
 };

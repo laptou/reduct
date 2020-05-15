@@ -2,9 +2,9 @@ import * as core from './core';
 import { ES6Parser, makeUnparser } from '../syntax/es6';
 import transform from './transform';
 
-import apply from './defs/apply';
+import { apply } from './defs/apply';
 import autograder from './defs/autograder';
-import array from './defs/array';
+import { array } from './defs/array';
 import binop from './defs/binop';
 import conditional from './defs/conditional';
 import define from './defs/define';
@@ -116,8 +116,8 @@ export default transform({
     expressions: {
         missing: core.missing,
 
-        ...apply,
-        ...array,
+        apply,
+        array,
         ...binop,
         ...conditional,
         ...define,

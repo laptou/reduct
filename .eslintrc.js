@@ -168,6 +168,7 @@ module.exports = {
         'quotes': ['error', 'single'],
         
         'import/extensions': ['warn', 'never'],
+        'import/prefer-default-export': ['warn'],
         'max-classes-per-file': ['warn', 2]
     },
     "ignorePatterns": [
