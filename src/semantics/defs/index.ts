@@ -1,10 +1,12 @@
 export enum SemanticItemKind {
-  Expr = 'expression'
+  Expr = 'expression',
+  Placeholder = 'placeholder',
+  Value = 'value'
 }
 
 export interface SemanticDefinition {
   kind: SemanticItemKind;
-  fields: any[];
+  fields: string[];
   subexpressions: string[];
   projection: ProjectionDefinition;
 }
