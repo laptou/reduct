@@ -1,18 +1,22 @@
-import * as immutable from 'immutable';
+// import Map as ImMap to avoid conflicting with built-in
+// Map type, and the others for consistency
+import { List as ImList, Record as ImRecord, Map as ImMap } from 'immutable';
 import { compose } from 'redux';
 import { combineReducers } from 'redux-immutable';
 
-import * as action from './action';
+import * as actions from './action';
 import * as gfx from '../gfx/core';
 import * as animate from '../gfx/animate';
 import { undoable } from './undo';
+import { ActionKind } from './action';
+import type { RNode, RId, Im } from './types';
 
-const initialProgram = immutable.Map({
-    nodes: immutable.Map(),
-    goal: immutable.List(),
-    board: immutable.List(),
-    toolbox: immutable.List(),
-    globals: immutable.Map()
+const initialProgram = ImMap({
+    nodes: ImMap(),
+    goal: ImList(),
+    board: ImList(),
+    toolbox: ImList(),
+    globals: ImMap()
 });
 
 let idCounter = 0;
@@ -27,11 +31,17 @@ export function nextId() {
 // To speed up type checking, we only type check nodes that have
 // changed.
 let dirty = new Set();
-function markDirty(nodes, id) {
+function markDirty(nodes: ImList<Im<RNode>>, id: RId) {
     let expr = nodes.get(id);
-    while (expr.get('parent')) {
-        expr = nodes.get(expr.get('parent'));
+    let parentId = expr.get('parent');
+
+    // travel to the root node
+    while (typeof parentId === 'number') {
+        expr = nodes.get(parentId);
+        parentId = expr.get('parent');
     }
+
+    // add root node to dirty set
     dirty.add(expr.get('id'));
 }
 
@@ -48,7 +58,7 @@ function markDirty(nodes, id) {
 export function reduct(semantics, views, restorePos) {
     function program(state = initialProgram, act) {
         switch (act.type) {
-        case action.START_LEVEL: {
+        case ActionKind.StartLevel: {
             act.nodes.forEach((n) => markDirty(act.nodes, n.get('id')));
             act.toolbox.forEach((n) => markDirty(act.nodes, n));
             return state.merge({
@@ -59,7 +69,7 @@ export function reduct(semantics, views, restorePos) {
                 globals: act.globals
             });
         }
-        case action.RAISE: {
+        case ActionKind.Raise: {
             const board = state.get('board');
             if (board.contains(act.nodeId)) {
                 const newBoard = board.filter((n) => n !== act.nodeId).push(act.nodeId);
@@ -68,7 +78,7 @@ export function reduct(semantics, views, restorePos) {
 
             return state;
         }
-        case action.SMALL_STEP: {
+        case ActionKind.SmallStep: {
             // console.log("@@SMALL_STEP_REDUCE@@");
             const oldNode = state.getIn(['nodes', act.topNodeId]);
 
@@ -106,7 +116,7 @@ export function reduct(semantics, views, restorePos) {
                 .set('nodes', newNodes)
                 .set('board', newBoard);
         }
-        case action.ADD_TOOLBOX_ITEM: {
+        case ActionKind.AddToolboxItem: {
             const newNodes = state.get('nodes')
                 .withMutations((n) => {
                     for (const node of act.addedNodes) {
@@ -120,7 +130,7 @@ export function reduct(semantics, views, restorePos) {
                 .set('nodes', newNodes)
                 .set('toolbox', newToolbox);
         }
-        case action.ADD_GOAL_ITEM: {
+        case ActionKind.AddGoalItem: {
             const newNodes = state.get('nodes')
                 .withMutations((n) => {
                     for (const node of act.addedNodes) {
@@ -134,7 +144,7 @@ export function reduct(semantics, views, restorePos) {
                 .set('nodes', newNodes)
                 .set('goal', addedGoal);
         }
-        case action.ADD_BOARD_ITEM: {
+        case ActionKind.AddBoardItem: {
             const newNodes = state.get('nodes')
                 .withMutations((n) => {
                     for (const node of act.addedNodes) {
@@ -150,7 +160,7 @@ export function reduct(semantics, views, restorePos) {
                 .set('nodes', newNodes)
                 .set('board', newBoard);
         }
-        case action.CHANGE_GOAL: {
+        case ActionKind.ChangeGoal: {
             const newNodes = state.get('nodes')
                 .withMutations((n) => {
                     for (const node of act.addedNodes) {
@@ -167,7 +177,7 @@ export function reduct(semantics, views, restorePos) {
                 .set('nodes', newNodes)
                 .set('goal', newGoal);
         }
-        case action.UNFOLD: {
+        case ActionKind.Fold: {
             const nodes = state.get('nodes');
             const ref = nodes.get(act.nodeId);
 
@@ -194,11 +204,11 @@ export function reduct(semantics, views, restorePos) {
 
             return newState;
         }
-        case action.BETA_REDUCE: {
+        case ActionKind.BetaReduce: {
             const queue = [act.topNodeId, act.argNodeId];
             const removedNodes = {};
 
-            const addedNodes = immutable.Map(act.addedNodes.map((n) => {
+            const addedNodes = ImMap(act.addedNodes.map((n) => {
                 const id = n.get('id');
                 if (act.newNodeIds.indexOf(id) >= 0) {
                     return [id, n.delete('parent').delete('parentField')];
@@ -241,7 +251,7 @@ export function reduct(semantics, views, restorePos) {
                 s.set('toolbox', s.get('toolbox').filter((id) => !removedNodes[id]));
             });
         }
-        case action.FILL_HOLE: {
+        case ActionKind.FillSlot: {
             const hole = state.getIn(['nodes', act.holeId]);
 
             const holeParent = state.getIn(['nodes', act.holeId, 'parent']);
@@ -271,7 +281,7 @@ export function reduct(semantics, views, restorePos) {
                 markDirty(map.get('nodes'), act.childId);
             });
         }
-        case action.ATTACH_NOTCH: {
+        case ActionKind.AttachNotch: {
             const child = state.getIn(['nodes', act.childId]);
             if (child.get('parent')) throw 'Dragging objects from one hole to another is unsupported.';
 
@@ -307,7 +317,7 @@ export function reduct(semantics, views, restorePos) {
                 }
             });
         }
-        case action.USE_TOOLBOX: {
+        case ActionKind.UseToolbox: {
             if (state.get('toolbox').contains(act.nodeId)) {
                 // If node has __meta indicating infinite uses, clone
                 // instead.
@@ -330,7 +340,7 @@ export function reduct(semantics, views, restorePos) {
             }
             return state;
         }
-        case action.DETACH: {
+        case ActionKind.Detach: {
             const node = state.getIn(['nodes', act.nodeId]);
 
             const parent = state.getIn(['nodes', act.nodeId, 'parent']);
@@ -378,13 +388,13 @@ export function reduct(semantics, views, restorePos) {
                 }));
             });
         }
-        case action.VICTORY: {
+        case ActionKind.Victory: {
             return state.withMutations((map) => {
-                map.set('board', immutable.List());
-                map.set('goal', immutable.List());
+                map.set('board', ImList());
+                map.set('goal', ImList());
             });
         }
-        case action.UNFADE: {
+        case ActionKind.Unfade: {
             return state.withMutations((s) => {
                 s.set('nodes', s.get('nodes').withMutations((n) => {
                     for (const newNode of act.addedNodes) {
@@ -397,7 +407,7 @@ export function reduct(semantics, views, restorePos) {
                 );
             });
         }
-        case action.FADE: {
+        case ActionKind.Fade: {
             return state.withMutations((s) => {
                 s.set(
                     act.source,
@@ -405,7 +415,7 @@ export function reduct(semantics, views, restorePos) {
                 );
             });
         }
-        case action.DEFINE: {
+        case ActionKind.Define: {
             return state.withMutations((s) => {
                 s.set('globals', state.get('globals').set(act.name, act.id));
                 s.set('board', state.get('board').filter((id) => id !== act.id));
@@ -444,10 +454,10 @@ export function reduct(semantics, views, restorePos) {
     return {
         reducer: combineReducers({
             program: undoable(compose(annotateTypes, program), {
-                actionFilter: (act) => act.type === action.RAISE
-                    || act.type === action.HOVER
+                actionFilter: (act) => act.type === actions.RAISE
+                    || act.type === actions.HOVER
                     // Prevent people from undoing start of level
-                    || act.type === action.START_LEVEL
+                    || act.type === actions.START_LEVEL
                     || act.skipUndo,
                 extraState: (state, newState) => {
                     const result = {};

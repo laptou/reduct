@@ -1,7 +1,7 @@
 import '@resources/style/index.css';
 
 import vis from 'vis-charts';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 
 import fileSaver from 'file-saver';
 import * as immutable from 'immutable';
@@ -180,16 +180,23 @@ function initialize() {
         const { w, h } = gfx.absoluteSize(stg.getView(id));
         return stg.findSafePosition(x, y, w, h);
     });
+
+    const extCompose = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?? compose;
+
     store = createStore(
         reduct.reducer,
         undefined,
-        applyMiddleware(Logging.logMiddleware(
-            () => stg.getState(),
-            (...args) => stg.saveState(...args),
-            (...args) => stg.pushState(...args),
-            (...args) => stg.saveNode(...args),
-            es6
-        ))
+        extCompose(
+            applyMiddleware(
+                Logging.logMiddleware(
+                    () => stg.getState(),
+                    (...args) => stg.saveState(...args),
+                    (...args) => stg.pushState(...args),
+                    (...args) => stg.saveNode(...args),
+                    es6
+                )
+            )
+        )
     );
     stg = new TitleStage(startGame, canvas, 800, 600, store, views, es6);
     window.stage = stg;

@@ -1,22 +1,26 @@
 import * as immutable from 'immutable';
 
-export const USE_TOOLBOX = 'use-toolbox';
-export const RAISE = 'raise';
-export const DETACH = 'detach';
-export const FILL_HOLE = 'fill-hole';
-export const ATTACH_NOTCH = 'attach-notch';
-export const SMALL_STEP = 'small-step';
-export const UNFOLD = 'unfold';
-export const BETA_REDUCE = 'beta-reduce';
-export const START_LEVEL = 'start-level';
-export const VICTORY = 'victory';
-export const FADE = 'fade';
-export const UNFADE = 'unfade';
-export const DEFINE = 'define';
-export const ADD_TOOLBOX_ITEM = 'add-toolbox-item';
-export const CHANGE_GOAL = 'change-goal';
-export const ADD_BOARD_ITEM = 'add-board-item';
-export const ADD_GOAL_ITEM = 'add-goal-item';
+export enum ActionKind {
+    UseToolbox,
+    Raise,
+    Detach,
+    FillSlot,
+    AttachNotch,
+    SmallStep,
+    Unfold,
+    BetaReduce,
+    StartLevel,
+    Victory,
+    Fade,
+    Unfade,
+    Define,
+    AddToolboxItem,
+    AddBoardItem,
+    AddGoalItem,
+    ChangeGoal,
+}
+
+
 /**
  * Redux action to start a new level.
  *
@@ -94,7 +98,7 @@ export function startLevel(stage, goal, board, toolbox, globals) {
         stage.views[nodeId] = semantics.project(stage, finalNodes, node);
     });
     return {
-        type: START_LEVEL,
+        type: ActionKind.StartLevel,
         nodes: finalNodes,
         goal: _goal,
         board: _board,
@@ -105,7 +109,7 @@ export function startLevel(stage, goal, board, toolbox, globals) {
 
 export function addToolboxItem(newNodeId, newNodes) {
     return {
-        type: ADD_TOOLBOX_ITEM,
+        type: ActionKind.AddToolboxItem,
         newNodeId,
         addedNodes: newNodes
     };
@@ -113,7 +117,7 @@ export function addToolboxItem(newNodeId, newNodes) {
 
 export function addGoalItem(newNodeId, newNodes) {
     return {
-        type: ADD_GOAL_ITEM,
+        type: ActionKind.AddGoalItem,
         newNodeId,
         addedNodes: newNodes
     };
@@ -121,7 +125,7 @@ export function addGoalItem(newNodeId, newNodes) {
 
 export function changeGoal(goal_id, newNodeIds, newNodes) {
     return {
-        type: CHANGE_GOAL,
+        type: ActionKind.ChangeGoal,
         goal_id,
         newNodeIds,
         addedNodes: newNodes
@@ -130,7 +134,7 @@ export function changeGoal(goal_id, newNodeIds, newNodes) {
 
 export function addBoardItem(newNodeIds, addedNodes) {
     return {
-        type: ADD_BOARD_ITEM,
+        type: ActionKind.AddBoardItem,
         newNodeIds,
         addedNodes
     };
@@ -144,7 +148,7 @@ export function addBoardItem(newNodeIds, addedNodes) {
 export function smallStep(nodeId, newNodeIds, newNodes) {
     console.log(JSON.stringify(newNodes));
     return {
-        type: SMALL_STEP,
+        type: ActionKind.SmallStep,
         topNodeId: nodeId,
         newNodeIds,
         addedNodes: newNodes
@@ -157,7 +161,7 @@ export function smallStep(nodeId, newNodeIds, newNodes) {
  */
 export function unfold(nodeId, newNodeId, addedNodes) {
     return {
-        type: UNFOLD,
+        type: ActionKind.Unfold,
         nodeId,
         newNodeId,
         addedNodes
@@ -173,7 +177,7 @@ export function unfold(nodeId, newNodeId, addedNodes) {
  */
 export function betaReduce(topNodeId, argNodeId, newNodeIds, addedNodes) {
     return {
-        type: BETA_REDUCE,
+        type: ActionKind.BetaReduce,
         topNodeId,
         argNodeId,
         newNodeIds,
@@ -192,7 +196,7 @@ export function betaReduce(topNodeId, argNodeId, newNodeIds, addedNodes) {
  */
 export function raise(nodeId) {
     return {
-        type: RAISE,
+        type: ActionKind.Raise,
         nodeId
     };
 }
@@ -202,7 +206,7 @@ export function raise(nodeId) {
  */
 export function detach(nodeId) {
     return {
-        type: DETACH,
+        type: ActionKind.Detach,
         nodeId
     };
 }
@@ -212,7 +216,7 @@ export function detach(nodeId) {
  */
 export function fillHole(holeId, childId) {
     return {
-        type: FILL_HOLE,
+        type: ActionKind.FillSlot,
         holeId,
         childId
     };
@@ -223,7 +227,7 @@ export function fillHole(holeId, childId) {
  */
 export function attachNotch(parentId, notchIdx, childId, childNotchIdx) {
     return {
-        type: ATTACH_NOTCH,
+        type: ActionKind.AttachNotch,
         parentId,
         childId,
         notchIdx,
@@ -236,7 +240,7 @@ export function attachNotch(parentId, notchIdx, childId, childNotchIdx) {
  */
 export function useToolbox(nodeId, clonedNodeId = null, addedNodes = null) {
     return {
-        type: USE_TOOLBOX,
+        type: ActionKind.UseToolbox,
         nodeId,
         clonedNodeId,
         addedNodes
@@ -251,7 +255,7 @@ export function useToolbox(nodeId, clonedNodeId = null, addedNodes = null) {
  */
 export function victory() {
     return {
-        type: VICTORY
+        type: ActionKind.Victory
     };
 }
 
@@ -269,7 +273,7 @@ export function skipUndo(action) {
  */
 export function unfade(source, nodeId, newNodeId, addedNodes) {
     return {
-        type: UNFADE,
+        type: ActionKind.Unfade,
         source,
         nodeId,
         newNodeId,
@@ -282,7 +286,7 @@ export function unfade(source, nodeId, newNodeId, addedNodes) {
  */
 export function fade(source, unfadedId, fadedId) {
     return {
-        type: FADE,
+        type: ActionKind.Fade,
         source,
         unfadedId,
         fadedId
@@ -294,7 +298,7 @@ export function fade(source, unfadedId, fadedId) {
  */
 export function define(name, id) {
     return {
-        type: DEFINE,
+        type: ActionKind.Define,
         name,
         id
     };
