@@ -135,6 +135,7 @@ module.exports = {
         'no-var': ['error'],
         'no-useless-computed-key': ['error'],
         'prefer-const': ['error', { destructuring: 'all' }],
+        'constructor-super': ['warn'],
     
         // spacing rules
         'dot-location': ['warn', 'property'],
@@ -154,7 +155,9 @@ module.exports = {
         // newline rules
         'object-curly-newline': ['error', { multiline: true, minProperties: 4, consistent: true }],
         'object-property-newline': ['error',{ allowAllPropertiesOnSameLine: true }],
-    
+        'function-call-argument-newline': ['error', 'consistent'],
+        'lines-between-class-members': ['error', 'always'],
+        
         // comma rules
         'comma-dangle': ['error', 'never'],
         'comma-spacing': ['error', { before: false, after: true }],
@@ -164,7 +167,8 @@ module.exports = {
         'quote-props': ['error', 'consistent-as-needed'],
         'quotes': ['error', 'single'],
         
-        'import/extensions': ['warn', 'never']
+        'import/extensions': ['warn', 'never'],
+        'max-classes-per-file': ['warn', 2]
     },
     "ignorePatterns": [
         "node_modules/",

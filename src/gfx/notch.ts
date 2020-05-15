@@ -1,13 +1,21 @@
 export class NotchSet {
-    constructor(notches) {
+    public notches: Notch[];
+
+    public constructor(notches: Notch[]) {
         this.notches = notches;
     }
 
-    get(idx) {
+    public get(idx: number) {
         return this.notches[idx];
     }
 
-    drawSequence(ctx, side, x, y, len) {
+    public drawSequence(
+        ctx: CanvasRenderingContext2D,
+        side: NotchSide,
+        x: number,
+        y: number,
+        len: number
+    ) {
         const notches = this.notches
             .filter((n) => n.side === side)
             .sort((a, b) => a.relpos - b.relpos);
@@ -19,8 +27,34 @@ export class NotchSet {
     }
 }
 
+export enum NotchSide {
+    Top = 'top',
+    Left = 'left',
+    Bottom = 'bottom',
+    Right = 'right'
+}
+
 export class Notch {
-    constructor(side, shape, width, depth, relpos, inner) {
+    public side: NotchSide;
+
+    public relpos: any;
+
+    public shape: any;
+
+    public width: any;
+
+    public depth: any;
+
+    public inner: any;
+
+    public constructor(
+        side: NotchSide,
+        shape: any,
+        width: number,
+        depth: number,
+        relpos: number,
+        inner: boolean
+    ) {
         this.side = side;
         this.shape = shape;
         this.width = width;
@@ -29,14 +63,20 @@ export class Notch {
         this.relpos = relpos;
     }
 
-    get direction() {
-        if (this.side === 'left' || this.side === 'bottom') {
+    public get direction() {
+        if (this.side === NotchSide.Left || this.side === NotchSide.Bottom) {
             return -1;
         }
         return 1;
     }
 
-    drawVertical(ctx, x, y, h, dir = null) {
+    public drawVertical(
+        ctx: CanvasRenderingContext2D,
+        x: number,
+        y: number,
+        h: number,
+        dir?: number
+    ) {
         if (!dir) dir = this.direction;
         const { relpos } = this;
         const facing = this.inner ? 1 : -1;
@@ -45,7 +85,13 @@ export class Notch {
         ctx.lineTo(x, y + dir * (h * relpos + this.width));
     }
 
-    drawHorizontal(ctx, x, y, w, dir = null) {
+    public drawHorizontal(
+        ctx: CanvasRenderingContext2D,
+        x: number,
+        y: number,
+        w: number,
+        dir?: number
+    ) {
         if (!dir) dir = this.direction;
         const { relpos } = this;
         const facing = this.inner ? 1 : -1;
