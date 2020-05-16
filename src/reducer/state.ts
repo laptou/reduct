@@ -1,5 +1,5 @@
-import { RNode, RId } from '@/semantics/defs';
-import { Im } from '@/util/im';
+import type { Im, ImMap, ImList } from '@/util/im';
+import type { RNode, RId } from '@/semantics/defs';
 
 
 export interface RState {

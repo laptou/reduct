@@ -2,23 +2,23 @@ import { List as ImList, Map as ImMap } from 'immutable';
 import type { Im, RNode, RId } from './types';
 
 export enum ActionKind {
-    UseToolbox,
-    Raise,
-    Detach,
-    FillSlot,
-    AttachNotch,
-    SmallStep,
-    Unfold,
-    BetaReduce,
-    StartLevel,
-    Victory,
-    Fade,
-    Unfade,
-    Define,
-    AddToolboxItem,
-    AddBoardItem,
-    AddGoalItem,
-    ChangeGoal,
+    UseToolbox = 'use-toolbox',
+    Raise = 'raise',
+    Detach = 'detach',
+    FillSlot = 'fill-slot',
+    AttachNotch = 'attach-notch',
+    SmallStep = 'small-step',
+    Unfold = 'unfold',
+    BetaReduce = 'beta-reduce',
+    StartLevel = 'start-level',
+    Victory = 'victory',
+    Fade = 'fade',
+    Unfade = 'unfade',
+    Define = 'define',
+    AddToolboxItem = 'add-toolbox-item',
+    AddBoardItem = 'add-board-item',
+    AddGoalItem = 'add-goal-item',
+    ChangeGoal = 'change-goal',
 }
 
 export interface StartLevelAction {
@@ -104,10 +104,10 @@ export function startLevel(stage, goal, board, toolbox, globals): StartLevelActi
     return {
         type: ActionKind.StartLevel,
         nodes: finalNodes,
-        goal: _goal,
-        board: _board,
-        toolbox: _toolbox,
-        globals: _globals
+        goal: ImList(_goal),
+        board: ImList(_board),
+        toolbox: ImList(_toolbox),
+        globals: ImMap(_globals)
     };
 }
 

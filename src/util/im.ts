@@ -1,3 +1,8 @@
+import { Map as ImMap, Collection as ImCollection } from 'immutable';
+
+export { List as ImList, Collection as ImCollection, Map as ImMap } from 'immutable';
+
+
 /**
  * A definition to make ImmutableJS maps play nicer
  * with TypeScript.
@@ -29,5 +34,3 @@ export interface Im<T> extends ImMap<keyof T, T[keyof T]> {
     context?: any
   ): ImMap<keyof T, T[keyof T] | M>;
 }
-
-export { List as ImList, Collection as ImCollection, Map as ImMap } from 'immutable';

@@ -128,7 +128,7 @@ export default function transform(definition) {
                 exprDefinition.projection.notches = exprDefinition.notches;
             }
 
-            console.log("exprDefinition", exprDefinition);
+            console.log('exprDefinition', exprDefinition);
 
             module.projections[exprName].push(projector(exprDefinition));
         }

@@ -3,7 +3,7 @@ import { ES6Parser, makeUnparser } from '../syntax/es6';
 import transform from './transform';
 
 import { apply } from './defs/apply';
-import autograder from './defs/autograder';
+import { autograder } from './defs/autograder';
 import { array } from './defs/array';
 import binop from './defs/binop';
 import conditional from './defs/conditional';
@@ -118,10 +118,10 @@ export default transform({
 
         apply,
         array,
+        autograder,
         ...binop,
         ...conditional,
         ...define,
-        ...autograder,
         ...lambda,
         ...letExpr,
         ...member,

@@ -1,4 +1,4 @@
-import type { Im } from '@/util/im.d.ts';
+import type { Im } from '@/util/im';
 import type { RState } from '@/reducer/state';
 import type Stage from '@/stage/stage';
 
@@ -9,7 +9,7 @@ export type RId = number;
  * on the board, in the toolbox, in the goal box,
  * or in the defs box.
  */
-export type RNode<SE extends string = any> = {
+export interface RNode {
   /** The ID of this node. */
   id: RId;
 
@@ -20,36 +20,42 @@ export type RNode<SE extends string = any> = {
    * occupies.
    */
   parentField: string;
-} & Record<SE, RId>;
+}
 
-export interface ExprDefinition<SE extends string = never> {
+export interface ExprDefinition<N extends RNode> {
   /**
    * What kind of expression (``value``, ``expression``, ``statement``,
    * ``syntax``, or ``placeholder``). This is important—only an
    * ``expression`` can be clicked on, for instance, and reaching a
    * ``value`` will stop evaluation!
    */
-  kind: ExprType | ((expr: Im<RNode<SE>>, semantics: Semantics, state: Im<RState>) => ExprType);
+  kind: ExprType | ((expr: Im<N>, semantics: Semantics, state: Im<RState>) => ExprType);
 
   /**
    * A (possibly empty) list of fields the expression should have. For
    * instance, a number expression would have a value field, or
    * definition syntax might have a name field.
    */
-  fields: string[];
+  fields: Exclude<keyof N, keyof RNode>[];
 
   /**
    * A (possibly empty) list of additional fields that contain child
    * expressions. For instance, definition syntax might have a
    * subexpression for the body.
    */
-  subexpressions: [...SE[]];
+  subexpressions:
+    Exclude<keyof N, keyof RNode>[] |
+    ((semantics: Semantics, expr: Im<N>) => Exclude<keyof N, keyof RNode>[]);
 
   projection: ProjectionTemplate;
 
   type?: any;
 
-  targetable?: (semantics: Semantics, state: Im<RState>, expr: Im<RNode<SE>>) => boolean;
+  targetable?: (
+    semantics: Semantics,
+    state: Im<RState>,
+    expr: Im<N>
+  ) => boolean;
 
   alwaysTargetable?: boolean;
 
@@ -97,7 +103,7 @@ export interface ExprDefinition<SE extends string = never> {
     semantics: Semantics,
     stage: Stage,
     state: Im<RState>,
-    expr: Im<RNode<SE>>
+    expr: Im<N>
   ) => [RId, RId[], RNode[]] | ExprDefinition<any> | Im<ExprDefinition<any>>;
 
   /**
@@ -114,7 +120,7 @@ export interface ExprDefinition<SE extends string = never> {
     semantics: Semantics,
     stage: Stage,
     state: Im<RState>,
-    expr: Im<RNode<SE>>,
+    expr: Im<N>,
     argIds: RId[]
   ) => [RId, RId[], RNode[]];
 
@@ -122,14 +128,14 @@ export interface ExprDefinition<SE extends string = never> {
     semantics: Semantics,
     stage: Stage,
     state: Im<RState>,
-    expr: Im<RNode<SE>>
+    expr: Im<N>
   ) => Promise<void>;
 
   stepSound?: string | ((
     semantics: Semantics,
     stage: Stage,
     state: Im<RState>,
-    expr: Im<RNode<SE>>
+    expr: Im<N>
   ) => string);
 
   /**
@@ -140,7 +146,7 @@ export interface ExprDefinition<SE extends string = never> {
   validateStep?: string | ((
     semantics: Semantics,
     state: Im<RState>,
-    expr: Im<RNode<SE>>
+    expr: Im<N>
   ) => [RId, string] | null);
 
   /**
@@ -165,7 +171,7 @@ export interface ExprDefinition<SE extends string = never> {
   substepFilter?: (
     semantics: Semantics,
     state: Im<RState>,
-    expr: Im<RNode<SE>>,
+    expr: Im<N>,
     field: string
   ) => boolean;
 }
@@ -197,7 +203,7 @@ export enum ProjectionType {
 }
 */
 
-export type ProjectionType = 'decal';
+export type ProjectionType = 'decal' | 'hbox' | 'default';
 
 export interface ProjectionTemplate {
   type: ProjectionType;

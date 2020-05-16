@@ -179,7 +179,7 @@ export function reduct(semantics, views, restorePos) {
                 .set('nodes', newNodes)
                 .set('goal', newGoal);
         }
-        case ActionKind.Fold: {
+        case ActionKind.Unfold: {
             const nodes = state.get('nodes');
             const ref = nodes.get(act.nodeId);
 

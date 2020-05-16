@@ -1,5 +1,5 @@
-import * as immutable from 'immutable';
-import { ExprDefinition } from '.';
+import { Im, ImMap } from '@/util/im';
+import { ExprDefinition, RNode, Semantics } from '.';
 
 // Returns the names of the subexpressions of an array: elem0, elem1, etc.
 // Requires: arr is a hydrated array node or an immutable map for an array node
@@ -17,7 +17,7 @@ function arraySubexprs(module, arr) {
 // Returns the fields that are supposed to be displayed by
 // the projection of an array
 function arrayDisplayParts(expr) {
-    const a = arraySubexprs(null, immutable.Map(expr));
+    const a = arraySubexprs(null, ImMap(expr));
     const result = [];
     let first = true;
     result.push('\'[\'');
@@ -30,8 +30,12 @@ function arrayDisplayParts(expr) {
     return result;
 }
 
+export interface ArrayNode extends RNode {
+    length: number;
+}
+
 // eslint-disable-next-line import/prefer-default-export
-export const array: ExprDefinition = {
+export const array: ExprDefinition<ArrayNode> = {
     kind: (arr, semant, state) => {
         const nodes = state.get('nodes');
         for (const field of semant.subexpressions(arr)) {
@@ -45,7 +49,7 @@ export const array: ExprDefinition = {
     },
     type: 'array',
     fields: ['length'],
-    subexpressions: arraySubexprs,
+    subexpressions: arraySubexprs as ((s: Semantics, e: Im<ArrayNode>) => any),
     projection: {
         type: 'default',
         fields: arrayDisplayParts,
