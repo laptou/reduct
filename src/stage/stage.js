@@ -184,6 +184,11 @@ export default class Stage extends BaseStage {
       current position [pos].
     */
     getNodeAtPos(pos, selectedId = null) {
+        const state = this.getState();
+
+        let result = null;
+        let root = null;
+
         if (this.alreadyWon) {
             // If already won or stuck, only allow interaction with navbar
             [result, root] = this.navbar.getNodeAtPos(state, pos);
@@ -201,11 +206,6 @@ export default class Stage extends BaseStage {
 
             return [null, null, false];
         }
-
-        const state = this.getState();
-
-        let result = null;
-        let root = null;
 
         for (const nodeId of state.get('board').toArray().reverse()) {
             if (nodeId === selectedId) continue;
@@ -384,11 +384,13 @@ export default class Stage extends BaseStage {
         this.ctx.fillStyle = this.color;
         gfxCore.primitive.roundRect(
             this.ctx,
-            25, 125,
+            25,
+            125,
             this.width - 50,
             this.height - this.toolbox.size.h - 50 - 100,
             25,
-            true, false
+            true,
+            false
         );
 
         this.toolbox.drawBase(state);
@@ -580,8 +582,7 @@ export default class Stage extends BaseStage {
         if (target === null) return;
 
         if (this.semantics.search(
-            nodes, arg,
-            (_, id) => nodes.get(id).get('type') === 'missing'
+            nodes, arg, (_, id) => nodes.get(id).get('type') === 'missing'
         ).length > 0) {
             return;
         }
@@ -897,8 +898,7 @@ export default class Stage extends BaseStage {
                 }
 
                 this.store.dispatch(action.betaReduce(
-                    topNode, arg,
-                    resultNodeIds, newNodes
+                    topNode, arg, resultNodeIds, newNodes
                 ));
 
                 Promise.all([

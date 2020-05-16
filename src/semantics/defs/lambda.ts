@@ -1,6 +1,7 @@
-import * as core from '../core';
 import * as fx from '../../gfx/fx';
-import { RNode, RId, ExprDefinition } from '.';
+import { ExprDefinition } from '.';
+import type { RId, RNode } from '..';
+import { genericBetaReduce } from '../core';
 
 export interface LambdaNode extends RNode {
     arg: RId;
@@ -37,7 +38,7 @@ export const lambda: ExprDefinition<LambdaNode> = {
             inner: 5
         }
     },
-    betaReduce: (semant, stage, state, expr, argIds) => core.genericBetaReduce(semant, state, {
+    betaReduce: (semant, stage, state, expr, argIds) => genericBetaReduce(semant, state, {
         topNode: expr,
         targetNode: state.get('nodes').get(expr.get('arg')),
         argIds,

@@ -75,7 +75,7 @@ export class Semantics {
 
     public meta: typeof meta;
 
-    public constructor(definition: SemanticDefinition<E>) {
+    public constructor(definition: SemanticDefinition) {
         this.definition = definition;
         this.projections = {};
 
@@ -99,8 +99,7 @@ export class Semantics {
                 subexpScale: 1
             });
         }];
-
-        this.create = {} as any;
+        
         const ctors: Record<string, ((...args: any[]) => RNode)[]> = {};
 
         // Add default definitions for vtuple

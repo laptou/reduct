@@ -115,7 +115,7 @@ export const genericClone: GenericNodeCreator<(
 ) => [Im<RNode>, ImList<Im<RNode>>, ImMap<RId, Im<RNode>>]> =
     (nextId, getSubExpressions) => function clone(id, nodeMap, locked = true) {
         const node = nodeMap.get(id);
-        let newNodes: Im<RNode>[] = [];
+        const newNodes: Im<RNode>[] = [];
 
         let currentStore = nodeMap;
         const result = node.withMutations((n) => {
@@ -125,13 +125,14 @@ export const genericClone: GenericNodeCreator<(
             for (const field of getSubExpressions(node)) {
                 const [childClone, descendantClones, descendantNodeMap] = clone(node.get(field), currentStore, locked);
                 currentStore = descendantNodeMap;
+
                 const res = childClone.withMutations((sc) => {
                     sc.set('parent', newId);
                     sc.set('parentField', field);
                     sc.set('locked', locked);
                 });
-                newNodes = newNodes.concat(descendantClones);
-                newNodes.push(res);
+
+                newNodes.push(...descendantClones, res);
 
                 n.set(field, childClone.get('id'));
                 // TODO: delete any cached __missing fields
