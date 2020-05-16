@@ -1,5 +1,8 @@
-import type { Im } from '@/util/im';
+import type { Im, ImList, ImMap } from '@/util/im';
 import type { RState } from '@/reducer/state';
+import type {
+    genericClone, genericSearch, genericEqual, genericFlatten, genericMap
+} from '@/semantics/core';
 import type Stage from '@/stage/stage';
 
 export type RId = number;
@@ -47,7 +50,7 @@ export interface ExprDefinition<N extends RNode> {
     Exclude<keyof N, keyof RNode>[] |
     ((semantics: Semantics, expr: Im<N>) => Exclude<keyof N, keyof RNode>[]);
 
-  projection: ProjectionTemplate;
+  projection: ProjectionTemplate<N>;
 
   type?: any;
 
@@ -131,12 +134,12 @@ export interface ExprDefinition<N extends RNode> {
     expr: Im<N>
   ) => Promise<void>;
 
-  stepSound?: string | ((
+  stepSound?: string | string[] | ((
     semantics: Semantics,
     stage: Stage,
     state: Im<RState>,
     expr: Im<N>
-  ) => string);
+  ) => string | string[]);
 
   /**
    * Used to validate "side conditions" in small step semantics. If there
@@ -190,22 +193,45 @@ export enum ExprType {
 export type ExprType = 'expression' | 'placeholder' | 'value' | 'statement' | 'syntax';
 
 export interface Semantics {
-
+  clone: ReturnType<typeof genericClone>;
+  map: ReturnType<typeof genericMap>;
+  search: ReturnType<typeof genericSearch>;
+  flatten: ReturnType<typeof genericFlatten>;
+  equal: ReturnType<typeof genericEqual>;
+  subexpressions: (node: RNode | Im<RNode>) => string[];
 }
 
 export interface SemanticDefinition {
 }
 
 // TODO: convert ProjectionType to a real enum
-/*
-export enum ProjectionType {
-  Decal = 'decal'
+
+export interface ProjectionPadding {
+  left: number;
+  right: number;
+  inner: number;
+  top: number;
+  bottom: number;
 }
-*/
 
-export type ProjectionType = 'decal' | 'hbox' | 'default';
+export type ProjectionTemplate<N extends RNode> =
+  DefaultProjectionTemplate<N> |
+  CaseProjectionTemplate<N, any>;
 
-export interface ProjectionTemplate {
-  type: ProjectionType;
-  content: any;
+export interface DefaultProjectionTemplate<N extends RNode> {
+  type: 'default';
+  color: string;
+  shape?: '<>' | '()';
+  fields?: (node: N) => string[];
+  padding?: ProjectionPadding;
+  subexpScale?: number;
+}
+
+export interface CaseProjectionTemplate<
+  N extends RNode,
+  K extends string | number | symbol = string | number | symbol
+> {
+  type: 'case';
+  key(nodes: ImMap<RId, Im<RNode>>, expr: Im<N>): K;
+  cases: Record<K, ProjectionTemplate<N>>;
 }

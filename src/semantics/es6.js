@@ -5,7 +5,7 @@ import transform from './transform';
 import { apply } from './defs/apply';
 import { autograder } from './defs/autograder';
 import { array } from './defs/array';
-import binop from './defs/binop';
+import { op, binop } from './defs/binop';
 import conditional from './defs/conditional';
 import define from './defs/define';
 import lambda from './defs/lambda';
@@ -119,7 +119,8 @@ export default transform({
         apply,
         array,
         autograder,
-        ...binop,
+        op,
+        binop,
         ...conditional,
         ...define,
         ...lambda,

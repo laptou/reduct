@@ -1,11 +1,23 @@
 import * as immutable from 'immutable';
-import type { RNode } from '@/reducer/types';
+import { ImMap, Im, ImList } from '@/util/im';
+import { RState } from '@/reducer/state';
+import { RId, RNode } from './defs';
 
-export function genericFlatten(
-    getNextId: () => number,
-    getSubExpressions: (node: RNode) => string[]
-) {
-    return function flatten(expr: RNode) {
+type NodeMap = ImMap<RId, Im<RNode>>;
+
+type GenericNodeCreator<F> =
+    (
+        getNextId: () => number,
+        getSubExpressions: (node: RNode | Im<RNode>) => string[]
+    ) => F;
+
+type GenericNodeTransformer<F> =
+    (
+        getSubExpressions: (node: Im<RNode>) => string[]
+    ) => F;
+
+export const genericFlatten: GenericNodeCreator<(expr: RNode) => RNode[]> =
+    (getNextId, getSubExpressions) => function flatten(expr) {
         expr.id = getNextId();
         let result = [expr];
 
@@ -21,12 +33,18 @@ export function genericFlatten(
 
         return result;
     };
-}
+
 /** Apply the function f to node [nodeId] and all of its
 * subexpressions.
 */
-export function genericMap(getSubExpressions: (node: RNode) => string[]) {
-    const innerMap = function(nodes, nodeId, f, filter = null, top = true) {
+export const genericMap: GenericNodeTransformer<(
+    nodes: NodeMap,
+    nodeId: RId,
+    mapper: (node: Im<RNode>, id: RId) => [RNode, NodeMap],
+    filter?: (nodes: NodeMap, node: RNode) => boolean,
+    top?: boolean
+) => [RNode, NodeMap]> =
+    (getSubExpressions) => function map(nodes, nodeId, f, filter?, top = true) {
         let currentStore = nodes;
         if (top) currentStore = currentStore.asMutable();
         const currentNode = nodes.get(nodeId);
@@ -37,25 +55,27 @@ export function genericMap(getSubExpressions: (node: RNode) => string[]) {
 
         const node = currentNode.withMutations((n) => {
             for (const field of getSubExpressions(n)) {
-                const [newNode, newStore] = innerMap(currentStore, n.get(field), f, filter, false);
+                const [newNode, newStore] = map(currentStore, n.get(field), f, filter, false);
                 currentStore = newStore.set(newNode.get('id'), newNode);
                 n.set(field, newNode.get('id'));
             }
         });
-        // Function returns [new node, new store]
+            // Function returns [new node, new store]
         const result = f(currentStore.set(node.get('id'), node), node.get('id'));
         if (top) return [result[0], result[1].asImmutable()];
         return result;
     };
-    return innerMap;
-}
 
 /** Given a [nodeId], returns the node
 * with the corresponding ID or its subexpressions
 * that return true when passed into the function f.
 */
-export function genericSearch(subexpressions) {
-    return function(nodes, nodeId, f) {
+export const genericSearch: GenericNodeTransformer<(
+    nodes: NodeMap,
+    nodeId: RId,
+    predicate: (nodes: NodeMap, nodeId: RId) => boolean
+) => RId[]> =
+    (getSubExpressions) => (nodes, nodeId, f) => {
         const queue = [nodeId];
         const result = [];
         while (queue.length > 0) {
@@ -65,60 +85,63 @@ export function genericSearch(subexpressions) {
             }
 
             const n = nodes.get(id);
-            for (const field of subexpressions(n)) {
+            for (const field of getSubExpressions(n)) {
                 queue.push(n.get(field));
             }
         }
         return result;
     };
-}
 
-export function genericEqual(subexpressions, shallowEqual) {
-    return function equal(id1, id2, state) {
-        const n1 = state.getIn(['nodes', id1]);
-        const n2 = state.getIn(['nodes', id2]);
+export const genericEqual = (
+    getSubExpressions: (node: RNode | Im<RNode>) => string[],
+    comparer: (left: RNode | Im<RNode>, right: RNode | Im<RNode>) => boolean
+) => function equal(id1: RId, id2: RId, state: Im<RState>) {
+    const n1 = state.getIn(['nodes', id1]);
+    const n2 = state.getIn(['nodes', id2]);
 
-        if (!shallowEqual(n1, n2)) return false;
-        for (const field of subexpressions(n1)) {
-            if (!equal(n1.get(field), n2.get(field), state)) {
-                return false;
-            }
+    if (!comparer(n1, n2)) return false;
+    for (const field of getSubExpressions(n1)) {
+        if (!equal(n1.get(field), n2.get(field), state)) {
+            return false;
         }
-        return true;
-    };
-}
+    }
+    return true;
+};
 
-export function genericClone(nextId, subexpressions) {
-    return function clone(id, nodes, locked = true) {
-        const node = nodes.get(id);
-        let newNodes = [];
+export const genericClone: GenericNodeCreator<(
+    id: RId,
+    nodeMap: ImMap<RId, Im<RNode>>,
+    locked?: boolean
+) => [Im<RNode>, ImList<Im<RNode>>, ImMap<RId, Im<RNode>>]> =
+    (nextId, getSubExpressions) => function clone(id, nodeMap, locked = true) {
+        const node = nodeMap.get(id);
+        let newNodes: Im<RNode>[] = [];
 
-        let currentStore = nodes;
+        let currentStore = nodeMap;
         const result = node.withMutations((n) => {
             const newId = nextId();
             n.set('id', newId);
 
-            for (const field of subexpressions(node)) {
-                const [subclone, subclones, nodesStore] = clone(node.get(field), currentStore, locked);
-                currentStore = nodesStore;
-                const result = subclone.withMutations((sc) => {
+            for (const field of getSubExpressions(node)) {
+                const [childClone, descendantClones, descendantNodeMap] = clone(node.get(field), currentStore, locked);
+                currentStore = descendantNodeMap;
+                const res = childClone.withMutations((sc) => {
                     sc.set('parent', newId);
                     sc.set('parentField', field);
                     sc.set('locked', locked);
                 });
-                newNodes = newNodes.concat(subclones);
-                newNodes.push(result);
+                newNodes = newNodes.concat(descendantClones);
+                newNodes.push(res);
 
-                n.set(field, subclone.get('id'));
+                n.set(field, childClone.get('id'));
                 // TODO: delete any cached __missing fields
             }
 
             currentStore = currentStore.set(newId, n);
         });
 
-        return [result, newNodes, currentStore];
+        return [result, ImList(newNodes), currentStore];
     };
-}
 
 /**
  * A generic function to apply a list of arguments to an expression.

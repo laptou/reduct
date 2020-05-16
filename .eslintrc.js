@@ -1,130 +1,130 @@
 module.exports = {
-    "root": true,
-    "parser": "@typescript-eslint/parser",
-    "env": {
-        "browser": true
+    'root': true,
+    'parser': '@typescript-eslint/parser',
+    'env': {
+        'browser': true
     },
-    "plugins": [
-        "@typescript-eslint"
+    'plugins': [
+        '@typescript-eslint'
     ],
-    "parserOptions": {
+    'parserOptions': {
         tsconfigRootDir: __dirname,
-        "project": ["./tsconfig.json"],
-        "sourceType": "module"
+        'project': ['./tsconfig.json'],
+        'sourceType': 'module'
     },
-    "extends": [
-        "airbnb-base",
-        "plugin:@typescript-eslint/eslint-recommended",
-        "plugin:@typescript-eslint/recommended",
-        "plugin:@typescript-eslint/recommended-requiring-type-checking",
-        "plugin:import/errors",
-        "plugin:import/warnings",
-        "plugin:import/typescript",
+    'extends': [
+        'airbnb-base',
+        'plugin:@typescript-eslint/eslint-recommended',
+        'plugin:@typescript-eslint/recommended',
+        'plugin:@typescript-eslint/recommended-requiring-type-checking',
+        'plugin:import/errors',
+        'plugin:import/warnings',
+        'plugin:import/typescript',
     ],
-    "rules": {
-        "@typescript-eslint/explicit-function-return-type": [
-            "off"
+    'rules': {
+        '@typescript-eslint/explicit-function-return-type': [
+            'off'
         ],
-        "@typescript-eslint/no-var-requires": [
-            "off"
+        '@typescript-eslint/no-var-requires': [
+            'off'
         ],
-        "@typescript-eslint/no-non-null-assertion": [
-            "off"
+        '@typescript-eslint/no-non-null-assertion': [
+            'off'
         ],
-        "@typescript-eslint/no-explicit-any": [
-            "off"
+        '@typescript-eslint/no-explicit-any': [
+            'off'
         ],
-        "@typescript-eslint/member-ordering": [
-            "error",
+        '@typescript-eslint/member-ordering': [
+            'error',
             {
-                "default": [
+                'default': [
                     // Index signature
-                    "signature",
+                    'signature',
                     // Static
-                    "private-static-field",
-                    "protected-static-field",
-                    "public-static-field",
-                    "private-static-method",
-                    "protected-static-method",
-                    "public-static-method",
-                    "private-instance-field",
-                    "protected-instance-field",
-                    "public-instance-field",
+                    'private-static-field',
+                    'protected-static-field',
+                    'public-static-field',
+                    'private-static-method',
+                    'protected-static-method',
+                    'public-static-method',
+                    'private-instance-field',
+                    'protected-instance-field',
+                    'public-instance-field',
                     // Constructors
-                    "private-constructor",
-                    "protected-constructor",
-                    "public-constructor",
+                    'private-constructor',
+                    'protected-constructor',
+                    'public-constructor',
                     // Methods
-                    "private-instance-method",
-                    "protected-instance-method",
-                    "public-instance-method",
+                    'private-instance-method',
+                    'protected-instance-method',
+                    'public-instance-method',
                     // Abstract
-                    "private-abstract-field",
-                    "protected-abstract-field",
-                    "public-abstract-field",
-                    "private-abstract-method",
-                    "protected-abstract-method",
-                    "public-abstract-method"
+                    'private-abstract-field',
+                    'protected-abstract-field',
+                    'public-abstract-field',
+                    'private-abstract-method',
+                    'protected-abstract-method',
+                    'public-abstract-method'
                 ]
             }
         ],
-        "@typescript-eslint/explicit-member-accessibility": [
-            "error",
+        '@typescript-eslint/explicit-member-accessibility': [
+            'error',
             {
-                "accessibility": "explicit"
+                'accessibility': 'explicit'
             }
         ],
-        "@typescript-eslint/prefer-readonly": [
-            "warn"
+        '@typescript-eslint/prefer-readonly': [
+            'warn'
         ],
-        "@typescript-eslint/unbound-method": [
-            "warn"
+        '@typescript-eslint/unbound-method': [
+            'warn'
         ],
-        "@typescript-eslint/no-unused-expressions": ["warn"],
-        "indent": [
-            "error",
+        '@typescript-eslint/no-unused-expressions': ['warn'],
+        'indent': [
+            'error',
             4,
             {
-                "ignoredNodes": [
-                    "TemplateLiteral"
+                'ignoredNodes': [
+                    'TemplateLiteral'
                 ]
             }
         ],
-        "quotes": [
-            "error",
-            "double"
+        'quotes': [
+            'error',
+            'double'
         ],
-        "no-continue": "off",
-        "no-restricted-syntax": "off",
-        "brace-style": [
-            "error",
-            "stroustrup"
+        'no-continue': 'off',
+        'no-restricted-syntax': 'off',
+        'brace-style': [
+            'error',
+            'stroustrup'
         ],
-        "array-bracket-spacing": "off",
-        "comma-dangle": [
-            "error",
-            "always-multiline",
+        'array-bracket-spacing': 'off',
+        'comma-dangle': [
+            'error',
+            'always-multiline',
             {
-                "functions": "never"
+                'functions': 'never'
             }
         ],
-        "space-before-function-paren": "off",
-        "no-use-before-define": "off",
-        "no-unused-vars": [
-            "warn",
+        'space-before-function-paren': 'off',
+        'no-use-before-define': 'off',
+        'no-unused-vars': [
+            'warn',
             {
-                "argsIgnorePattern": "^_"
+                'argsIgnorePattern': '^_'
             }
         ],
-        "no-unused-expressions": "off", // replaced by typescript-eslint variant
-        "func-names": "off",
-        "no-plusplus": "off",
-        "no-param-reassign": "off",
-        "no-console": "off",
-        "no-underscore-dangle": "off",
-        "quote-props": [
-            "error",
-            "consistent"
+        'no-unused-expressions': 'off', // replaced by typescript-eslint variant
+        'func-names': 'off',
+        'no-plusplus': 'off',
+        'no-param-reassign': 'off',
+        'no-console': 'off',
+        'no-underscore-dangle': 'off',
+        'quote-props': [
+            'error',
+            'consistent'
         ],
 
         // semantic rules
@@ -157,7 +157,8 @@ module.exports = {
         'object-property-newline': ['error',{ allowAllPropertiesOnSameLine: true }],
         'function-call-argument-newline': ['error', 'consistent'],
         'lines-between-class-members': ['error', 'always'],
-        
+        'operator-linebreak': ['error', 'before', { 'overrides': { '=': 'after' } }],
+
         // comma rules
         'comma-dangle': ['error', 'never'],
         'comma-spacing': ['error', { before: false, after: true }],
@@ -171,19 +172,19 @@ module.exports = {
         'import/prefer-default-export': ['warn'],
         'max-classes-per-file': ['warn', 2]
     },
-    "ignorePatterns": [
-        "node_modules/",
-        "chapterutil/",
-        "dist/",
-        "resources/",
-        "docs/"
+    'ignorePatterns': [
+        'node_modules/',
+        'chapterutil/',
+        'dist/',
+        'resources/',
+        'docs/'
     ],
-    "settings": {
-        "import/resolver": {
-            "webpack": {
-                "config": "webpack.config.js",
-                "env": {
-                    "development": true
+    'settings': {
+        'import/resolver': {
+            'webpack': {
+                'config': 'webpack.config.js',
+                'env': {
+                    'development': true
                 }
             }
         }

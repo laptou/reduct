@@ -49,7 +49,7 @@ export const autograder: ExprDefinition<AutograderNode> = {
         const fId = expr.get('result');
         const fExpr = state.get('nodes').get(fId);
         const f_type = fExpr.get('type');
-        const goal_id = expr.get('goalId');
+        const goalId = expr.get('goalId');
         const color = expr.get('color');
 
         /* Function to convert game definition to JS definition.
@@ -89,21 +89,21 @@ export const autograder: ExprDefinition<AutograderNode> = {
         * be a new node. We need a new node so that it acts separatley
         * then the previous node.
         */
-            const [cloned_f, added_f] = semant.clone(fId, nodes);
-            const allAdded_f = added_f.concat([cloned_f]);
+            const [clonedFn, addedFn] = semant.clone(fId, nodes);
+            const allAddedFns = addedFn.concat([clonedFn]);
 
             const tempFuncNodes = state.get('nodes').withMutations((nodes) => {
-                for (const node of allAdded_f) {
+                for (const node of allAddedFns) {
                     nodes.set(node.get('id'), node);
                 }
             });
 
             /** Hydrate the function so as to make a new node out of it
         */
-            const f = semant.hydrate(tempFuncNodes, cloned_f);
+            const f = semant.hydrate(tempFuncNodes, clonedFn);
 
             // for the "red" autograder
-            if (goal_id == 0) {
+            if (goalId == 0) {
                 // Generate function definition string
                 const funName = semant.parser.unparse(f);
                 let funFinal = extractAll();
@@ -155,7 +155,7 @@ export const autograder: ExprDefinition<AutograderNode> = {
 
             /** Get the input
         */
-            const s = allInputs[goal_id];
+            const s = allInputs[goalId];
 
             /** Each input may have several arguments -example:
         * 2 argument function, etc.
@@ -171,11 +171,11 @@ export const autograder: ExprDefinition<AutograderNode> = {
                 result = semant.apply(result, semant.parser.parse(a, level.MACROS));
             }
 
-            finalExpr.push(semant.autograder(expr.get('alienName'), goal_id, color, result));
+            finalExpr.push(semant.autograder(expr.get('alienName'), goalId, color, result));
 
             /** Now generate expected output
         */
-            finalOutput.push(semant.unsol(color, semant.parser.parse(allOutputs[goal_id], level.MACROS)));
+            finalOutput.push(semant.unsol(color, semant.parser.parse(allOutputs[goalId], level.MACROS)));
 
 
             /**
@@ -197,7 +197,7 @@ export const autograder: ExprDefinition<AutograderNode> = {
                 stage.views[nn.get('id')] = stage.semantics.project(stage, tempOutputNodes, nn);
             }
 
-            stage.store.dispatch(action.changeGoal(goal_id, [newOutputIds[0]], addedOutput));
+            stage.store.dispatch(action.changeGoal(goalId, [newOutputIds[0]], addedOutput));
 
             /* Displaying input------------------------------------------------------.
         */
@@ -230,7 +230,7 @@ export const autograder: ExprDefinition<AutograderNode> = {
 
             stage.store.dispatch(action.smallStep(expr.get('id'), [newInputIds[0]], addedTarget));
         } else {
-            const finalGoal = semant.parser.parse(allOutputs[goal_id], level.MACROS);
+            const finalGoal = semant.parser.parse(allOutputs[goalId], level.MACROS);
             // console.log("finalGoal: " + JSON.stringify(finalGoal.value));
             // console.log("givenGoal: " + JSON.stringify(fExpr.get("value")));
             if (finalGoal.value !== fExpr.get('value')) {
@@ -257,24 +257,24 @@ export const autograder: ExprDefinition<AutograderNode> = {
                 stage.views[nn.get('id')] = stage.semantics.project(stage, tempGoalNodes, nn);
             }
 
-            stage.store.dispatch(action.changeGoal(goal_id, [newGoalIds[0]], addedGoalNodes));
+            stage.store.dispatch(action.changeGoal(goalId, [newGoalIds[0]], addedGoalNodes));
 
             /* Return the final expression.
         */
-            const [cloned_fin, added_fin] = semant.clone(finalGoal.id, tempGoalNodes);
-            const allAdded_fin = added_fin.concat([cloned_fin]);
+            const [clonedFinal, addedFinal] = semant.clone(finalGoal.id, tempGoalNodes);
+            const allAddedFinal = addedFinal.concat([clonedFinal]);
 
             const tempFinalNodes = state.get('nodes').withMutations((nodes) => {
-                for (const node of allAdded_fin) {
+                for (const node of allAddedFinal) {
                     nodes.set(node.get('id'), node);
                 }
             });
 
-            for (const node of allAdded_fin) {
+            for (const node of allAddedFinal) {
                 stage.views[node.get('id')] = stage.semantics.project(stage, tempFinalNodes, node);
             }
 
-            return core.makeResult(expr, cloned_fin, semant);
+            return core.makeResult(expr, clonedFinal, semant);
         }
     }
 };
