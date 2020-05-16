@@ -73,13 +73,14 @@ exports.default = (env) => ({
             template: 'index.html'
         }),
         new MiniCssExtractPlugin(),
-        new TsCheckerPlugin({
-            workers: TsCheckerPlugin.TWO_CPUS_FREE
-            // I don't have time to fix ESLint errors right now.
-            // Who the fuck wrote so much unlintable code?!
-            // - Ibiyemi Abiodun (iaa34)
-            // eslint: true,
-        }),
+        // new TsCheckerPlugin({
+        //     workers: TsCheckerPlugin.TWO_CPUS_FREE,
+
+        //     // I don't have time to fix ESLint errors right now.
+        //     // Who the fuck wrote so much unlintable code?!
+        //     // - Ibiyemi Abiodun (iaa34)
+        //     // eslint: true,
+        // }),
         ...(env.production
             ? [
                 new CompressionPlugin({

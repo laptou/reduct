@@ -145,7 +145,7 @@ export const lambdaVar: ExprDefinition<LambdaVarNode> = {
             type: 'hbox',
             shape: '()',
             strokeWhenChild: false,
-            children: [
+            cols: [
                 {
                     type: 'text',
                     text: '{name}',

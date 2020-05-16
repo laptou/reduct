@@ -14,7 +14,7 @@ import Logging from '../logging/logging';
 
 import * as gfx from '../gfx/core';
 import * as fx from '../gfx/fx';
-import projector, { ViewFn } from '../gfx/projector';
+import { projector, ViewFn } from '../gfx/projector';
 
 
 import * as meta from './meta';
@@ -165,7 +165,7 @@ export class Semantics<E extends Record<string, ExprDefinition<RNode>>> {
                 return ctors[exprName][progression.getFadeLevel(exprName)](...params);
             };
             Object.defineProperty(nodeCreator, 'name', { value: exprName });
-            Object.defineProperty(this, exprName, nodeCreator);
+            Object.defineProperty(this, exprName, { value: nodeCreator });
         }
 
         /**
@@ -176,15 +176,15 @@ export class Semantics<E extends Record<string, ExprDefinition<RNode>>> {
         makeInterpreter(this);
 
         /** Compare two nodes for equality (recursively). */
-        this.equal = genericEqual(this.subexpressions, this.shallowEqual);
+        this.equal = genericEqual(this.subexpressions.bind(this), this.shallowEqual.bind(this));
         /** Convert a mutable node into an immutable one (recursively). */
-        this.flatten = genericFlatten(nextId, this.subexpressions);
+        this.flatten = genericFlatten(nextId, this.subexpressions.bind(this));
         /** Apply a function to every node in a tree. */
-        this.map = genericMap(this.subexpressions);
+        this.map = genericMap(this.subexpressions.bind(this));
         /** Search an immutable node and its children. */
-        this.search = genericSearch(this.subexpressions);
+        this.search = genericSearch(this.subexpressions.bind(this));
         /** Clone an immutable node and its children. */
-        this.clone = genericClone(nextId, this.subexpressions);
+        this.clone = genericClone(nextId, this.subexpressions.bind(this));
 
         this.parser = {};
         this.parser.templatizeName = (name) => definition.parser.templatizeName(this, name);
@@ -220,7 +220,7 @@ export class Semantics<E extends Record<string, ExprDefinition<RNode>>> {
 
         const completeKind = (kind) => kind !== 'expression' && kind !== 'placeholder';
 
-        const step = function step(expr) {
+        const step = (expr) => {
             const id = expr.get('id');
 
             for (const field of this.subexpressions(expr)) {

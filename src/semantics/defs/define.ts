@@ -69,7 +69,7 @@ export const define: ExprDefinition<DefineNode> = {
                     padding: {
                         left: 0, right: 0
                     },
-                    children: [
+                    cols: [
                         {
                             type: 'text',
                             text: 'def '
@@ -92,7 +92,7 @@ export const define: ExprDefinition<DefineNode> = {
                                 right: 5,
                                 inner: 0
                             },
-                            children: [
+                            cols: [
                                 { type: 'text', text: '{name} ' },
                                 {
                                     type: 'generic',

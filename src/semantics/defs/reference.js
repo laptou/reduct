@@ -68,7 +68,7 @@ const baseReference = {
             radius: 0,
             shape: '()',
             strokeWhenChild: true,
-            children: [
+            cols: [
                 {
                     type: 'text',
                     text: '{name}',
@@ -83,7 +83,7 @@ const baseReference = {
                 radius: 0,
                 shape: '()',
                 strokeWhenChild: true,
-                children: [
+                cols: [
                     {
                         type: 'text',
                         text: '{name}'
@@ -235,7 +235,7 @@ export default {
                     radius: 0,
                     shape: '()',
                     strokeWhenChild: true,
-                    children: [
+                    cols: [
                         {
                             type: 'text',
                             text: '{name}',
@@ -255,7 +255,7 @@ export default {
                         radius: 0,
                         shape: '()',
                         strokeWhenChild: true,
-                        children: [
+                        cols: [
                             {
                                 type: 'text',
                                 text: '{name}'

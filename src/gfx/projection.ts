@@ -33,7 +33,7 @@ export interface DefaultProjectionTemplate<N extends RNode> {
 
 export interface VboxProjectionTemplate<N extends RNode> {
     type: 'vbox';
-    color?: string;
+    color?: Thunk<[RNode], string>;
     horizontalAlign: number;
     ellipsize: boolean;
     padding?: ProjectionPadding;
@@ -43,7 +43,7 @@ export interface VboxProjectionTemplate<N extends RNode> {
 
 export interface HboxProjectionTemplate<N extends RNode> {
     type: 'hbox';
-    color?: string;
+    color?: Thunk<[RNode], string>;
     horizontalAlign?: number;
     ellipsize?: boolean;
     padding?: ProjectionPadding;

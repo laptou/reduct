@@ -4,7 +4,8 @@ import * as core from '../core';
 import * as action from '../../reducer/action';
 import * as gfxCore from '../../gfx/core';
 import * as level from '../../game/level';
-import { ExprDefinition, RNode, RId } from '.';
+import { ExprDefinition} from '.';
+import { RNode, RId } from '..';
 
 export interface AutograderNode extends RNode {
     alienName: any;
@@ -22,7 +23,7 @@ export const autograder: ExprDefinition<AutograderNode> = {
         type: 'hbox',
         color: (expr) => expr.get('color'),
         subexpScale: 0.9,
-        children: [
+        cols: [
             {
                 type: 'default',
                 shape: 'none',
