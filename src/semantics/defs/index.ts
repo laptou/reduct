@@ -252,11 +252,11 @@ export interface VboxProjectionTemplate<N extends RNode> {
 export interface HboxProjectionTemplate<N extends RNode> {
   type: 'hbox';
   color?: string;
-  horizontalAlign: number;
-  ellipsize: boolean;
+  horizontalAlign?: number;
+  ellipsize?: boolean;
   padding?: ProjectionPadding;
   subexpScale?: number;
-  rows: ProjectionTemplate<N>[];
+  cols: ProjectionTemplate<N>[];
 }
 
 export interface DynamicPropertyProjectionTemplate<

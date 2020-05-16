@@ -10,7 +10,7 @@ import * as conditional from './defs/conditional';
 import * as define from './defs/define';
 import * as lambda from './defs/lambda';
 import * as letExpr from './defs/letExpr';
-import member from './defs/member';
+import * as member from './defs/member';
 import not from './defs/not';
 import reference from './defs/reference';
 import value from './defs/value';
