@@ -216,15 +216,26 @@ export interface ProjectionPadding {
 
 export type ProjectionTemplate<N extends RNode> =
   DefaultProjectionTemplate<N> |
+  VboxProjectionTemplate<N> |
   CaseProjectionTemplate<N, any>;
 
 export interface DefaultProjectionTemplate<N extends RNode> {
   type: 'default';
-  color: string;
-  shape?: '<>' | '()';
-  fields?: (node: N) => string[];
+  color?: string;
+  shape?: '<>' | '()' | 'none';
+  fields?: string[] | ((node: N) => string[]);
   padding?: ProjectionPadding;
   subexpScale?: number;
+}
+
+export interface VboxProjectionTemplate<N extends RNode> {
+  type: 'vbox';
+  color?: string;
+  horizontalAlign: number;
+  ellipsize: boolean;
+  padding?: ProjectionPadding;
+  subexpScale?: number;
+  rows: ProjectionTemplate<N>[];
 }
 
 export interface CaseProjectionTemplate<
