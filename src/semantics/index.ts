@@ -1,7 +1,3 @@
-import type {
-    genericClone, genericSearch, genericEqual, genericFlatten, genericMap
-} from '@/semantics/core';
-import { Im } from '@/util/im';
 
 export type RId = number;
 
@@ -17,17 +13,11 @@ export interface RNode {
   /** The ID of this node's parent. */
   parent: RId;
 
-  /** The field in the parent node which this node
+  /**
+   * The field in the parent node which this node
    * occupies.
    */
   parentField: string;
-}
 
-export interface Semantics {
-  clone: ReturnType<typeof genericClone>;
-  map: ReturnType<typeof genericMap>;
-  search: ReturnType<typeof genericSearch>;
-  flatten: ReturnType<typeof genericFlatten>;
-  equal: ReturnType<typeof genericEqual>;
-  subexpressions: (node: RNode | Im<RNode>) => string[];
+  type: string;
 }

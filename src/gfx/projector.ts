@@ -5,6 +5,10 @@ import * as immutable from 'immutable';
 import * as gfx from './core';
 import Loader from '../loader';
 import * as core from '../semantics/core';
+import BaseStage from '@/stage/basestage';
+import { ImMap, Im } from '@/util/im';
+import { RNode, RId } from '@/semantics';
+import { ExprDefinition } from '@/semantics/defs';
 
 const optionFields = [
     'color', 'strokeWhenChild', 'shadowOffset', 'radius', 'padding',
@@ -31,7 +35,7 @@ function shapeToProjection(shape, options) {
  *
  * @alias gfx.projector.defaultProjector
  */
-function defaultProjector(definition) {
+function defaultProjector(definition: ExprDefinition<RNode>) {
     const options = {};
     const baseProjection = shapeToProjection(definition.projection.shape, options);
 
@@ -318,6 +322,9 @@ function spriteProjector(definition) {
     };
 }
 
+export type View = {}; // TODO
+export type ViewFn = (stage: BaseStage, nodes: ImMap<RId, Im<RNode>>, expr: Im<RNode>) => View;
+
 /**
  * Given an expression definition, construct a function ``(stage,
  * nodes, expr) => view`` that will construct a view for an expression
@@ -326,7 +333,7 @@ function spriteProjector(definition) {
  *
  * @alias gfx.projector.projector
  */
-export default function projector(definition) {
+export function projector(definition: ExprDefinition<RNode>): ViewFn {
     switch (definition.projection.type) {
     case 'default':
         return defaultProjector(definition);

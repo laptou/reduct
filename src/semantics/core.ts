@@ -1,7 +1,7 @@
 import * as immutable from 'immutable';
 import { ImMap, Im, ImList } from '@/util/im';
 import { RState } from '@/reducer/state';
-import { RId, RNode } from './defs';
+import { RNode, RId } from '.';
 
 type NodeMap = ImMap<RId, Im<RNode>>;
 

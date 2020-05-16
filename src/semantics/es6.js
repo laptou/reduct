@@ -1,6 +1,6 @@
 import * as core from './core';
 import { ES6Parser, makeUnparser } from '../syntax/es6';
-import transform from './transform';
+import { Semantics } from './transform';
 
 import * as apply from './defs/apply';
 import * as autograder from './defs/autograder';
@@ -13,13 +13,13 @@ import * as letExpr from './defs/letExpr';
 import * as member from './defs/member';
 import * as not from './defs/not';
 import reference from './defs/reference';
-import value from './defs/value';
+import * as value from './defs/value';
 
 function capitalize(s) {
     return s.charAt(0).toUpperCase() + s.substr(1);
 }
 
-export default transform({
+export default new Semantics({
     name: 'ECMAScript 6',
     parser: {
         parse: (semanticsDefinition) => {

@@ -23,18 +23,18 @@ export interface ExprDefinition<N extends RNode> {
    * instance, a number expression would have a value field, or
    * definition syntax might have a name field.
    */
-  fields: Exclude<keyof N, keyof RNode>[];
+  fields?: Exclude<keyof N, keyof RNode>[];
 
   /**
    * A (possibly empty) list of additional fields that contain child
    * expressions. For instance, definition syntax might have a
    * subexpression for the body.
    */
-  subexpressions:
+  subexpressions?:
     Exclude<keyof N, keyof RNode>[] |
     ((semantics: Semantics, expr: Im<N>) => Exclude<keyof N, keyof RNode>[]);
 
-  projection: ProjectionTemplate<N>;
+  projection?: ProjectionTemplate<N>;
 
   type?: any;
 
