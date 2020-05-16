@@ -2,13 +2,13 @@ import * as core from './core';
 import { ES6Parser, makeUnparser } from '../syntax/es6';
 import transform from './transform';
 
-import { apply } from './defs/apply';
-import { autograder } from './defs/autograder';
-import { array } from './defs/array';
-import { op, binop } from './defs/binop';
-import { conditional } from './defs/conditional';
-import { define, defineAttach } from './defs/define';
-import lambda from './defs/lambda';
+import * as apply from './defs/apply';
+import * as autograder from './defs/autograder';
+import * as array from './defs/array';
+import * as binop from './defs/binop';
+import * as conditional from './defs/conditional';
+import * as define from './defs/define';
+import * as lambda from './defs/lambda';
 import letExpr from './defs/letExpr';
 import member from './defs/member';
 import not from './defs/not';
@@ -116,14 +116,12 @@ export default transform({
     expressions: {
         missing: core.missing,
 
-        apply,
-        array,
-        autograder,
-        op,
-        binop,
-        conditional,
-        define,
-        defineAttach,
+        ...apply,
+        ...array,
+        ...autograder,
+        ...binop,
+        ...conditional,
+        ...define,
         ...lambda,
         ...letExpr,
         ...member,

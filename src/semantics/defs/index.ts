@@ -33,7 +33,7 @@ export interface ExprDefinition<N extends RNode> {
    * ``expression`` can be clicked on, for instance, and reaching a
    * ``value`` will stop evaluation!
    */
-  kind: ExprType | ((expr: Im<N>, semantics: Semantics, state: Im<RState>) => ExprType);
+  kind?: ExprType | ((expr: Im<N>, semantics: Semantics, state: Im<RState>) => ExprType);
 
 
   // TODO: strong type for notches
@@ -223,14 +223,17 @@ export type ProjectionTemplate<N extends RNode> =
   DefaultProjectionTemplate<N> |
   VboxProjectionTemplate<N> |
   HboxProjectionTemplate<N> |
+  DynamicPropertyProjectionTemplate<N, any> |
   DynamicProjectionTemplate<N, any> |
   CaseProjectionTemplate<N> |
-  StickyProjectionTemplate<N>;
+  StickyProjectionTemplate<N> |
+  PreviewProjectionTemplate<N>;
 
 export interface DefaultProjectionTemplate<N extends RNode> {
   type: 'default';
   color?: string;
   shape?: '<>' | '()' | 'notch' | 'none';
+  radius?: number;
   fields?: string[] | ((node: N) => string[]);
   padding?: ProjectionPadding;
   subexpScale?: number;
@@ -256,17 +259,40 @@ export interface HboxProjectionTemplate<N extends RNode> {
   rows: ProjectionTemplate<N>[];
 }
 
-export interface DynamicProjectionTemplate<N extends RNode, P extends ProjectionTemplate<N>> {
+export interface DynamicPropertyProjectionTemplate<
+  N extends RNode,
+  P extends ProjectionTemplate<N>
+> {
   type: 'dynamicProperty';
   field(state: Im<RState>, nodeId: RId): string;
   fields: Record<string, Record<string, (proj: P) => void>>;
   projection: P;
 }
 
+// TODO: this seems redundant to the case projection
+// consider eliminating
+export interface DynamicProjectionTemplate<
+  N extends RNode,
+  P extends ProjectionTemplate<N>
+> {
+  type: 'dynamic';
+  field(state: Im<RState>, nodeId: RId): string;
+  cases: Record<string, Record<string, P>>;
+  default: P;
+
+  onKeyChange?: any; // TODO
+  resetFields?: string[];
+}
+
 export interface StickyProjectionTemplate<N extends RNode> {
   type: 'sticky';
   // TODO: enum
   side: string;
+  content: ProjectionTemplate<N>;
+}
+
+export interface PreviewProjectionTemplate<N extends RNode> {
+  type: 'preview';
   content: ProjectionTemplate<N>;
 }
 
