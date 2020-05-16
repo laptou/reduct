@@ -7,7 +7,7 @@ export enum TweenStatus {
     Completed
 }
 
-export type TweenOptions = {
+export type TweenOptions<T = number> = {
     /**
      * The duration of the tween. Defaults to `300`.
      */
@@ -16,7 +16,7 @@ export type TweenOptions = {
     /**
      * The easing function to use. Defaults to linear.
      */
-    easing?: Easing;
+    easing?: Easing<T>;
 
     /**
      * If given, an amount of

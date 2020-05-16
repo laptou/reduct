@@ -110,10 +110,10 @@ export default class Clock {
    * constructor—see :class:`animate.InterpolateTween`.
    * @returns {animate.InterpolateTween} The tween object.
    */
-  public tween<T extends Animatable>(
+  public tween<T extends Animatable, V = number>(
       target: T,
       properties: Partial<T>,
-      options: TweenOptions
+      options: TweenOptions<V>
   ): InterpolateTween {
       const duration = options.duration || 300;
       const props: InterpolateTweenProperty<any, any>[] = [];
@@ -253,12 +253,12 @@ export function addUpdateListener(f: Listener) {
  * @param {Object} options - Other options for the tween. See
  * :js:func:`~animate.Clock.tween`.
  */
-export function tween<T extends object>(
+export function tween<T extends object, V = number>(
     target: T,
     properties: Partial<T>,
-    options: TweenOptions
+    options: TweenOptions<V>
 ) {
-    return clock.tween<T>(target, properties, options);
+    return clock.tween<T, V>(target, properties, options);
 }
 
 /**

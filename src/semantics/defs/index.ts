@@ -4,6 +4,7 @@ import type {
     genericClone, genericSearch, genericEqual, genericFlatten, genericMap
 } from '@/semantics/core';
 import type Stage from '@/stage/stage';
+import { Notch } from '@/gfx/notch';
 
 export type RId = number;
 
@@ -33,6 +34,10 @@ export interface ExprDefinition<N extends RNode> {
    * ``value`` will stop evaluation!
    */
   kind: ExprType | ((expr: Im<N>, semantics: Semantics, state: Im<RState>) => ExprType);
+
+
+  // TODO: strong type for notches
+  notches?: any[];
 
   /**
    * A (possibly empty) list of fields the expression should have. For
@@ -217,12 +222,15 @@ export interface ProjectionPadding {
 export type ProjectionTemplate<N extends RNode> =
   DefaultProjectionTemplate<N> |
   VboxProjectionTemplate<N> |
-  CaseProjectionTemplate<N, any>;
+  HboxProjectionTemplate<N> |
+  DynamicProjectionTemplate<N, any> |
+  CaseProjectionTemplate<N> |
+  StickyProjectionTemplate<N>;
 
 export interface DefaultProjectionTemplate<N extends RNode> {
   type: 'default';
   color?: string;
-  shape?: '<>' | '()' | 'none';
+  shape?: '<>' | '()' | 'notch' | 'none';
   fields?: string[] | ((node: N) => string[]);
   padding?: ProjectionPadding;
   subexpScale?: number;
@@ -236,6 +244,30 @@ export interface VboxProjectionTemplate<N extends RNode> {
   padding?: ProjectionPadding;
   subexpScale?: number;
   rows: ProjectionTemplate<N>[];
+}
+
+export interface HboxProjectionTemplate<N extends RNode> {
+  type: 'hbox';
+  color?: string;
+  horizontalAlign: number;
+  ellipsize: boolean;
+  padding?: ProjectionPadding;
+  subexpScale?: number;
+  rows: ProjectionTemplate<N>[];
+}
+
+export interface DynamicProjectionTemplate<N extends RNode, P extends ProjectionTemplate<N>> {
+  type: 'dynamicProperty';
+  field(state: Im<RState>, nodeId: RId): string;
+  fields: Record<string, Record<string, (proj: P) => void>>;
+  projection: P;
+}
+
+export interface StickyProjectionTemplate<N extends RNode> {
+  type: 'sticky';
+  // TODO: enum
+  side: string;
+  content: ProjectionTemplate<N>;
 }
 
 export interface CaseProjectionTemplate<
