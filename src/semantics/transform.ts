@@ -31,10 +31,10 @@ const NotchRecord = immutable.Record({
     type: 'inset'
 });
 
-export interface SemanticDefinition<E extends Record<string, ExprDefinition<RNode>>> {
+export interface SemanticDefinition {
     name: string;
     parser: any;
-    expressions: E;
+    expressions: Record<string, ExprDefinition<RNode>>;
 }
 
 export type VTupleNode = RNode;
@@ -47,11 +47,11 @@ type NodeKind<E> = E extends ExprDefinition<infer N> ? N : never;
  * semantics and builds a module for the rest of Reduct to interact
  * with the semantics.
  */
-export class Semantics<E extends Record<string, ExprDefinition<RNode>>> {
+export class Semantics {
     /**
      * The original semantics definition.
      */
-    public definition: SemanticDefinition<E>;
+    public definition: SemanticDefinition;
 
     public projections: Record<string, ViewFn[]> = {};
 
