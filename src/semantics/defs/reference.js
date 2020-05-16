@@ -1,4 +1,3 @@
-import * as immutable from 'immutable';
 import * as core from '../core';
 import { builtins, genericValidate } from './builtins';
 

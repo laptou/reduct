@@ -4,7 +4,6 @@
 import * as immutable from 'immutable';
 
 import * as progression from '../game/progression';
-import Audio from '../resource/audio';
 import Logging from '../logging/logging';
 
 import * as gfx from '../gfx/core';
@@ -16,12 +15,20 @@ import * as meta from './meta';
 import makeInterpreter from './interpreter';
 
 import { nextId } from '../reducer/reducer';
+import { ExprDefinition } from './defs';
+import { RNode } from '.';
 
 const NotchRecord = immutable.Record({
     side: 'left',
     shape: 'wedge',
     type: 'inset'
 });
+
+export interface SemanticDefinition {
+    name: string;
+    parser: any;
+    expressions: Record<string, ExprDefinition<RNode>>;
+}
 
 /**
  * This module turns a JSON-plus-functions specification of language
@@ -30,7 +37,7 @@ const NotchRecord = immutable.Record({
  *
  * @alias transform
  */
-export default function transform(definition) {
+export default function transform(definition: SemanticDefinition) {
     /**
      * The generated semantics module.
      */
