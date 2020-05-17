@@ -1,5 +1,8 @@
 import type { NodeDef } from './base';
-import type { BaseNode, NodeId } from '..';
+import type { BaseNode, NodeId, NodeType } from '..';
+import { Thunk, Im } from '@/util/im';
+import { Semantics } from '../transform';
+import { RState } from '@/reducer/state';
 
 export interface ValueNode<T> extends BaseNode {
     value: T;
@@ -24,6 +27,7 @@ export interface UnsolNode extends BaseNode {
 }
 
 export interface DynVarNode extends BaseNode {
+    type: 'dynamicVariant';
     value: any;
     variant: any;
 }

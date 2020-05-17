@@ -85,7 +85,6 @@ function shapeProjection(options) {
 }
 
 /**
- * @class
  * @alias gfx.shapes.triangle
  */
 export function triangle(options = {}) {
@@ -115,7 +114,6 @@ export function triangle(options = {}) {
 }
 
 /**
- * @class
  * @alias gfx.shapes.circle
  */
 export function circle(options = {}) {
@@ -143,7 +141,6 @@ export function circle(options = {}) {
 }
 
 /**
- * @class
  * @alias gfx.shapes.rectangle
  */
 export function rectangle(options = {}) {
@@ -172,7 +169,6 @@ export function rectangle(options = {}) {
 }
 
 /**
- * @class
  * @alias gfx.shapes.star
  */
 export function star(options = {}) {

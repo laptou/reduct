@@ -3,7 +3,6 @@ import * as util from './util';
 
 
 /**
- * @class
  * @alias gfx.layout.expand
  */
 export function expand(projection, options) {
@@ -22,7 +21,6 @@ export function expand(projection, options) {
 }
 
 /**
- * @class
  * @alias gfx.layout.hexpand
  */
 export function hexpand(projection) {
@@ -30,7 +28,6 @@ export function hexpand(projection) {
 }
 
 /**
- * @class
  * @alias gfx.layout.sticky
  */
 export function sticky(projection, direction, options) {
@@ -77,7 +74,6 @@ export function sticky(projection, direction, options) {
 }
 
 /**
- * @class
  * @alias gfx.layout.hbox
  */
 export function hbox(childrenFunc, options = {}, baseProjection = roundedRect) {
@@ -159,7 +155,6 @@ export function hbox(childrenFunc, options = {}, baseProjection = roundedRect) {
 }
 
 /**
- * @class
  * @alias gfx.layout.vbox
  */
 export function vbox(childrenFunc, options = {}, baseProjection = roundedRect) {
@@ -313,7 +308,6 @@ export function previewer(projection) {
 }
 
 /**
- * @class
  * @alias gfx.layout.ratioSizer
  */
 export function ratioSizer(projection, ratio, percentage) {
@@ -330,7 +324,6 @@ export function ratioSizer(projection, ratio, percentage) {
 }
 
 /**
- * @class
  * @alias gfx.layout.ratioPlacer
  */
 export function ratioPlacer(projection, x, y) {

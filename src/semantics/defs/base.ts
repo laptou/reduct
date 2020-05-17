@@ -1,8 +1,8 @@
-import { Im } from '@/util/im';
+import { Im, Thunk } from '@/util/im';
 import { RState } from '@/reducer/state';
-import Stage from '@/stage/stage';
-import { ProjectionTemplate } from '@/gfx/projection';
-import { BaseNode, NodeId } from '..';
+import type Stage from '@/stage/stage';
+import type { ProjectionDef } from '@/gfx/projection';
+import type { BaseNode, NodeId, NodeType } from '..';
 import type { Semantics } from '../transform';
 
 export type NodeKind = 'expression' | 'placeholder' | 'value' | 'statement' | 'syntax';
@@ -32,13 +32,11 @@ export interface NodeDef<N extends BaseNode> {
      * expressions. For instance, definition syntax might have a
      * subexpression for the body.
      */
-    subexpressions?:
-    Exclude<keyof N, keyof BaseNode>[] |
-    ((semantics: Semantics, expr: Im<N>) => Exclude<keyof N, keyof BaseNode>[]);
+    subexpressions?: Thunk<[Semantics, Im<N>], Exclude<keyof N, keyof BaseNode>[]>;
 
-    projection: ProjectionTemplate<N>;
+    projection: ProjectionDef<N>;
 
-    type?: N['type'];
+    type?: N['type'] | Thunk<[Semantics, Im<RState>, any, Im<this>], NodeType>;
 
     targetable?: (
         semantics: Semantics,

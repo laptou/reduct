@@ -34,7 +34,6 @@ document.body.addEventListener('keyup', (e) => {
  * functions that construct objects. They may not necessarily
  * construct a new object; some views are modifiers for other views.
  *
- * @class
  * @alias gfx.baseProjection
  */
 export function baseProjection(options) {
@@ -553,7 +552,6 @@ export const hexaRect = baseShape('hexaRect', {
  *
  * Note that all projections must have compatible fields.
  *
- * @class
  * @alias gfx.dynamic
  */
 export function dynamic(mapping, keyFunc, options) {
@@ -607,7 +605,6 @@ export function dynamic(mapping, keyFunc, options) {
 /**
  * Create a projection that changes values based on an expression field or function.
  *
- * @class
  * @alias gfx.dynamicProperty
  */
 export function dynamicProperty(projection, keyFunc, mappings) {

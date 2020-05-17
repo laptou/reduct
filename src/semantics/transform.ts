@@ -14,7 +14,7 @@ import Logging from '../logging/logging';
 
 import * as gfx from '../gfx/core';
 import * as fx from '../gfx/fx';
-import { projector, ViewFn } from '../gfx/projector';
+import { getProjector, ViewFn } from '../gfx/projector';
 
 
 import * as meta from './meta';
@@ -215,7 +215,7 @@ export class Semantics {
                     exprDefinition.projection.notches = exprDefinition.notches;
                 }
 
-                this.projections[exprName].push(projector(exprDefinition));
+                this.projections[exprName].push(getProjector(exprDefinition));
             }
 
             const nodeCreator = function(...params: any[]) {

@@ -3,7 +3,6 @@ import * as primitive from './primitive';
 import * as util from './util';
 
 /**
- * @class
  * @alias gfx.sprite
  */
 export function sprite(options = {}) {
@@ -38,7 +37,6 @@ export function sprite(options = {}) {
 }
 
 /**
- * @class
  * @alias gfx.exprify
  */
 export function exprify(projection) {

@@ -9,7 +9,6 @@ const TEXT_SIZE_CACHE = {};
 
 /**
  *
- * @class
  * @alias gfx.text
  */
 export default function text(txt, options) {

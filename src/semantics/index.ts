@@ -17,7 +17,8 @@ import {
     StrNode,
     BoolNode,
     UnsolNode,
-    DynVarNode
+    DynVarNode,
+    SymbolNode
 } from './defs';
 
 export type NodeId = number;
@@ -49,6 +50,11 @@ export interface BaseNode {
     complete: boolean;
 }
 
+export type NodeType = { 
+    types: Map<NodeId, any>;
+    complete: boolean;
+}
+
 export type NodeMap = ImMap<NodeId, Im<ReductNode>>;
 
 export type ReductNode =
@@ -69,4 +75,5 @@ export type ReductNode =
     StrNode |
     BoolNode |
     UnsolNode |
+    SymbolNode |
     DynVarNode;
