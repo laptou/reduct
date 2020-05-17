@@ -61,7 +61,8 @@ export function splosion(stage, pos, options = {}) {
                     record.x + record.r,
                     record.y + record.r,
                     record.r,
-                    0, 2 * Math.PI
+                    0,
+                    2 * Math.PI
                 );
                 ctx.fill();
                 i += 1;
@@ -152,8 +153,10 @@ export function shatter(stage, projection, options) {
     let primitive = (offset) => {
         gfx.primitive.roundRect(
             ctx,
-            status.x, status.y + offset,
-            status.w, status.h,
+            status.x,
+            status.y + offset,
+            status.w,
+            status.h,
             projection.radius,
             true,
             true
@@ -163,9 +166,12 @@ export function shatter(stage, projection, options) {
         primitive = (offset) => {
             gfx.primitive.hexaRect(
                 ctx,
-                status.x, status.y + offset,
-                status.w, status.h,
-                Math.min(25, status.w / 2), status.h / 2,
+                status.x,
+                status.y + offset,
+                status.w,
+                status.h,
+                Math.min(25, status.w / 2),
+                status.h / 2,
                 true,
                 true
             );
@@ -235,8 +241,10 @@ export function poof(stage, projection) {
             const idx = Math.min(Math.floor(status.t * images.length), images.length - 1);
             images[idx].draw(
                 ctx,
-                pos.x - 45, pos.y - 45,
-                90, 90
+                pos.x - 45,
+                pos.y - 45,
+                90,
+                90
             );
             ctx.restore();
         }
@@ -340,10 +348,14 @@ export function expandingShape(stage, projection, options = {}) {
             primitive.setStroke(ctx, { lineWidth: 2, color: state.color });
             primitive.roundRect(
                 ctx,
-                state.pos.x - (w / 2), state.pos.y - (h / 2),
-                w, h,
+                state.pos.x - (w / 2),
+                state.pos.y - (h / 2),
+                w,
+                h,
                 state.scale.x * state.radius,
-                false, true, state.opacity
+                false,
+                true,
+                state.opacity
             );
         }
     });

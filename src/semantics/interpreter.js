@@ -401,8 +401,7 @@ export default function(module) {
         // small-step
         let playedAnim = false;
         return module.interpreter.reducers.multi(
-            stage, state, exp,
-            {
+            stage, state, exp, {
                 ...callbacks,
                 update: (...args) => {
                     if (!playedAnim) {
@@ -422,8 +421,7 @@ export default function(module) {
         // small-step
         let playedAnim = false;
         return module.interpreter.reducers.multi(
-            stage, state, exp,
-            {
+            stage, state, exp, {
                 ...callbacks,
                 update: (...args) => {
                     if (!playedAnim) {

@@ -171,7 +171,8 @@ export default {
                     const params = expr.get('params');
                     const result = semant.interpreter.betaReduce(
                         stage,
-                        state, res,
+                        state,
+                        res,
                         params.map((name) => expr.get(`arg_${name}`))
                     );
                     if (result) {

@@ -71,18 +71,26 @@ export function exprify(projection) {
             primitive.roundRect(
                 ctx,
                 // Draw slightly bigger to make sure we're distinct
-                x, y - 2,
-                w, h + 8,
+                x,
+                y - 2,
+                w,
+                h + 8,
                 sx * 22,
-                true, stage.isHovered(exprId), null
+                true,
+                stage.isHovered(exprId),
+                null
             );
             ctx.fillStyle = '#555';
             primitive.roundRect(
                 ctx,
-                x, y - 4,
-                w, h + 8,
+                x,
+                y - 4,
+                w,
+                h + 8,
                 sx * 22,
-                true, stage.isHovered(exprId), null
+                true,
+                stage.isHovered(exprId),
+                null
             );
         } else if ((!hasParent || !locked) && stage.isHovered(exprId)) {
             glowColor = this.highlightColor || 'yellow';
@@ -186,9 +194,7 @@ export function patch3(childFunc, options = {}) {
         }
 
         options.right.draw(
-            ctx, x - 1, topY,
-            sx * options.right.naturalWidth,
-            sy * options.right.naturalHeight
+            ctx, x - 1, topY, sx * options.right.naturalWidth, sy * options.right.naturalHeight
         );
 
         const childId = childFunc(id, state);

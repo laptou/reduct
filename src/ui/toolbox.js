@@ -103,7 +103,8 @@ export default class Toolbox {
             this.stage.internalViews[this.bg].size.w - 50,
             this.stage.internalViews[this.bg].size.h - 10,
             25,
-            true, false
+            true,
+            false
         );
     }
 

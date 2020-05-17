@@ -41,7 +41,9 @@ function drawPrimitive(exprId, projection, state, stage, offset,
             offset.sx * projection.scale.x * projection.size.w,
             offset.sy * projection.scale.y * projection.size.h,
             sx * 22,
-            true, stage.isHovered(exprId), null
+            true,
+            stage.isHovered(exprId),
+            null
         );
         ctx.fillStyle = '#555';
         primitive.roundRect(
@@ -51,7 +53,9 @@ function drawPrimitive(exprId, projection, state, stage, offset,
             offset.sx * projection.scale.x * projection.size.w,
             offset.sy * projection.scale.y * projection.size.h,
             sx * 22,
-            true, stage.isHovered(exprId), null
+            true,
+            stage.isHovered(exprId),
+            null
         );
     } else if ((!hasParent || !locked) && stage.isHovered(exprId)) {
         primitive.setStroke(ctx, {

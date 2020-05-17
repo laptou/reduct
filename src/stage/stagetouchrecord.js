@@ -82,8 +82,7 @@ export default class TouchRecord extends BaseTouchRecord {
             if (id === this.topNode) return;
 
             this.dropTargets = this.dropTargets.concat(this.stage.semantics.search(
-                nodes, id,
-                (_, subId) => {
+                nodes, id, (_, subId) => {
                     const droppable = this.stage.semantics.droppable(state, this.topNode, subId);
                     const other = nodes.get(subId);
                     const compatible = this.stage.semantics.notchesCompatible(topNode, other);

@@ -253,9 +253,7 @@ export function debugDraw(ctx, projection, offset) {
         ctx.save();
         ctx.strokeStyle = DEBUG_COLORS[projection.type] || 'red';
         ctx.lineWidth = 1;
-        ctx.strokeRect(x, y,
-            projection.size.w * sx,
-            projection.size.h * sy);
+        ctx.strokeRect(x, y, projection.size.w * sx, projection.size.h * sy);
         ctx.restore();
     }
 }
@@ -270,7 +268,8 @@ export function hoverOutline(id, projection, stage, offset) {
 
         primitive.roundRect(
             stage.ctx,
-            x, y,
+            x,
+            y,
             offset.sx * projection.scale.x * projection.size.w,
             offset.sy * projection.scale.y * projection.size.h,
             projection.scale.x * offset.sx * (projection.radius || 15),
@@ -396,13 +395,7 @@ export function baseShape(name, defaults, draw, baseShapeOptions = {}) {
             if ((this.shadow !== false)
                 && (this.shadow || (node && (!node.get('parent') || !node.get('locked'))))) {
                 ctx.fillStyle = this.shadowColor;
-                draw(ctx, this,
-                    x, y + this.shadowOffset * offset.sy,
-                    offset.sx * this.scale.x * this.size.w,
-                    offset.sy * this.scale.y * this.size.h,
-                    sx, sy,
-                    this.stroke,
-                    this.notches);
+                draw(ctx, this, x, y + this.shadowOffset * offset.sy, offset.sx * this.scale.x * this.size.w, offset.sy * this.scale.y * this.size.h, sx, sy, this.stroke, this.notches);
             }
 
             if (this.color) ctx.fillStyle = this.color;
@@ -438,13 +431,7 @@ export function baseShape(name, defaults, draw, baseShapeOptions = {}) {
             }
 
 
-            draw(ctx, this,
-                x, y,
-                offset.sx * this.scale.x * this.size.w,
-                offset.sy * this.scale.y * this.size.h,
-                sx, sy,
-                this.stroke || shouldStroke,
-                this.notches);
+            draw(ctx, this, x, y, offset.sx * this.scale.x * this.size.w, offset.sy * this.scale.y * this.size.h, sx, sy, this.stroke || shouldStroke, this.notches);
             debugDraw(ctx, this, offset);
 
             ctx.restore();
@@ -490,7 +477,10 @@ export const roundedRect = baseShape('roundedRect', {
 }, (ctx, projection, x, y, w, h, sx, sy, shouldStroke, notches) => {
     primitive.roundRect(
         ctx,
-        x, y, w, h,
+        x,
+        y,
+        w,
+        h,
         sx * projection.radius,
         !!projection.color,
         shouldStroke,
@@ -540,7 +530,12 @@ export const hexaRect = baseShape('hexaRect', {
 }, (ctx, projection, x, y, w, h, sx, sy, shouldStroke) => {
     primitive.hexaRect(
         ctx,
-        x, y, w, h, Math.min(25, w / 2), h / 2,
+        x,
+        y,
+        w,
+        h,
+        Math.min(25, w / 2),
+        h / 2,
         !!projection.color,
         shouldStroke,
         projection.stroke ? projection.stroke.opacity : null

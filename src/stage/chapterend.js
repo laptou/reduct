@@ -393,16 +393,14 @@ export default class ChapterEndStage extends BaseStage {
         if (this.continueButtonId) {
             this.continueButton.prepare(this.continueButtonId, this.continueButtonId, state, this);
             this.continueButton.draw(
-                this.continueButtonId, this.continueButtonId, state, this,
-                this.makeBaseOffset({ opacity: this.opacity })
+                this.continueButtonId, this.continueButtonId, state, this, this.makeBaseOffset({ opacity: this.opacity })
             );
         }
         if (this.challengeButtonId) {
             const view = this.internalViews[this.challengeButtonId];
             view.prepare(this.challengeButtonId, this.challengeButtonId, state, this);
             view.draw(
-                this.challengeButtonId, this.challengeButtonId, state, this,
-                this.makeBaseOffset({ opacity: this.opacity })
+                this.challengeButtonId, this.challengeButtonId, state, this, this.makeBaseOffset({ opacity: this.opacity })
             );
         }
 

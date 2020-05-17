@@ -115,7 +115,10 @@ export function argumentBar() {
                 ctx.fillStyle = '#000';
                 primitive.roundRect(
                     ctx,
-                    x + dx, y + (dy - 3), w, h,
+                    x + dx,
+                    y + (dy - 3),
+                    w,
+                    h,
                     sx * 22,
                     true,
                     false,
@@ -126,7 +129,10 @@ export function argumentBar() {
                 ctx.fillStyle = '#555';
                 primitive.roundRect(
                     ctx,
-                    x + dx, y + dy, w, h,
+                    x + dx,
+                    y + dy,
+                    w,
+                    h,
                     sx * 22,
                     true,
                     false,

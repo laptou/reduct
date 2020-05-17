@@ -130,8 +130,7 @@ export function startLevel(description, parse, store, stage) {
     // For anything that is fading, spawn the old node on top
     const checkFade = (source) => (nodeId, idx) => {
         if (stage.semantics.search(
-            state.get('nodes'), nodeId,
-            (_, id) => progression.isFadeBorder(state.getIn(['nodes', id, 'type']))
+            state.get('nodes'), nodeId, (_, id) => progression.isFadeBorder(state.getIn(['nodes', id, 'type']))
         ).length > 0) {
             const descr = description[source][idx];
 
@@ -157,8 +156,7 @@ export function startLevel(description, parse, store, stage) {
                 });
 
                 store.dispatch(action.unfade(
-                    source, nodeId, topNode,
-                    flattened.map((e) => immutable.Map(e))
+                    source, nodeId, topNode, flattened.map((e) => immutable.Map(e))
                 ));
             });
         }

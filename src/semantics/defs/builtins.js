@@ -193,8 +193,7 @@ function builtinFold(expr, semant, nodes) {
         fncall = semant.apply(semant.apply(f2, a.elem0), init);
     }
 
-    return semant.reference('fold', ['f', 'a', 'init'],
-        f1, a_tail, fncall);
+    return semant.reference('fold', ['f', 'a', 'init'], f1, a_tail, fncall);
 }
 
 function builtinSlice(expr, semant, nodes) {

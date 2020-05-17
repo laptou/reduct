@@ -138,5 +138,5 @@ export interface SpriteProjectionDef<N extends BaseNode> extends BaseProjectionD
     type: 'sprite';
     image: Thunk<[Im<N>], string>;
     scale?: number;
-    size?: { w: number; h: number; };
+    size?: { w: number; h: number };
 }

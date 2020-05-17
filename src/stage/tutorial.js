@@ -35,9 +35,7 @@ export default class TutorialStage extends Stage {
         if (this.tutorialState.state !== 'done') {
             const state = this.getState();
             const result = this.testNodeAtPos(
-                state, pos, this.skipButton, this.skipButton,
-                null, this.makeBaseOffset(),
-                (id) => id === this.skipButton
+                state, pos, this.skipButton, this.skipButton, null, this.makeBaseOffset(), (id) => id === this.skipButton
             );
             if (result) {
                 return [result[1], result[1]];

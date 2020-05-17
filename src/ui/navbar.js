@@ -141,9 +141,7 @@ export default class Navbar {
         if (!this.containsPoint(pos)) return [null, null];
 
         const result = this.stage.testNodeAtPos(
-            state, pos, this.container, this.container,
-            null, this.stage.makeBaseOffset(),
-            (viewId) => this.buttons.includes(viewId)
+            state, pos, this.container, this.container, null, this.stage.makeBaseOffset(), (viewId) => this.buttons.includes(viewId)
         );
         if (result) {
             return [result[1], result[1]];
@@ -160,26 +158,20 @@ export default class Navbar {
         levelDisplay.pos.x = this.stage.width - 25;
         levelDisplay.pos.y = 100;
         levelDisplay.prepare(
-            this.levelDisplay, this.levelDisplay,
-            state, this.stage
+            this.levelDisplay, this.levelDisplay, state, this.stage
         );
         this.stage.getView(this.levelDisplay).draw(
-            this.levelDisplay, this.levelDisplay,
-            state, this.stage,
-            this.stage.makeBaseOffset()
+            this.levelDisplay, this.levelDisplay, state, this.stage, this.stage.makeBaseOffset()
         );
 
         const container = this.stage.getView(this.container);
         container.pos.x = levelDisplay.pos.x - levelDisplay.size.w - 25;
         container.pos.y = 100;
         container.prepare(
-            this.container, this.container,
-            state, this.stage
+            this.container, this.container, state, this.stage
         );
         container.draw(
-            this.container, this.container,
-            state, this.stage,
-            this.stage.makeBaseOffset()
+            this.container, this.container, state, this.stage, this.stage.makeBaseOffset()
         );
     }
 

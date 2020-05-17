@@ -69,8 +69,7 @@ export default function decal(projection) {
         const [sx, sy] = util.absoluteScale(this, offset);
 
         const gradient = ctx.createLinearGradient(
-            x + (sx * lastChild.x), y + (sy * lastChild.y),
-            x + (sx * firstChild.x), y + (sy * firstChild.y)
+            x + (sx * lastChild.x), y + (sy * lastChild.y), x + (sx * firstChild.x), y + (sy * firstChild.y)
         );
         gradient.addColorStop(0, lastFilled ? '#14818b' : 'gray');
         gradient.addColorStop(0.7, (firstFilled && lastFilled) ? '#c500ff' : 'gray');

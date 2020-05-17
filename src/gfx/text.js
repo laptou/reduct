@@ -103,7 +103,8 @@ export default function text(txt, options) {
 
             primitive.roundRect(
                 ctx,
-                x, y,
+                x,
+                y,
                 offset.sx * this.scale.x * this.size.w,
                 offset.sy * this.scale.y * this.size.h,
                 this.scale.x * offset.sx * (this.radius || 15),
