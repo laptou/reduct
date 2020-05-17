@@ -1,10 +1,13 @@
-import { RNode, RId, ExprDefinition } from '.';
+import type { NodeDef } from './base';
+import type { BaseNode, NodeId } from '..';
 
-export interface NotNode extends RNode {
-    value: RId;
+export interface NotNode extends BaseNode {
+    type: 'not';
+
+    value: NodeId;
 }
 
-export const not: ExprDefinition<NotNode> = {
+export const not: NodeDef<NotNode> = {
     kind: 'expression',
     fields: [],
     subexpressions: ['value'],

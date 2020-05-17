@@ -22,9 +22,9 @@ function capitalize(s) {
 export default new Semantics({
     name: 'ECMAScript 6',
     parser: {
-        parse: (semanticsDefinition) => {
+        parse: (semantics) => {
             // gradually introducing class-based model
-            const parser = new ES6Parser(semanticsDefinition);
+            const parser = new ES6Parser(semantics);
             return parser.parse.bind(parser);
         },
         unparse: makeUnparser,

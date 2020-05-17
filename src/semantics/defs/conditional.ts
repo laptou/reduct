@@ -1,14 +1,16 @@
 import * as gfx from '../../gfx/core';
 import * as animate from '../../gfx/animate';
-import { ExprDefinition, RNode, RId } from '.';
+import type { NodeDef } from './base';
+import type { BaseNode, NodeId } from '..';
 
-export interface ConditionalNode extends RNode {
-    condition: RId;
-    positive: RId;
-    negative: RId;
+export interface ConditionalNode extends BaseNode {
+    type: 'conditional';
+    condition: NodeId;
+    positive: NodeId;
+    negative: NodeId;
 }
 
-export const conditional: ExprDefinition<ConditionalNode> = {
+export const conditional: NodeDef<ConditionalNode> = {
     kind: 'expression',
     fields: [],
     subexpressions: ['condition', 'positive', 'negative'],

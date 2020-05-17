@@ -1,15 +1,17 @@
 import * as gfx from '../../gfx/core';
 import * as animate from '../../gfx/animate';
 import * as fx from '../../gfx/fx';
-import { ExprDefinition, RId, RNode } from '.';
+import type { NodeDef } from './base';
+import type { BaseNode, NodeId } from '..';
 
-export interface ApplyNode extends RNode {
-    callee: RId;
-    argument: RId;
+export interface ApplyNode extends BaseNode {
+    type: 'apply';
+    callee: NodeId;
+    argument: NodeId;
 }
 
 // eslint-disable-next-line import/prefer-default-export
-export const apply: ExprDefinition<ApplyNode> = {
+export const apply: NodeDef<ApplyNode> = {
     kind: 'expression',
     fields: [],
     subexpressions: ['callee', 'argument'],

@@ -1,7 +1,11 @@
+import { Semantics } from '@/semantics/transform';
+// eslint-disable-next-line import/no-unresolved
+import type * as estree from 'estree';
 import * as esprima from 'esprima';
+import { ReductNode } from '@/semantics';
 import * as progression from '../game/progression';
 
-function modifier(ast) {
+function modifier(ast: esprima.Program) {
     if (ast.body.length !== 2) return null;
     if (ast.body[0].type !== 'ExpressionStatement') return null;
 
@@ -21,17 +25,17 @@ function modifier(ast) {
 }
 
 export class ES6Parser {
+    public semantics: Semantics;
+
     /**
      * Creates a new ES6 parser with the given semantics
-     * @param {import('semantics/transform').SemanticsDefinition} semanticsDefinition
      */
-    constructor(semanticsDefinition) {
-        this.semanticsDefinition = semanticsDefinition;
+    public constructor(semantics: Semantics) {
+        this.semantics = semantics;
     }
 
-    parse(program, macros) {
-        /** @type {esprima.Program} */
-        const ast = esprima.parse(program);
+    public parse(program: string, macros: any) {
+        const ast = esprima.parseScript(program);
         const mod = modifier(ast);
 
         if (ast.body.length === 1) {
@@ -50,19 +54,19 @@ export class ES6Parser {
             }
 
             if (modName === '__unlimited') {
-                result.__meta = new this.semanticsDefinition.meta.Meta({
-                    toolbox: this.semanticsDefinition.meta.ToolboxMeta({
+                result.__meta = new this.semantics.meta.Meta({
+                    toolbox: this.semantics.meta.ToolboxMeta({
                         unlimited: true
                     })
                 });
             } else if (modName === '__targetable') {
-                result.__meta = new this.semanticsDefinition.meta.Meta({
-                    toolbox: this.semanticsDefinition.meta.ToolboxMeta({
+                result.__meta = new this.semantics.meta.Meta({
+                    toolbox: this.semantics.meta.ToolboxMeta({
                         targetable: true
                     })
                 });
             } else if (modName === '__argumentAnnotated') {
-                result.body = this.semanticsDefinition.missing();
+                result.body = this.semantics.missing();
             } else if (modName.name === '__argumentAnnotated') {
                 result.params = modName.params;
             } else {
@@ -75,13 +79,7 @@ export class ES6Parser {
         return fail('Cannot parse multi-statement programs at the moment.', program);
     }
 
-
-    /**
-     *
-     * @param {import('estree').Statement} node
-     * @param {*} macros
-     */
-    parseNode(node, macros) {
+    public parseNode(node: estree.Statement | estree.Declaration | estree.Expression, macros) {
         switch (node.type) {
         case 'ExpressionStatement':
             return this.parseNode(node.expression, macros);
@@ -97,25 +95,25 @@ export class ES6Parser {
         }
 
         case 'Identifier': {
-            if (node.name === '_') return this.semanticsDefinition.missing();
+            if (node.name === '_') return this.semantics.missing();
 
-            if (node.name === '__defineAttach') return this.semanticsDefinition.defineAttach();
+            if (node.name === '__defineAttach') return this.semantics.defineAttach();
 
             // Each macro is a thunk
-            const macroName = this.semanticsDefinition.parser.templatizeName(node.name);
+            const macroName = this.semantics.parser.templatizeName(node.name);
             if (macros && macros[macroName]) return macros[macroName]();
 
             if (node.name === 'xx') {
-                return this.semanticsDefinition.vtuple([
-                    this.semanticsDefinition.lambdaVar('x'),
-                    this.semanticsDefinition.lambdaVar('x')
+                return this.semantics.vtuple([
+                    this.semantics.lambdaVar('x'),
+                    this.semantics.lambdaVar('x')
                 ]);
             }
             if (node.name === 'xxx') {
-                return this.semanticsDefinition.vtuple([
-                    this.semanticsDefinition.lambdaVar('x'),
-                    this.semanticsDefinition.lambdaVar('x'),
-                    this.semanticsDefinition.lambdaVar('x')
+                return this.semantics.vtuple([
+                    this.semantics.lambdaVar('x'),
+                    this.semantics.lambdaVar('x'),
+                    this.semantics.lambdaVar('x')
                 ]);
             }
             if (node.name.slice(0, 9) === '__variant') {
@@ -124,26 +122,26 @@ export class ES6Parser {
                     throw new Error(`Invalid dynamic variant ${node.name}`);
                 }
 
-                return this.semanticsDefinition.dynamicVariant(variant, value);
+                return this.semantics.dynamicVariant(variant, value);
             }
 
-            return this.semanticsDefinition.lambdaVar(macroName);
+            return this.semantics.lambdaVar(macroName);
         }
 
         case 'Literal': {
-            if (typeof node.value === 'number') return this.semanticsDefinition.number(node.value);
-            if (typeof node.value === 'boolean') return this.semanticsDefinition.bool(node.value);
+            if (typeof node.value === 'number') return this.semantics.number(node.value);
+            if (typeof node.value === 'boolean') return this.semantics.bool(node.value);
 
             if (node.value === 'star'
                 || node.value === 'circle'
                 || node.value === 'triangle'
                 || node.value === 'rect') {
-                return this.semanticsDefinition.symbol(node.value);
+                return this.semantics.symbol(node.value);
             }
 
             // Interpreting strings after symbols so as to prevent the engine from
             // treating the symbols as strings
-            if (typeof node.value === 'string') return this.semanticsDefinition.string(node.value);
+            if (typeof node.value === 'string') return this.semantics.string(node.value);
             return fail(`parsers.es6: Unrecognized value ${node.value}`, node);
         }
 
@@ -152,42 +150,42 @@ export class ES6Parser {
                 // Implement capture of bindings
                 const argName = node.params[0].name;
                 const newMacros = {};
-                newMacros[argName] = () => this.semanticsDefinition.lambdaVar(argName);
+                newMacros[argName] = () => this.semantics.lambdaVar(argName);
                 const body = this.parseNode(node.body, Object.assign(macros, newMacros));
-                return this.semanticsDefinition.lambda(this.semanticsDefinition.lambdaArg(argName), body);
+                return this.semantics.lambda(this.semantics.lambdaArg(argName), body);
             }
             return fail('Lambda expessions with more than one input are currently undefined.', node);
         }
 
         case 'AssignmentExpression': {
-            const name = this.semanticsDefinition.parser.templatizeName(node.left.name);
+            const name = this.semantics.parser.templatizeName(node.left.name);
 
             const argName = node.left.name;
             const newMacros = {};
-            newMacros[argName] = () => this.semanticsDefinition.lambdaVar(argName);
+            newMacros[argName] = () => this.semantics.lambdaVar(argName);
             const body = this.parseNode(node.right.right, Object.assign(macros, newMacros));
 
-            return this.semanticsDefinition.letExpr(
+            return this.semantics.letExpr(
                 name,
                 this.parseNode(node.right.left, newMacros),
-                this.semanticsDefinition.lambda(this.semanticsDefinition.lambdaArg(argName), body)
+                this.semantics.lambda(this.semantics.lambdaArg(argName), body)
             );
         }
 
         case 'UnaryExpression': {
-            return this.semanticsDefinition.not(this.parseNode(node.argument, macros));
+            return this.semantics.not(this.parseNode(node.argument, macros));
         }
 
         case 'BinaryExpression':
         // TODO: need ExprManager
-            return this.semanticsDefinition.binop(this.parseNode(node.left, macros),
-                this.semanticsDefinition.op(node.operator),
+            return this.semantics.binop(this.parseNode(node.left, macros),
+                this.semantics.op(node.operator),
                 this.parseNode(node.right, macros));
 
         case 'LogicalExpression':
         // TODO: need ExprManager
-            return this.semanticsDefinition.binop(this.parseNode(node.left, macros),
-                this.semanticsDefinition.op(node.operator),
+            return this.semantics.binop(this.parseNode(node.left, macros),
+                this.semantics.op(node.operator),
                 this.parseNode(node.right, macros));
 
         case 'CallExpression': {
@@ -195,7 +193,7 @@ export class ES6Parser {
                 const testCases = node.arguments.map((arg) => this.parseNode(arg, macros));
                 // TODO: better way to figure out name
                 const name = node.arguments[0].type === 'CallExpression' ? node.arguments[0].callee.name : 'f';
-                return this.semanticsDefinition.lambda(this.semanticsDefinition.lambdaArg(name, true), this.semanticsDefinition.vtuple(testCases));
+                return this.semantics.lambda(this.semantics.lambdaArg(name, true), this.semantics.vtuple(testCases));
             }
 
             if (node.callee.type === 'Identifier' && node.callee.name === '__autograder') {
@@ -211,13 +209,13 @@ export class ES6Parser {
                                             * chapter.resources.aliens.length);
                 const alienName = chapter.resources.aliens[alienIndex];
 
-                return this.semanticsDefinition.autograder(alienName, node.arguments[0].value, colors[node.arguments[0].value], this.semanticsDefinition.missing());
+                return this.semantics.autograder(alienName, node.arguments[0].value, colors[node.arguments[0].value], this.semantics.missing());
             }
 
             if (node.callee.type === 'Identifier' && node.callee.name === 'unsol') {
                 // NOTE - This should never be called externally
                 // only called within inside the autograder.
-                return this.semanticsDefinition.unsol('red', this.parseNode(node.arguments[0], []));
+                return this.semantics.unsol('red', this.parseNode(node.arguments[0], []));
             }
 
             if (node.arguments.length === 0) {
@@ -233,20 +231,20 @@ export class ES6Parser {
                 return macros[node.callee.name](...node.arguments.map((n) => this.parseNode(n, macros)));
             }
 
-            let result = this.semanticsDefinition.apply(
+            let result = this.semantics.apply(
                 this.parseNode(node.callee, macros),
                 this.parseNode(node.arguments[0], macros)
             );
 
             for (const arg of node.arguments.slice(1)) {
-                result = this.semanticsDefinition.apply(result, this.parseNode(arg, macros));
+                result = this.semantics.apply(result, this.parseNode(arg, macros));
             }
 
             return result;
         }
 
         case 'ConditionalExpression': {
-            return this.semanticsDefinition.conditional(
+            return this.semantics.conditional(
                 this.parseNode(node.test, macros),
                 this.parseNode(node.consequent, macros),
                 this.parseNode(node.alternate, macros)
@@ -254,20 +252,20 @@ export class ES6Parser {
         }
 
         case 'FunctionDeclaration': {
-            const name = this.semanticsDefinition.parser.templatizeName(node.id.name);
+            const name = this.semantics.parser.templatizeName(node.id.name);
             if (node.params.length === 0) {
-                return this.semanticsDefinition.define(name, [], this.parseNode(node.body, macros));
+                return this.semantics.define(name, [], this.parseNode(node.body, macros));
             }
 
             let result = this.parseNode(node.body, macros);
             const args = [];
             for (const arg of node.params.slice().reverse()) {
-                const argName = this.semanticsDefinition.parser.templatizeName(arg.name);
+                const argName = this.semantics.parser.templatizeName(arg.name);
                 args.push(argName);
-                result = this.semanticsDefinition.lambda(this.semanticsDefinition.lambdaArg(argName), result);
+                result = this.semantics.lambda(this.semantics.lambdaArg(argName), result);
             }
             args.reverse();
-            return this.semanticsDefinition.define(name, args, result);
+            return this.semantics.define(name, args, result);
         }
 
         case 'VariableDeclaration': {
@@ -278,10 +276,10 @@ export class ES6Parser {
                 return fail('parsers.es6: Only declaring 1 item at a time is supported', node);
             }
 
-            const name = this.semanticsDefinition.parser.templatizeName(node.declarations[0].id.name);
+            const name = this.semantics.parser.templatizeName(node.declarations[0].id.name);
             const body = this.parseNode(node.declarations[0].init, macros);
 
-            return this.semanticsDefinition.define(name, [], body);
+            return this.semantics.define(name, [], body);
         }
 
         case 'ArrayExpression': {
@@ -290,11 +288,11 @@ export class ES6Parser {
             for (const e of node.elements) {
                 a.push(this.parseNode(e, macros));
             }
-            return this.semanticsDefinition.array(...a);
+            return this.semantics.array(...a);
         }
 
         case 'MemberExpression': {
-            return this.semanticsDefinition.member(this.parseNode(node.object, macros),
+            return this.semantics.member(this.parseNode(node.object, macros),
                 this.parseNode(node.property, macros));
         }
 
@@ -304,8 +302,8 @@ export class ES6Parser {
 }
 
 // Make an unparser for a hydrated AST node
-export function makeUnparser(jssemant) {
-    const unparseES6 = function unparseES6(node) {
+export function makeUnparser(_: Semantics) {
+    const unparseES6 = function unparseES6(node: ReductNode) {
         switch (node.type) {
         case 'missing': {
             return '_';

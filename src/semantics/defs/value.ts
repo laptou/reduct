@@ -1,20 +1,41 @@
-import { RNode } from '..';
-import { ExprDefinition } from '.';
+import type { NodeDef } from './base';
+import type { BaseNode, NodeId } from '..';
 
-export interface ValueNode<T> extends RNode {
+export interface ValueNode<T> extends BaseNode {
     value: T;
 }
 
-export interface DynValueNode extends RNode {
+export interface NumberNode extends ValueNode<number> {
+    type: 'number';
+}
+
+export interface StrNode extends ValueNode<string> {
+    type: 'string';
+}
+
+export interface BoolNode extends ValueNode<boolean> {
+    type: 'boolean';
+}
+
+export interface UnsolNode extends BaseNode {
+    type: 'unsol';
+    color: string;
+    value: any;
+}
+
+export interface DynVarNode extends BaseNode {
     value: any;
     variant: any;
 }
 
-export interface SymbolNode extends RNode {
-    name: 'star' | 'circle' | 'triangle' | 'rect';
+export type ReductSymbol = 'star' | 'circle' | 'triangle' | 'rect';
+
+export interface SymbolNode extends BaseNode {
+    type: 'symbol';
+    name: ReductSymbol;
 }
 
-export const number: ExprDefinition<ValueNode<number>> = {
+export const number: NodeDef<NumberNode> = {
     kind: 'value',
     type: 'number',
     fields: ['value'],
@@ -28,25 +49,7 @@ export const number: ExprDefinition<ValueNode<number>> = {
     }
 };
 
-export const dynamicVariant: ExprDefinition<DynValueNode> = {
-    kind: 'value',
-    type: (semant, state, types, expr) => ({
-        types: new Map([[expr.get('id'), expr.get('variant')]]),
-        // TODO: this isn't true if it's a variant with
-        // fields
-        complete: true
-    }),
-    fields: ['variant', 'value'],
-    subexpressions: [],
-    projection: {
-        type: 'default',
-        shape: '()',
-        color: 'cornsilk',
-        fields: ['value']
-    }
-};
-
-export const symbol: ExprDefinition<SymbolNode> = {
+export const symbol: NodeDef<SymbolNode> = {
     kind: 'value',
     type: 'symbol',
     fields: ['name'],
@@ -81,7 +84,7 @@ export const symbol: ExprDefinition<SymbolNode> = {
     }
 };
 
-export const bool: ExprDefinition<ValueNode<boolean>> = {
+export const bool: NodeDef<BoolNode> = {
     kind: 'value',
     type: 'boolean',
     fields: ['value'],
@@ -101,7 +104,7 @@ export const bool: ExprDefinition<ValueNode<boolean>> = {
     }
 };
 
-export const string: ExprDefinition<ValueNode<string>> = {
+export const string: NodeDef<StrNode> = {
     kind: 'value',
     type: 'string',
     fields: ['value'],
@@ -114,7 +117,7 @@ export const string: ExprDefinition<ValueNode<string>> = {
     }
 };
 
-export const unsol: ExprDefinition<any> = {
+export const unsol: NodeDef<UnsolNode> = {
     kind: 'value',
     type: 'unsol',
     fields: ['color'],
@@ -123,5 +126,23 @@ export const unsol: ExprDefinition<any> = {
         type: 'default',
         shape: '()',
         color: (expr) => expr.get('color')
+    }
+};
+
+export const dynamicVariant: NodeDef<DynVarNode> = {
+    kind: 'value',
+    type: (semant, state, types, expr) => ({
+        types: new Map([[expr.get('id'), expr.get('variant')]]),
+        // TODO: this isn't true if it's a variant with
+        // fields
+        complete: true
+    }),
+    fields: ['variant', 'value'],
+    subexpressions: [],
+    projection: {
+        type: 'default',
+        shape: '()',
+        color: 'cornsilk',
+        fields: ['value']
     }
 };

@@ -1,5 +1,5 @@
-import { List as ImList, Map as ImMap } from 'immutable';
-import type { Im, RNode, RId } from './types';
+import { NodeId, NodeMap, ReductNode } from '@/semantics';
+import { ImList, ImMap } from '@/util/im';
 
 export enum ActionKind {
     UseToolbox = 'use-toolbox',
@@ -23,11 +23,11 @@ export enum ActionKind {
 
 export interface StartLevelAction {
     type: ActionKind.StartLevel;
-    nodes: ImMap<RId, Im<RNode>>;
-    goal: ImList<RId>;
-    board: ImList<RId>;
-    toolbox: ImList<RId>;
-    globals: ImMap<string, RId>;
+    nodes: NodeMap;
+    goal: ImList<NodeId>;
+    board: ImList<NodeId>;
+    toolbox: ImList<NodeId>;
+    globals: ImMap<string, NodeId>;
 }
 
 
@@ -51,11 +51,11 @@ export interface StartLevelAction {
 export function startLevel(stage, goal, board, toolbox, globals): StartLevelAction {
     const { semantics } = stage;
 
-    let _nodes: Record<number, RNode> = {};
-    let _goal: RId[] = [];
-    let _board: RId[] = [];
-    let _toolbox: RId[] = [];
-    let _globals: Record<string, RId> = {};
+    let _nodes: Record<number, ReductNode> = {};
+    let _goal: NodeId[] = [];
+    let _board: NodeId[] = [];
+    let _toolbox: NodeId[] = [];
+    let _globals: Record<string, NodeId> = {};
 
     for (const expr of goal) {
         for (const newExpr of semantics.flatten(expr)) {
@@ -94,7 +94,7 @@ export function startLevel(stage, goal, board, toolbox, globals): StartLevelActi
     const finalNodes = ImMap(
         Object
             .values(_nodes)
-            .map((node: RNode) => [node.id, ImMap(node)])
+            .map((node: BaseNode) => [node.id, ImMap(node)])
     );
 
     finalNodes.forEach((node, nodeId) => {

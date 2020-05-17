@@ -1,12 +1,14 @@
-import { ExprDefinition, RId, RNode } from '.';
+import type { NodeDef } from './base';
+import type { BaseNode, NodeId } from '..';
 
-export interface MemberNode extends RNode {
-    array: RId;
-    index: RId;
+export interface MemberNode extends BaseNode {
+    type: 'member';
+    array: NodeId;
+    index: NodeId;
 }
 
 // TODO: rename to 'index', 'member' is a stupid name
-export const member: ExprDefinition<MemberNode> = {
+export const member: NodeDef<MemberNode> = {
     kind: 'expression',
     fields: [],
     subexpressions: ['array', 'index'],

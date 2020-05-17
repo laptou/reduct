@@ -1,9 +1,12 @@
-import { ExprDefinition, RNode, RId } from '.';
+import type { NodeDef } from './base';
+import { BaseNode, NodeId } from '..';
 
-export interface OpNode extends RNode {
+export interface OpNode extends BaseNode {
+    type: 'op';
     name: any;
 }
-export const op: ExprDefinition<OpNode> = {
+
+export const op: NodeDef<OpNode> = {
     kind: 'syntax',
     fields: ['name'],
     subexpressions: [],
@@ -13,13 +16,14 @@ export const op: ExprDefinition<OpNode> = {
     }
 };
 
-export interface BinOpNode extends RNode {
-    left: RId;
-    op: RId;
-    right: RId;
+export interface BinOpNode extends BaseNode {
+    type: 'binop';
+    left: NodeId;
+    op: NodeId;
+    right: NodeId;
 }
 
-export const binop: ExprDefinition<BinOpNode> = {
+export const binop: NodeDef<BinOpNode> = {
     kind: 'expression',
     fields: [],
     subexpressions: ['left', 'op', 'right'],

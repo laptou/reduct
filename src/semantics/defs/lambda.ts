@@ -1,23 +1,29 @@
 import * as fx from '../../gfx/fx';
-import { ExprDefinition } from '.';
-import type { RId, RNode } from '..';
 import { genericBetaReduce } from '../core';
+import type { NodeDef } from './base';
+import type { BaseNode, NodeId } from '..';
 
-export interface LambdaNode extends RNode {
-    arg: RId;
-    body: RId;
+export interface LambdaNode extends BaseNode {
+    type: 'lambda';
+
+    arg: NodeId;
+    body: NodeId;
 }
 
-export interface LambdaArgNode extends RNode {
+export interface LambdaArgNode extends BaseNode {
+    type: 'lambdaArg';
+
     name: string;
     functionHole: any;
 }
 
-export interface LambdaVarNode extends RNode {
+export interface LambdaVarNode extends BaseNode {
+    type: 'lambdaVar';
+
     name: string;
 }
 
-export const lambda: ExprDefinition<LambdaNode> = {
+export const lambda: NodeDef<LambdaNode> = {
     kind: 'value',
     type: (semant, state, types, expr) => ({
         types: new Map([[expr.get('id'), 'lambda']]),
@@ -57,7 +63,7 @@ export const lambda: ExprDefinition<LambdaNode> = {
     })
 };
 
-export const lambdaArg: ExprDefinition<LambdaArgNode> = {
+export const lambdaArg: NodeDef<LambdaArgNode> = {
     fields: ['name', 'functionHole'],
     subexpressions: [],
     targetable: (semant, state, expr) => {
@@ -97,7 +103,7 @@ export const lambdaArg: ExprDefinition<LambdaArgNode> = {
     }
 };
 
-export const lambdaVar: ExprDefinition<LambdaVarNode> = {
+export const lambdaVar: NodeDef<LambdaVarNode> = {
     fields: ['name'],
     subexpressions: [],
     projection: {

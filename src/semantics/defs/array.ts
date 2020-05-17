@@ -1,5 +1,7 @@
 import { Im, ImMap } from '@/util/im';
-import { ExprDefinition, RNode, Semantics } from '.';
+import type { NodeDef } from './base';
+import type { BaseNode } from '..';
+import type { Semantics } from '../transform';
 
 // Returns the names of the subexpressions of an array: elem0, elem1, etc.
 // Requires: arr is a hydrated array node or an immutable map for an array node
@@ -30,12 +32,13 @@ function arrayDisplayParts(expr) {
     return result;
 }
 
-export interface ArrayNode extends RNode {
+export interface ArrayNode extends BaseNode {
+    type: 'array';
     length: number;
 }
 
 // eslint-disable-next-line import/prefer-default-export
-export const array: ExprDefinition<ArrayNode> = {
+export const array: NodeDef<ArrayNode> = {
     kind: (arr, semant, state) => {
         const nodes = state.get('nodes');
         for (const field of semant.subexpressions(arr)) {

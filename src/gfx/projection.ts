@@ -1,4 +1,4 @@
-import { RNode, RId } from '@/semantics';
+import { BaseNode, NodeId } from '@/semantics';
 import { Im, ImMap, Thunk } from '@/util/im';
 import { RState } from '@/reducer/state';
 
@@ -10,7 +10,7 @@ export interface ProjectionPadding {
     bottom: number;
 }
 
-export type ProjectionTemplate<N extends RNode> =
+export type ProjectionTemplate<N extends BaseNode> =
     DefaultProjectionTemplate<N> |
     VboxProjectionTemplate<N> |
     HboxProjectionTemplate<N> |
@@ -21,9 +21,9 @@ export type ProjectionTemplate<N extends RNode> =
     PreviewProjectionTemplate<N> |
     SymbolProjectionTemplate;
 
-export interface DefaultProjectionTemplate<N extends RNode> {
+export interface DefaultProjectionTemplate<N extends BaseNode> {
     type: 'default';
-    color?: Thunk<[RNode], string>;
+    color?: Thunk<[BaseNode], string>;
     shape?: '<>' | '()' | 'notch' | 'none';
     radius?: number;
     fields?: Thunk<[N], string[]>;
@@ -31,9 +31,9 @@ export interface DefaultProjectionTemplate<N extends RNode> {
     subexpScale?: number;
 }
 
-export interface VboxProjectionTemplate<N extends RNode> {
+export interface VboxProjectionTemplate<N extends BaseNode> {
     type: 'vbox';
-    color?: Thunk<[RNode], string>;
+    color?: Thunk<[BaseNode], string>;
     horizontalAlign: number;
     ellipsize: boolean;
     padding?: ProjectionPadding;
@@ -41,9 +41,9 @@ export interface VboxProjectionTemplate<N extends RNode> {
     rows: ProjectionTemplate<N>[];
 }
 
-export interface HboxProjectionTemplate<N extends RNode> {
+export interface HboxProjectionTemplate<N extends BaseNode> {
     type: 'hbox';
-    color?: Thunk<[RNode], string>;
+    color?: Thunk<[BaseNode], string>;
     horizontalAlign?: number;
     ellipsize?: boolean;
     padding?: ProjectionPadding;
@@ -52,11 +52,11 @@ export interface HboxProjectionTemplate<N extends RNode> {
 }
 
 export interface DynamicPropertyProjectionTemplate<
-    N extends RNode,
+    N extends BaseNode,
     P extends ProjectionTemplate<N>
     > {
     type: 'dynamicProperty';
-    field(state: Im<RState>, nodeId: RId): string;
+    field(state: Im<RState>, nodeId: NodeId): string;
     fields: Record<string, Record<string, (proj: P) => void>>;
     projection: P;
 }
@@ -64,11 +64,11 @@ export interface DynamicPropertyProjectionTemplate<
 // TODO: this seems redundant to the case projection
 // consider eliminating
 export interface DynamicProjectionTemplate<
-    N extends RNode,
+    N extends BaseNode,
     P extends ProjectionTemplate<N>
     > {
     type: 'dynamic';
-    field(state: Im<RState>, nodeId: RId): string;
+    field(state: Im<RState>, nodeId: NodeId): string;
     cases: Record<string, Record<string, P>>;
     default: P;
 
@@ -76,24 +76,24 @@ export interface DynamicProjectionTemplate<
     resetFields?: string[];
 }
 
-export interface StickyProjectionTemplate<N extends RNode> {
+export interface StickyProjectionTemplate<N extends BaseNode> {
     type: 'sticky';
     // TODO: enum
     side: string;
     content: ProjectionTemplate<N>;
 }
 
-export interface PreviewProjectionTemplate<N extends RNode> {
+export interface PreviewProjectionTemplate<N extends BaseNode> {
     type: 'preview';
     content: ProjectionTemplate<N>;
 }
 
 export interface CaseProjectionTemplate<
-    N extends RNode,
+    N extends BaseNode,
     K extends string | number | symbol = string | number | symbol
     > {
     type: 'case';
-    key?(nodes: ImMap<RId, Im<RNode>>, expr: Im<N>): K;
+    key?(nodes: NodeMap, expr: Im<N>): K;
     on?: string;
     cases: Record<K, ProjectionTemplate<N>>;
 }

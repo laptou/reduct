@@ -21,9 +21,15 @@ import * as meta from './meta';
 import makeInterpreter from './interpreter';
 
 import { nextId } from '../reducer/reducer';
-import { ExprDefinition } from './defs';
-import { RNode, RId } from '.';
-import { ValueNode } from './defs/value';
+import {
+    BaseNode, NodeId, ReductNode, NodeMap
+} from '.';
+import { NodeDef } from './defs/base';
+import type {
+    BoolNode, StrNode, NumberNode, LambdaVarNode,
+    LambdaArgNode, DynVarNode, SymbolNode, MissingNode
+} from './defs';
+import { ReductSymbol } from './defs/value';
 
 const NotchRecord = immutable.Record({
     side: 'left',
@@ -31,16 +37,56 @@ const NotchRecord = immutable.Record({
     type: 'inset'
 });
 
-export interface SemanticDefinition {
-    name: string;
-    parser: any;
-    expressions: Record<string, ExprDefinition<RNode>>;
+export interface SemanticParserDefinition {
+    parse(semantics: Semantics): (program: any, macros: any) => any;
+    unparse(semantics: Semantics): (node: ReductNode) => any;
+    templatizeName(semantics: Semantics, name: string): string;
+    extractDefines(semantics: Semantics, expr: Im<ReductNode>): [string, any];
+    extractGlobals(semantics: Semantics, expr: Im<ReductNode>): [string, Im<ReductNode>];
+    extractGlobalNames(semantics: Semantics, name: string, expr: Im<ReductNode>): [string, any];
+    postParse(
+        nodes: NodeMap,
+        goal: ImList<NodeId>,
+        board: ImList<NodeId>,
+        toolbox: ImList<NodeId>,
+        globals: ImMap<string, NodeId>): {
+        nodes: NodeMap;
+        goal: ImList<NodeId>;
+        board: ImList<NodeId>;
+        toolbox: ImList<NodeId>;
+        globals: ImMap<string, NodeId>;
+    };
 }
 
-export type VTupleNode = RNode;
+export interface SemanticParser {
+    parse(program: string, macros: any): any;
+    unparse(node: ReductNode): any;
+    templatizeName(name: string): string;
+    extractDefines(semantics: Semantics, expr: Im<ReductNode>): [string, any];
+    extractGlobals(semantics: Semantics, expr: Im<ReductNode>): [string, Im<ReductNode>];
+    extractGlobalNames(semantics: Semantics, name: string, expr: Im<ReductNode>): [string, any];
+    postParse(
+        nodes: NodeMap,
+        goal: ImList<NodeId>,
+        board: ImList<NodeId>,
+        toolbox: ImList<NodeId>,
+        globals: ImMap<string, NodeId>): {
+        nodes: NodeMap;
+        goal: ImList<NodeId>;
+        board: ImList<NodeId>;
+        toolbox: ImList<NodeId>;
+        globals: ImMap<string, NodeId>;
+    };
+}
 
+export interface SemanticDefinition {
+    name: string;
+    parser: SemanticParserDefinition;
+    expressions: Record<string, NodeDef<ReductNode>>;
+}
 
-type NodeKind<E> = E extends ExprDefinition<infer N> ? N : never;
+export type VTupleNode = BaseNode;
+
 
 /**
  * This module turns a JSON-plus-functions specification of language
@@ -65,13 +111,27 @@ export class Semantics {
 
     public equal: ReturnType<typeof genericEqual>;
 
-    public vtuple!: (children: RId[]) => VTupleNode;
+    public missing!: () => MissingNode;
 
-    public bool!: (value: boolean) => ValueNode<boolean>;
+    public vtuple!: (children: ReductNode[]) => VTupleNode;
+
+    public bool!: (value: boolean) => BoolNode;
+
+    public str!: (value: string) => StrNode;
+
+    public number!: (value: number) => NumberNode;
+
+    public symbol!: (value: ReductSymbol) => SymbolNode;
+
+    public lambdaVar!: (name: string) => LambdaVarNode;
+
+    public lambdaArg!: (name: string) => LambdaArgNode;
+
+    public dynamicVariant!: (variant: any, value: any) => DynVarNode;
 
     public interpreter: {};
 
-    public parser: {};
+    public parser: SemanticParser;
 
     public meta: typeof meta;
 
@@ -79,28 +139,26 @@ export class Semantics {
         this.definition = definition;
         this.projections = {};
 
-        this.projections.vtuple = [() => {
-            return gfx.layout.vbox((id, state) => {
-                const node = state.getIn(['nodes', id]);
-                const result = [];
-                for (let i = 0; i < node.get('numChildren'); i++) {
-                    result.push(node.get(`child${i}`));
-                }
-                return result;
-            }, {
-                padding: {
-                    top: 0,
-                    inner: 5,
-                    bottom: 0,
-                    left: 0,
-                    right: 0
-                },
-                strokeWhenChild: false,
-                subexpScale: 1
-            });
-        }];
-        
-        const ctors: Record<string, ((...args: any[]) => RNode)[]> = {};
+        this.projections.vtuple = [() => gfx.layout.vbox((id, state) => {
+            const node = state.getIn(['nodes', id]);
+            const result = [];
+            for (let i = 0; i < node.get('numChildren'); i++) {
+                result.push(node.get(`child${i}`));
+            }
+            return result;
+        }, {
+            padding: {
+                top: 0,
+                inner: 5,
+                bottom: 0,
+                left: 0,
+                right: 0
+            },
+            strokeWhenChild: false,
+            subexpScale: 1
+        })];
+
+        const ctors: Record<string, ((...args: any[]) => BaseNode)[]> = {};
 
         // Add default definitions for vtuple
         /**
@@ -185,14 +243,15 @@ export class Semantics {
         /** Clone an immutable node and its children. */
         this.clone = genericClone(nextId, this.subexpressions.bind(this));
 
-        this.parser = {};
-        this.parser.templatizeName = (name) => definition.parser.templatizeName(this, name);
-        this.parser.parse = definition.parser.parse(this);
-        this.parser.unparse = definition.parser.unparse(this);
-        this.parser.postParse = definition.parser.postParse;
-        this.parser.extractDefines = definition.parser.extractDefines;
-        this.parser.extractGlobals = definition.parser.extractGlobals;
-        this.parser.extractGlobalNames = definition.parser.extractGlobalNames;
+        this.parser = {
+            templatizeName: (name) => definition.parser.templatizeName(this, name),
+            parse: definition.parser.parse(this),
+            unparse: definition.parser.unparse(this),
+            postParse: definition.parser.postParse,
+            extractDefines: definition.parser.extractDefines,
+            extractGlobals: definition.parser.extractGlobals,
+            extractGlobalNames: definition.parser.extractGlobalNames
+        };
 
         this.meta = meta;
     }
@@ -267,7 +326,7 @@ export class Semantics {
     }
 
     /** Check the equality of all subexpressions as well. */
-    public deepEqual(nodes: ImMap<RId, Im<RNode>>, n1: Im<RNode>, n2: Im<RNode>) {
+    public deepEqual(nodes: NodeMap, n1: Im<BaseNode>, n2: Im<BaseNode>) {
         if (!this.shallowEqual(n1, n2)) return false;
 
         if (n1.get('type') === 'array') {
@@ -553,7 +612,7 @@ export class Semantics {
     }
 
     /** Check for equality of fields (but not of subexpressions). */
-    public shallowEqual(n1: Im<RNode>, n2: Im<RNode>) {
+    public shallowEqual(n1: Im<BaseNode>, n2: Im<BaseNode>) {
         if (n1.get('type') !== n2.get('type')) return false;
 
         for (const field of this.definitionOf(n1).fields) {
@@ -567,8 +626,8 @@ export class Semantics {
      * Return a list of field names containing subexpressions of an expression.
      * The expression may be represented in either hydrated or immutable form.
      */
-    public subexpressions(expr: RNode | Im<RNode>) {
-        const type = expr.type || expr.get('type');
+    public subexpressions(expr: ReductNode | Im<ReductNode>) {
+        const type = 'type' in expr ? expr.type : expr.get('type');
 
         if (type === 'vtuple') {
             const result = [];

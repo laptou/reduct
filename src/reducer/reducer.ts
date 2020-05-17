@@ -4,7 +4,7 @@ import { List as ImList, Map as ImMap } from 'immutable';
 import { compose } from 'redux';
 import { combineReducers } from 'redux-immutable';
 
-import { RId, RNode } from '@/semantics/defs';
+import { NodeId, BaseNode } from '@/semantics/defs';
 import * as actions from './action';
 import * as gfx from '../gfx/core';
 import * as animate from '../gfx/animate';
@@ -26,14 +26,14 @@ let idCounter = 0;
 /**
  * Returns the next unique ID. Used to assign IDs to nodes and views.
  */
-export function nextId(): RId {
+export function nextId(): NodeId {
     return idCounter++;
 }
 
 // To speed up type checking, we only type check nodes that have
 // changed.
 let dirty = new Set();
-function markDirty(nodes: ImMap<number, Im<RNode>>, id: RId) {
+function markDirty(nodes: ImMap<number, Im<BaseNode>>, id: NodeId) {
     let expr = nodes.get(id)!; // warning: assuming node w/ given ID exists
     let parentId = expr.get('parent');
 
@@ -82,7 +82,7 @@ export function reduct(semantics, views, restorePos) {
         }
         case ActionKind.SmallStep: {
             // console.log("@@SMALL_STEP_REDUCE@@");
-            const oldNode: Im<RNode> = state.getIn(['nodes', act.topNodeId]);
+            const oldNode: Im<BaseNode> = state.getIn(['nodes', act.topNodeId]);
 
             let newNodes = state.get('nodes')
                 .withMutations((n) => {

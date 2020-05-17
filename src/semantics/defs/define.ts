@@ -1,16 +1,19 @@
 import * as animate from '../../gfx/animate';
-import { RId, RNode, ExprDefinition } from '.';
+import type { NodeDef } from './base';
+import type { BaseNode, NodeId } from '..';
 
-export interface DefineNode extends RNode {
+export interface DefineNode extends BaseNode {
+    type: 'define';
+
     name: any;
     params: any;
 
-    body: RId;
+    body: NodeId;
 }
 
-export type DefineAttachNode = RNode;
+export type DefineAttachNode = BaseNode;
 
-export const define: ExprDefinition<DefineNode> = {
+export const define: NodeDef<DefineNode> = {
     kind: 'statement',
     fields: ['name', 'params'],
     subexpressions: ['body'],
@@ -114,7 +117,7 @@ export const define: ExprDefinition<DefineNode> = {
     }
 };
 
-export const defineAttach: ExprDefinition<DefineAttachNode> = {
+export const defineAttach: NodeDef<DefineAttachNode> = {
     kind: 'syntax',
     fields: [],
     subexpressions: [],

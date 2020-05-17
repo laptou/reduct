@@ -7,8 +7,8 @@ import Loader from '../loader';
 import * as core from '../semantics/core';
 import BaseStage from '@/stage/basestage';
 import { ImMap, Im } from '@/util/im';
-import { RNode, RId } from '@/semantics';
-import { ExprDefinition } from '@/semantics/defs';
+import { BaseNode, NodeId, NodeMap, ReductNode } from '@/semantics';
+import { NodeDef } from "@/semantics/NodeDef";
 
 const optionFields = [
     'color', 'strokeWhenChild', 'shadowOffset', 'radius', 'padding',
@@ -35,7 +35,7 @@ function shapeToProjection(shape, options) {
  *
  * @alias gfx.projector.defaultProjector
  */
-function defaultProjector(definition: ExprDefinition<RNode>) {
+function defaultProjector(definition: NodeDef<ReductNode>) {
     const options = {};
     const baseProjection = shapeToProjection(definition.projection.shape, options);
 
@@ -323,7 +323,7 @@ function spriteProjector(definition) {
 }
 
 export type View = {}; // TODO
-export type ViewFn = (stage: BaseStage, nodes: ImMap<RId, Im<RNode>>, expr: Im<RNode>) => View;
+export type ViewFn = (stage: BaseStage, nodes: NodeMap, expr: Im<ReductNode>) => View;
 
 /**
  * Given an expression definition, construct a function ``(stage,
@@ -333,7 +333,7 @@ export type ViewFn = (stage: BaseStage, nodes: ImMap<RId, Im<RNode>>, expr: Im<R
  *
  * @alias gfx.projector.projector
  */
-export function projector(definition: ExprDefinition<RNode>): ViewFn {
+export function projector(definition: NodeDef<ReductNode>): ViewFn {
     switch (definition.projection.type) {
     case 'default':
         return defaultProjector(definition);

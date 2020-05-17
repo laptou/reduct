@@ -1,22 +1,20 @@
 import * as immutable from 'immutable';
 import { ImMap, Im, ImList } from '@/util/im';
-import { RState } from '@/reducer/state';
-import { RNode, RId } from '.';
-
-type NodeMap = ImMap<RId, Im<RNode>>;
+import type { RState } from '@/reducer/state';
+import type { ReductNode, NodeId, NodeMap } from '.';
 
 type GenericNodeCreator<F> =
     (
         getNextId: () => number,
-        getSubExpressions: (node: RNode | Im<RNode>) => string[]
+        getSubExpressions: (node: ReductNode | Im<ReductNode>) => string[]
     ) => F;
 
 type GenericNodeTransformer<F> =
     (
-        getSubExpressions: (node: Im<RNode>) => string[]
+        getSubExpressions: (node: Im<ReductNode>) => string[]
     ) => F;
 
-export const genericFlatten: GenericNodeCreator<(expr: RNode) => RNode[]> =
+export const genericFlatten: GenericNodeCreator<(expr: ReductNode) => ReductNode[]> =
     (getNextId, getSubExpressions) => function flatten(expr) {
         expr.id = getNextId();
         let result = [expr];
@@ -39,11 +37,11 @@ export const genericFlatten: GenericNodeCreator<(expr: RNode) => RNode[]> =
 */
 export const genericMap: GenericNodeTransformer<(
     nodes: NodeMap,
-    nodeId: RId,
-    mapper: (node: Im<RNode>, id: RId) => [RNode, NodeMap],
-    filter?: (nodes: NodeMap, node: RNode) => boolean,
+    nodeId: NodeId,
+    mapper: (node: Im<ReductNode>, id: NodeId) => [ReductNode, NodeMap],
+    filter?: (nodes: NodeMap, node: ReductNode) => boolean,
     top?: boolean
-) => [RNode, NodeMap]> =
+) => [ReductNode, NodeMap]> =
     (getSubExpressions) => function map(nodes, nodeId, f, filter?, top = true) {
         let currentStore = nodes;
         if (top) currentStore = currentStore.asMutable();
@@ -72,9 +70,9 @@ export const genericMap: GenericNodeTransformer<(
 */
 export const genericSearch: GenericNodeTransformer<(
     nodes: NodeMap,
-    nodeId: RId,
-    predicate: (nodes: NodeMap, nodeId: RId) => boolean
-) => RId[]> =
+    nodeId: NodeId,
+    predicate: (nodes: NodeMap, nodeId: NodeId) => boolean
+) => NodeId[]> =
     (getSubExpressions) => (nodes, nodeId, f) => {
         const queue = [nodeId];
         const result = [];
@@ -93,9 +91,9 @@ export const genericSearch: GenericNodeTransformer<(
     };
 
 export const genericEqual = (
-    getSubExpressions: (node: RNode | Im<RNode>) => string[],
-    comparer: (left: RNode | Im<RNode>, right: RNode | Im<RNode>) => boolean
-) => function equal(id1: RId, id2: RId, state: Im<RState>) {
+    getSubExpressions: (node: ReductNode | Im<ReductNode>) => string[],
+    comparer: (left: ReductNode | Im<ReductNode>, right: ReductNode | Im<ReductNode>) => boolean
+) => function equal(id1: NodeId, id2: NodeId, state: Im<RState>) {
     const n1 = state.getIn(['nodes', id1]);
     const n2 = state.getIn(['nodes', id2]);
 
@@ -109,13 +107,13 @@ export const genericEqual = (
 };
 
 export const genericClone: GenericNodeCreator<(
-    id: RId,
-    nodeMap: ImMap<RId, Im<RNode>>,
+    id: NodeId,
+    nodeMap: ImMap<NodeId, Im<ReductNode>>,
     locked?: boolean
-) => [Im<RNode>, ImList<Im<RNode>>, ImMap<RId, Im<RNode>>]> =
+) => [Im<ReductNode>, ImList<Im<ReductNode>>, ImMap<NodeId, Im<ReductNode>>]> =
     (nextId, getSubExpressions) => function clone(id, nodeMap, locked = true) {
         const node = nodeMap.get(id);
-        const newNodes: Im<RNode>[] = [];
+        const newNodes: Im<ReductNode>[] = [];
 
         let currentStore = nodeMap;
         const result = node.withMutations((n) => {
@@ -328,50 +326,6 @@ export function genericBetaReduce(semant, state, config) {
         newNodes.concat([newTop])
     ];
 }
-
-/**
- * Standard definition for missing expression.
- */
-export const missing = {
-    kind: 'placeholder',
-    fields: [],
-    subexpressions: [],
-    locked: false,
-    alwaysTargetable: true,
-    type: () => ({
-        types: new Map(),
-        complete: false
-    }),
-    projection: {
-        type: 'dynamic',
-        resetFields: ['padding'],
-        default: {
-            type: 'default',
-            shape: '()',
-            color: '#555',
-            shadowOffset: -2,
-            radius: 22,
-            padding: {
-                left: 20,
-                right: 20,
-                inner: 0
-            }
-        },
-        cases: {
-            boolean: {
-                type: 'default',
-                shape: '<>',
-                color: '#555',
-                shadowOffset: -2,
-                padding: {
-                    left: 37.5,
-                    right: 37.5,
-                    inner: 0
-                }
-            }
-        }
-    }
-};
 
 export function getField(object, field, ...args) {
     const v = object[field];

@@ -1,15 +1,17 @@
+import type { NodeDef } from './base';
+import type { BaseNode, NodeId } from '..';
 
-import { ExprDefinition, RId, RNode } from '.';
+export interface LetNode extends BaseNode {
+    type: 'letExpr';
 
-export interface LetNode extends RNode {
     variable: string;
-    e1: RId;
-    e2: RId;
+    e1: NodeId;
+    e2: NodeId;
 }
 
 // let expressions: let variable = e1 in e2
 // syntax for defining this node: variable = e1 in e2
-export const letExpr: ExprDefinition<LetNode> = {
+export const letExpr: NodeDef<LetNode> = {
     kind: 'expression',
     fields: ['variable'],
     subexpressions: ['e1', 'e2'],

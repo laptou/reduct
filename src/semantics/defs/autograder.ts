@@ -4,18 +4,19 @@ import * as core from '../core';
 import * as action from '../../reducer/action';
 import * as gfxCore from '../../gfx/core';
 import * as level from '../../game/level';
-import { ExprDefinition} from '.';
-import { RNode, RId } from '..';
+import type { NodeDef } from './base';
+import { BaseNode, NodeId } from '..';
 
-export interface AutograderNode extends RNode {
+export interface AutograderNode extends BaseNode {
+    type: 'autograder';
     alienName: any;
     goalId: any;
     color: any;
 
-    result: RId;
+    result: NodeId;
 }
 
-export const autograder: ExprDefinition<AutograderNode> = {
+export const autograder: NodeDef<AutograderNode> = {
     kind: 'expression',
     fields: ['alienName', 'goalId', 'color'],
     subexpressions: ['result'],
