@@ -1,7 +1,7 @@
 import fileSaver from 'file-saver';
 
 import * as level from '../game/level';
-import * as action from '../reducer/action';
+import { ActionKind } from '../reducer/action';
 import * as undoAction from '../reducer/undo';
 import * as ajax from '../util/ajax';
 import * as random from '../util/random';
@@ -257,7 +257,7 @@ class Logger {
 
     logMiddleware(getState, saveState, pushState, saveNode, semantics) {
         return () => (next) => (act) => {
-            if (act.type === action.RAISE) {
+            if (act.type === ActionKind.Raise) {
                 return next(act);
             }
 
@@ -267,23 +267,23 @@ class Logger {
             const afterState = getState();
             const after = level.serialize(afterState, semantics);
 
-            if (act.type === action.DETACH) {
+            if (act.type === ActionKind.Detach) {
                 this.log('detached-expr', {
                     before,
                     after,
                     item: saveNode(act.nodeId)
                 });
-            } else if (act.type === undoAction.UNDO) {
+            } else if (act.type === ActionKind.Undo) {
                 this.log('undo', {
                     before,
                     after
                 });
-            } else if (act.type === undoAction.REDO) {
+            } else if (act.type === ActionKind.Redo) {
                 this.log('redo', {
                     before,
                     after
                 });
-            } else if (act.type === action.FILL_HOLE) {
+            } else if (act.type === ActionKind.FillHole) {
                 let parent = act.holeId;
                 const nodes = beforeState.get('nodes');
                 while (nodes.get(parent).has('parent')) {
@@ -299,7 +299,7 @@ class Logger {
                     item: saveNode(act.childId),
                     target: savedParent
                 });
-            } else if (act.type === action.ATTACH_NOTCH) {
+            } else if (act.type === ActionKind.AttachNotch) {
                 this.log('attached-expr', {
                     before,
                     after,
@@ -308,7 +308,7 @@ class Logger {
                     parentNotchIdx: act.notchIdx,
                     childNotchIdx: act.childNotchIdx
                 });
-            } else if (act.type === action.VICTORY) {
+            } else if (act.type === ActionKind.Victory) {
                 pushState('victory', 'victory');
                 return returnValue;
             } else if (act.type === action.FADE) {
@@ -317,14 +317,14 @@ class Logger {
                     fromLevel: beforeState.getIn(['nodes', act.unfadedId, 'fadeLevel']),
                     toLevel: afterState.getIn(['nodes', act.fadedId, 'fadeLevel'])
                 });
-            } else if (act.type === action.UNFOLD) {
+            } else if (act.type === ActionKind.Unfold) {
                 this.log('unfold', {
                     before,
                     after,
                     item: saveNode(act.nodeId),
                     replacement: saveNode(act.newNodeId)
                 });
-            } else if (act.type === action.DEFINE) {
+            } else if (act.type === ActionKind.Define) {
                 this.log('define', {
                     name: act.name,
                     body: saveNode(act.id)

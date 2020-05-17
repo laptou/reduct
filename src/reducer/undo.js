@@ -1,21 +1,18 @@
 import * as immutable from 'immutable';
 
-import * as actions from './action';
-
-export const UNDO = 'undo';
-export const REDO = 'redo';
+import { ActionKind } from './action';
 
 /** Undo the last action. */
 export function undo() {
     return {
-        type: UNDO
+        type: ActionKind.Undo
     };
 }
 
 /** Redo the last undone action. */
 export function redo() {
     return {
-        type: REDO
+        type: ActionKind.Redo
     };
 }
 
@@ -55,13 +52,13 @@ export function undoable(reducer, options = {}) {
         const $futureExtra = state.get('$futureExtra');
 
         switch (action.type) {
-        case actions.START_LEVEL: {
+        case ActionKind.StartLevel: {
             return initialState.withMutations((is) => {
                 is.set('$present', reducer($present, action));
                 is.set('$presentExtra', {});
             });
         }
-        case UNDO: {
+        case ActionKind.Undo: {
             if ($past.isEmpty()) return state;
 
             const newState = state.withMutations((map) => {
@@ -76,7 +73,7 @@ export function undoable(reducer, options = {}) {
             options.restoreExtraState($past.peek(), $present, $pastExtra.peek());
             return newState;
         }
-        case REDO: {
+        case ActionKind.Redo: {
             if ($future.isEmpty()) return state;
 
             const newState = state.withMutations((map) => {

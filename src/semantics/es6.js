@@ -1,4 +1,3 @@
-import * as core from './core';
 import { ES6Parser, makeUnparser } from '../syntax/es6';
 import { Semantics } from './transform';
 
@@ -11,6 +10,7 @@ import * as define from './defs/define';
 import * as lambda from './defs/lambda';
 import * as letExpr from './defs/letExpr';
 import * as member from './defs/member';
+import * as missing from './defs/missing';
 import * as not from './defs/not';
 import reference from './defs/reference';
 import * as value from './defs/value';
@@ -114,8 +114,6 @@ export default new Semantics({
     },
 
     expressions: {
-        missing: core.missing,
-
         ...apply,
         ...array,
         ...autograder,
@@ -125,6 +123,7 @@ export default new Semantics({
         ...lambda,
         ...letExpr,
         ...member,
+        ...missing,
         ...not,
         ...reference,
         ...value

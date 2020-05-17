@@ -12,4 +12,4 @@ export type {
     StrNode, UnsolNode, NumberNode, BoolNode, SymbolNode, DynVarNode
 } from './value';
 export type { MissingNode } from './missing';
-export { NodeKind } from './base';
+export type { NodeKind } from './base';

@@ -4,14 +4,14 @@ import { List as ImList, Map as ImMap } from 'immutable';
 import { compose } from 'redux';
 import { combineReducers } from 'redux-immutable';
 
-import { NodeId, BaseNode } from '@/semantics/defs';
-import * as actions from './action';
+import type { Im } from '@/util/im';
+import type { NodeId, BaseNode } from '@/semantics';
+import type { Semantics } from '@/semantics/transform';
+import { ActionKind } from './action';
 import * as gfx from '../gfx/core';
 import * as animate from '../gfx/animate';
 import { undoable } from './undo';
-import { ActionKind } from './action';
 import { RState } from './state';
-import { Im } from '@/util/im';
 
 const initialProgram = ImMap({
     nodes: ImMap(),
@@ -34,7 +34,7 @@ export function nextId(): NodeId {
 // changed.
 let dirty = new Set();
 function markDirty(nodes: ImMap<number, Im<BaseNode>>, id: NodeId) {
-    let expr = nodes.get(id)!; // warning: assuming node w/ given ID exists
+    let expr = nodes.get(id); // warning: assuming node w/ given ID exists
     let parentId = expr.get('parent');
 
     // travel to the root node
@@ -57,7 +57,7 @@ function markDirty(nodes: ImMap<number, Im<BaseNode>>, id: NodeId) {
  * that things stay within bounds (e.g. if the game has resized since
  * the view's position was recorded).
  */
-export function reduct(semantics, views, restorePos) {
+export function reduct(semantics: Semantics, views, restorePos) {
     function program(state = initialProgram, act) {
         switch (act.type) {
         case ActionKind.StartLevel: {
@@ -456,10 +456,10 @@ export function reduct(semantics, views, restorePos) {
     return {
         reducer: combineReducers({
             program: undoable(compose(annotateTypes, program), {
-                actionFilter: (act) => act.type === actions.RAISE
-                    || act.type === actions.HOVER
+                actionFilter: (act) => act.type === ActionKind.Raise
+                    || act.type === ActionKind.Hover
                     // Prevent people from undoing start of level
-                    || act.type === actions.START_LEVEL
+                    || act.type === ActionKind.StartLevel
                     || act.skipUndo,
                 extraState: (state, newState) => {
                     const result = {};

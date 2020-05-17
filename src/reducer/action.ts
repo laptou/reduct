@@ -19,6 +19,7 @@ export enum ActionKind {
     AddBoardItem = 'add-board-item',
     AddGoalItem = 'add-goal-item',
     ChangeGoal = 'change-goal',
+    Hover = 'hover'
 }
 
 export interface StartLevelAction {
