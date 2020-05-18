@@ -27,9 +27,9 @@ import {
 import { NodeDef } from './defs/base';
 import type {
     BoolNode, StrNode, NumberNode, LambdaVarNode,
-    LambdaArgNode, DynVarNode, SymbolNode, MissingNode
+    LambdaArgNode, DynVarNode, SymbolNode, MissingNode, DefineNode
 } from './defs';
-import { ReductSymbol } from './defs/value';
+import type { ReductSymbol } from './defs/value';
 
 const NotchRecord = immutable.Record({
     side: 'left',
@@ -82,7 +82,7 @@ export interface SemanticParser {
 export interface SemanticDefinition {
     name: string;
     parser: SemanticParserDefinition;
-    expressions: Record<string, NodeDef<ReductNode>>;
+    expressions: Record<string, NodeDef<ReductNode> | NodeDef<ReductNode>[]>;
 }
 
 export type VTupleNode = BaseNode;
@@ -126,6 +126,8 @@ export class Semantics {
     public lambdaVar!: (name: string) => LambdaVarNode;
 
     public lambdaArg!: (name: string) => LambdaArgNode;
+
+    public define!: () => DefineNode;
 
     public dynamicVariant!: (variant: any, value: any) => DynVarNode;
 
@@ -215,14 +217,18 @@ export class Semantics {
                     exprDefinition.projection.notches = exprDefinition.notches;
                 }
 
-                this.projections[exprName].push(getProjector(exprDefinition));
+                this.projections[exprName].push(
+                    getProjector(
+                        exprDefinition.projection,
+                        {
+                            subExpressions: exprDefinition.subexpressions ?? [],
+                            fields: exprDefinition.fields ?? []
+                        }
+                    )
+                );
             }
 
-            const nodeCreator = function(...params: any[]) {
-                return ctors[exprName][progression.getFadeLevel(exprName)](...params);
-            };
-            Object.defineProperty(nodeCreator, 'name', { value: exprName });
-            Object.defineProperty(this, exprName, { value: nodeCreator });
+            this[exprName] = (...params: any[]) => ctors[exprName][progression.getFadeLevel(exprName)](...params);
         }
 
         /**

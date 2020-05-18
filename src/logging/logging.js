@@ -311,7 +311,7 @@ class Logger {
             } else if (act.type === ActionKind.Victory) {
                 pushState('victory', 'victory');
                 return returnValue;
-            } else if (act.type === action.FADE) {
+            } else if (act.type === ActionKind.Fade) {
                 this.log('fade', {
                     item: saveNode(act.fadedId),
                     fromLevel: beforeState.getIn(['nodes', act.unfadedId, 'fadeLevel']),

@@ -50,7 +50,7 @@ export interface BaseNode {
     complete: boolean;
 }
 
-export type NodeType = { 
+export type NodeType = {
     types: Map<NodeId, any>;
     complete: boolean;
 }

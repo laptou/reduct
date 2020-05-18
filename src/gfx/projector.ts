@@ -2,16 +2,15 @@
 /**
  * Projectors transform a JSON-ish view specification into a gfx view.
  */
-import * as immutable from 'immutable';
 
-import { Im, thunk } from '@/util/im';
+import { Im, thunk, Thunk } from '@/util/im';
 import type { ReductNode, NodeMap } from '@/semantics';
 import type BaseStage from '@/stage/basestage';
 
 import { SymbolNode } from '@/semantics/defs';
+import type { Semantics } from '@/semantics/transform';
 import * as gfx from './core';
 import Loader from '../loader';
-import * as core from '../semantics/core';
 import type {
     DefaultProjectionDef,
     BaseProjectionDef,
@@ -50,13 +49,21 @@ function shapeToProjection(shape?: ProjectionShape) {
     return baseProjection;
 }
 
+interface RootProjectionConfig<N> {
+    fields: string[];
+    subExpressions: Thunk<[Semantics, Im<N>], string[]>;
+}
+
 /**
  * The default projector lays out children in a horizontal box with a
  * rounded or hexagonal background.
  *
  * @alias gfx.projector.defaultProjector
  */
-function defaultProjector<N extends ReductNode>(projection: DefaultProjectionDef<N>): ViewFn<N> {
+function defaultProjector<N extends ReductNode>(
+    projection: DefaultProjectionDef<N>,
+    rootConfig: RootProjectionConfig<N>
+): ViewFn<N> {
     const options: Partial<BaseProjectionDef<N>> = {};
     const baseProjection = shapeToProjection(projection.shape);
 
@@ -71,8 +78,11 @@ function defaultProjector<N extends ReductNode>(projection: DefaultProjectionDef
             options.color = thunk(projection.color, expr);
         }
 
-        const subexprs = core.getField(projection, 'subexpressions', null, immutable.Map(expr));
-        let childrenFunc = (id, state) => subexprs.map((field) => state.getIn(['nodes', id, field]));
+        const subExpressionsThunked = thunk(rootConfig.subExpressions, null, expr);
+        let childrenFunc = (id, state) => {
+            const childId = subExpressionsThunked.map((field) => state.getIn(['nodes', id, field]));
+            return childId;
+        };
 
         if (projection.fields) {
             const fields = [];
@@ -97,7 +107,7 @@ function defaultProjector<N extends ReductNode>(projection: DefaultProjectionDef
                     const match = field.match(/'(.+)'/);
                     if (match) {
                         fields.push(stage.allocate(gfx.text(match[1])));
-                    } else if (fields.includes(field)) {
+                    } else if (rootConfig.fields.includes(field)) {
                         fields.push(stage.allocate(gfx.text(expr.get(field))));
                     } else {
                         fields.push(field);
@@ -106,7 +116,8 @@ function defaultProjector<N extends ReductNode>(projection: DefaultProjectionDef
             }
             childrenFunc = (id, state) => fields.map((field) => {
                 if (typeof field === 'number') return field;
-                return state.getIn(['nodes', id, field]);
+                const childId = state.getIn(['nodes', id, field]);
+                return childId;
             });
         }
 
@@ -151,12 +162,13 @@ function textProjector<N extends ReductNode>(projection: TextProjectionDef<N>): 
 }
 
 function casesProjector<N extends ReductNode>(
-    projection: CaseOnProjectionDef<N> | CaseKeyProjectionDef<N>
+    projection: CaseOnProjectionDef<N> | CaseKeyProjectionDef<N>,
+    rootConfig: RootProjectionConfig<N>
 ): ViewFn<N> {
     const cases: Record<string, ViewFn<N>> = {};
     for (const [caseName, defn] of Object.entries(projection.cases)) {
         // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        cases[caseName] = getProjector(defn);
+        cases[caseName] = getProjector(defn, rootConfig);
     }
 
     return function casesProjectorFactory(stage, nodes, expr) {
@@ -186,12 +198,15 @@ function symbolProjector(projection: SymbolProjectionDef): ViewFn<SymbolNode> {
     }
 }
 
-function dynamicProjector<N extends ReductNode>(projection: DynProjectionDef<N, any>): ViewFn<N> {
+function dynamicProjector<N extends ReductNode>(
+    projection: DynProjectionDef<N, any>,
+    rootConfig: RootProjectionConfig<N>
+): ViewFn<N> {
     const fieldName = projection.field || 'ty';
     const cases: Record<string, ViewFn<N>> = {};
-    cases.__default__ = getProjector(projection.default);
+    cases.__default__ = getProjector(projection.default, rootConfig);
     for (const [caseName, defn] of Object.entries(projection.cases)) {
-        cases[caseName] = getProjector(defn);
+        cases[caseName] = getProjector(defn, rootConfig);
     }
     return function dynamicProjectorFactory(stage, nodes, expr) {
         const projections = {};
@@ -203,24 +218,28 @@ function dynamicProjector<N extends ReductNode>(projection: DynProjectionDef<N, 
 }
 
 function dynamicPropertyProjector<N extends ReductNode>(
-    projection: DynPropProjectionDef<N, any>
+    projection: DynPropProjectionDef<N, any>,
+    rootConfig: RootProjectionConfig<N>
 ): ViewFn<N> {
     const fieldName = projection.field || 'ty';
     projection.projection.notches = projection.notches;
-    const subprojector = getProjector({ ...projection, projection: projection.projection });
+    const subprojector = getProjector(projection.projection, rootConfig);
     return function dynamicPropertyProjectorFactory(stage, nodes, expr) {
         const subprojection = subprojector(stage, nodes, expr);
         return gfx.dynamicProperty(subprojection, fieldName, projection.fields);
     };
 }
 
-function hboxProjector<N extends ReductNode>(projection: HboxProjectionDef<N>): ViewFn<N> {
+function hboxProjector<N extends ReductNode>(
+    projection: HboxProjectionDef<N>,
+    rootConfig: RootProjectionConfig<N>
+): ViewFn<N> {
     const options = {};
     const subprojectors = [];
     const baseProjection = shapeToProjection(projection.shape);
 
     for (const subprojection of projection.cols) {
-        subprojectors.push(getProjector(subprojection));
+        subprojectors.push(getProjector(subprojection, rootConfig));
     }
 
     for (const field of optionFields) {
@@ -243,11 +262,14 @@ function hboxProjector<N extends ReductNode>(projection: HboxProjectionDef<N>): 
     };
 }
 
-function vboxProjector<N extends ReductNode>(projection: VboxProjectionDef<N>): ViewFn<N> {
+function vboxProjector<N extends ReductNode>(
+    projection: VboxProjectionDef<N>,
+    rootConfig: RootProjectionConfig<N>
+): ViewFn<N> {
     const options = {};
     const subprojectors = [];
     for (const subprojection of projection.rows) {
-        subprojectors.push(getProjector(subprojection));
+        subprojectors.push(getProjector(subprojection, rootConfig));
     }
 
     for (const field of optionFields) {
@@ -270,13 +292,16 @@ function vboxProjector<N extends ReductNode>(projection: VboxProjectionDef<N>): 
     };
 }
 
-function stickyProjector<N extends ReductNode>(projection: StickyProjectionDef<N>): ViewFn<N> {
+function stickyProjector<N extends ReductNode>(
+    projection: StickyProjectionDef<N>,
+    rootConfig: RootProjectionConfig<N>
+): ViewFn<N> {
     for (const field in projection) {
         if (field !== 'type' && field !== 'content' && field !== 'side') {
             projection.content[field] = projection[field];
         }
     }
-    const subprojector = getProjector(projection.content);
+    const subprojector = getProjector(projection.content, rootConfig);
 
     return function stickyProjectorFactory(stage, nodes, expr) {
         const inner = subprojector(stage, nodes, expr);
@@ -285,8 +310,11 @@ function stickyProjector<N extends ReductNode>(projection: StickyProjectionDef<N
 }
 
 // TODO: generalize all these projectors?
-function decalProjector<N extends ReductNode>(projection: DecalProjectionDef<N>): ViewFn<N> {
-    const subprojector = getProjector(projection.content);
+function decalProjector<N extends ReductNode>(
+    projection: DecalProjectionDef<N>,
+    rootConfig: RootProjectionConfig<N>
+): ViewFn<N> {
+    const subprojector = getProjector(projection.content, rootConfig);
 
     return function decalProjectorFactory(stage, nodes, expr) {
         const inner = subprojector(stage, nodes, expr);
@@ -294,8 +322,11 @@ function decalProjector<N extends ReductNode>(projection: DecalProjectionDef<N>)
     };
 }
 
-function previewProjector<N extends ReductNode>(projection: PreviewProjectionDef<N>): ViewFn<N> {
-    const subprojector = getProjector(projection.content);
+function previewProjector<N extends ReductNode>(
+    projection: PreviewProjectionDef<N>,
+    rootConfig: RootProjectionConfig<N>
+): ViewFn<N> {
+    const subprojector = getProjector(projection.content, rootConfig);
 
     return function previewProjectorFactory(stage, nodes, expr) {
         const inner = subprojector(stage, nodes, expr);
@@ -355,32 +386,35 @@ export type ViewFn<N extends ReductNode = ReductNode> =
  *
  * @alias gfx.projector.projector
  */
-export function getProjector<N extends ReductNode>(definition: ProjectionDef<N>): ViewFn<N> {
+export function getProjector<N extends ReductNode>(
+    definition: ProjectionDef<N>,
+    rootConfig: RootProjectionConfig<N>
+): ViewFn<N> {
     switch (definition.type) {
     case 'default':
-        return defaultProjector(definition);
+        return defaultProjector(definition, rootConfig);
     case 'case':
     case 'cases':
-        return casesProjector(definition);
+        return casesProjector(definition, rootConfig);
     case 'text':
         return textProjector(definition);
     case 'symbol':
         // can assert conversion b/c if we're here, then N = SymbolNode
         return symbolProjector(definition) as unknown as ViewFn<N>;
     case 'dynamic':
-        return dynamicProjector(definition);
+        return dynamicProjector(definition, rootConfig);
     case 'dynamicProperty':
-        return dynamicPropertyProjector(definition);
+        return dynamicPropertyProjector(definition, rootConfig);
     case 'hbox':
-        return hboxProjector(definition);
+        return hboxProjector(definition, rootConfig);
     case 'vbox':
-        return vboxProjector(definition);
+        return vboxProjector(definition, rootConfig);
     case 'sticky':
-        return stickyProjector(definition);
+        return stickyProjector(definition, rootConfig);
     case 'decal':
-        return decalProjector(definition);
+        return decalProjector(definition, rootConfig);
     case 'preview':
-        return previewProjector(definition);
+        return previewProjector(definition, rootConfig);
     case 'generic':
         // TODO: get rid of generic projection, this is poisonous to TypeScript
         return genericProjector(definition);

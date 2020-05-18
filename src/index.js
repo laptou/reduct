@@ -86,13 +86,14 @@ window.startup = async () => {
         }
 
         fetchLevel(sessionParams);
-        initialize();
     } catch (e) {
         console.error(e);
         document.querySelector('#consent-id-error').style.display = 'block';
         setTimeout(() => document.querySelector('#player_id').focus(), 250);
         window.startup(); // try again
     }
+
+    initialize();
 };
 
 Loader.finished.then(() => window.startup());
