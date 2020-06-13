@@ -99,7 +99,7 @@ window.startup = async () => {
 Loader.finished.then(() => window.startup());
 
 const views = {};
-let store;
+export let store;
 let stg;
 let canvas;
 

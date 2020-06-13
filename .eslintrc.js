@@ -1,31 +1,33 @@
 const { resolve} = require('path');
 
 module.exports = {
-    'root': true,
-    'parser': '@typescript-eslint/parser',
-    'env': {
-        'browser': true
+    root: true,
+    parser: '@typescript-eslint/parser',
+    env: {
+        browser: true
     },
-    'plugins': [
-        '@typescript-eslint'
+    plugins: [
+        '@typescript-eslint',
+        'react'
     ],
-    'parserOptions': {
+    parserOptions: {
         tsconfigRootDir: __dirname,
-        'project': ['./tsconfig.json'],
-        'sourceType': 'module',
+        project: ['./tsconfig.json'],
+        sourceType: 'module',
         ecmaFeatures: {
             jsx: true
         }
     },
-    'extends': [
+    extends: [
         'plugin:@typescript-eslint/eslint-recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/recommended-requiring-type-checking',
+        'plugin:react/recommended',
         'plugin:import/errors',
         'plugin:import/warnings',
         'plugin:import/typescript',
     ],
-    'rules': {
+    rules: {
         '@typescript-eslint/explicit-function-return-type': [
             'off'
         ],
@@ -41,7 +43,7 @@ module.exports = {
         '@typescript-eslint/member-ordering': [
             'error',
             {
-                'default': [
+                default: [
                     // Index signature
                     'signature',
                     // Static
@@ -75,7 +77,7 @@ module.exports = {
         '@typescript-eslint/explicit-member-accessibility': [
             'error',
             {
-                'accessibility': 'explicit'
+                accessibility: 'explicit'
             }
         ],
         '@typescript-eslint/prefer-readonly': [
@@ -87,9 +89,9 @@ module.exports = {
         '@typescript-eslint/no-unused-expressions': ['warn'],
         'indent': [
             'error',
-            4,
+            2,
             {
-                'ignoredNodes': [
+                ignoredNodes: [
                     'TemplateLiteral'
                 ]
             }
@@ -105,7 +107,7 @@ module.exports = {
             'error',
             'always-multiline',
             {
-                'functions': 'never'
+                functions: 'never'
             }
         ],
         'space-before-function-paren': 'off',
@@ -113,7 +115,7 @@ module.exports = {
         'no-unused-vars': [
             'warn',
             {
-                'argsIgnorePattern': '^_'
+                argsIgnorePattern: '^_'
             }
         ],
         'no-unused-expressions': 'off', // replaced by typescript-eslint variant
@@ -130,7 +132,7 @@ module.exports = {
         // semantic rules
         'accessor-pairs': ['error'],
         'grouped-accessor-pairs': ['error', 'getBeforeSet'],
-        'yoda': ['error', 'never', { exceptRange: true }],
+        yoda: ['error', 'never', { exceptRange: true }],
         'no-unneeded-ternary': ['error'],
         'no-var': ['error'],
         'no-useless-computed-key': ['error'],
@@ -157,7 +159,7 @@ module.exports = {
         'object-property-newline': ['error',{ allowAllPropertiesOnSameLine: true }],
         'function-call-argument-newline': ['error', 'consistent'],
         'lines-between-class-members': ['error', 'always'],
-        'operator-linebreak': ['error', 'before', { 'overrides': { '=': 'after' } }],
+        'operator-linebreak': ['error', 'before', { overrides: { '=': 'after' } }],
 
         // comma rules
         'comma-dangle': ['error', 'never'],
@@ -166,25 +168,38 @@ module.exports = {
     
         // quote rules
         'quote-props': ['error', 'consistent-as-needed'],
-        'quotes': ['error', 'single'],
+        quotes: ['error', 'single'],
+
+        // jsx rules
+        'react/boolean-prop-naming': ['warn'],
+        'react/button-has-type': ['warn'],
+        'react/jsx-indent': ['error', 2, { checkAttributes: true, indentLogicalExpressions: true }],
+        'react/jsx-indent-props': ['error', 2],
+        'react/jsx-closing-tag-location': ['error'],
+        'react/jsx-closing-bracket-location': ['error', 'line-aligned'],
+        'react/jsx-curly-spacing': ['error'],
+        'react/jsx-key': ['error'],
+        'react/no-access-state-in-setstate': ['warn'],
+        'react/no-children-prop': ['warn'],
+        'react/jsx-pascal-case': ['error'],
         
         'import/extensions': ['warn', 'never'],
         'import/prefer-default-export': ['off'],
         'max-classes-per-file': ['warn', 2]
     },
-    'ignorePatterns': [
+    ignorePatterns: [
         'node_modules/',
         'chapterutil/',
         'dist/',
         'resources/',
         'docs/'
     ],
-    'settings': {
+    settings: {
         'import/resolver': {
-            'webpack': {
-                'config': resolve(__dirname, 'webpack.config.js'),
-                'env': {
-                    'development': true
+            webpack: {
+                config: resolve(__dirname, 'webpack.config.js'),
+                env: {
+                    development: true
                 }
             }
         }
