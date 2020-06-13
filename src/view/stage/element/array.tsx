@@ -3,7 +3,8 @@ import { ReductNode } from '@/semantics';
 import { ArrayNode } from '@/semantics/defs';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import getStageElementForNode from '.';
+import StageElement from './base';
+import { getStageElementForNode } from '.';
 
 interface ArrayElementOwnProps {
     node: ArrayNode;
@@ -18,13 +19,13 @@ type ArrayProps = ArrayElementOwnProps & ArrayElementStoreProps;
 export class ArrayElement extends Component<ArrayProps> {
     public render() {
         return (
-            <ul className='node node-array'>
+            <StageElement className='array'>
                 {
                     this.props.items.map(item => 
-                        <li className='item'>{getStageElementForNode(item)}</li>
+                        <div className='item'>{getStageElementForNode(item)}</div>
                     )
                 }
-            </ul>
+            </StageElement>
         )
     }
 }

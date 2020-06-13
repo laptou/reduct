@@ -1,5 +1,6 @@
 import { ValueNode } from '@/semantics/defs/value';
 import React, { Component } from 'react';
+import StageElement from './base';
 
 interface ValueElementOwnProps<T> {
     node: ValueNode<T>;
@@ -7,11 +8,10 @@ interface ValueElementOwnProps<T> {
 
 export class ValueElement<T> extends Component<ValueElementOwnProps<T>> {
     public render() {
-        const className = `node node-${this.props.node.type}`;
         return (
-            <div className={className}>
+            <StageElement className={this.props.node.type}>
                 {this.props.node.value}
-            </div>
+            </StageElement>
         )
     }
 }
