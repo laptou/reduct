@@ -11,10 +11,10 @@ export class BinOpElement extends Component<BinOpElementOwnProps> {
     return (
       <div className='element binop'>
         <div className='left'>
-          <StageElement nodeId={this.props.node.left} />
+          <StageElement nodeId={this.props.node.left} slot={true} />
         </div>
         <div className='right'>
-          <StageElement nodeId={this.props.node.right} />
+          <StageElement nodeId={this.props.node.right} slot={true} />
         </div>
       </div>
     )

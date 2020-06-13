@@ -1,24 +1,24 @@
 import type { ImMap, Im } from '@/util/im';
 import {
-    ApplyNode,
-    ArrayNode,
-    AutograderNode,
-    BinOpNode,
-    OpNode,
-    ConditionalNode,
-    DefineNode,
-    LambdaNode,
-    LambdaVarNode,
-    LambdaArgNode,
-    LetNode,
-    MemberNode,
-    NotNode,
-    NumberNode,
-    StrNode,
-    BoolNode,
-    UnsolNode,
-    DynVarNode,
-    SymbolNode
+  ApplyNode,
+  ArrayNode,
+  AutograderNode,
+  BinOpNode,
+  OpNode,
+  ConditionalNode,
+  DefineNode,
+  LambdaNode,
+  LambdaVarNode,
+  LambdaArgNode,
+  LetNode,
+  MemberNode,
+  NotNode,
+  NumberNode,
+  StrNode,
+  BoolNode,
+  UnsolNode,
+  DynVarNode,
+  SymbolNode
 } from './defs';
 
 export type NodeId = number;
@@ -45,7 +45,7 @@ export interface BaseNode {
 
     fadeLevel: number;
 
-    lockeed: boolean;
+    locked: boolean;
 
     complete: boolean;
 }
