@@ -1,3 +1,5 @@
+const { resolve} = require('path');
+
 module.exports = {
     'root': true,
     'parser': '@typescript-eslint/parser',
@@ -10,10 +12,12 @@ module.exports = {
     'parserOptions': {
         tsconfigRootDir: __dirname,
         'project': ['./tsconfig.json'],
-        'sourceType': 'module'
+        'sourceType': 'module',
+        ecmaFeatures: {
+            jsx: true
+        }
     },
     'extends': [
-        'airbnb-base',
         'plugin:@typescript-eslint/eslint-recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/recommended-requiring-type-checking',
@@ -89,10 +93,6 @@ module.exports = {
                     'TemplateLiteral'
                 ]
             }
-        ],
-        'quotes': [
-            'error',
-            'double'
         ],
         'no-continue': 'off',
         'no-restricted-syntax': 'off',
@@ -182,7 +182,7 @@ module.exports = {
     'settings': {
         'import/resolver': {
             'webpack': {
-                'config': 'webpack.config.js',
+                'config': resolve(__dirname, 'webpack.config.js'),
                 'env': {
                     'development': true
                 }
