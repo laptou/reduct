@@ -1,6 +1,6 @@
 import { Im, ImMap } from '@/util/im';
 import type { NodeDef } from './base';
-import type { BaseNode } from '..';
+import type { BaseNode, NodeId } from '..';
 import type { Semantics } from '../transform';
 
 // Returns the names of the subexpressions of an array: elem0, elem1, etc.
@@ -32,10 +32,10 @@ function arrayDisplayParts(expr) {
     return result;
 }
 
-export interface ArrayNode extends BaseNode {
+export type ArrayNode = BaseNode & Record<string, NodeId> & {
     type: 'array';
     length: number;
-}
+};
 
 // eslint-disable-next-line import/prefer-default-export
 export const array: NodeDef<ArrayNode> = {
