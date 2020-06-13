@@ -4,7 +4,6 @@ import { ApplyNode } from '@/semantics/defs';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import StageElement from './base';
-import { getStageElementForNode } from '.';
 
 interface ApplyElementOwnProps {
     node: ApplyNode;
@@ -18,21 +17,21 @@ interface ApplyElementStoreProps {
 type ApplyProps = ApplyElementOwnProps & ApplyElementStoreProps;
 
 export class ApplyElement extends Component<ApplyProps> {
-    public render() {
-        return (
-            <StageElement className='apply'>
-                <div className='callee'>
-                    {getStageElementForNode(this.props.calleeNode)}
-                </div>
-                <div className='argument'>
-                    {getStageElementForNode(this.props.argumentNode)}
-                </div>
-            </StageElement>
-        )
-    }
+  public render() {
+    return (
+      <div className='element apply'>
+        <div className='callee'>
+          <StageElement node={this.props.calleeNode} />
+        </div>
+        <div className='argument'>
+          <StageElement node={this.props.argumentNode} />
+        </div>
+      </div>
+    )
+  }
 }
 
 export default connect((state: RState, ownProps: ApplyElementOwnProps) => ({
-    calleeNode: state.nodes.get(ownProps.node.callee)?.toJS() ?? null,
-    argumentNode: state.nodes.get(ownProps.node.argument)?.toJS() ?? null
+  calleeNode: state.nodes.get(ownProps.node.callee)?.toJS() ?? null,
+  argumentNode: state.nodes.get(ownProps.node.argument)?.toJS() ?? null
 }))(ApplyElement);
