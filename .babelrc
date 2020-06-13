@@ -13,12 +13,12 @@
     ],
     ["@babel/typescript", {
       "onlyRemoveTypeImports": true
-    }]
+    }],
+    ["@babel/react"]
   ],
   "plugins": [
     "@babel/proposal-optional-chaining",
     "@babel/proposal-class-properties",
-    "@babel/proposal-object-rest-spread",
-    "babel-plugin-inferno"
+    "@babel/proposal-object-rest-spread"
   ]
 }

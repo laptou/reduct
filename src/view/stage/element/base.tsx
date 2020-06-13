@@ -3,7 +3,8 @@ import cx from 'classnames';
 import React, { Component } from 'react';
 import { getElementForNode } from '.';
 import { connect } from 'react-redux';
-import { RState } from '@/reducer/state';
+import { GlobalState } from '@/reducer/state';
+import { Im } from '@/util/im';
 
 /**
  * Props retrieved from Redux.
@@ -39,7 +40,7 @@ interface StageElementState {
 class StageElement extends Component<StageElementProps, StageElementState> {
   public constructor(props: StageElementProps) {
     super(props);
-    this.setState({ hover: false });
+    this.state = { hover: false };
   }
 
   /**
@@ -96,7 +97,7 @@ class StageElement extends Component<StageElementProps, StageElementState> {
     if (!component) {
       if (this.props.slot === true) {
         return (
-          <div className='stage-slot' 
+          <div className='element slot' 
             onDragOver={this.onDragOver.bind(this)}
             onDrop={this.onDrop.bind(this)}
           >
@@ -108,7 +109,7 @@ class StageElement extends Component<StageElementProps, StageElementState> {
     }
 
     return (
-      <div className={cx('stage-element', { hover: this.state.hover })}
+      <div className={cx('element wrapper', { hover: this.state.hover })}
         draggable='true' 
         onDragStart={this.onDragStart.bind(this)}
       >
@@ -118,9 +119,9 @@ class StageElement extends Component<StageElementProps, StageElementState> {
   }
 }
 
-export default connect((state: RState, ownProps: StageElementOwnProps) => {
+export default connect((state: Im<GlobalState>, ownProps: StageElementOwnProps) => {
   if (ownProps.nodeId) {
-    const node = state.nodes.get(ownProps.nodeId);
+    const node = state.get('program').get('$present').get('nodes').get(ownProps.nodeId);
     return { node: node ? node.toJS() : null };
   }
   return { node: null };

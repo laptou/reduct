@@ -1,0 +1,21 @@
+@forward 'binop';
+
+.element {
+  margin: 0 0.25rem;
+}
+
+.element, .element .content {
+  display: inline-flex;
+  align-items: stretch;
+}
+
+.element.slot {
+  display: inline-block;
+  min-width: 1rem;
+  height: 1rem;
+  padding: 0.25rem;
+  color: rgba(black, 0.70);
+  background: white;
+  border: 1px solid black;
+  box-shadow: 0 0 -4pt rgba(black, 0.25);
+}

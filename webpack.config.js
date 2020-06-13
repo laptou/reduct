@@ -37,7 +37,7 @@ exports.default = (env) => ({
   module: {
     rules: [
       {
-        test: /\.(ts|js)$/i,
+        test: /\.(tsx?|js)$/i,
         exclude: /node_modules/,
         use: [
           {
@@ -138,7 +138,7 @@ exports.default = (env) => ({
       : [])
   ],
   resolve: {
-    extensions: ['.ts', '.js', '.json'],
+    extensions: ['.ts', '.js', '.tsx', '.json'],
     alias: {
       '@resources': path.resolve(__dirname, 'resources/'),
       '@': path.resolve(__dirname, 'src/')

@@ -1,5 +1,3 @@
-import { RState } from '@/reducer/state';
-import { ReductNode } from '@/semantics';
 import { ApplyNode } from '@/semantics/defs';
 import React, { Component } from 'react';
 import StageElement from './base';
@@ -8,7 +6,7 @@ interface ApplyElementOwnProps {
     node: ApplyNode;
 }
 
-export default class ApplyElement extends Component<ApplyElementOwnProps> {
+export class ApplyElement extends Component<ApplyElementOwnProps> {
   public render() {
     return (
       <div className='element apply'>

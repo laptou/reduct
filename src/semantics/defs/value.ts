@@ -17,7 +17,7 @@ export interface StrNode extends ValueNode<string> {
 }
 
 export interface BoolNode extends ValueNode<boolean> {
-    type: 'boolean';
+    type: 'bool';
 }
 
 export interface UnsolNode extends BaseNode {

@@ -1,6 +1,8 @@
 import { Map as ImMap, Collection as ImCollection } from 'immutable';
 
-export { List as ImList, Collection as ImCollection, Map as ImMap } from 'immutable';
+export {
+  List as ImList, Collection as ImCollection, Map as ImMap, Stack as ImStack 
+} from 'immutable';
 
 
 /**
@@ -42,5 +44,5 @@ export type Thunk<A extends Array<unknown>, T> =
     T extends Function ? never : (((...args: A) => T) | T);
 
 export function thunk<A extends Array<unknown>, T>(t: Thunk<A, T>, ...args: A): T {
-    return typeof t === 'function' ? t(...args) : t;
+  return typeof t === 'function' ? t(...args) : t;
 }

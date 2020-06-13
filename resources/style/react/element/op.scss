@@ -1,0 +1,8 @@
+@use 'theme';
+@use 'layout';
+
+.element.op {
+  @extend %value-container;
+
+  height: 1.5rem;
+}

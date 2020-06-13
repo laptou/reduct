@@ -1,10 +1,11 @@
 import { ReductNode } from '@/semantics';
-import ApplyElement from './apply';
-import ArrayElement from './array';
-import BinOpElement from './binop';
-import ValueElement from './value';
+import { ApplyElement } from './apply';
+import { ArrayElement } from './array';
+import { BinOpElement } from './binop';
+import { ValueElement } from './value';
 import React from 'react';
 import { ValueNode } from '@/semantics/defs/value';
+import { OpElement } from './op';
 
 /**
  * Definitions:
@@ -22,13 +23,14 @@ export function getElementForNode(node: ReductNode | null) {
   if (!node) return null;
 
   switch (node.type) {
-  case 'apply': return <ApplyElement node={node} />;
-  case 'array': return <ArrayElement node={node} />;
-  case 'binop': return <BinOpElement node={node} />;
-  case 'boolean': 
+  case 'apply': return <ApplyElement node={node} key={node.id} />;
+  case 'array': return <ArrayElement node={node} key={node.id} />;
+  case 'binop': return <BinOpElement node={node} key={node.id} />;
+  case 'op': return <OpElement node={node} key={node.id} />;
+  case 'bool': 
   case 'number':
   case 'string':
-    return <ValueElement node={node as ValueNode<string | boolean | number>} />;
-  default: throw new Error(`unknown node type ${node.type}`);
+    return <ValueElement node={node as ValueNode<string | boolean | number>} key={node.id} />;
+  default: return null;
   }
 }
