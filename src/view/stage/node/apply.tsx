@@ -5,18 +5,18 @@ import { RState } from '@/reducer/state';
 import { ReductNode } from '@/semantics';
 import getStageElementForNode from '.';
 
-interface ApplyOwnProps {
+interface ApplyElementOwnProps {
     node: ApplyNode;
 }
 
-interface ApplyStoreProps {
+interface ApplyElementStoreProps {
     calleeNode: ReductNode | null;
     argumentNode: ReductNode | null;
 }
 
-type ApplyProps = ApplyOwnProps & ApplyStoreProps;
+type ApplyProps = ApplyElementOwnProps & ApplyElementStoreProps;
 
-export class Apply extends Component<ApplyProps> {
+export class ApplyElement extends Component<ApplyProps> {
     public render() {
         return (
             <div className='node node-apply'>
@@ -31,7 +31,7 @@ export class Apply extends Component<ApplyProps> {
     }
 }
 
-export default connect((state: RState, ownProps: ApplyOwnProps) => ({
+export default connect((state: RState, ownProps: ApplyElementOwnProps) => ({
     calleeNode: state.nodes.get(ownProps.node.callee)?.toJS() ?? null,
     argumentNode: state.nodes.get(ownProps.node.argument)?.toJS() ?? null
-}))(Apply);
+}))(ApplyElement);
