@@ -2,4 +2,8 @@
 %element-standalone {
   min-height: 2rem;
   filter: drop-shadow(0 0 4pt rgba(black, 0.25));
+
+  .element.wrapper.locked > & {
+    filter: drop-shadow(0 0 1px rgba(black, 0.25));
+  }
 }

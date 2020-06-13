@@ -16,13 +16,13 @@ export class BinOpElement extends Component<BinOpElementOwnProps> {
         </svg>
         <div className='content'>
           <div className='left'>
-            <StageElement nodeId={this.props.node.left} slot={true} />
+            <StageElement nodeId={this.props.node.left} />
           </div>
           <div className='operation'>
-            <StageElement nodeId={this.props.node.op} slot={true} />
+            <StageElement nodeId={this.props.node.op} />
           </div>
           <div className='right'>
-            <StageElement nodeId={this.props.node.right} slot={true} />
+            <StageElement nodeId={this.props.node.right} />
           </div>
         </div>
         <svg className='decoration' viewBox='0 0 20 32' preserveAspectRatio='none'>

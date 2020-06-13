@@ -24,20 +24,12 @@ interface StageElementOwnProps {
    * The ID of the node to display in this element.
    */
   nodeId: NodeId | null;
-
-  /**
-   * If true, this node will display an empty slot when `node` is null.
-   */
-  slot?: boolean;
 }
 
 type StageElementProps = StageElementOwnProps & StageElementStoreProps;
 
-interface StageElementState {
-  hover: boolean;
-}
 
-class StageElement extends Component<StageElementProps, StageElementState> {
+class StageElement extends Component<StageElementProps> {
   public constructor(props: StageElementProps) {
     super(props);
     this.state = { hover: false };
@@ -54,63 +46,27 @@ class StageElement extends Component<StageElementProps, StageElementState> {
     event.dataTransfer.setData('application/reduct-node', this.props.nodeId.toString());
     event.dataTransfer.dropEffect = 'move';
   }
-
-  /**
-   * When something is dragged over this element. Should only be called when
-   * this element is functioning as a slot.
-   * @param event The `dragover` event object.
-   */
-  private onDragOver(event: React.DragEvent<HTMLDivElement>) {
-    if (this.props.nodeId) return;
-
-    const nodeId = parseInt(event.dataTransfer.getData('application/reduct-node'));
-    if (!nodeId || isNaN(nodeId)) return;
-
-    event.preventDefault();
-
-    // TODO: add validation on whether the node being dragged can be dropped in
-    // this slot
-    this.setState({ hover: true });
-  }
-
-  /**
-   * When something is dropped on this element. Should only be called when this
-   * element is functioning as a slot.
-   * @param event The `drop` event object.
-   */
-  private onDrop(event: React.DragEvent<HTMLDivElement>) {
-    if (this.props.nodeId) return;
-
-    const nodeId = parseInt(event.dataTransfer.getData('application/reduct-node'));
-    if (!nodeId || isNaN(nodeId)) return;
-
-    event.preventDefault();
-
-    // TODO: add validation on whether the node being dragged can be dropped in
-    // this slot
-    this.setState({ hover: false });
-  }
   
   public render() {
-    const component = getElementForNode(this.props.node);
-
-    if (!component) {
-      if (this.props.slot === true) {
-        return (
-          <div className='element slot' 
-            onDragOver={this.onDragOver.bind(this)}
-            onDrop={this.onDrop.bind(this)}
-          >
-          </div>
-        );
-      } else {
-        return null;
-      }
+    if (!this.props.node) {
+      return null;
     }
 
+    const component = getElementForNode(this.props.node);
+
+    // top level nodes (nodes w/o parents) should not be considered locked
+    // TODO: don't mark top level nodes as locked
+    const locked = this.props.node.parent ? this.props.node.locked : false;
+
+    const draggable = 
+      // can't drag slots
+      this.props.node.type !== 'missing' 
+      // can't drag locked nodes
+      && !locked;
+
     return (
-      <div className={cx('element wrapper', { hover: this.state.hover })}
-        draggable='true' 
+      <div className={cx('element wrapper', { locked })}
+        draggable={draggable} 
         onDragStart={this.onDragStart.bind(this)}
       >
         {component}

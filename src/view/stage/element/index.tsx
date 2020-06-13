@@ -6,6 +6,7 @@ import { ValueElement } from './value';
 import React from 'react';
 import { ValueNode } from '@/semantics/defs/value';
 import { OpElement } from './op';
+import { MissingElement } from './missing';
 
 /**
  * Definitions:
@@ -30,7 +31,8 @@ export function getElementForNode(node: ReductNode | null) {
   case 'bool': 
   case 'number':
   case 'string':
-    return <ValueElement node={node as ValueNode<string | boolean | number>} key={node.id} />;
+    return <ValueElement node={node} key={node.id} />;
+  case 'missing': return <MissingElement key={node.id} />;
   default: return null;
   }
 }

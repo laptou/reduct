@@ -11,7 +11,6 @@
 
   & > .decoration {
     flex-grow: 0;
-    height: 100%;
   }
 
   & > .content {
@@ -24,6 +23,8 @@
   @extend %element-value;
 
   & > .decoration {
+    width: 20px;
+
     polygon {
       fill: theme.$element-color-boolean;
     }
@@ -38,6 +39,8 @@
   @extend %element-value;
 
   & > .decoration {
+    width: 12px;
+
     polygon {
       fill: theme.$element-color-string;
     }
@@ -52,6 +55,8 @@
   @extend %element-value;
 
   & > .decoration {
+    width: 4px;
+
     path {
       fill: theme.$element-color-number;
     }

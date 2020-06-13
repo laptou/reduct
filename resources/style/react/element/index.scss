@@ -1,6 +1,7 @@
 .element {
   margin-right: 0.125rem;
   margin-left: 0.125rem;
+  font-weight: bold;
   font-family: 'IBM Plex Mono', monospace;
   user-select: none;
 }
@@ -12,11 +13,16 @@
 
 .element.slot {
   display: inline-block;
-  min-width: 1rem;
-  height: 1rem;
+  min-width: 2.5rem;
+  height: 1.75rem;
   padding: 0.25rem;
   color: rgba(black, 0.70);
   background: white;
-  border: 1px solid black;
+  border: 2px solid black;
+  border-radius: 1rem;
   box-shadow: inset 0 0 4pt rgba(black, 0.5);
+
+  &.hover {
+    border: 2px solid red;
+  }
 }

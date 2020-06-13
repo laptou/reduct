@@ -33,7 +33,7 @@ export interface BaseNode {
     id: NodeId;
 
     /** The ID of this node's parent. */
-    parent: NodeId;
+    parent?: NodeId;
 
     /**
      * The field in the parent node which this node
@@ -57,6 +57,11 @@ export type NodeType = {
 
 export type NodeMap = ImMap<NodeId, Im<ReductNode>>;
 
+export interface MissingNode extends BaseNode {
+  type: 'missing';
+  locked: true;
+}
+
 export type ReductNode =
     ApplyNode |
     ArrayNode |
@@ -76,4 +81,5 @@ export type ReductNode =
     BoolNode |
     UnsolNode |
     SymbolNode |
-    DynVarNode;
+    DynVarNode |
+    MissingNode;
