@@ -1,40 +1,29 @@
-import { RState } from '@/reducer/state';
-import { ReductNode } from '@/semantics';
 import { ArrayNode } from '@/semantics/defs';
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import StageElement from './base';
-import { getElementForNode } from '.';
+import { NodeId } from '@/semantics';
 
 interface ArrayElementOwnProps {
     node: ArrayNode;
 }
 
-interface ArrayElementStoreProps {
-    items: ReductNode[];
-}
-
-type ArrayProps = ArrayElementOwnProps & ArrayElementStoreProps;
-
-export class ArrayElement extends Component<ArrayProps> {
+export class ArrayElement extends Component<ArrayElementOwnProps> {
   public render() {
+    const itemIds: Array<NodeId | null> = [];
+    
+    // array nodes have members elem0, elem1, ... elem{length - 1}
+    for (let i = 0; i < this.props.node.length; i++) {
+      itemIds.push(this.props.node[`elem${i}`] ?? null);
+    }
+
     return (
       <div className='element array'>
         {
-          this.props.items.map(item => 
-            <div className='item' key={item.id}><StageElement node={item} /></div>
+          itemIds.map((itemId, index) => 
+            <div className='item' key={index}><StageElement nodeId={itemId} /></div>
           )
         }
       </div>
     )
   }
 }
-
-export default connect((state: RState, ownProps: ArrayElementOwnProps) => {
-  const items = [];
-  for (let i = 0; i < ownProps.node.length; i++) {
-    const item = state.nodes.get(ownProps.node[`elem${i}`]);
-    if (item) items.push(item.toJS());
-  }
-  return { items };
-})(ArrayElement);
