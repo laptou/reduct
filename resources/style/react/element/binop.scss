@@ -1,11 +1,12 @@
 @use 'theme';
 @use 'layout';
+@use 'fx';
 
 .element.binop {
-  height: 2rem;
+  @extend %element-standalone;
   color: theme.$element-foreground;
 
-  .decoration {
+  & > .decoration {
     flex-grow: 0;
     width: 20px;
     height: 100%;
@@ -15,7 +16,7 @@
     }
   }
 
-  .content {
+  & > .content {
     background-color: theme.$element-color-boolean;
 
     .left, .right, .operation {

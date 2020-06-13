@@ -1,0 +1,63 @@
+@use 'theme';
+@use 'layout';
+@use 'fx';
+
+%element-value {
+  @extend %element-standalone;
+  justify-items: stretch;
+  min-width: 2rem;
+  height: 2rem;
+  color: theme.$element-foreground;
+
+  & > .decoration {
+    flex-grow: 0;
+    height: 100%;
+  }
+
+  & > .content {
+    @extend %value-container;
+    flex-grow: 1;
+  }
+}
+
+.element.bool {
+  @extend %element-value;
+
+  & > .decoration {
+    polygon {
+      fill: theme.$element-color-boolean;
+    }
+  }
+
+  & > .content {
+    background-color: theme.$element-color-boolean;
+  }
+}
+
+.element.string {
+  @extend %element-value;
+
+  & > .decoration {
+    polygon {
+      fill: theme.$element-color-string;
+    }
+  }
+
+  & > .content {
+    background-color: theme.$element-color-string;
+  }
+}
+
+.element.number {
+  @extend %element-value;
+
+  & > .decoration {
+    path {
+      fill: theme.$element-color-number;
+    }
+  }
+
+  & > .content {
+    background-color: theme.$element-color-number;
+  }
+}

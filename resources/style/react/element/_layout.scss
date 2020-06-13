@@ -1,5 +1,11 @@
+%element-standalone {
+  margin-top: 0.125rem;
+  margin-bottom: 0.125rem;
+}
+
 %value-container {
   display: inline-flex;
   flex-flow: column nowrap;
+  align-items: center;
   justify-content: center;
 }

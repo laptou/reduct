@@ -11,7 +11,7 @@ export class BinOpElement extends Component<BinOpElementOwnProps> {
   public render() {
     return (
       <div className='element binop'>
-        <svg className='decoration' viewBox='0 0 20 32'>
+        <svg className='decoration' viewBox='0 0 20 32' preserveAspectRatio='none'>
           <polygon points='0 16 20 0 20 32' />
         </svg>
         <div className='content'>
@@ -25,7 +25,7 @@ export class BinOpElement extends Component<BinOpElementOwnProps> {
             <StageElement nodeId={this.props.node.right} slot={true} />
           </div>
         </div>
-        <svg className='decoration'>
+        <svg className='decoration' viewBox='0 0 20 32' preserveAspectRatio='none'>
           <polygon points='20 16 0 0 0 32' />
         </svg>
       </div>

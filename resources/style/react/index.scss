@@ -12,4 +12,11 @@
   left: 50%;
   z-index: 1000;
   background: rgba(lightcoral, 50%);
+
+  #stage {
+    display: flex;
+    flex-flow: row wrap;
+    align-content: flex-start;
+    height: 0;
+  }
 }

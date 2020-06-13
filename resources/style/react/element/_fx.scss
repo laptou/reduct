@@ -1,0 +1,5 @@
+// for standalone elements that can be moved around by the user
+%element-standalone {
+  min-height: 2rem;
+  filter: drop-shadow(0 0 4pt rgba(black, 0.25));
+}
