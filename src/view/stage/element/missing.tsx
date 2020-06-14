@@ -20,6 +20,7 @@ interface MissingElementDispatchProps {
 type MissingElementProps = 
   MissingElementOwnProps & 
   MissingElementDispatchProps;
+  
 class MissingElementImpl extends Component<
   MissingElementProps, 
   MissingElementState

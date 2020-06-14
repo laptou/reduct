@@ -11,10 +11,10 @@ export class ApplyElement extends Component<ApplyElementOwnProps> {
     return (
       <div className='element apply'>
         <div className='callee'>
-          <StageElement nodeId={this.props.node.callee} slot={true} />
+          <StageElement nodeId={this.props.node.callee} />
         </div>
         <div className='argument'>
-          <StageElement nodeId={this.props.node.argument} slot={true} />
+          <StageElement nodeId={this.props.node.argument} />
         </div>
       </div>
     )

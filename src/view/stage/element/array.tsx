@@ -20,7 +20,7 @@ export class ArrayElement extends Component<ArrayElementOwnProps> {
       <div className='element array'>
         {
           itemIds.map((itemId, index) => 
-            <div className='item' key={index}><StageElement nodeId={itemId} slot={true} /></div>
+            <div className='item' key={index}><StageElement nodeId={itemId} /></div>
           )
         }
       </div>
