@@ -1,10 +1,10 @@
-import { ReductNode, NodeId } from '@/semantics';
-import cx from 'classnames';
-import React, { Component, FunctionComponent, useState } from 'react';
-import { getElementForNode } from '.';
-import { connect } from 'react-redux';
 import { GlobalState } from '@/reducer/state';
+import { NodeId, ReductNode } from '@/semantics';
 import { Im } from '@/util/im';
+import cx from 'classnames';
+import React, { FunctionComponent } from 'react';
+import { connect } from 'react-redux';
+import { getElementForNode } from '.';
 
 /**
  * Props retrieved from Redux.
@@ -36,6 +36,9 @@ function onDragStart(
 
   event.dataTransfer.setData('application/reduct-node', props.nodeId.toString());
   event.dataTransfer.dropEffect = 'move';
+  
+  // stop parent elements from hijacking the drag
+  event.stopPropagation();
 };
 
 const StageElementImpl: FunctionComponent<StageElementProps> = 

@@ -47,6 +47,9 @@ function onDrop(
 
   event.preventDefault();
 
+  // stop parent elements from hijacking the drop
+  event.stopPropagation();
+
   setHover(false);
 
   // fill this slot with the node that was dropped on it

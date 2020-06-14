@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import Board from './stage/board';
+import { Board } from './stage/board';
 import { hot } from 'react-hot-loader/root';
 import '@resources/style/react/index.scss';
 
