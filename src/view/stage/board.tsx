@@ -3,7 +3,7 @@ import { NodeId } from '@/semantics';
 import { Im, ImList } from '@/util/im';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import StageElement from './element/base';
+import { StageElement } from './element/base';
 
 interface StageStoreProps {
     nodeIds: ImList<NodeId>;

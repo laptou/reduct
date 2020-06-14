@@ -1,7 +1,7 @@
 import { NodeId } from '@/semantics';
 import { ArrayNode } from '@/semantics/defs';
 import React, { FunctionComponent } from 'react';
-import StageElement from './base';
+import { StageElement } from './base';
 
 interface ArrayElementOwnProps {
     node: ArrayNode;

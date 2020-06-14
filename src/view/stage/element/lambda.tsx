@@ -2,7 +2,7 @@ import { LambdaNode, LambdaArgNode, LambdaVarNode } from '@/semantics/defs';
 import '@resources/style/react/element/lambda.scss';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
-import StageElement from './base';
+import {StageElement} from './base';
 
 interface LambdaArgElementOwnProps {
   node: LambdaArgNode;

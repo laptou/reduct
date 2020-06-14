@@ -23,13 +23,11 @@ import passwordPrompt from './ui/dialogs/password';
 import ConsentDialog from './ui/dialogs/consent';
 import TutorialDialog from './ui/dialogs/tutorial';
 
-import ReactDOM from 'react-dom';
-
 import Loader from './loader';
 import Logging, { TITLE_LEVEL_ID, DEVELOPMENT_BUILD } from './logging/logging';
 
 import * as ajax from './util/ajax';
-import { App } from './view';
+import { initReactApp } from './view';
 
 // Whether the game will ask for (valid) user ids
 const USER_IDS = false;
@@ -204,7 +202,7 @@ function initialize() {
         )
     );
 
-    ReactDOM.render(App({ store }), document.getElementById('reduct-react'));
+    initReactApp(store);
 
     stg = new TitleStage(startGame, canvas, 800, 600, store, views, es6);
     window.stage = stg;

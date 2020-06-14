@@ -1,17 +1,14 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import Board from './stage/board';
-import '@resources/style/react/index.scss';
-import { hot } from 'react-hot-loader/root';
+import ReactDOM from 'react-dom';
+import { HotApp } from './app';
 
+export function initReactApp(store: any) {
+  ReactDOM.render(<HotApp store={store} />, document.getElementById('reduct-react'));
 
-// TODO: fix type for `store`
-export function App({ store }: { store: any }) {
-  return (
-    <Provider store={store}>
-      <Board />
-    </Provider>
-  )
+  if (module.hot) {
+    module.hot.accept('.', () => {
+      const { HotApp: NewHotApp } = require('./app');
+      ReactDOM.render(<NewHotApp store={store} />, document.getElementById('reduct-react'));
+    });
+  }
 }
-
-export const hotApp = hot(App);

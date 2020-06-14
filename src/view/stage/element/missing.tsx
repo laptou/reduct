@@ -4,10 +4,6 @@ import cx from 'classnames';
 import React, { FunctionComponent, useState } from 'react';
 import { connect } from 'react-redux';
 
-interface MissingElementState {
-  hover: boolean;
-}
-
 interface MissingElementOwnProps {
   node: ReductNode;
 }

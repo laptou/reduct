@@ -1,7 +1,7 @@
 import { BinOpNode } from '@/semantics/defs';
 import '@resources/style/react/element/binop.scss';
 import React, { FunctionComponent } from 'react';
-import StageElement from './base';
+import { StageElement } from './base';
 
 interface BinOpElementOwnProps {
     node: BinOpNode;

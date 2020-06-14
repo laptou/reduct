@@ -25,7 +25,7 @@ export const ValueElement: FunctionComponent<ValueElementOwnProps> =
       return (
         <div className={cx('element', props.node.type)}>
           <StringShape>
-            {props.node.value}
+            {props.node.value.toString()}
           </StringShape>
         </div>
       );

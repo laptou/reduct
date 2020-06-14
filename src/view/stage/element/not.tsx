@@ -2,7 +2,7 @@ import { NotNode } from '@/semantics/defs';
 import '@resources/style/react/element/not.scss';
 import React, { FunctionComponent } from 'react';
 import { BooleanShape } from '../shape/boolean';
-import StageElement from './base';
+import { StageElement } from './base';
 
 interface NotElementOwnProps {
     node: NotNode;

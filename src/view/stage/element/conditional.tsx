@@ -1,7 +1,7 @@
 import { ConditionalNode } from '@/semantics/defs';
 import '@resources/style/react/element/conditional.scss';
 import React, { FunctionComponent } from 'react';
-import StageElement from './base';
+import { StageElement } from './base';
 
 interface ConditionalElementOwnProps {
     node: ConditionalNode;

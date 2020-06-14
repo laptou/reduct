@@ -1,6 +1,6 @@
 import { ApplyNode } from '@/semantics/defs';
 import React, { FunctionComponent } from 'react';
-import StageElement from './base';
+import { StageElement } from './base';
 
 interface ApplyElementOwnProps {
     node: ApplyNode;

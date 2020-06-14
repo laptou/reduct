@@ -19,7 +19,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
  *  @returns {webpack.Configuration} */
 exports.default = (env) => ({
   context: __dirname,
-  entry: ['./src/index.js'],
+  entry: ['react-hot-loader/patch', './src/index.js'],
   devtool: env.development ? 'source-map' : false,
   devServer: {
     port: 1234,
@@ -141,7 +141,8 @@ exports.default = (env) => ({
     extensions: ['.ts', '.js', '.tsx', '.json'],
     alias: {
       '@resources': path.resolve(__dirname, 'resources/'),
-      '@': path.resolve(__dirname, 'src/')
+      '@': path.resolve(__dirname, 'src/'),
+      'react-dom$': '@hot-loader/react-dom'
     }
   }
 });
