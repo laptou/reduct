@@ -1,7 +1,7 @@
 import { Map as ImMap, Collection as ImCollection } from 'immutable';
 
 export {
-  List as ImList, Collection as ImCollection, Map as ImMap, Stack as ImStack 
+  List as ImList, Collection as ImCollection, Map as ImMap, Stack as ImStack, Set as ImSet
 } from 'immutable';
 
 

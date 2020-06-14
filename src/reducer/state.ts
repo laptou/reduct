@@ -1,8 +1,6 @@
-import type {
-  Im, ImMap, ImList, ImStack 
-} from '@/util/im';
-import type { BaseNode, NodeId } from '@/semantics/defs';
 import { NodeMap } from '@/semantics';
+import type { NodeId } from '@/semantics/defs';
+import type { Im, ImMap, ImSet, ImStack, ImList } from '@/util/im';
 
 
 export interface RState {

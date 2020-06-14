@@ -1,13 +1,30 @@
+import { fillHole } from '@/reducer/action';
+import { NodeId, ReductNode } from '@/semantics';
 import '@resources/style/react/element/op.scss';
 import cx from 'classnames';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 interface MissingElementState {
   hover: boolean;
 }
 
-export class MissingElement extends Component<{}, MissingElementState> {
-  public constructor(props: {}) {
+interface MissingElementOwnProps {
+  node: ReductNode;
+}
+
+interface MissingElementDispatchProps {
+  fill(id: NodeId): void;
+}
+
+type MissingElementProps = 
+  MissingElementOwnProps & 
+  MissingElementDispatchProps;
+class MissingElementImpl extends Component<
+  MissingElementProps, 
+  MissingElementState
+> {
+  public constructor(props: MissingElementProps) {
     super(props);
     this.state = { hover: false };
   }
@@ -47,9 +64,10 @@ export class MissingElement extends Component<{}, MissingElementState> {
 
     event.preventDefault();
 
-    // TODO: add validation on whether the node being dragged can be dropped in
-    // this slot
     this.setState({ hover: false });
+
+    // fill this slot with the node that was dropped on it
+    this.props.fill(nodeId);
   }
 
   public render() {
@@ -66,4 +84,9 @@ export class MissingElement extends Component<{}, MissingElementState> {
   }
 }
 
-
+export const MissingElement = connect(
+  null, 
+  (dispatch, ownProps: MissingElementOwnProps) => ({
+    fill: (id: NodeId) => dispatch(fillHole(ownProps.node.id, id))
+  })
+)(MissingElementImpl);

@@ -32,7 +32,7 @@ export function getElementForNode(node: ReductNode | null) {
   case 'number':
   case 'string':
     return <ValueElement node={node} key={node.id} />;
-  case 'missing': return <MissingElement key={node.id} />;
+  case 'missing': return <MissingElement node={node} key={node.id} />;
   default: return null;
   }
 }
