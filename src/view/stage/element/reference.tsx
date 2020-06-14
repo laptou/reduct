@@ -26,18 +26,22 @@ export const ReferenceElement: FunctionComponent<ReferenceElementOwnProps> =
 
     return (
       <div className='element invocation'>
-        <div className='signature'>
-          <div className='name'>
+        <div className='invocation-signature'>
+          <div className='invocation-name'>
             {props.node.name}
           </div>
           {
             paramIds
               ? (
-                <ul className='params'>
+                <ul className='invocation-params'>
                   {
                     Object
                       .entries(paramIds)
-                      .map(([param, id]) => <li className='param' key={param}><StageElement nodeId={id}/></li>)
+                      .map(([param, id]) => 
+                        <li className='invocation-param' key={param}>
+                          <StageElement nodeId={id}/>
+                        </li>
+                      )
                   }
                 </ul>
               )

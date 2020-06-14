@@ -16,10 +16,6 @@
 
   #stage {
     position: relative;
-    display: flex;
-    flex-flow: row wrap;
-    align-content: flex-start;
-    height: 0;
 
     & > .element {
       // position: absolute;

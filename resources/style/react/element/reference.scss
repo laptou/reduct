@@ -1,0 +1,42 @@
+@use '../theme';
+@use 'layout';
+@use 'fx';
+
+.element.invocation {
+  @extend %element-standalone;
+  
+  align-items: center;
+
+  padding: 0.5rem;
+  color: theme.$element-foreground;
+  background-color: theme.$element-color-function;
+
+  .invocation-signature {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    height: 2rem;
+
+    .invocation-params {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      margin: 0 0.25rem;
+      padding: 0;
+      list-style: none;
+
+      &::before {
+        content: '(';
+      }
+
+      &::after {
+        margin-left: 0.25rem;
+        content: ')';
+      }
+    }
+
+    .invocation-param {
+      margin-left: 0.25rem;
+    }
+  }
+}
