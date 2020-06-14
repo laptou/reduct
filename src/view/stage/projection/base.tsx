@@ -38,7 +38,7 @@ function onDragStart(
   event.dataTransfer.dropEffect = 'move';
 };
 
-export const StageElementImpl: FunctionComponent<StageElementProps> = 
+const StageElementImpl: FunctionComponent<StageElementProps> = 
   (props) => {
     if (!props.node) {
       return null;

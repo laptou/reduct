@@ -22,6 +22,7 @@ import {
   InvocationNode,
   InvocationNode2
 } from './defs';
+import { VTupleNode } from './transform';
 
 export type NodeId = number;
 
@@ -86,4 +87,5 @@ export type ReductNode =
     DynVarNode |
     InvocationNode |
     InvocationNode2 |
+    VTupleNode |
     MissingNode;

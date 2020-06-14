@@ -3,9 +3,12 @@
 @use 'fx';
 
 .element.apply {
+  @include fx.element-shadow-box();
+
   align-items: center;
   padding: 0.125rem 0.25rem;
   color: theme.$element-foreground-inverse;
+  border-radius: 0.25rem;
 
   .apply-param {
     display: flex;
@@ -24,8 +27,4 @@
       content: ')';
     }
   }
-}
-
-.locked > .element.apply {
-  outline: 1px solid grey;
 }

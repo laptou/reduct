@@ -85,7 +85,19 @@ export interface SemanticDefinition {
     expressions: Record<string, NodeDef<ReductNode> | NodeDef<ReductNode>[]>;
 }
 
-export type VTupleNode = BaseNode;
+/**
+ * A "virtual tuple" which kind of bleeds presentation into the
+ * semantics. Represents a set of values that go together, but spill
+ * onto the board when they are the top-level node.
+ * 
+ * Has properties `child0`, `child1`, ... `child{numChildren - 1}` to
+ * represent its children.
+ */
+export type VTupleNode = BaseNode & {
+  type: 'vtuple';
+  locked: true;
+  numChildren: number;
+} & Record<string, NodeId>;
 
 
 /**

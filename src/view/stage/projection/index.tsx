@@ -12,6 +12,7 @@ import { ValueElement } from './value';
 import { SymbolElement } from './symbol';
 import { DefineElement } from './define';
 import { ReferenceElement } from './reference';
+import { VTupleElement } from './vtuple';
 
 /**
  * Definitions:
@@ -46,6 +47,7 @@ export function getElementForNode(node: ReductNode | null) {
   case 'lambdaVar': return <LambdaVarElement node={node} key={node.id} />;
   case 'symbol': return <SymbolElement node={node} key={node.id} />;
   case 'reference': return <ReferenceElement node={node} key={node.id} />;
+  case 'vtuple': return <VTupleElement node={node} key={node.id} />;
   default: return <span>{`{${node.type}}`}</span>;
   }
 }
