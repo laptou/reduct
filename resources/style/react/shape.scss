@@ -6,7 +6,7 @@
   align-items: stretch;
   justify-items: stretch;
   min-width: 2rem;
-  height: 2rem;
+  min-height: 2rem;
   color: theme.$element-foreground;
 
   & > .decoration {

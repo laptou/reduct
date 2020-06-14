@@ -3,4 +3,5 @@
 
 .element.bool, .element.number, .element.string {
   @extend %element-standalone;
+  @include fx.element-shadow-irregular();
 }

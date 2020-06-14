@@ -5,6 +5,7 @@
 .element.symbol {
   @extend %element-standalone;
   @extend %value-container;
+  @include fx.element-shadow-irregular();
 
   .symbol-view {
     height: 1.5rem;

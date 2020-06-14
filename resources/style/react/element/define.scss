@@ -4,6 +4,7 @@
 
 .element.define {
   @extend %element-standalone;
+  @include fx.element-shadow-box();
   
   display: grid;
   
@@ -45,6 +46,7 @@
       list-style: none;
 
       &::before {
+        margin-right: -0.25rem;
         content: '(';
       }
 
@@ -55,7 +57,7 @@
     }
 
     .define-param {
-      margin-left: 0.25rem;
+      margin-left: 0.5rem;
     }
   }
 

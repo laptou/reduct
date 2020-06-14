@@ -1,0 +1,35 @@
+@use '../theme';
+@use 'layout';
+@use 'fx';
+
+.element.array {
+  @extend %element-standalone;
+  @include fx.element-shadow-box();
+
+  align-items: center;
+  padding: 0.5rem;
+  color: theme.$element-foreground;
+  background-color: theme.$element-color-list;
+
+  .array-item {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    margin: 0 0.25rem;
+    padding: 0;
+  }
+
+  &::before {
+    margin-right: 0.25rem;
+    content: '[';
+  }
+
+  &::after {
+    margin-left: 0.25rem;
+    content: ']';
+  }
+}
+
+.locked > .element.array {
+  outline: 1px solid grey;
+}

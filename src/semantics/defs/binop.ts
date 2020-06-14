@@ -3,7 +3,7 @@ import { BaseNode, NodeId } from '..';
 
 export interface OpNode extends BaseNode {
     type: 'op';
-    name: any;
+    name: '+' | '-' | '<' | '>' | '==' | '&&' | '||';
 }
 
 export const op: NodeDef<OpNode> = {

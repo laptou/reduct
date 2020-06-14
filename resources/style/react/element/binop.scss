@@ -4,6 +4,7 @@
 
 .element.binop {
   @extend %element-standalone;
+  @include fx.element-shadow-irregular();
   color: theme.$element-foreground;
 
   & > .decoration {

@@ -4,8 +4,9 @@
 
 .element.lambda {
   @extend %element-standalone;
+  @include fx.element-shadow-box();
 
-  padding: 0.5rem;
+  padding: 0.25rem 0.5rem;
   color: theme.$element-foreground-inverse;
   background-color: white;
   border-radius: 0.25rem;

@@ -1,5 +1,6 @@
 import { NodeId } from '@/semantics';
 import { ArrayNode } from '@/semantics/defs';
+import '@resources/style/react/element/array.scss';
 import React, { FunctionComponent } from 'react';
 import { StageElement } from './base';
 
@@ -20,7 +21,7 @@ export const ArrayElement: FunctionComponent<ArrayElementOwnProps> =
       <div className='element array'>
         {
           itemIds.map((itemId, index) => 
-            <div className='item' key={index}><StageElement nodeId={itemId} /></div>
+            <div className='array-item' key={index}><StageElement nodeId={itemId} /></div>
           )
         }
       </div>

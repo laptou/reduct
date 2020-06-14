@@ -1,4 +1,5 @@
 import { ApplyNode } from '@/semantics/defs';
+import '@resources/style/react/element/apply.scss';
 import React, { FunctionComponent } from 'react';
 import { StageElement } from './base';
 
@@ -10,10 +11,10 @@ export const ApplyElement: FunctionComponent<ApplyElementOwnProps> =
   (props) => {
     return (
       <div className='element apply'>
-        <div className='callee'>
+        <div className='apply-callee'>
           <StageElement nodeId={props.node.callee} />
         </div>
-        <div className='argument'>
+        <div className='apply-param'>
           <StageElement nodeId={props.node.argument} />
         </div>
       </div>
