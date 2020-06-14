@@ -2,9 +2,10 @@
 @use 'layout';
 @use 'fx';
 
-.element.apply {
+.element.lambda {
   @extend %element-standalone;
-  color: theme.$element-foreground;
-
-  
+  padding: 0.5rem;
+  color: theme.$element-foreground-inverse;
+  background-color: white;
+  border-radius: 0.25rem;
 }

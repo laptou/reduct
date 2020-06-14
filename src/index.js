@@ -1,4 +1,5 @@
 import '@resources/style/index.css';
+import 'react-hot-loader';
 
 import vis from 'vis-charts';
 import { createStore, applyMiddleware, compose } from 'redux';
