@@ -1,19 +1,19 @@
-import { ArrayNode } from '@/semantics/defs';
-import React, { Component } from 'react';
-import StageElement from './base';
 import { NodeId } from '@/semantics';
+import { ArrayNode } from '@/semantics/defs';
+import React, { FunctionComponent } from 'react';
+import StageElement from './base';
 
 interface ArrayElementOwnProps {
     node: ArrayNode;
 }
 
-export class ArrayElement extends Component<ArrayElementOwnProps> {
-  public render() {
+export const ArrayElement: FunctionComponent<ArrayElementOwnProps> = 
+  (props) => {
     const itemIds: Array<NodeId | null> = [];
     
     // array nodes have members elem0, elem1, ... elem{length - 1}
-    for (let i = 0; i < this.props.node.length; i++) {
-      itemIds.push(this.props.node[`elem${i}`] ?? null);
+    for (let i = 0; i < props.node.length; i++) {
+      itemIds.push(props.node[`elem${i}`] ?? null);
     }
 
     return (
@@ -25,5 +25,4 @@ export class ArrayElement extends Component<ArrayElementOwnProps> {
         }
       </div>
     )
-  }
-}
+  };

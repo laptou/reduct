@@ -1,0 +1,10 @@
+@use '../theme';
+@use 'layout';
+@use 'fx';
+
+.element.apply {
+  @extend %element-standalone;
+  color: theme.$element-foreground;
+
+  
+}

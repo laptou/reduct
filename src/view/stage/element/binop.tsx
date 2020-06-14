@@ -1,14 +1,14 @@
 import { BinOpNode } from '@/semantics/defs';
-import React, { Component } from 'react';
-import StageElement from './base';
 import '@resources/style/react/element/binop.scss';
+import React, { FunctionComponent } from 'react';
+import StageElement from './base';
 
 interface BinOpElementOwnProps {
     node: BinOpNode;
 }
 
-export class BinOpElement extends Component<BinOpElementOwnProps> {
-  public render() {
+export const BinOpElement: FunctionComponent<BinOpElementOwnProps> = 
+  (props) => {
     return (
       <div className='element binop'>
         <svg className='decoration' viewBox='0 0 20 32' preserveAspectRatio='none'>
@@ -16,13 +16,13 @@ export class BinOpElement extends Component<BinOpElementOwnProps> {
         </svg>
         <div className='content'>
           <div className='left'>
-            <StageElement nodeId={this.props.node.left} />
+            <StageElement nodeId={props.node.left} />
           </div>
           <div className='operation'>
-            <StageElement nodeId={this.props.node.op} />
+            <StageElement nodeId={props.node.op} />
           </div>
           <div className='right'>
-            <StageElement nodeId={this.props.node.right} />
+            <StageElement nodeId={props.node.right} />
           </div>
         </div>
         <svg className='decoration' viewBox='0 0 20 32' preserveAspectRatio='none'>
@@ -30,5 +30,4 @@ export class BinOpElement extends Component<BinOpElementOwnProps> {
         </svg>
       </div>
     )
-  }
-}
+  };

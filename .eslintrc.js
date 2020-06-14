@@ -182,6 +182,7 @@ module.exports = {
         'react/no-access-state-in-setstate': ['warn'],
         'react/no-children-prop': ['warn'],
         'react/jsx-pascal-case': ['error'],
+        'react/prop-types': ['off'],
         
         'import/extensions': ['warn', 'never'],
         'import/prefer-default-export': ['off'],

@@ -1,22 +1,21 @@
-import StageElement from './base';
 import { NotNode } from '@/semantics/defs';
 import '@resources/style/react/element/not.scss';
-import React, { Component } from 'react';
+import React, { FunctionComponent } from 'react';
 import { BooleanShape } from '../shape/boolean';
+import StageElement from './base';
 
 interface NotElementOwnProps {
     node: NotNode;
 }
 
-export class NotElement extends Component<NotElementOwnProps> {
-  public render() {
+export const NotElement: FunctionComponent<NotElementOwnProps> = 
+  (props) => {
     return (
       <div className='element not'>
         <BooleanShape>
           <span>not</span>
-          <StageElement nodeId={this.props.node.value} />
+          <StageElement nodeId={props.node.value} />
         </BooleanShape>
       </div>
     )
-  }
-}
+  };

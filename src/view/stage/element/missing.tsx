@@ -1,6 +1,5 @@
 import { fillHole } from '@/reducer/action';
 import { NodeId, ReductNode } from '@/semantics';
-import '@resources/style/react/element/op.scss';
 import cx from 'classnames';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';

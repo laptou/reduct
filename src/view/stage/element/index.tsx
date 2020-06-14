@@ -1,13 +1,14 @@
 import { ReductNode } from '@/semantics';
+import React from 'react';
 import { ApplyElement } from './apply';
 import { ArrayElement } from './array';
 import { BinOpElement } from './binop';
-import { ValueElement } from './value';
-import React from 'react';
-import { OpElement } from './op';
-import { MissingElement } from './missing';
 import { ConditionalElement } from './conditional';
+import { LambdaArgElement, LambdaElement, LambdaVarElement } from './lambda';
+import { MissingElement } from './missing';
 import { NotElement } from './not';
+import { OpElement } from './op';
+import { ValueElement } from './value';
 
 /**
  * Definitions:
@@ -36,6 +37,9 @@ export function getElementForNode(node: ReductNode | null) {
     return <ValueElement node={node} key={node.id} />;
   case 'missing': return <MissingElement node={node} key={node.id} />;
   case 'not': return <NotElement node={node} key={node.id} />;
+  case 'lambda': return <LambdaElement node={node} key={node.id} />;
+  case 'lambdaArg': return <LambdaArgElement node={node} key={node.id} />;
+  case 'lambdaVar': return <LambdaVarElement node={node} key={node.id} />;
   default: return null;
   }
 }
