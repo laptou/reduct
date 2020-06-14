@@ -1,0 +1,6 @@
+@use 'layout';
+@use 'fx';
+
+.element.not {
+  @extend %element-standalone;
+}

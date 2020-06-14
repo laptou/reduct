@@ -1,0 +1,29 @@
+@use 'layout';
+@use 'fx';
+@use '../theme';
+
+.element.conditional {
+  @extend %element-standalone;
+
+  flex-flow: column nowrap;
+  padding: 0.5rem;
+  background-color: white;
+  border-radius: 0.25rem;
+
+  & > .if, & > .else {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    min-height: 2rem;
+    margin-bottom: 0.5rem;
+
+    & > span {
+      color: theme.$element-color-boolean;
+      margin-inline-end: 0.5rem;
+    }
+  }
+
+  & > .positive, & > .negative {
+    margin-inline-start: 1rem;
+  }
+}

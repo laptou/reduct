@@ -4,9 +4,10 @@ import { ArrayElement } from './array';
 import { BinOpElement } from './binop';
 import { ValueElement } from './value';
 import React from 'react';
-import { ValueNode } from '@/semantics/defs/value';
 import { OpElement } from './op';
 import { MissingElement } from './missing';
+import { ConditionalElement } from './conditional';
+import { NotElement } from './not';
 
 /**
  * Definitions:
@@ -28,11 +29,13 @@ export function getElementForNode(node: ReductNode | null) {
   case 'array': return <ArrayElement node={node} key={node.id} />;
   case 'binop': return <BinOpElement node={node} key={node.id} />;
   case 'op': return <OpElement node={node} key={node.id} />;
+  case 'conditional': return <ConditionalElement node={node} key={node.id} />;
   case 'bool': 
   case 'number':
   case 'string':
     return <ValueElement node={node} key={node.id} />;
   case 'missing': return <MissingElement node={node} key={node.id} />;
+  case 'not': return <NotElement node={node} key={node.id} />;
   default: return null;
   }
 }
