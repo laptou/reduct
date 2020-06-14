@@ -1,5 +1,5 @@
 import { VTupleNode } from '@/semantics/transform';
-import '@resources/style/react/element/vtuple.scss';
+import '@resources/style/react/projection/vtuple.scss';
 import React, { FunctionComponent } from 'react';
 import { StageElement } from './base';
 

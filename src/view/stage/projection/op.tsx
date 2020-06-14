@@ -1,5 +1,5 @@
 import { OpNode } from '@/semantics/defs';
-import '@resources/style/react/element/op.scss';
+import '@resources/style/react/projection/op.scss';
 import React, { FunctionComponent } from 'react';
 
 interface OpElementOwnProps {

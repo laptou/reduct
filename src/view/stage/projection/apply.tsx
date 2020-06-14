@@ -1,5 +1,5 @@
 import { ApplyNode } from '@/semantics/defs';
-import '@resources/style/react/element/apply.scss';
+import '@resources/style/react/projection/apply.scss';
 import React, { FunctionComponent } from 'react';
 import { StageElement } from './base';
 

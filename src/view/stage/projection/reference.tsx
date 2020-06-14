@@ -1,5 +1,5 @@
 import { InvocationNode, InvocationNode2 } from '@/semantics/defs';
-import '@resources/style/react/element/reference.scss';
+import '@resources/style/react/projection/reference.scss';
 import React, { FunctionComponent } from 'react';
 import { StageElement } from './base';
 import { NodeId } from '@/semantics';

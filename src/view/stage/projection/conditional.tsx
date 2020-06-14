@@ -1,5 +1,5 @@
 import { ConditionalNode } from '@/semantics/defs';
-import '@resources/style/react/element/conditional.scss';
+import '@resources/style/react/projection/conditional.scss';
 import React, { FunctionComponent } from 'react';
 import { StageElement } from './base';
 

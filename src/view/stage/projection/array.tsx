@@ -1,6 +1,6 @@
 import { NodeId } from '@/semantics';
 import { ArrayNode } from '@/semantics/defs';
-import '@resources/style/react/element/array.scss';
+import '@resources/style/react/projection/array.scss';
 import React, { FunctionComponent } from 'react';
 import { StageElement } from './base';
 

@@ -1,5 +1,5 @@
 import { BinOpNode, OpNode } from '@/semantics/defs';
-import '@resources/style/react/element/binop.scss';
+import '@resources/style/react/projection/binop.scss';
 import React, { FunctionComponent } from 'react';
 import { StageElement } from './base';
 import { connect } from 'react-redux';
@@ -61,8 +61,13 @@ const BinOpElementImpl: FunctionComponent<BinOpElementProps> =
           </BooleanShape>
         </div>
       );
+    default:
+      return (
+        <div className='element binop'>
+          {`{${props.op}}`}
+        </div>
+      );
     }
-  
   };
 
 export const BinOpElement = connect((store: Im<GlobalState>, ownProps: BinOpElementOwnProps) => {

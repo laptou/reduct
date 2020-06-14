@@ -1,5 +1,5 @@
 import { BoolNode, NumberNode, StrNode } from '@/semantics/defs/value';
-import '@resources/style/react/element/value.scss';
+import '@resources/style/react/projection/value.scss';
 import cx from 'classnames';
 import React, { FunctionComponent } from 'react';
 import { BooleanShape } from '../shape/boolean';

@@ -1,5 +1,5 @@
 import { SymbolNode } from '@/semantics/defs/value';
-import '@resources/style/react/element/symbol.scss';
+import '@resources/style/react/projection/symbol.scss';
 import React, { FunctionComponent } from 'react';
 
 interface SymbolElementOwnProps {
