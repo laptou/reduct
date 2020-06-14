@@ -2,67 +2,67 @@ import { LambdaNode, LambdaArgNode, LambdaVarNode } from '@/semantics/defs';
 import '@resources/style/react/projection/lambda.scss';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
-import { StageElement } from './base';
+import { StageProjection } from './base';
 
-interface LambdaArgElementOwnProps {
+interface LambdaArgProjectionOwnProps {
   node: LambdaArgNode;
 }
 
-export const LambdaArgElement: FunctionComponent<LambdaArgElementOwnProps> = 
+export const LambdaArgProjection: FunctionComponent<LambdaArgProjectionOwnProps> = 
   (props) => {
     return (
-      <div className='element lambda-arg'>
+      <div className='projection lambda-arg'>
         {props.node.name}
       </div>
     );
   };
 
-  interface LambdaVarElementOwnProps {
+  interface LambdaVarProjectionOwnProps {
     node: LambdaVarNode;
   }
 
-export const LambdaVarElement: FunctionComponent<LambdaVarElementOwnProps> = 
+export const LambdaVarProjection: FunctionComponent<LambdaVarProjectionOwnProps> = 
   (props) => {
     return (
-      <div className='element lambda-var'>
+      <div className='projection lambda-var'>
         {props.node.name}
       </div>
     );
   };
 
-interface LambdaElementOwnProps {
+interface LambdaProjectionOwnProps {
   node: LambdaNode;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface LambdaElementDispatchProps {
+interface LambdaProjectionDispatchProps {
   // TODO
 }
 
-type LambdaElementProps = 
-  LambdaElementOwnProps & 
-  LambdaElementDispatchProps;
+type LambdaProjectionProps = 
+  LambdaProjectionOwnProps & 
+  LambdaProjectionDispatchProps;
 
-export const LambdaElementImpl: FunctionComponent<LambdaElementProps> = 
+export const LambdaProjectionImpl: FunctionComponent<LambdaProjectionProps> = 
   (props) => {
     return (
-      <div className='element lambda'>
+      <div className='projection lambda'>
         <div className='arg'>
-          <StageElement nodeId={props.node.arg} />
+          <StageProjection nodeId={props.node.arg} />
         </div>
         <span className='arrow'>
           =&gt;
         </span>
         <div className='body'>
-          <StageElement nodeId={props.node.body} />
+          <StageProjection nodeId={props.node.body} />
         </div>
       </div>
     );
   };
 
-export const LambdaElement = connect(
+export const LambdaProjection = connect(
   null, 
-  (dispatch, ownProps: LambdaElementOwnProps) => ({
+  (dispatch, ownProps: LambdaProjectionOwnProps) => ({
     // TODO
   })
-)(LambdaElementImpl);
+)(LambdaProjectionImpl);

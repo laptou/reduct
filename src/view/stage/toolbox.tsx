@@ -3,7 +3,7 @@ import { NodeId } from '@/semantics';
 import { Im, ImList } from '@/util/im';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
-import { StageElement } from './projection/base';
+import { StageProjection } from './projection/base';
 
 interface ToolboxStoreProps {
   nodeIds: ImList<NodeId>;
@@ -35,7 +35,7 @@ const ToolboxImpl: FunctionComponent<ToolboxProps> =
   (props) => {
     return (
       <div id='reduct-toolbox' onDragOver={onDragOver} onDrop={onDrop}>
-        {props.nodeIds.map(nodeId => <StageElement nodeId={nodeId} key={nodeId} />)}
+        {props.nodeIds.map(nodeId => <StageProjection nodeId={nodeId} key={nodeId} />)}
       </div>
     );
   };

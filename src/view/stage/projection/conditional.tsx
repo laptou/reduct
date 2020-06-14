@@ -1,28 +1,28 @@
 import { ConditionalNode } from '@/semantics/defs';
 import '@resources/style/react/projection/conditional.scss';
 import React, { FunctionComponent } from 'react';
-import { StageElement } from './base';
+import { StageProjection } from './base';
 
-interface ConditionalElementOwnProps {
+interface ConditionalProjectionOwnProps {
     node: ConditionalNode;
 }
 
-export const ConditionalElement: FunctionComponent<ConditionalElementOwnProps> = 
+export const ConditionalProjection: FunctionComponent<ConditionalProjectionOwnProps> = 
   (props) => {
     return (
-      <div className='element conditional'>
+      <div className='projection conditional'>
         <div className='if'>
           <span>if</span>
-          <StageElement nodeId={props.node.condition} />
+          <StageProjection nodeId={props.node.condition} />
         </div>
         <div className='positive'>
-          <StageElement nodeId={props.node.positive} />
+          <StageProjection nodeId={props.node.positive} />
         </div>
         <div className='else'>
           <span>else</span>
         </div>
         <div className='negative'>
-          <StageElement nodeId={props.node.negative} />
+          <StageProjection nodeId={props.node.negative} />
         </div>
       </div>
     )

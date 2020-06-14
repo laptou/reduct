@@ -3,7 +3,7 @@ import { NodeId } from '@/semantics';
 import { Im, ImList } from '@/util/im';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
-import { StageElement } from './projection/base';
+import { StageProjection } from './projection/base';
 
 interface DefinitionsStoreProps {
   nodeIds: ImList<NodeId>;
@@ -35,13 +35,15 @@ const DefinitionsImpl: FunctionComponent<DefinitionsProps> =
   (props) => {
     return (
       <div id='reduct-definitions' onDragOver={onDragOver} onDrop={onDrop}>
-        {props.nodeIds.map(nodeId => <StageElement nodeId={nodeId} key={nodeId} />)}
+        {props.nodeIds.map(nodeId => <StageProjection nodeId={nodeId} key={nodeId} />)}
       </div>
     );
   };
 
 export const Definitions = connect(
   (state: Im<GlobalState>) => ({
+    // TODO: only show globals which are referenced by something on the board
+    // or in the toolbox
     nodeIds: state.get('program').get('$present').get('globals').valueSeq() as unknown as ImList<NodeId>
   })
 )(DefinitionsImpl);

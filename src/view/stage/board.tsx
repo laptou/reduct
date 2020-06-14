@@ -4,7 +4,7 @@ import { NodeId } from '@/semantics';
 import { Im, ImSet } from '@/util/im';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
-import { StageElement } from './projection/base';
+import { StageProjection } from './projection/base';
 
 interface BoardStoreProps {
   nodeIds: ImSet<NodeId>;
@@ -40,7 +40,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
   (props) => {
     return (
       <div id='reduct-board' onDragOver={onDragOver} onDrop={e => onDrop(e, props)}>
-        {props.nodeIds.map(nodeId => <StageElement nodeId={nodeId} key={nodeId} />)}
+        {props.nodeIds.map(nodeId => <StageProjection nodeId={nodeId} key={nodeId} />)}
       </div>
     );
   };

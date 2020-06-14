@@ -1,4 +1,4 @@
-.element {
+.projection {
   margin-right: 0.125rem;
   margin-left: 0.125rem;
   font-weight: bold;
@@ -6,13 +6,13 @@
   user-select: none;
 }
 
-.element, .element .content {
+.projection, .projection .content {
   display: inline-flex;
   align-items: stretch;
   vertical-align: middle;
 }
 
-.element.slot {
+.projection.slot {
   display: inline-block;
   min-width: 2.5rem;
   height: 1.75rem;

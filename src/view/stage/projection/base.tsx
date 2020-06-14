@@ -4,12 +4,12 @@ import { Im } from '@/util/im';
 import cx from 'classnames';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
-import { getElementForNode } from '.';
+import { getProjectionForNode } from '.';
 
 /**
  * Props retrieved from Redux.
  */
-interface StageElementStoreProps { 
+interface StageProjectionStoreProps { 
   /**
    * The node to display here.
    */
@@ -19,35 +19,35 @@ interface StageElementStoreProps {
 /**
  * Props provided directly.
  */
-interface StageElementOwnProps { 
+interface StageProjectionOwnProps { 
   /**
-   * The ID of the node to display in this element.
+   * The ID of the node to display in this projection.
    */
   nodeId: NodeId | null;
 }
 
-type StageElementProps = StageElementOwnProps & StageElementStoreProps;
+type StageProjectionProps = StageProjectionOwnProps & StageProjectionStoreProps;
 
 function onDragStart(
   event: React.DragEvent<HTMLDivElement>,
-  props: StageElementProps
+  props: StageProjectionProps
 ) {
   if (!props.nodeId) return;
 
   event.dataTransfer.setData('application/reduct-node', props.nodeId.toString());
   event.dataTransfer.dropEffect = 'move';
   
-  // stop parent elements from hijacking the drag
+  // stop parent projections from hijacking the drag
   event.stopPropagation();
 };
 
-const StageElementImpl: FunctionComponent<StageElementProps> = 
+const StageProjectionImpl: FunctionComponent<StageProjectionProps> = 
   (props) => {
     if (!props.node) {
       return null;
     }
 
-    const component = getElementForNode(props.node);
+    const component = getProjectionForNode(props.node);
 
     // top level nodes (nodes w/o parents) should not be considered locked
     // TODO: don't mark top level nodes as locked
@@ -60,7 +60,7 @@ const StageElementImpl: FunctionComponent<StageElementProps> =
       && !locked;
 
     return (
-      <div className={cx('element wrapper', { locked })}
+      <div className={cx('projection wrapper', { locked })}
         draggable={draggable} 
         onDragStart={e => onDragStart(e, props)}
       >
@@ -69,10 +69,16 @@ const StageElementImpl: FunctionComponent<StageElementProps> =
     );
   };
 
-export const StageElement = connect(
+/**
+ * StageProjection is the 'base' projection. It takes a node ID, goes to to the
+ * Redux store to get the node, and then displays one of the other projection
+ * types based on that node. It also handles events, states, and styles that are
+ * common to all projections (for example, being dragged, or being locked).
+ */
+export const StageProjection = connect(
   (
     state: Im<GlobalState>, 
-    ownProps: StageElementOwnProps
+    ownProps: StageProjectionOwnProps
   ) => {
     if (ownProps.nodeId) {
       const node = state.get('program')
@@ -83,4 +89,4 @@ export const StageElement = connect(
     }
     return { node: null };
   }
-)(StageElementImpl);
+)(StageProjectionImpl);

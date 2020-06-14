@@ -4,17 +4,17 @@ import cx from 'classnames';
 import React, { FunctionComponent, useState } from 'react';
 import { connect } from 'react-redux';
 
-interface MissingElementOwnProps {
+interface MissingProjectionOwnProps {
   node: ReductNode;
 }
 
-interface MissingElementDispatchProps {
+interface MissingProjectionDispatchProps {
   fill(id: NodeId): void;
 }
 
-type MissingElementProps = 
-  MissingElementOwnProps & 
-  MissingElementDispatchProps;
+type MissingProjectionProps = 
+  MissingProjectionOwnProps & 
+  MissingProjectionDispatchProps;
 
 function onDragOver(
   event: React.DragEvent<HTMLDivElement>, 
@@ -39,7 +39,7 @@ function onDragLeave(
 
 function onDrop(
   event: React.DragEvent<HTMLDivElement>,
-  props: MissingElementProps,
+  props: MissingProjectionProps,
   setHover: (hover: boolean) => void
 ) {
   const nodeId = parseInt(event.dataTransfer.getData('application/reduct-node'));
@@ -47,7 +47,7 @@ function onDrop(
 
   event.preventDefault();
 
-  // stop parent elements from hijacking the drop
+  // stop parent projections from hijacking the drop
   event.stopPropagation();
 
   setHover(false);
@@ -56,12 +56,12 @@ function onDrop(
   props.fill(nodeId);
 }
   
-export const MissingElementImpl: FunctionComponent<MissingElementProps> = 
+export const MissingProjectionImpl: FunctionComponent<MissingProjectionProps> = 
   (props) => {
     const [hover, setHover] = useState(false);
 
     return (
-      <div className={cx('element slot', { hover })}
+      <div className={cx('projection slot', { hover })}
         onDragOver={e => onDragOver(e, setHover)}
         onDragLeave={e => onDragLeave(e, setHover)}
         onDrop={e => onDrop(e, props, setHover)}
@@ -70,9 +70,9 @@ export const MissingElementImpl: FunctionComponent<MissingElementProps> =
     );
   };
   
-export const MissingElement = connect(
+export const MissingProjection = connect(
   null, 
-  (dispatch, ownProps: MissingElementOwnProps) => ({
+  (dispatch, ownProps: MissingProjectionOwnProps) => ({
     fill: (id: NodeId) => dispatch(fillHole(ownProps.node.id, id))
   })
-)(MissingElementImpl);
+)(MissingProjectionImpl);

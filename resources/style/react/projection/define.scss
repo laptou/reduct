@@ -2,9 +2,9 @@
 @use 'layout';
 @use 'fx';
 
-.element.define {
-  @extend %element-standalone;
-  @include fx.element-shadow-box();
+.projection.define {
+  @extend %projection-standalone;
+  @include fx.projection-shadow-box();
   
   display: grid;
   
@@ -13,14 +13,14 @@
   align-items: center;
 
   padding: 0.5rem;
-  color: theme.$element-foreground-inverse;
+  color: theme.$projection-foreground-inverse;
   background-color: white;
 
   .define-label {
     grid-row: 1;
     grid-column: 1;
     padding: 0.25rem;
-    color: theme.$element-color-function;
+    color: theme.$projection-color-function;
     font-weight: 500;
     opacity: 0.7;
   }
@@ -34,7 +34,7 @@
     height: 2rem;
 
     .define-name {
-      color: theme.$element-color-function;
+      color: theme.$projection-color-function;
     }
 
     .define-params {

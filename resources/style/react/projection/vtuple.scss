@@ -1,8 +1,8 @@
 @use 'layout';
 @use 'fx';
 
-.element.vtuple {
-  @extend %element-standalone;
+.projection.vtuple {
+  @extend %projection-standalone;
   flex-flow: column nowrap;
   margin: 0;
   padding: 0;

@@ -2,19 +2,19 @@ import { NotNode } from '@/semantics/defs';
 import '@resources/style/react/projection/not.scss';
 import React, { FunctionComponent } from 'react';
 import { BooleanShape } from '../shape/boolean';
-import { StageElement } from './base';
+import { StageProjection } from './base';
 
-interface NotElementOwnProps {
+interface NotProjectionOwnProps {
     node: NotNode;
 }
 
-export const NotElement: FunctionComponent<NotElementOwnProps> = 
+export const NotProjection: FunctionComponent<NotProjectionOwnProps> = 
   (props) => {
     return (
-      <div className='element not'>
+      <div className='projection not'>
         <BooleanShape>
           <span>not</span>
-          <StageElement nodeId={props.node.value} />
+          <StageProjection nodeId={props.node.value} />
         </BooleanShape>
       </div>
     )

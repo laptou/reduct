@@ -2,13 +2,13 @@ import { NodeId } from '@/semantics';
 import { ArrayNode } from '@/semantics/defs';
 import '@resources/style/react/projection/array.scss';
 import React, { FunctionComponent } from 'react';
-import { StageElement } from './base';
+import { StageProjection } from './base';
 
-interface ArrayElementOwnProps {
+interface ArrayProjectionOwnProps {
     node: ArrayNode;
 }
 
-export const ArrayElement: FunctionComponent<ArrayElementOwnProps> = 
+export const ArrayProjection: FunctionComponent<ArrayProjectionOwnProps> = 
   (props) => {
     const itemIds: Array<NodeId | null> = [];
     
@@ -18,10 +18,10 @@ export const ArrayElement: FunctionComponent<ArrayElementOwnProps> =
     }
 
     return (
-      <div className='element array'>
+      <div className='projection array'>
         {
           itemIds.map((itemId, index) => 
-            <div className='array-item' key={index}><StageElement nodeId={itemId} /></div>
+            <div className='array-item' key={index}><StageProjection nodeId={itemId} /></div>
           )
         }
       </div>

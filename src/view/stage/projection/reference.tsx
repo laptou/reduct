@@ -1,19 +1,19 @@
 import { InvocationNode, InvocationNode2 } from '@/semantics/defs';
 import '@resources/style/react/projection/reference.scss';
 import React, { FunctionComponent } from 'react';
-import { StageElement } from './base';
+import { StageProjection } from './base';
 import { NodeId } from '@/semantics';
 
-interface ReferenceElementOwnProps {
+interface ReferenceProjectionOwnProps {
     node: InvocationNode | InvocationNode2;
 }
 
 /**
- * TODO It might be more accurate to call this node/element 'invocation', since
+ * TODO It might be more accurate to call this node/projection 'invocation', since
  * it's just used for invoking functions.
  */
 
-export const ReferenceElement: FunctionComponent<ReferenceElementOwnProps> = 
+export const ReferenceProjection: FunctionComponent<ReferenceProjectionOwnProps> = 
   (props) => {
     let paramIds: Record<string, NodeId> | null = null;
 
@@ -25,7 +25,7 @@ export const ReferenceElement: FunctionComponent<ReferenceElementOwnProps> =
     }
 
     return (
-      <div className='element invocation'>
+      <div className='projection invocation'>
         <div className='invocation-signature'>
           <div className='invocation-name'>
             {props.node.name}
@@ -39,7 +39,7 @@ export const ReferenceElement: FunctionComponent<ReferenceElementOwnProps> =
                       .entries(paramIds)
                       .map(([param, id]) => 
                         <li className='invocation-param' key={param}>
-                          <StageElement nodeId={id}/>
+                          <StageProjection nodeId={id}/>
                         </li>
                       )
                   }

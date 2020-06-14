@@ -2,9 +2,9 @@
 @use 'fx';
 @use '../theme';
 
-.element.conditional {
-  @extend %element-standalone;
-  @include fx.element-shadow-box();
+.projection.conditional {
+  @extend %projection-standalone;
+  @include fx.projection-shadow-box();
 
   flex-flow: column nowrap;
   padding: 0.5rem;
@@ -19,7 +19,7 @@
     margin-bottom: 0.5rem;
 
     & > span {
-      color: theme.$element-color-boolean;
+      color: theme.$projection-color-boolean;
       margin-inline-end: 0.5rem;
     }
   }

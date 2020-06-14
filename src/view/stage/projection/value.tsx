@@ -6,16 +6,16 @@ import { BooleanShape } from '../shape/boolean';
 import { NumberShape } from '../shape/number';
 import { StringShape } from '../shape/string';
 
-interface ValueElementOwnProps {
+interface ValueProjectionOwnProps {
     node: StrNode | BoolNode | NumberNode;
 }
 
-export const ValueElement: FunctionComponent<ValueElementOwnProps> = 
+export const ValueProjection: FunctionComponent<ValueProjectionOwnProps> = 
   (props) => {
     switch (props.node.type) {
     case 'bool':
       return (
-        <div className={cx('element', props.node.type)}>
+        <div className={cx('projection', props.node.type)}>
           <BooleanShape>
             {props.node.value.toString()}
           </BooleanShape>
@@ -23,7 +23,7 @@ export const ValueElement: FunctionComponent<ValueElementOwnProps> =
       );
     case 'string':
       return (
-        <div className={cx('element', props.node.type)}>
+        <div className={cx('projection', props.node.type)}>
           <StringShape>
             {props.node.value.toString()}
           </StringShape>
@@ -31,7 +31,7 @@ export const ValueElement: FunctionComponent<ValueElementOwnProps> =
       );
     case 'number':
       return (
-        <div className={cx('element', props.node.type)}>
+        <div className={cx('projection', props.node.type)}>
           <NumberShape>
             {props.node.value.toString()}
           </NumberShape>

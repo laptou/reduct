@@ -1,42 +1,42 @@
 import { BinOpNode, OpNode } from '@/semantics/defs';
 import '@resources/style/react/projection/binop.scss';
 import React, { FunctionComponent } from 'react';
-import { StageElement } from './base';
+import { StageProjection } from './base';
 import { connect } from 'react-redux';
 import { GlobalState } from '@/reducer/state';
 import { Im } from '@/util/im';
 import { NumberShape } from '../shape/number';
 import { BooleanShape } from '../shape/boolean';
 
-interface BinOpElementOwnProps {
+interface BinOpProjectionOwnProps {
   node: BinOpNode;
 }
 
-interface BinOpElementStoreProps {
+interface BinOpProjectionStoreProps {
   op: OpNode['name'] | null;
 }
 
-type BinOpElementProps = BinOpElementOwnProps & BinOpElementStoreProps;
+type BinOpProjectionProps = BinOpProjectionOwnProps & BinOpProjectionStoreProps;
 
 // TODO: why do we need a separate node for the operation?
 // Not Doing That seems simpler
 
-const BinOpElementImpl: FunctionComponent<BinOpElementProps> = 
+const BinOpProjectionImpl: FunctionComponent<BinOpProjectionProps> = 
   (props) => {
     switch (props.op) {
     case '+':
     case '-':
       return (
-        <div className='element binop'>
+        <div className='projection binop'>
           <NumberShape>
             <div className='left'>
-              <StageElement nodeId={props.node.left} />
+              <StageProjection nodeId={props.node.left} />
             </div>
             <div className='operation'>
-              <StageElement nodeId={props.node.op} />
+              <StageProjection nodeId={props.node.op} />
             </div>
             <div className='right'>
-              <StageElement nodeId={props.node.right} />
+              <StageProjection nodeId={props.node.right} />
             </div>
           </NumberShape>
         </div>
@@ -47,30 +47,30 @@ const BinOpElementImpl: FunctionComponent<BinOpElementProps> =
     case '||':
     case '==':
       return (
-        <div className='element binop'>
+        <div className='projection binop'>
           <BooleanShape>
             <div className='left'>
-              <StageElement nodeId={props.node.left} />
+              <StageProjection nodeId={props.node.left} />
             </div>
             <div className='operation'>
-              <StageElement nodeId={props.node.op} />
+              <StageProjection nodeId={props.node.op} />
             </div>
             <div className='right'>
-              <StageElement nodeId={props.node.right} />
+              <StageProjection nodeId={props.node.right} />
             </div>
           </BooleanShape>
         </div>
       );
     default:
       return (
-        <div className='element binop'>
+        <div className='projection binop'>
           {`{${props.op}}`}
         </div>
       );
     }
   };
 
-export const BinOpElement = connect((store: Im<GlobalState>, ownProps: BinOpElementOwnProps) => {
+export const BinOpProjection = connect((store: Im<GlobalState>, ownProps: BinOpProjectionOwnProps) => {
   const opNode = store.get('program').get('$present').get('nodes').get(ownProps.node.op)?.toJS();
 
   if (opNode && opNode.type === 'op') {
@@ -78,4 +78,4 @@ export const BinOpElement = connect((store: Im<GlobalState>, ownProps: BinOpElem
   }
 
   return { op: null }
-})(BinOpElementImpl);
+})(BinOpProjectionImpl);

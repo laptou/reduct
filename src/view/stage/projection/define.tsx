@@ -1,16 +1,16 @@
 import { DefineNode } from '@/semantics/defs';
 import '@resources/style/react/projection/define.scss';
 import React, { FunctionComponent } from 'react';
-import { StageElement } from './base';
+import { StageProjection } from './base';
 
-interface DefineElementOwnProps {
+interface DefineProjectionOwnProps {
     node: DefineNode;
 }
 
-export const DefineElement: FunctionComponent<DefineElementOwnProps> = 
+export const DefineProjection: FunctionComponent<DefineProjectionOwnProps> = 
   (props) => {
     return (
-      <div className='element define'>
+      <div className='projection define'>
         <label className='define-label'>
           def
         </label>
@@ -23,7 +23,7 @@ export const DefineElement: FunctionComponent<DefineElementOwnProps> =
           </ul>
         </div>
         <div className='define-body'>
-          <StageElement nodeId={props.node.body} />
+          <StageProjection nodeId={props.node.body} />
         </div>
       </div>
     )

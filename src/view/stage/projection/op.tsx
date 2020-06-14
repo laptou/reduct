@@ -2,14 +2,14 @@ import { OpNode } from '@/semantics/defs';
 import '@resources/style/react/projection/op.scss';
 import React, { FunctionComponent } from 'react';
 
-interface OpElementOwnProps {
+interface OpProjectionOwnProps {
     node: OpNode;
 }
 
-export const OpElement: FunctionComponent<OpElementOwnProps> = 
+export const OpProjection: FunctionComponent<OpProjectionOwnProps> = 
   (props) => {
     return (
-      <div className='element op'>
+      <div className='projection op'>
         {props.node.name}
       </div>
     )

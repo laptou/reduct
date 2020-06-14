@@ -1,7 +1,7 @@
 @use 'layout';
 @use 'fx';
 
-.element.bool, .element.number, .element.string {
-  @extend %element-standalone;
-  @include fx.element-shadow-irregular();
+.projection.bool, .projection.number, .projection.string {
+  @extend %projection-standalone;
+  @include fx.projection-shadow-irregular();
 }

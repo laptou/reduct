@@ -2,12 +2,12 @@
 @use 'layout';
 @use 'fx';
 
-.element.apply {
-  @include fx.element-shadow-box();
+.projection.apply {
+  @include fx.projection-shadow-box();
 
   align-items: center;
   padding: 0.125rem 0.25rem;
-  color: theme.$element-foreground-inverse;
+  color: theme.$projection-foreground-inverse;
   background-color: white;
   border-radius: 0.25rem;
 

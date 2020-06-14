@@ -7,7 +7,7 @@
   justify-items: stretch;
   min-width: 2rem;
   min-height: 2rem;
-  color: theme.$element-foreground;
+  color: theme.$projection-foreground;
 
   & > .decoration {
     flex-grow: 0;
@@ -24,12 +24,12 @@
     width: 20px;
 
     polygon {
-      fill: theme.$element-color-boolean;
+      fill: theme.$projection-color-boolean;
     }
   }
 
   & > .content {
-    background-color: theme.$element-color-boolean;
+    background-color: theme.$projection-color-boolean;
   }
 }
 
@@ -38,12 +38,12 @@
     width: 12px;
 
     polygon {
-      fill: theme.$element-color-string;
+      fill: theme.$projection-color-string;
     }
   }
 
   & > .content {
-    background-color: theme.$element-color-string;
+    background-color: theme.$projection-color-string;
   }
 }
 
@@ -52,11 +52,11 @@
     width: 4px;
 
     path {
-      fill: theme.$element-color-number;
+      fill: theme.$projection-color-number;
     }
   }
 
   & > .content {
-    background-color: theme.$element-color-number;
+    background-color: theme.$projection-color-number;
   }
 }

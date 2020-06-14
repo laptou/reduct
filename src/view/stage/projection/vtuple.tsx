@@ -1,13 +1,13 @@
 import { VTupleNode } from '@/semantics/transform';
 import '@resources/style/react/projection/vtuple.scss';
 import React, { FunctionComponent } from 'react';
-import { StageElement } from './base';
+import { StageProjection } from './base';
 
-interface VTupleElementOwnProps {
+interface VTupleProjectionOwnProps {
     node: VTupleNode;
 }
 
-export const VTupleElement: FunctionComponent<VTupleElementOwnProps> = 
+export const VTupleProjection: FunctionComponent<VTupleProjectionOwnProps> = 
   (props) => {
     const childIds = [];
 
@@ -16,8 +16,8 @@ export const VTupleElement: FunctionComponent<VTupleElementOwnProps> =
     }
 
     return (
-      <ul className='element vtuple'>
-        {childIds.map((childId, index) => <li className='vtuple-item' key={index}><StageElement nodeId={childId} /></li>)}
+      <ul className='projection vtuple'>
+        {childIds.map((childId, index) => <li className='vtuple-item' key={index}><StageProjection nodeId={childId} /></li>)}
       </ul>
     );
   };

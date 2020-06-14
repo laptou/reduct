@@ -2,16 +2,16 @@
 @use 'fx';
 @use '../theme';
 
-.element.symbol {
-  @extend %element-standalone;
+.projection.symbol {
+  @extend %projection-standalone;
   @extend %value-container;
-  @include fx.element-shadow-irregular();
+  @include fx.projection-shadow-irregular();
 
   .symbol-view {
     height: 1.5rem;
   }
 
   .symbol-item {
-    fill: theme.$element-color-key;
+    fill: theme.$projection-color-key;
   }
 }

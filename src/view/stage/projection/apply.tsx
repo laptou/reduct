@@ -1,21 +1,21 @@
 import { ApplyNode } from '@/semantics/defs';
 import '@resources/style/react/projection/apply.scss';
 import React, { FunctionComponent } from 'react';
-import { StageElement } from './base';
+import { StageProjection } from './base';
 
-interface ApplyElementOwnProps {
+interface ApplyProjectionOwnProps {
     node: ApplyNode;
 }
 
-export const ApplyElement: FunctionComponent<ApplyElementOwnProps> = 
+export const ApplyProjection: FunctionComponent<ApplyProjectionOwnProps> = 
   (props) => {
     return (
-      <div className='element apply'>
+      <div className='projection apply'>
         <div className='apply-callee'>
-          <StageElement nodeId={props.node.callee} />
+          <StageProjection nodeId={props.node.callee} />
         </div>
         <div className='apply-param'>
-          <StageElement nodeId={props.node.argument} />
+          <StageProjection nodeId={props.node.argument} />
         </div>
       </div>
     )
