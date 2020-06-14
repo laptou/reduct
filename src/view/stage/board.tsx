@@ -1,17 +1,17 @@
+import { createAddNodeToBoard } from '@/reducer/action';
 import { GlobalState } from '@/reducer/state';
 import { NodeId } from '@/semantics';
-import { Im, ImList } from '@/util/im';
+import { Im, ImSet } from '@/util/im';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { StageElement } from './projection/base';
-import { detach } from '@/reducer/action';
 
 interface BoardStoreProps {
-  nodeIds: ImList<NodeId>;
+  nodeIds: ImSet<NodeId>;
 }
 
 interface BoardDispatchProps {
-  detachNodeFromParent(node: NodeId): void;
+  addNodeToBoard(node: NodeId): void;
 }
 
 type BoardProps = BoardStoreProps & BoardDispatchProps;
@@ -29,10 +29,9 @@ function onDrop(event: React.DragEvent<HTMLDivElement>, props: BoardProps) {
   event.stopPropagation();
 
   try {
-    // will throw if this node has no parent
-    // TODO: make it not do that
-    props.detachNodeFromParent(nodeId);
+    props.addNodeToBoard(nodeId);
   } catch (e) {
+    // TODO: show toast to user
     console.warn('could not detach', e);
   }
 }
@@ -51,6 +50,6 @@ export const Board = connect(
     nodeIds: state.get('program').get('$present').get('board') 
   }),
   (dispatch) => ({
-    detachNodeFromParent(id: NodeId) { dispatch(detach(id)); }
+    addNodeToBoard(id: NodeId) { dispatch(createAddNodeToBoard(id)); }
   })
 )(BoardImpl);

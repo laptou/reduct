@@ -1,4 +1,4 @@
-@use './element';
+@use './projection';
 @use './shape';
 
 :root {
@@ -12,13 +12,33 @@
   bottom: 0;
   left: 50%;
   z-index: 1000;
+  display: grid;
+  grid-template-rows: 80fr 20fr;
+  grid-template-columns: 20% 80%;
+}
+
+#reduct-board {
+  position: relative;
+  grid-row: 1;
+  grid-column: 2;
   background: rgba(lightcoral, 50%);
+}
 
-  #stage {
-    position: relative;
+#reduct-toolbox {
+  position: relative;
+  display: flex;
+  flex-flow: row wrap;
+  grid-row: 2;
+  grid-column: 2;
+  background: rgba(lightgreen, 50%);
+}
 
-    & > .element {
-      // position: absolute;
-    }
-  }
+#reduct-definitions {
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  grid-row: 1 / 3;
+  grid-column: 1;
+  overflow: auto;
+  background: rgba(lightblue, 50%);
 }

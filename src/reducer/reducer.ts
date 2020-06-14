@@ -6,9 +6,9 @@ import { combineReducers } from 'redux-immutable';
 import {
   Im, ImList, ImMap, ImSet 
 } from '@/util/im';
-import type { NodeId, BaseNode } from '@/semantics';
+import type { NodeId, BaseNode, ReductNode } from '@/semantics';
 import type { Semantics } from '@/semantics/transform';
-import { ActionKind } from './action';
+import { ActionKind, ReductAction } from './action';
 import * as gfx from '../gfx/core';
 import * as animate from '../gfx/animate';
 import { undoable } from './undo';
@@ -16,9 +16,9 @@ import { RState } from './state';
 
 const initialProgram = ImMap({
   nodes: ImMap(),
-  goal: ImList(),
-  board: ImList(),
-  toolbox: ImList(),
+  goal: ImSet(),
+  board: ImSet(),
+  toolbox: ImSet(),
   globals: ImMap()
 }) as unknown as Im<RState>;
 
@@ -34,13 +34,13 @@ export function nextId(): NodeId {
 // To speed up type checking, we only type check nodes that have
 // changed.
 let dirty = new Set();
-function markDirty(nodes: ImMap<number, Im<BaseNode>>, id: NodeId) {
-  let expr = nodes.get(id); // warning: assuming node w/ given ID exists
+function markDirty(nodes: ImMap<number, Im<ReductNode>>, id: NodeId) {
+  let expr = nodes.get(id)!; // warning: assuming node w/ given ID exists
   let parentId = expr.get('parent');
 
   // travel to the root node
   while (typeof parentId === 'number') {
-    expr = nodes.get(parentId);
+    expr = nodes.get(parentId)!;
     parentId = expr.get('parent');
   }
 
@@ -59,8 +59,15 @@ function markDirty(nodes: ImMap<number, Im<BaseNode>>, id: NodeId) {
  * the view's position was recorded).
  */
 export function reduct(semantics: Semantics, views, restorePos) {
-  function program(state = initialProgram, act) {
+  function program(state = initialProgram, act: ReductAction) {
     switch (act.type) {
+    case ActionKind.AddNodeToBoard: {
+      // if this node was in the toolbox, remove it from there
+      const toolbox = state.get('toolbox').remove(act.nodeId);
+      const board = state.get('board').add(act.nodeId);
+      return state.set('toolbox', toolbox).set('board', board);
+    }
+
     case ActionKind.StartLevel: {
       act.nodes.forEach((n) => markDirty(act.nodes, n.get('id')));
       act.toolbox.forEach((n) => markDirty(act.nodes, n));
@@ -72,10 +79,11 @@ export function reduct(semantics: Semantics, views, restorePos) {
         globals: act.globals
       });
     }
+
     case ActionKind.Raise: {
       const board = state.get('board');
       if (board.contains(act.nodeId)) {
-        const newBoard = board.filter((n) => n !== act.nodeId).push(act.nodeId);
+        const newBoard = board.filter((n) => n !== act.nodeId).add(act.nodeId);
         return state.set('board', newBoard);
       }
 
@@ -127,7 +135,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
           }
         });
 
-      const newToolbox = state.get('toolbox').push(act.newNodeId);
+      const newToolbox = state.get('toolbox').add(act.newNodeId);
 
       return state
         .set('nodes', newNodes)
@@ -141,7 +149,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
           }
         });
 
-      const addedGoal = state.get('goal').push(act.newNodeId);
+      const addedGoal = state.get('goal').add(act.newNodeId);
 
       return state
         .set('nodes', newNodes)

@@ -1,34 +1,54 @@
 import { NodeId, NodeMap, ReductNode } from '@/semantics';
-import { ImList, ImMap } from '@/util/im';
+import { ImList, ImMap, ImSet } from '@/util/im';
 
 export enum ActionKind {
-    UseToolbox = 'use-toolbox',
-    Raise = 'raise',
-    Detach = 'detach',
-    FillSlot = 'fill-slot',
-    AttachNotch = 'attach-notch',
-    SmallStep = 'small-step',
-    Unfold = 'unfold',
-    BetaReduce = 'beta-reduce',
-    StartLevel = 'start-level',
-    Victory = 'victory',
-    Fade = 'fade',
-    Unfade = 'unfade',
-    Define = 'define',
-    AddToolboxItem = 'add-toolbox-item',
-    AddBoardItem = 'add-board-item',
-    AddGoalItem = 'add-goal-item',
-    ChangeGoal = 'change-goal',
-    Hover = 'hover'
+  UseToolbox = 'use-toolbox',
+  Raise = 'raise',
+  Detach = 'detach',
+  FillSlot = 'fill-slot',
+  AttachNotch = 'attach-notch',
+  SmallStep = 'small-step',
+  Unfold = 'unfold',
+  BetaReduce = 'beta-reduce',
+  StartLevel = 'start-level',
+  Victory = 'victory',
+  Fade = 'fade',
+  Unfade = 'unfade',
+  Define = 'define',
+  AddToolboxItem = 'add-toolbox-item',
+  AddBoardItem = 'add-board-item',
+  AddGoalItem = 'add-goal-item',
+  ChangeGoal = 'change-goal',
+  Hover = 'hover',
+
+  AddNodeToBoard = 'add-node-to-stage',
 }
 
 export interface StartLevelAction {
-    type: ActionKind.StartLevel;
-    nodes: NodeMap;
-    goal: ImList<NodeId>;
-    board: ImList<NodeId>;
-    toolbox: ImList<NodeId>;
-    globals: ImMap<string, NodeId>;
+  type: ActionKind.StartLevel;
+  nodes: NodeMap;
+  goal: ImSet<NodeId>;
+  board: ImSet<NodeId>;
+  toolbox: ImSet<NodeId>;
+  globals: ImMap<string, NodeId>;
+}
+
+export interface AddNodeToBoardAction {
+  type: ActionKind.AddNodeToBoard;
+  nodeId: NodeId;
+}
+
+export type ReductAction = 
+  StartLevelAction |
+  AddNodeToBoardAction;
+
+/**
+ * Creates an action which will add the specified node to the board, removing it
+ * from the toolbox if necessary.
+ * @param nodeId The node to add to the board.
+ */
+export function createAddNodeToBoard(nodeId: NodeId) {
+  return { type: ActionKind.AddNodeToBoard, nodeId };
 }
 
 
@@ -105,9 +125,9 @@ export function startLevel(stage, goal, board, toolbox, globals): StartLevelActi
     return {
         type: ActionKind.StartLevel,
         nodes: finalNodes,
-        goal: ImList(_goal),
-        board: ImList(_board),
-        toolbox: ImList(_toolbox),
+        goal: ImSet(_goal),
+        board: ImSet(_board),
+        toolbox: ImSet(_toolbox),
         globals: ImMap(_globals)
     };
 }

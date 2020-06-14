@@ -1,13 +1,15 @@
 import { NodeMap } from '@/semantics';
 import type { NodeId } from '@/semantics/defs';
-import type { Im, ImMap, ImSet, ImStack, ImList } from '@/util/im';
+import type {
+  Im, ImMap, ImSet, ImStack 
+} from '@/util/im';
 
 
 export interface RState {
   nodes: NodeMap;
-  goal: ImList<NodeId>;
-  board: ImList<NodeId>;
-  toolbox: ImList<NodeId>;
+  goal: ImSet<NodeId>;
+  board: ImSet<NodeId>;
+  toolbox: ImSet<NodeId>;
   globals: ImMap<string, NodeId>;
 }
 
