@@ -1,0 +1,16 @@
+@use 'layout';
+@use 'fx';
+@use '../theme';
+
+.element.symbol {
+  @extend %element-standalone;
+  @extend %value-container;
+
+  .symbol-view {
+    height: 1.5rem;
+  }
+
+  .symbol-item {
+    fill: theme.$element-color-key;
+  }
+}

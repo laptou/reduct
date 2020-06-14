@@ -4,8 +4,13 @@
 
 .element.lambda {
   @extend %element-standalone;
+
   padding: 0.5rem;
   color: theme.$element-foreground-inverse;
   background-color: white;
   border-radius: 0.25rem;
+
+  & > .arg, & > .arrow, & > .body {
+    @extend %value-container;
+  }
 }

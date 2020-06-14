@@ -9,6 +9,7 @@ import { MissingElement } from './missing';
 import { NotElement } from './not';
 import { OpElement } from './op';
 import { ValueElement } from './value';
+import { SymbolElement } from './symbol';
 
 /**
  * Definitions:
@@ -40,6 +41,7 @@ export function getElementForNode(node: ReductNode | null) {
   case 'lambda': return <LambdaElement node={node} key={node.id} />;
   case 'lambdaArg': return <LambdaArgElement node={node} key={node.id} />;
   case 'lambdaVar': return <LambdaVarElement node={node} key={node.id} />;
+  case 'symbol': return <SymbolElement node={node} key={node.id} />;
   default: return null;
   }
 }
