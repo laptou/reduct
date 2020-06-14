@@ -9,7 +9,8 @@ export type { LetNode } from './letExpr';
 export type { MemberNode } from './member';
 export type { NotNode } from './not';
 export type {
-    StrNode, UnsolNode, NumberNode, BoolNode, SymbolNode, DynVarNode
+  StrNode, UnsolNode, NumberNode, BoolNode, SymbolNode, DynVarNode
 } from './value';
+export type { InvocationNode, InvocationNode2 } from './reference';
 export type { MissingNode } from './missing';
 export type { NodeKind } from './base';

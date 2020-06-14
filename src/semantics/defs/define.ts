@@ -5,8 +5,8 @@ import type { BaseNode, NodeId } from '..';
 export interface DefineNode extends BaseNode {
     type: 'define';
 
-    name: any;
-    params: any;
+    name: string;
+    params: string[];
 
     body: NodeId;
 }

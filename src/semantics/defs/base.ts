@@ -36,7 +36,7 @@ export interface NodeDef<N extends BaseNode> {
 
     projection: ProjectionDef<N>;
 
-    type?: N['type'] | Thunk<[Semantics, Im<RState>, any, Im<this>], NodeType>;
+    type?: N['type'] | Thunk<[Semantics, Im<RState>, any, Im<N>], NodeType>;
 
     targetable?: (
         semantics: Semantics,

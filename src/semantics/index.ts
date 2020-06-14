@@ -18,7 +18,9 @@ import {
   BoolNode,
   UnsolNode,
   DynVarNode,
-  SymbolNode
+  SymbolNode,
+  InvocationNode,
+  InvocationNode2
 } from './defs';
 
 export type NodeId = number;
@@ -82,4 +84,6 @@ export type ReductNode =
     UnsolNode |
     SymbolNode |
     DynVarNode |
+    InvocationNode |
+    InvocationNode2 |
     MissingNode;

@@ -10,6 +10,8 @@ import { NotElement } from './not';
 import { OpElement } from './op';
 import { ValueElement } from './value';
 import { SymbolElement } from './symbol';
+import { DefineElement } from './define';
+import { ReferenceElement } from './reference';
 
 /**
  * Definitions:
@@ -32,6 +34,7 @@ export function getElementForNode(node: ReductNode | null) {
   case 'binop': return <BinOpElement node={node} key={node.id} />;
   case 'op': return <OpElement node={node} key={node.id} />;
   case 'conditional': return <ConditionalElement node={node} key={node.id} />;
+  case 'define': return <DefineElement node={node} key={node.id} />;
   case 'bool': 
   case 'number':
   case 'string':
@@ -42,6 +45,7 @@ export function getElementForNode(node: ReductNode | null) {
   case 'lambdaArg': return <LambdaArgElement node={node} key={node.id} />;
   case 'lambdaVar': return <LambdaVarElement node={node} key={node.id} />;
   case 'symbol': return <SymbolElement node={node} key={node.id} />;
-  default: return null;
+  case 'reference': return <ReferenceElement node={node} key={node.id} />;
+  default: return <span>{`{${node.type}}`}</span>;
   }
 }
