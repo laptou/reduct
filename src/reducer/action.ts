@@ -119,7 +119,7 @@ export function startLevel(stage, goal, board, toolbox, globals): StartLevelActi
     );
 
     finalNodes.forEach((node, nodeId) => {
-        stage.views[nodeId] = semantics.project(stage, finalNodes, node);
+        stage.views[nodejId] = semantics.project(stage, finalNodes, node);
     });
 
     return {

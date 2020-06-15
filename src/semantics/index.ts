@@ -51,6 +51,18 @@ export interface BaseNode {
     locked: boolean;
 
     complete: boolean;
+
+    __meta?: NodeMetadata;
+}
+
+export interface NodeMetadata {
+  toolbox: { 
+    /** 
+     * True if this node does not deplete when it is picked from the toolbox
+     * (i.e., the user can use it an unlimited number of times.) 
+     * */
+    unlimited: boolean; 
+  };
 }
 
 export type NodeType = {
