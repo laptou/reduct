@@ -62,10 +62,23 @@ export function reduct(semantics: Semantics, views, restorePos) {
   function program(state = initialProgram, act: ReductAction) {
     switch (act.type) {
     case ActionKind.AddNodeToBoard: {
-      // if this node was in the toolbox, remove it from there
-      const toolbox = state.get('toolbox').remove(act.nodeId);
-      const board = state.get('board').add(act.nodeId);
-      return state.set('toolbox', toolbox).set('board', board);
+      // if this node was in the toolbox, remove it from there unless it has a
+      // meta tag that specifies that it has infinite uses
+
+      const imNode = state.get('nodes').get(act.nodeId);
+
+      if (!imNode) return state;
+      
+      const node = imNode.toJS();
+
+      if (!node.__meta?.toolbox?.unlimited) {
+        const toolbox = state.get('toolbox').remove(act.nodeId);
+        const board = state.get('board').add(act.nodeId);
+        return state.set('toolbox', toolbox).set('board', board);
+      } else {
+        
+      }
+      
     }
 
     case ActionKind.StartLevel: {
