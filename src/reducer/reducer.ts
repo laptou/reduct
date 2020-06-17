@@ -36,7 +36,7 @@ export function nextId(): NodeId {
 
 // To speed up type checking, we only type check nodes that have
 // changed.
-let dirty = new Set();
+let dirty = new Set<NodeId>();
 function markDirty(nodes: NodeMap, id: NodeId) {
   let node = nodes.get(id)!; // warning: assuming node w/ given ID exists
   let parentId = node.parent;
@@ -231,49 +231,58 @@ export function reduct(semantics: Semantics, views, restorePos) {
     }
     case ActionKind.BetaReduce: {
       const queue = [act.topNodeId, act.argNodeId];
-      const removedNodes = {};
+      const removedNodes: Record<number, boolean> = {};
 
-      const addedNodes = ImMap(act.addedNodes.map((n) => {
-        const id = n.get('id');
+      const addedNodes = act.addedNodes.map((n) => {
+        const id = n.id;
         if (act.newNodeIds.indexOf(id) >= 0) {
-          return [id, n.delete('parent').delete('parentField')];
+          const orphaned = produce(n, draft => {
+            delete draft.parent;
+            delete draft.parentField;
+          });
+          return [id, orphaned];
         }
 
         return [id, n];
-      }));
+      });
 
       while (queue.length > 0) {
         const current = queue.pop();
-        const currentNode = state.getIn(['nodes', current]);
+        const currentNode = state.nodes.get(current)!;
         removedNodes[current] = true;
         for (const subexpField of semantics.subexpressions(currentNode)) {
-          queue.push(currentNode.get(subexpField));
+          queue.push(currentNode.subexpressions[subexpField]);
         }
       }
 
-      const oldNode = state.getIn(['nodes', act.topNodeId]);
+      const oldNode = state.nodes.get(act.topNodeId)!;
 
-      let newNodes = state.get('nodes').filter((key, value) => !removedNodes[key]).merge(addedNodes);
+      return produce(state, draft => {
+        for (const [key, removed] of Object.entries(removedNodes)) {
+          if (removed) {
+            draft.nodes.delete(key);
+            draft.board.delete(key);
+            draft.toolbox.delete(key);
+          }
+        }
 
-      let newBoard = state.get('board').filter((id) => !removedNodes[id]);
-      if (!oldNode.get('parent')) {
-        newBoard = newBoard.concat(act.newNodeIds);
-      } else {
+        for (const [key, node] of Object.entries(addedNodes)) {
+          draft.nodes.set(key, node);
+        }
+
         if (act.newNodeIds.length > 1) {
           console.error('Can\'t beta reduce nested lambda that produced multiple new nodes!');
-          return null;
+          return;
         }
-        const parent = newNodes.get(oldNode.get('parent'))
-          .set(oldNode.get('parentField'), act.newNodeIds[0]);
-        newNodes = newNodes.set(oldNode.get('parent'), parent);
-      }
-
-      act.newNodeIds.forEach((id) => markDirty(newNodes, id));
-
-      return state.withMutations((s) => {
-        s.set('nodes', newNodes);
-        s.set('board', newBoard);
-        s.set('toolbox', s.get('toolbox').filter((id) => !removedNodes[id]));
+        const parent = draft.nodes.get(oldNode.parent)!;
+        parent.subexpressions[oldNode.parentField] = act.newNodeIds[0];
+        
+        if (!oldNode.parent) {
+          for (const newNodeId of act.newNodeIds) {
+            draft.board.add(newNodeId);
+          }
+        }
+        act.newNodeIds.forEach((id) => markDirty(draft.nodes, id));
       });
     }
     case ActionKind.FillSlot: {
@@ -341,74 +350,68 @@ export function reduct(semantics: Semantics, views, restorePos) {
     }
 
     case ActionKind.UseToolbox: {
-      if (state.get('toolbox').contains(act.nodeId)) {
+      if (state.toolbox.has(act.nodeId)) {
         // If node has __meta indicating infinite uses, clone
         // instead.
         if (act.clonedNodeId) {
-          return state.withMutations((mutState) => {
-            // TODO: don't delete entire metadata section
-            mutState.set('nodes', mutState.get('nodes').withMutations((nodes) => {
-              for (const node of act.addedNodes) {
-                nodes.set(node.get('id'), node);
-              }
-            }));
-            mutState.set('board', mutState.get('board').push(act.clonedNodeId));
+          return produce(state, draft => {
+            for (const node of act.addedNodes) {
+              draft.nodes.set(node.id, node);
+            }
+
+            draft.board.add(act.clonedNodeId);
           });
         }
 
-        return state.withMutations((mutState) => {
-          mutState.set('board', mutState.get('board').push(act.nodeId));
-          mutState.set('toolbox', mutState.get('toolbox').filter((n) => n !== act.nodeId));
+        return produce(state, draft => {
+          draft.board.add(act.nodeId);
+          draft.toolbox.delete(act.nodeId);
         });
       }
+
       return state;
     }
     case ActionKind.Detach: {
-      const node = state.getIn(['nodes', act.nodeId]);
+      const node = state.nodes.get(act.nodeId)!;
 
-      const parent = state.getIn(['nodes', act.nodeId, 'parent']);
-      if (parent === undefined) throw `Can't detach node ${act.nodeId} with no parent!`;
+      const parentId = node.parent;
+      if (parentId === undefined) throw `Can't detach node ${act.nodeId} with no parent!`;
 
-      return state.withMutations((map) => {
-        map.set('board', map.get('board').push(act.nodeId));
-        map.set('nodes', map.get('nodes').withMutations((nodes) => {
-          nodes.set(parent, nodes.get(parent).withMutations((parent) => {
-            const oldHole = parent.get(`${node.get('parentField')}__hole`);
-            if (oldHole) {
-              parent.set(node.get('parentField'), oldHole);
-              parent.delete(`${node.get('parentField')}__hole`);
-            } else if (node.get('parentField').slice(0, 5) === 'notch') {
-              parent.delete(node.get('parentField'));
-            } else {
-              throw 'Unimplemented: creating new hole';
-            }
-          }));
+      return produce(state, (draft) => {
+        draft.board.add(act.nodeId);
+        
+        const parent = draft.nodes.get(parentId)!;
+        const oldHole = parent.subexpressions[`${node.parentField}__hole`];
+        if (oldHole) {
+          parent.subexpressions[node.parentField] = oldHole;
+          delete parent.subexpressions[`${node.parentField}__hole`];
+        } else if (node.parentField.startsWith('notch')) {
+          delete parent.subexpressions[node.parentField];
+        } else {
+          throw 'Unimplemented: creating new hole';
+        }
 
-          // TODO: refactor
-          if (node.get('parentField').slice(0, 5) === 'notch') {
-            const notchIdx = parseInt(node.get('parentField').slice(5), 10);
-            const parentNode = map.getIn(['nodes', parent]);
-            const defn = semantics.definition.expressions[parentNode.get('type')];
-            if (defn && defn.notches[notchIdx]) {
-              const notch = defn.notches[notchIdx];
-              if (notch.onDetach) {
-                notch.onDetach(semantics, map, parentNode.get('id'), node.get('id'));
-              }
-            }
-
-            const nodes = state.get('nodes');
-            for (const id of state.get('board').concat(state.get('toolbox'))) {
-              markDirty(nodes, id);
+        // TODO: refactor
+        if (node.parentField.startsWith('notch')) {
+          const notchIdx = parseInt(node.parentField.slice(5), 10);
+          const defn = semantics.definition.expressions[parent.type];
+          if (defn && defn.notches[notchIdx]) {
+            const notch = defn.notches[notchIdx];
+            if (notch.onDetach) {
+              notch.onDetach(semantics, draft, parent.id, node.id);
             }
           }
 
-          nodes.set(act.nodeId, node.withMutations((node) => {
-            node.delete('parentField');
-            node.delete('parent');
-          }));
+          for (const id of [...state.board, ...state.toolbox]) {
+            markDirty(draft.nodes, id);
+          }
+        }
 
-          markDirty(nodes, parent);
-        }));
+        const node = draft.nodes.get(act.nodeId)!;
+        delete node.parentField;
+        delete node.parentField;
+
+        markDirty(draft.nodes, parentId);
       });
     }
     case ActionKind.Victory: {
@@ -453,29 +456,20 @@ export function reduct(semantics: Semantics, views, restorePos) {
   }
 
   function annotateTypes(state = initialProgram) {
-    const annotatedNodes = state.get('nodes').withMutations((n) => {
-      // for (const [ exprId, expr ] of n.entries()) {
-      //     n.set(exprId, expr.set("ty", null));
-      //     n.set(exprId, expr.set("complete", false));
-      // }
-
-      // for (const id of state.get("board").concat(state.get("toolbox"))) {
+    return produce(state, draft => {
       for (const id of dirty.values()) {
-        const { types, completeness } = semantics.collectTypes(state.set('nodes', n), n.get(id));
-        for (const [exprId, expr] of n.entries()) {
-          let newExpr = expr;
+        const { types, completeness } = semantics.collectTypes(draft, draft.nodes.get(id));
+        for (const [exprId, expr] of draft.nodes.entries()) {
           if (types.has(exprId)) {
-            newExpr = newExpr.set('ty', types.get(exprId));
+            expr.ty = types.get(exprId);
           }
           if (completeness.has(exprId)) {
-            newExpr = newExpr.set('complete', completeness.get(exprId));
+            expr.complete = completeness.get(exprId);
           }
-          n.set(exprId, newExpr);
         }
       }
       dirty = new Set();
     });
-    return state.set('nodes', annotatedNodes);
   }
 
   return {
@@ -488,14 +482,14 @@ export function reduct(semantics: Semantics, views, restorePos) {
                     || act.skipUndo,
         extraState: (state, newState) => {
           const result = {};
-          for (const id of state.get('board')) {
+          for (const id of state.board) {
             if (views[id]) {
               const pos = { ...gfx.absolutePos(views[id]) };
               if (pos.x === 0 && pos.y === 0) continue;
               result[id] = pos;
             }
           }
-          for (const id of newState.get('board')) {
+          for (const id of newState.board) {
             if (views[id]) {
               const pos = { ...gfx.absolutePos(views[id]) };
               if (pos.x === 0 && pos.y === 0) continue;
@@ -507,8 +501,8 @@ export function reduct(semantics: Semantics, views, restorePos) {
         restoreExtraState: (state, oldState, extraState) => {
           if (!extraState) return;
 
-          for (const id of state.get('board')) {
-            if (!oldState.get('board').contains(id)) {
+          for (const id of state.board) {
+            if (!oldState.board.has(id)) {
               if (extraState[id]) {
                 Object.assign(views[id].pos, gfx.absolutePos(views[id]));
                 views[id].anchor.x = 0;
@@ -522,8 +516,8 @@ export function reduct(semantics: Semantics, views, restorePos) {
               }
             }
           }
-          for (const id of state.get('toolbox')) {
-            if (!oldState.get('toolbox').contains(id)) {
+          for (const id of state.toolbox) {
+            if (!oldState.toolbox.contains(id)) {
               views[id].pos = gfx.absolutePos(views[id]);
               views[id].scale.x = 1.0;
               views[id].scale.y = 1.0;

@@ -261,7 +261,7 @@ export class Semantics {
     public collectTypes(state: RState, rootExpr) {
       const result = new Map();
       const completeness = new Map();
-      const nodes = state.get('nodes');
+      const nodes = state.nodes;
 
       // Update the type map with the type for the expression.
       const update = function update(id, ty) {
@@ -279,14 +279,14 @@ export class Semantics {
 
       const completeKind = (kind) => kind !== 'expression' && kind !== 'placeholder';
 
-      const step = (expr) => {
-        const id = expr.get('id');
+      const step = (expr: ReductNode) => {
+        const id = expr.id;
 
         for (const field of this.subexpressions(expr)) {
-          step(nodes.get(expr.get(field)));
+          step(nodes.get(expr.subexpressions[field]));
         }
 
-        const type = expr.get('type');
+        const type = expr.type;
         const exprDefn = this.definitionOf(type);
         if (!exprDefn) {
           if (type !== 'vtuple') console.warn(`No expression definition for ${type}`);
@@ -297,8 +297,8 @@ export class Semantics {
             completeness.set(
               id,
               complete && this.subexpressions(expr)
-                .map((field) => completeness.get(expr.get(field))
-                             || this.kind(state, nodes.get(expr.get(field))) !== 'expression')
+                .map((field) => completeness.get(expr.subexpressions[field])
+                             || this.kind(state, nodes.get(expr.subexpressions[field])) !== 'expression')
                 .every((x) => x)
             );
             for (const entry of types.entries()) {
@@ -310,8 +310,8 @@ export class Semantics {
             completeness.set(
               id,
               this.subexpressions(expr)
-                .map((field) => completeness.get(expr.get(field))
-                             || completeKind(this.kind(state, nodes.get(expr.get(field)))))
+                .map((field) => completeness.get(expr.subexpressions[field])
+                             || completeKind(this.kind(state, nodes.get(expr.subexpressions[field]))))
                 .every((x) => x)
             );
           } else {
