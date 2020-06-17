@@ -46,8 +46,8 @@ export default class Toolbox {
     getNodeAtPos(state, pos) {
         if (!this.containsPoint(pos)) return [null, null];
 
-        for (const nodeId of state.get('toolbox')) {
-            if (!this.stage.semantics.targetable(state, state.get('nodes').get(nodeId))) {
+        for (const nodeId of state.toolbox) {
+            if (!this.stage.semantics.targetable(state, state.nodes.get(nodeId))) {
                 continue;
             }
             const projection = this.stage.views[nodeId];
@@ -72,7 +72,7 @@ export default class Toolbox {
         // Figure out how many rows to use
         let x = TOOLBOX_LEFT_MARGIN;
         let rows = 1;
-        for (const nodeId of state.get('toolbox')) {
+        for (const nodeId of state.toolbox) {
             const projection = this.stage.views[nodeId];
             projection.scale = { x: 1, y: 1 };
             projection.prepare(nodeId, nodeId, state, this.stage);
@@ -115,8 +115,8 @@ export default class Toolbox {
         let curRow = 0;
         x = TOOLBOX_LEFT_MARGIN;
         let i = 0;
-        for (const nodeId of state.get('toolbox')) {
-            const node = state.get('nodes').get(nodeId);
+        for (const nodeId of state.toolbox) {
+            const node = state.nodes.get(nodeId);
             //  if (!(node.has("__meta") && node.get("__meta").toolbox.unlimited)) {
             const projection = this.stage.views[nodeId];
             if (x + projection.size.w >= this.stage.width - TOOLBOX_RIGHT_MARGIN) {
@@ -161,7 +161,7 @@ export default class Toolbox {
             projection.prepare(nodeId, nodeId, state, this.stage);
 
 
-            if (node.has('__meta') && node.get('__meta').toolbox.unlimited) {
+            if (node.has('__meta') && node.__meta.toolbox.unlimited) {
                 projection.draw(nodeId, nodeId, state, this.stage, this.stage.makeBaseOffset({
                     x: 2,
                     y: 6
@@ -170,7 +170,7 @@ export default class Toolbox {
 
             projection.draw(nodeId, nodeId, state, this.stage, this.stage.makeBaseOffset());
 
-            if (node.has('__meta') && node.get('__meta').toolbox.unlimited) {
+            if (node.has('__meta') && node.__meta.toolbox.unlimited) {
                 projection.draw(nodeId, nodeId, state, this.stage, this.stage.makeBaseOffset({
                     x: -2,
                     y: -6

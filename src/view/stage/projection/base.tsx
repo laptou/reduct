@@ -81,9 +81,9 @@ export const StageProjection = connect(
     ownProps: StageProjectionOwnProps
   ) => {
     if (ownProps.nodeId) {
-      const node = state.get('program')
+      const node = state.program
         .get('$present')
-        .get('nodes')
+        .nodes
         .get(ownProps.nodeId);
       return { node: node ? node.toJS() : null };
     }

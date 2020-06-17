@@ -22,7 +22,7 @@ export const autograder: NodeDef<AutograderNode> = {
     subexpressions: ['result'],
     projection: {
         type: 'hbox',
-        color: (expr) => expr.get('color'),
+        color: (expr) => expr.color,
         subexpScale: 0.9,
         cols: [
             {
@@ -34,7 +34,7 @@ export const autograder: NodeDef<AutograderNode> = {
             {
                 type: 'sprite',
                 fields: ['goalId'],
-                image: (expr) => expr.get('alienName'),
+                image: (expr) => expr.alienName,
                 scale: 0.4,
                 subexpScale: 1.0
             }
@@ -42,23 +42,23 @@ export const autograder: NodeDef<AutograderNode> = {
     },
     validateStep: (semant, state, expr) => null,
     smallStep: (semant, stage, state, expr) => {
-        const nodes = state.get('nodes');
+        const nodes = state.nodes;
         const max_goals = 5;
 
         const allInputs = stage.input.slice();
         const allOutputs = stage.output.slice();
 
-        const fId = expr.get('result');
-        const fExpr = state.get('nodes').get(fId);
-        const f_type = fExpr.get('type');
-        const goalId = expr.get('goalId');
-        const color = expr.get('color');
+        const fId = expr.result;
+        const fExpr = state.nodes.get(fId);
+        const f_type = fExpr.type;
+        const goalId = expr.goalId;
+        const color = expr.color;
 
         /* Function to convert game definition to JS definition.
         */
         function extractAll() {
             let funFinal = '';
-            for (const refStr of state.get('globals')) {
+            for (const refStr of state.globals) {
                 const defId = state.getIn(['globals', refStr[0]]);
                 const defNode = nodes.get(defId);
                 const defStr = semant.parser.unparse(semant.hydrate(nodes, defNode));
@@ -94,9 +94,9 @@ export const autograder: NodeDef<AutograderNode> = {
             const [clonedFn, addedFn] = semant.clone(fId, nodes);
             const allAddedFns = addedFn.concat([clonedFn]);
 
-            const tempFuncNodes = state.get('nodes').withMutations((nodes) => {
+            const tempFuncNodes = state.nodes.withMutations((nodes) => {
                 for (const node of allAddedFns) {
-                    nodes.set(node.get('id'), node);
+                    nodes.set(node.id, node);
                 }
             });
 
@@ -130,7 +130,7 @@ export const autograder: NodeDef<AutograderNode> = {
                     }
                     if (out != allOutputs[i]) {
                         if (out < 0) {
-                            fx.error(this, stage.views[fExpr.get('id')]);
+                            fx.error(this, stage.views[fExpr.id]);
                             stage.feedback.update('#000', ['The given function is non-terminating']);
                             return null;
                         }
@@ -173,7 +173,7 @@ export const autograder: NodeDef<AutograderNode> = {
                 result = semant.apply(result, semant.parser.parse(a, level.MACROS));
             }
 
-            finalExpr.push(semant.autograder(expr.get('alienName'), goalId, color, result));
+            finalExpr.push(semant.autograder(expr.alienName, goalId, color, result));
 
             /** Now generate expected output
         */
@@ -188,15 +188,15 @@ export const autograder: NodeDef<AutograderNode> = {
             const o = finalOutput[0];
             addedOutput.push(...semant.flatten(o).map(immutable.Map));
 
-            const tempOutputNodes = state.get('nodes').withMutations((nodes) => {
+            const tempOutputNodes = state.nodes.withMutations((nodes) => {
                 for (const node of addedOutput) {
-                    nodes.set(node.get('id'), node);
+                    nodes.set(node.id, node);
                 }
             });
 
             for (const nn of addedOutput) {
-                newOutputIds.push(nn.get('id'));
-                stage.views[nn.get('id')] = stage.semantics.project(stage, tempOutputNodes, nn);
+                newOutputIds.push(nn.id);
+                stage.views[nn.id] = stage.semantics.project(stage, tempOutputNodes, nn);
             }
 
             stage.store.dispatch(action.changeGoal(goalId, [newOutputIds[0]], addedOutput));
@@ -205,23 +205,23 @@ export const autograder: NodeDef<AutograderNode> = {
         */
             // Assumes clicks always dispatched to top-level node
             const origPos = {
-                x: gfxCore.centerPos(stage.getView(expr.get('id'))).x,
-                y: gfxCore.centerPos(stage.getView(expr.get('id'))).y
+                x: gfxCore.centerPos(stage.getView(expr.id)).x,
+                y: gfxCore.centerPos(stage.getView(expr.id)).y
             };
 
 
             const newInputIds = [];
             const f1 = finalExpr[0];
             const addedTarget = semant.flatten(f1).map(immutable.Map);
-            const tempInputNodes = state.get('nodes').withMutations((nodes) => {
+            const tempInputNodes = state.nodes.withMutations((nodes) => {
                 for (const node of addedTarget) {
-                    nodes.set(node.get('id'), node);
+                    nodes.set(node.id, node);
                 }
             });
 
             for (const aa of addedTarget) {
-                newInputIds.push(aa.get('id'));
-                stage.views[aa.get('id')] = stage.semantics.project(stage, tempInputNodes, aa);
+                newInputIds.push(aa.id);
+                stage.views[aa.id] = stage.semantics.project(stage, tempInputNodes, aa);
             }
 
 
@@ -230,13 +230,13 @@ export const autograder: NodeDef<AutograderNode> = {
             stage.views[newInputIds[0]].pos.x = origPos.x;
             stage.views[newInputIds[0]].pos.y = origPos.y;
 
-            stage.store.dispatch(action.smallStep(expr.get('id'), [newInputIds[0]], addedTarget));
+            stage.store.dispatch(action.smallStep(expr.id, [newInputIds[0]], addedTarget));
         } else {
             const finalGoal = semant.parser.parse(allOutputs[goalId], level.MACROS);
             // console.log("finalGoal: " + JSON.stringify(finalGoal.value));
             // console.log("givenGoal: " + JSON.stringify(fExpr.get("value")));
-            if (finalGoal.value !== fExpr.get('value')) {
-                fx.error(this, stage.views[expr.get('id')]);
+            if (finalGoal.value !== fExpr.value) {
+                fx.error(this, stage.views[expr.id]);
                 stage.feedback.update('#000', [`This isn't the output I want! I want ${finalGoal.value}`]);
                 return null;
             }
@@ -248,15 +248,15 @@ export const autograder: NodeDef<AutograderNode> = {
             const newGoalIds = [];
             addedGoalNodes.push(...semant.flatten(finalGoal).map(immutable.Map));
 
-            const tempGoalNodes = state.get('nodes').withMutations((nodes) => {
+            const tempGoalNodes = state.nodes.withMutations((nodes) => {
                 for (const node of addedGoalNodes) {
-                    nodes.set(node.get('id'), node);
+                    nodes.set(node.id, node);
                 }
             });
 
             for (const nn of addedGoalNodes) {
-                newGoalIds.push(nn.get('id'));
-                stage.views[nn.get('id')] = stage.semantics.project(stage, tempGoalNodes, nn);
+                newGoalIds.push(nn.id);
+                stage.views[nn.id] = stage.semantics.project(stage, tempGoalNodes, nn);
             }
 
             stage.store.dispatch(action.changeGoal(goalId, [newGoalIds[0]], addedGoalNodes));
@@ -266,14 +266,14 @@ export const autograder: NodeDef<AutograderNode> = {
             const [clonedFinal, addedFinal] = semant.clone(finalGoal.id, tempGoalNodes);
             const allAddedFinal = addedFinal.concat([clonedFinal]);
 
-            const tempFinalNodes = state.get('nodes').withMutations((nodes) => {
+            const tempFinalNodes = state.nodes.withMutations((nodes) => {
                 for (const node of allAddedFinal) {
-                    nodes.set(node.get('id'), node);
+                    nodes.set(node.id, node);
                 }
             });
 
             for (const node of allAddedFinal) {
-                stage.views[node.get('id')] = stage.semantics.project(stage, tempFinalNodes, node);
+                stage.views[node.id] = stage.semantics.project(stage, tempFinalNodes, node);
             }
 
             return core.makeResult(expr, clonedFinal, semant);

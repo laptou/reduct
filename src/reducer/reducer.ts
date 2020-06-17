@@ -177,16 +177,16 @@ export function reduct(semantics: Semantics, views, restorePos) {
     }
 
     case ActionKind.ChangeGoal: {
-      const newNodes = state.get('nodes')
+      const newNodes = state.nodes
         .withMutations((n) => {
           for (const node of act.addedNodes) {
-            n.set(node.get('id'), node);
+            n.set(node.id, node);
           }
         });
 
-      const len = state.get('goal').size;
+      const len = state.goal.size;
 
-      let newGoal = state.get('goal');
+      let newGoal = state.goal;
       newGoal = newGoal.splice(act.goal_id, 1, ...act.newNodeIds);
 
       return state
@@ -195,20 +195,20 @@ export function reduct(semantics: Semantics, views, restorePos) {
     }
 
     case ActionKind.Unfold: {
-      const nodes = state.get('nodes');
+      const nodes = state.nodes;
       const ref = nodes.get(act.nodeId);
 
       let newState = state
         .set('nodes', nodes.withMutations((n) => {
           for (const node of act.addedNodes) {
-            n.set(node.get('id'), node);
+            n.set(node.id, node);
           }
 
           if (ref.has('parent')) {
-            const parentId = ref.get('parent');
+            const parentId = ref.parent;
             n.set(
               parentId,
-              n.get(parentId).set(ref.get('parentField'), act.newNodeId)
+              n.get(parentId).set(ref.parentField, act.newNodeId)
             );
             n.set('locked', true);
           }
@@ -216,7 +216,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
 
       if (!ref.has('parent')) {
         newState = newState
-          .set('board', state.get('board').map((id) => (id === act.nodeId ? act.newNodeId : id)));
+          .set('board', state.board.map((id) => (id === act.nodeId ? act.newNodeId : id)));
       }
 
       return newState;
@@ -306,12 +306,12 @@ export function reduct(semantics: Semantics, views, restorePos) {
 
     case ActionKind.AttachNotch: {
       const child = state.getIn(['nodes', act.childId]);
-      if (child.get('parent')) throw 'Dragging objects from one hole to another is unsupported.';
+      if (child.parent) throw 'Dragging objects from one hole to another is unsupported.';
 
       return state.withMutations((s) => {
         // s.set("board", s.get("board").filter(n => n !== act.childId));
-        s.set('toolbox', s.get('toolbox').filter((n) => n !== act.childId));
-        s.set('nodes', s.get('nodes').withMutations((nodes) => {
+        s.set('toolbox', s.toolbox.filter((n) => n !== act.childId));
+        s.set('nodes', s.nodes.withMutations((nodes) => {
           nodes.set(act.parentId, nodes.get(act.parentId).set(`notch${act.notchIdx}`, act.childId));
           nodes.set(act.childId, child.withMutations((c) => {
             c.set('parentField', `notch${act.notchIdx}`);
@@ -329,13 +329,13 @@ export function reduct(semantics: Semantics, views, restorePos) {
           }
         }
 
-        if (s.get('board').contains(act.childId)) {
+        if (s.board.contains(act.childId)) {
           // Actually remove from the board
-          s.set('board', s.get('board').filter((n) => n !== act.childId));
+          s.set('board', s.board.filter((n) => n !== act.childId));
         }
 
-        const nodes = state.get('nodes');
-        for (const id of state.get('board').concat(state.get('toolbox'))) {
+        const nodes = state.nodes;
+        for (const id of state.board.concat(state.toolbox)) {
           markDirty(nodes, id);
         }
       });
@@ -414,9 +414,9 @@ export function reduct(semantics: Semantics, views, restorePos) {
     }
     case ActionKind.Unfade: {
       return state.withMutations((s) => {
-        s.set('nodes', s.get('nodes').withMutations((n) => {
+        s.set('nodes', s.nodes.withMutations((n) => {
           for (const newNode of act.addedNodes) {
-            n.set(newNode.get('id'), newNode);
+            n.set(newNode.id, newNode);
           }
         }));
         s.set(

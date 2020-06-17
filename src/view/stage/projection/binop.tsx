@@ -71,7 +71,7 @@ const BinOpProjectionImpl: FunctionComponent<BinOpProjectionProps> =
   };
 
 export const BinOpProjection = connect((store: Im<GlobalState>, ownProps: BinOpProjectionOwnProps) => {
-  const opNode = store.get('program').get('$present').get('nodes').get(ownProps.node.op)?.toJS();
+  const opNode = store.program.get('$present').nodes.get(ownProps.node.op)?.toJS();
 
   if (opNode && opNode.type === 'op') {
     return { op: opNode.name }

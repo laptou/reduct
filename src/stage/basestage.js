@@ -379,7 +379,7 @@ export default class BaseStage {
         const dragAnchor = this.computeDragAnchor(pos, topNode, targetNode);
 
 
-        const touch = this._touches.get('mouse');
+        const touch = this._touches.mouse;
         touch.reset();
         touch.topNode = topNode;
         touch.targetNode = targetNode;
@@ -398,7 +398,7 @@ export default class BaseStage {
 
     _mousemove(e) {
         const buttons = typeof e.buttons !== 'undefined' ? e.buttons : e.which;
-        const mouse = this._touches.get('mouse');
+        const mouse = this._touches.mouse;
         mouse.onmove(buttons > 0, this.getMousePos(e));
 
         this.updateCursor(mouse, true);
@@ -407,7 +407,7 @@ export default class BaseStage {
     }
 
     _mouseup(e) {
-        const mouse = this._touches.get('mouse');
+        const mouse = this._touches.mouse;
         mouse.onend(this.getState(), this.getMousePos(e));
         mouse.reset();
         this.updateCursor(mouse);

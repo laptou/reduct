@@ -25,8 +25,8 @@ export const apply: NodeDef<ApplyNode> = {
         }
     },
     stepAnimation: (semant, stage, state, expr) => {
-        const callee = state.getIn(['nodes', expr.get('callee')]);
-        const isCalleeLambda = callee.get('type') === 'lambda';
+        const callee = state.getIn(['nodes', expr.callee]);
+        const isCalleeLambda = callee.type === 'lambda';
 
         const introDuration = animate.scaleDuration(400, 'expr-apply');
         const outroDuration = animate.scaleDuration(400, 'expr-apply');
@@ -35,8 +35,8 @@ export const apply: NodeDef<ApplyNode> = {
         // How long to wait before clearing the 'animating' flag
         const restTime = totalTime + introDuration + outroDuration;
 
-        const argView = stage.views[expr.get('argument')];
-        const applyView = stage.views[expr.get('id')];
+        const argView = stage.views[expr.argument];
+        const applyView = stage.views[expr.id];
 
         // List of tweens to reset at end
         const reset = [];
@@ -54,13 +54,13 @@ export const apply: NodeDef<ApplyNode> = {
         }));
 
         // Jump argument to hole
-        const calleeView = stage.views[expr.get('callee')];
-        const lambdaBody = isCalleeLambda ? callee.get('body') : null;
-        const lambdaView = isCalleeLambda ? stage.views[callee.get('id')] : null;
+        const calleeView = stage.views[expr.callee];
+        const lambdaBody = isCalleeLambda ? callee.body : null;
+        const lambdaView = isCalleeLambda ? stage.views[callee.id] : null;
 
         let centerX = gfx.centerPos(calleeView).x - gfx.absolutePos(applyView).x;
         if (isCalleeLambda) {
-            centerX = gfx.centerPos(stage.views[callee.get('arg')]).x
+            centerX = gfx.centerPos(stage.views[callee.arg]).x
                     - gfx.absolutePos(lambdaView).x;
         }
 
@@ -76,7 +76,7 @@ export const apply: NodeDef<ApplyNode> = {
 
         if (!isCalleeLambda) {
             return jumpTween
-                .then(() => fx.shatter(stage, stage.getView(expr.get('id')), {
+                .then(() => fx.shatter(stage, stage.getView(expr.id), {
                     introDuration,
                     outroDuration
                 }))
@@ -114,8 +114,8 @@ export const apply: NodeDef<ApplyNode> = {
 
                 lambdaView.strokeWhenChild = false;
 
-                for (const [childId, exprId] of lambdaView.children(callee.get('id'), state)) {
-                    if (exprId !== callee.get('body')) {
+                for (const [childId, exprId] of lambdaView.children(callee.id, state)) {
+                    if (exprId !== callee.body) {
                         reset.push(animate.tween(stage.views[childId], {
                             scale: { x: 0 },
                             opacity: 0
@@ -135,14 +135,14 @@ export const apply: NodeDef<ApplyNode> = {
                     }
                 }
 
-                const targetName = state.getIn(['nodes', callee.get('arg'), 'name']);
-                stage.semantics.searchNoncapturing(state.get('nodes'), targetName, lambdaBody)
+                const targetName = state.getIn(['nodes', callee.arg, 'name']);
+                stage.semantics.searchNoncapturing(state.nodes, targetName, lambdaBody)
                     .forEach((id) => {
                         if (stage.views[id]) {
                             stage.views[id].previewOptions = {
                                 duration
                             };
-                            stage.views[id].preview = expr.get('argument');
+                            stage.views[id].preview = expr.argument;
                             clearPreview.push(stage.views[id]);
                         }
                     });
@@ -162,8 +162,8 @@ export const apply: NodeDef<ApplyNode> = {
                     easing: animate.Easing.Cubic.InOut
                 }));
 
-                for (const [childId, exprId] of applyView.children(expr.get('id'), state)) {
-                    if (exprId !== expr.get('callee') && exprId !== expr.get('argument')) {
+                for (const [childId, exprId] of applyView.children(expr.id, state)) {
+                    if (exprId !== expr.callee && exprId !== expr.argument) {
                         reset.push(animate.tween(stage.views[childId], {
                             scale: { x: 0 },
                             opacity: 0
@@ -195,12 +195,12 @@ export const apply: NodeDef<ApplyNode> = {
     },
     stepSound: 'heatup',
     validateStep: (semant, state, expr) => {
-        const callee = state.getIn(['nodes', expr.get('callee')]);
+        const callee = state.getIn(['nodes', expr.callee]);
         const kind = semant.kind(state, callee);
         if (kind === 'value'
-                    && callee.get('type') !== 'lambda'
-                    && callee.get('type') !== 'reference') {
-            return [expr.get('callee'), 'We can only apply functions!'];
+                    && callee.type !== 'lambda'
+                    && callee.type !== 'reference') {
+            return [expr.callee, 'We can only apply functions!'];
         }
         return null;
     },
@@ -208,11 +208,11 @@ export const apply: NodeDef<ApplyNode> = {
         const [topNodeId, newNodeIds, addedNodes] = semant.interpreter.betaReduce(
             stage,
             state,
-            expr.get('callee'),
-            [expr.get('argument')]
+            expr.callee,
+            [expr.argument]
         );
 
-        return [expr.get('id'), newNodeIds, addedNodes];
+        return [expr.id, newNodeIds, addedNodes];
     },
     substepFilter: (semant, state, expr, field) => {
         // Don't force evaluation of reference-with-holes that
@@ -223,9 +223,9 @@ export const apply: NodeDef<ApplyNode> = {
                 && state.getIn(['nodes', expr.get(field), 'type']) === 'reference') {
             const ref = state.getIn(['nodes', expr.get(field)]);
 
-            if (!ref.has('params') || ref.get('params').length === 0) return true;
+            if (!ref.has('params') || ref.params.length === 0) return true;
 
-            if (ref.get('params').some((p) => state.getIn(['nodes', ref.get(`arg_${p}`), 'type']) !== 'missing')) {
+            if (ref.params.some((p) => state.getIn(['nodes', ref.get(`arg_${p}`), 'type']) !== 'missing')) {
                 return true;
             }
 

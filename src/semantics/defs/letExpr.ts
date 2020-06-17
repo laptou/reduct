@@ -38,12 +38,12 @@ export const letExpr: NodeDef<LetNode> = {
         ]
     },
     validateStep: (semant, state, expr) => {
-        const callee = state.getIn(['nodes', expr.get('e2')]);
+        const callee = state.getIn(['nodes', expr.e2]);
         const kind = semant.kind(state, callee);
         if (kind === 'value'
-                && callee.get('type') !== 'lambda'
-                && callee.get('type') !== 'reference') {
-            return [expr.get('callee'), 'We can only apply functions!'];
+                && callee.type !== 'lambda'
+                && callee.type !== 'reference') {
+            return [expr.callee, 'We can only apply functions!'];
         }
         return null;
     },
@@ -51,10 +51,10 @@ export const letExpr: NodeDef<LetNode> = {
         const [topNodeId, newNodeIds, addedNodes] = semant.interpreter.betaReduce(
             stage,
             state,
-            expr.get('e2'),
-            [expr.get('e1')]
+            expr.e2,
+            [expr.e1]
         );
 
-        return [expr.get('id'), newNodeIds, addedNodes];
+        return [expr.id, newNodeIds, addedNodes];
     }
 };

@@ -20,9 +20,9 @@ export function argumentBar() {
         this.names = [];
         this.size = { w: 0, h: 50 };
 
-        const define = state.getIn(['nodes', exprId]);
+        const define = state.nodes.get(exprId);
 
-        if (define.get('type') === 'define' && define.get('params') === 'dynamic') {
+        if (define.type === 'define' && define.params === 'dynamic') {
             // let body = state.getIn([ "nodes", define.get("body") ]);
             // while (body.get("type") === "lambda") {
             //     const name = state.getIn([ "nodes", body.get("arg"), "name" ]);
@@ -37,9 +37,9 @@ export function argumentBar() {
             throw 'Dynamic parameter lists are unimplemented.';
         } else {
             this.names = [];
-            const params = Array.isArray(define.get('params'))
-                ? define.get('params')
-                : state.getIn(['nodes', state.getIn(['globals', define.get('name')]), 'params']);
+            const params = Array.isArray(define.params)
+                ? define.params
+                : state.getIn(['nodes', state.getIn(['globals', define.name]), 'params']);
 
             let maxY = 50;
             for (const name of params) {
@@ -159,15 +159,15 @@ export function argumentBar() {
     };
 
     projection.children = function* (exprId, state) {
-        const expr = state.getIn(['nodes', exprId]);
-        if (expr.get('type') === 'define') return;
+        const expr = state.nodes.get(exprId);
+        if (expr.type === 'define') return;
 
-        let params = expr.get('params');
+        let params = expr.params;
 
         if (!params) {
             params = state.getIn([
                 'nodes',
-                state.getIn(['globals', expr.get('name')]),
+                state.getIn(['globals', expr.name]),
                 'params'
             ]);
         }

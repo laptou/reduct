@@ -21,12 +21,12 @@ export default function(module) {
      */
     module.interpreter.smallStep = function smallStep(stage, state, expr) {
         // debugger;
-        const type = expr.type || expr.get('type');
+        const type = expr.type || expr.type;
         const stepper = module.definitionOf(type).smallStep;
         let is_goal = 0;
-        if (expr.get('goal')) {
+        if (expr.goal) {
             is_goal = 1;
-            const goal_field = expr.get('goal');
+            const goal_field = expr.goal;
         }
         if (stepper) {
             const result = stepper(module, stage, state, expr);
@@ -40,14 +40,14 @@ export default function(module) {
 
             if (immutable.Map.isMap(result)) {
                 // TODO: is this quite correct?
-                const res2 = [expr.get('id'), [result.get('id')], [result]];
+                const res2 = [expr.id, [result.id], [result]];
                 return res2;
             }
 
             // Return [topLevelNodeId, newNodeIds[], addedNodes[]]
             result.id = nextId();
             const addedNodes = module.flatten(result).map(immutable.Map);
-            const r3 = [expr.get('id'), [addedNodes[0].get('id')], addedNodes];
+            const r3 = [expr.id, [addedNodes[0].id], addedNodes];
             return r3;
         }
         return null;
@@ -58,11 +58,11 @@ export default function(module) {
      */
     module.interpreter.betaReduce = function(stage, state, exprId, argIds) {
         // debugger;
-        const target = state.get('nodes').get(exprId);
+        const target = state.nodes.get(exprId);
         // console.log("in beta reduce");
         const reducer = module.definitionOf(target).betaReduce;
         if (!reducer) {
-            console.warn(`Expression type ${target.get('type')} was beta-reduced, but has no reducer.`);
+            console.warn(`Expression type ${target.type} was beta-reduced, but has no reducer.`);
             return null;
         }
         return reducer(module, stage, state, target, argIds);
@@ -73,7 +73,7 @@ export default function(module) {
      * expression would take.
      */
     module.interpreter.animateStep = function animateStep(stage, state, exp) {
-        const defn = module.definitionOf(exp.get('type'));
+        const defn = module.definitionOf(exp.type);
         if (defn && defn.stepSound) {
             if (typeof defn.stepSound === 'function') {
                 const sequence = defn.stepSound(module, state, exp);
@@ -86,8 +86,8 @@ export default function(module) {
             return defn.stepAnimation(module, stage, state, exp);
         }
 
-        const scaleCategory = `expr-${exp.get('type')}`;
-        return fx.shatter(stage, stage.views[exp.get('id')], {
+        const scaleCategory = `expr-${exp.type}`;
+        return fx.shatter(stage, stage.views[exp.id], {
             introDuration: animate.scaleDuration(600, scaleCategory),
             outroDuration: animate.scaleDuration(600, scaleCategory)
         });
@@ -110,23 +110,23 @@ export default function(module) {
      * step taken, or the first child that is blocking evaluation.
      */
     module.interpreter.singleStep = function singleStep(state, expr, exprFilter = null) {
-        const nodes = state.get('nodes');
+        const nodes = state.nodes;
         const kind = module.kind(state, expr);
         console.log(`stepping ${expr.toString()}`);
         if (kind !== 'expression') {
-            console.log(`semant.interpreter.singleStep: could not step since ${expr.get('id')} is '${kind}', not 'expression'`);
+            console.log(`semant.interpreter.singleStep: could not step since ${expr.id} is '${kind}', not 'expression'`);
             let reason = 'This expression can\'t step!';
             if (kind === 'placeholder') {
                 reason = 'There\'s a hole that needs to be filled in!';
             }
-            return ['error', expr.get('id'), reason];
+            return ['error', expr.id, reason];
         }
 
         console.log('kind === expression');
         if (exprFilter === null) {
             console.log('exprFilter === null'); exprFilter = () => false;
         }
-        const substepFilter = module.interpreter.substepFilter(expr.get('type'));
+        const substepFilter = module.interpreter.substepFilter(expr.type);
 
 
         if (!exprFilter(state, expr)) {
@@ -144,10 +144,10 @@ export default function(module) {
 
                 // Hardcoded: delay expansion of references until
                 // absolutely necessary (when they're being applied)
-                if (subexpr.get('type') === 'reference') {
-                    if (expr.get('type') !== 'apply' && (
-                        !subexpr.get('params')
-                            || module.subexpressions(subexpr).some((f) => nodes.get(subexpr.get(f)).get('type') === 'missing')
+                if (subexpr.type === 'reference') {
+                    if (expr.type !== 'apply' && (
+                        !subexpr.params
+                            || module.subexpressions(subexpr).some((f) => nodes.get(subexpr.get(f)).type === 'missing')
                     )) {
                         console.log('delaying expansion because of missing arguments');
                         continue;
@@ -180,7 +180,7 @@ export default function(module) {
         }
 
         console.log('success in singlestep()');
-        return ['success', expr.get('id'), null];
+        return ['success', expr.id, null];
     };
 
     function nullToError(exprId, callback) {
@@ -211,7 +211,7 @@ export default function(module) {
             return Promise.reject(exprId);
         }
 
-        const nodes = state.get('nodes');
+        const nodes = state.nodes;
         exp = nodes.get(exprId);
         return module
             .interpreter.animateStep(stage, state, exp)
@@ -232,8 +232,8 @@ export default function(module) {
         // Return true if we are at an apply expression where the
         // callee is a previously defined function
         const shouldStepOver = (state, expr) => {
-            if (expr.get('type') === 'reference' && expr.get('params') && expr.get('params').length > 0) { // && !exp.get("params").includes("a")) {
-                if (stage.newDefinedNames.includes(expr.get('name'))) {
+            if (expr.type === 'reference' && expr.params && expr.params.length > 0) { // && !exp.get("params").includes("a")) {
+                if (stage.newDefinedNames.includes(expr.name)) {
                     return false;
                 }
 
@@ -243,13 +243,13 @@ export default function(module) {
                     const subexpr = state.getIn(['nodes', expr.get(subexprField)]);
                     const kind = module.kind(state, subexpr);
                     if (kind === 'expression') {
-                        if (subexpr.get('type') === 'reference') {
-                            return (!subexpr.get('params')
-                                    || subexpr.get('params').length === 0
+                        if (subexpr.type === 'reference') {
+                            return (!subexpr.params
+                                    || subexpr.params.length === 0
                                     || module
                                         .subexpressions(subexpr)
                                         .every((p) => state.getIn(['nodes', subexpr.get(p)])
-                                            .get('type') === 'missing'));
+                                            .type === 'missing'));
                         }
                         return false;
                     }
@@ -260,28 +260,28 @@ export default function(module) {
                 return true;
             }
 
-            if (expr.get('type') !== 'apply') {
+            if (expr.type !== 'apply') {
                 return false;
             }
-            const callee = state.getIn(['nodes', expr.get('callee')]);
-            if (callee.get('type') !== 'reference') {
+            const callee = state.getIn(['nodes', expr.callee]);
+            if (callee.type !== 'reference') {
                 return false;
             }
-            if (stage.newDefinedNames.includes(callee.get('name'))) {
+            if (stage.newDefinedNames.includes(callee.name)) {
                 return false;
             }
             for (const subexprField of module.subexpressions(expr)) {
                 const subexpr = state.getIn(['nodes', expr.get(subexprField)]);
-                if (subexpr.get('type') === 'reference') {
+                if (subexpr.type === 'reference') {
                     return !(
                         subexpr
-                            .get('params')
+                            .params
                             && subexpr
-                                .get('params')
+                                .params
                                 .some((p) => state.getIn(['nodes', subexpr.get(`arg_${p}`), 'type']) !== 'missing')
                     );
                 }
-                if (module.kind(state, subexpr) === 'expression' && subexpr.get('type') !== 'reference') {
+                if (module.kind(state, subexpr) === 'expression' && subexpr.type !== 'reference') {
                     return false;
                 }
             }
@@ -296,12 +296,12 @@ export default function(module) {
             return Promise.reject(exprId);
         }
 
-        const nodes = state.get('nodes');
+        const nodes = state.nodes;
         exp = nodes.get(exprId);
 
         if (shouldStepOver(state, exp)) {
-            const name = exp.get('type') === 'reference' ? exp.get('name')
-                : `subcall ${nodes.get(exp.get('callee')).get('name')}`;
+            const name = exp.type === 'reference' ? exp.name
+                : `subcall ${nodes.get(exp.callee).name}`;
             console.debug(`semant.interpreter.reducers.over: stepping over call to ${name}`);
             return module.interpreter.reducers.big(stage, state, exp, callbacks);
         }
@@ -331,7 +331,7 @@ export default function(module) {
                 return Promise.reject();
             }
 
-            const innerExpr = innerState.get('nodes').get(exprId);
+            const innerExpr = innerState.nodes.get(exprId);
 
             // console.log(`successful result was ${innerExpr}`)
 
@@ -340,7 +340,7 @@ export default function(module) {
                 const result = module.interpreter.smallStep(stage, innerState, innerExpr);
                 if (result === null) {
                     callbacks.error(exprId);
-                    return Promise.reject(topExpr.get('id'));
+                    return Promise.reject(topExpr.id);
                 }
 
                 const [topNodeId, newNodeIds, addedNodes] = result;
@@ -348,16 +348,16 @@ export default function(module) {
                 return callbacks.update(topNodeId, newNodeIds, addedNodes, recordUndo || firstStep)
                     .then((newState) => {
                         firstStep = false;
-                        if (topExpr.get('id') === topNodeId) {
+                        if (topExpr.id === topNodeId) {
                             // TODO: handle multiple newNodeIds
                             topExpr = newState.getIn(['nodes', newNodeIds[0]]);
                         } else {
-                            topExpr = newState.getIn(['nodes', topExpr.get('id')]);
+                            topExpr = newState.getIn(['nodes', topExpr.id]);
                         }
 
                         if ((callbacks.stop && callbacks.stop(newState, topExpr))
                               || module.kind(newState, topExpr) !== 'expression') {
-                            return Promise.reject(topExpr.get('id'));
+                            return Promise.reject(topExpr.id);
                         }
                         return [newState, topExpr];
                     });
@@ -373,7 +373,7 @@ export default function(module) {
 
         let fuel = 200;
         const loop = (innerState, topExpr) => {
-            if (fuel <= 0) return Promise.resolve(topExpr.get('id'));
+            if (fuel <= 0) return Promise.resolve(topExpr.id);
             fuel -= 1;
 
             return takeStep(innerState, topExpr).then(([newState, innerExpr]) => {
@@ -381,7 +381,7 @@ export default function(module) {
                     const duration = animate.scaleDuration(
                         800,
                         'multi-step',
-                        `expr-${topExpr.get('type')}`
+                        `expr-${topExpr.type}`
                     );
                     return animate.after(duration)
                         .then(() => loop(newState, innerExpr));
@@ -435,32 +435,32 @@ export default function(module) {
                 stop: (state, topExpr) => {
                     let curExpr = topExpr;
                     const rhs = [];
-                    const nodes = state.get('nodes');
+                    const nodes = state.nodes;
                     let repeated = null;
-                    while (curExpr.get('type') === 'apply') {
-                        const callee = nodes.get(curExpr.get('callee'));
-                        if (callee.get('type') === 'reference') {
-                            rhs.push(callee.get('name'));
-                            curExpr = nodes.get(curExpr.get('argument'));
-                            if (callee.get('name') === 'repeat') break;
-                        } else if (callee.get('type') === 'apply') {
+                    while (curExpr.type === 'apply') {
+                        const callee = nodes.get(curExpr.callee);
+                        if (callee.type === 'reference') {
+                            rhs.push(callee.name);
+                            curExpr = nodes.get(curExpr.argument);
+                            if (callee.name === 'repeat') break;
+                        } else if (callee.type === 'apply') {
                             curExpr = callee;
                             if (!repeated) {
-                                repeated = nodes.get(callee.get('argument'));
-                                if (repeated.get('type') !== 'reference') return false;
+                                repeated = nodes.get(callee.argument);
+                                if (repeated.type !== 'reference') return false;
                             }
                         } else {
                             return false;
                         }
                     }
 
-                    if (curExpr.get('type') === 'number') return true;
+                    if (curExpr.type === 'number') return true;
                     if (!repeated) return false;
-                    if (curExpr.get('type') !== 'number') return false;
-                    if (rhs[rhs.length - 1].get('name') !== 'repeat') return false;
+                    if (curExpr.type !== 'number') return false;
+                    if (rhs[rhs.length - 1].name !== 'repeat') return false;
 
                     for (const name of rhs.slice(0, -1)) {
-                        if (name !== repeated.get('name')) return false;
+                        if (name !== repeated.name) return false;
                     }
 
                     return true;
@@ -478,18 +478,18 @@ export default function(module) {
                 return Promise.reject();
             }
 
-            const innerExpr = innerState.get('nodes').get(exprId);
+            const innerExpr = innerState.nodes.get(exprId);
             console.log(`successful result was_hybrid ${innerExpr}`);
-            if (innerExpr.get('type') === 'reference' && !stage.newDefinedNames.includes(innerExpr.get('name'))) {
+            if (innerExpr.type === 'reference' && !stage.newDefinedNames.includes(innerExpr.name)) {
                 console.log('going in if_hybrid');
                 return module.interpreter.reducers
                     .over(stage, innerState, topExpr, callbacks)
                     .then((topId) => {
                         const newState = stage.getState();
 
-                        let node = newState.getIn(['nodes', topId]);
+                        let node = newState.nodes.get(topId);
                         while (node.has('parent')) {
-                            node = newState.getIn(['nodes', node.get('parent')]);
+                            node = newState.getIn(['nodes', node.parent]);
                         }
 
                         if (module.kind(newState, node) !== 'expression') { // XXX use newState here?
@@ -506,17 +506,17 @@ export default function(module) {
 
                 return callbacks.update(topNodeId, newNodeIds, addedNodes, true)
                     .then((newState) => {
-                        if (topExpr.get('id') === topNodeId) {
+                        if (topExpr.id === topNodeId) {
                             // TODO: handle multiple newNodeIds
                             topExpr = newState.getIn(['nodes', newNodeIds[0]]);
                         } else {
-                            topExpr = newState.getIn(['nodes', topExpr.get('id')]);
+                            topExpr = newState.getIn(['nodes', topExpr.id]);
                         }
 
                         if (module.kind(newState, topExpr) !== 'expression') {
                             console.log('completely done got this as kind_hybrid :#####');
                             console.log(module.kind(state, topExpr));
-                            return Promise.reject(topExpr.get('id'));
+                            return Promise.reject(topExpr.id);
                         }
                         console.log('done_hybrid');
                         return [newState, topExpr];
@@ -530,14 +530,14 @@ export default function(module) {
 
         let fuel = 50;
         const loop = (innerState, topExpr) => {
-            if (fuel <= 0) return Promise.resolve(topExpr.get('id'));
+            if (fuel <= 0) return Promise.resolve(topExpr.id);
             fuel -= 1;
 
             return takeStep(innerState, topExpr).then(([newState, innerExpr]) => {
                 const duration = animate.scaleDuration(
                     800,
                     'multi-step',
-                    `expr-${topExpr.get('type')}`
+                    `expr-${topExpr.type}`
                 );
                 return animate.after(duration)
                     .then(() => loop(newState, innerExpr));

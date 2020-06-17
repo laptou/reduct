@@ -187,10 +187,10 @@ export function notchProjection(options) {
 
     projection.prepare = function(id, exprId, state, stage) {
         if (this.notches) {
-            const node = state.getIn(['nodes', exprId]);
+            const node = state.nodes.get(exprId);
             // TODO: don't hardcode this
             if (node.has('notch0')) {
-                const childId = node.get('notch0');
+                const childId = node.notch0;
                 stage.views[childId].prepare(childId, childId, state, stage);
             }
         }
@@ -226,10 +226,10 @@ export function notchProjection(options) {
             draw(0);
             ctx.restore();
 
-            const node = state.getIn(['nodes', exprId]);
+            const node = state.nodes.get(exprId);
             // TODO: don't hardcode this
             if (node.has('notch0')) {
-                const childId = node.get('notch0');
+                const childId = node.notch0;
                 const delta = stage.views[childId].notchOffset(childId, childId, 0);
                 stage.views[childId].anchor.x = 0.0;
                 stage.views[childId].anchor.y = 0.0;
@@ -390,10 +390,10 @@ export function baseShape(name, defaults, draw, baseShapeOptions = {}) {
 
             util.setOpacity(ctx, this.opacity, offset, this.backgroundOpacity);
 
-            const node = state.getIn(['nodes', exprId]);
+            const node = state.nodes.get(exprId);
 
             if ((this.shadow !== false)
-                && (this.shadow || (node && (!node.get('parent') || !node.get('locked'))))) {
+                && (this.shadow || (node && (!node.parent || !node.locked)))) {
                 ctx.fillStyle = this.shadowColor;
                 draw(ctx, this, x, y + this.shadowOffset * offset.sy, offset.sx * this.scale.x * this.size.w, offset.sy * this.scale.y * this.size.h, sx, sy, this.stroke, this.notches);
             }
@@ -410,7 +410,7 @@ export function baseShape(name, defaults, draw, baseShapeOptions = {}) {
                     color: this.highlightColor || 'yellow'
                 });
                 shouldStroke = true;
-            } else if (!!(node && node.get('parent') && node.get('locked'))
+            } else if (!!(node && node.parent && node.locked)
                      && this.strokeWhenChild) {
                 // Stroke if we have a parent to make it clearer.
                 primitive.setStroke(ctx, {
@@ -422,8 +422,8 @@ export function baseShape(name, defaults, draw, baseShapeOptions = {}) {
                 primitive.setStroke(ctx, null);
             }
 
-            if (node && !node.get('parent') && stage.semantics.kind(state, node) === 'expression') {
-                if (node.get('complete')) {
+            if (node && !node.parent && stage.semantics.kind(state, node) === 'expression') {
+                if (node.complete) {
                     ctx.shadowColor = 'DeepPink';
                     ctx.shadowBlur = 10;
                     ctx.shadowOffsetY = 0;
@@ -559,7 +559,7 @@ export function dynamic(mapping, keyFunc, options) {
     if (typeof keyFunc === 'string') {
         const field = keyFunc;
         keyFunc = function(state, exprId) {
-            const expr = state.getIn(['nodes', exprId]);
+            const expr = state.nodes.get(exprId);
             return expr.get(field);
         };
     }
@@ -606,7 +606,7 @@ export function dynamicProperty(projection, keyFunc, mappings) {
     if (typeof keyFunc === 'string') {
         const field = keyFunc;
         keyFunc = function(state, exprId) {
-            const expr = state.getIn(['nodes', exprId]);
+            const expr = state.nodes.get(exprId);
             return expr.get(field);
         };
     }

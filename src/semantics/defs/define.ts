@@ -29,7 +29,7 @@ export const define: NodeDef<DefineNode> = {
     projection: {
         type: 'dynamicProperty',
         field: (state, exprId) => {
-            const node = state.getIn(['nodes', exprId]);
+            const node = state.nodes.get(exprId);
             if (node.has('parent')) {
                 return 'attached';
             }
@@ -129,29 +129,29 @@ export const defineAttach: NodeDef<DefineAttachNode> = {
             shape: 'wedge',
             relpos: 0.5,
             canAttach: (semant, state, selfId, otherId, notchPair) => {
-                const nodes = state.get('nodes');
+                const nodes = state.nodes;
                 const missingNodes = semant.search(
                     nodes,
                     otherId,
-                    (nodes, id) => nodes.get(id).get('type') === 'missing'
+                    (nodes, id) => nodes.get(id).type === 'missing'
                 ).filter((id) => {
                     const node = nodes.get(id);
-                    if (!node.get('parent')) return true;
-                    const parent = nodes.get(node.get('parent'));
-                    const substepFilter = semant.interpreter.substepFilter(parent.get('type'));
-                    return substepFilter(semant, state, parent, node.get('parentField'));
+                    if (!node.parent) return true;
+                    const parent = nodes.get(node.parent);
+                    const substepFilter = semant.interpreter.substepFilter(parent.type);
+                    return substepFilter(semant, state, parent, node.parentField);
                 });
 
                 return [missingNodes.length === 0, missingNodes];
             },
             canDetach: () => false,
             onAttach: (semant, state, selfId, otherId) => {
-                const name = state.getIn(['nodes', otherId, 'name']);
-                state.set('globals', state.get('globals').set(name, otherId));
+                const name = state.nodes.get(otherId).name;
+                state.set('globals', state.globals.set(name, otherId));
             },
             onDetach: (semant, state, selfId, otherId) => {
-                const name = state.getIn(['nodes', otherId, 'name']);
-                state.set('globals', state.get('globals').delete(name));
+                const name = state.nodes.get(otherId).name;
+                state.set('globals', state.globals.delete(name));
             }
         }
     ],

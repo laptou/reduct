@@ -71,7 +71,7 @@ export default class Goal {
         this.alien = alien;
         this.background = background;
 
-        const container = stage.allocate(gfx.layout.hbox((_id, state) => state.get('goal'), {
+        const container = stage.allocate(gfx.layout.hbox((_id, state) => state.goal, {
             subexpScale: 1,
             padding: {
                 left: 10,
@@ -108,7 +108,7 @@ export default class Goal {
 
                 const contents = (_id, state) => {
                     const result = [goalLabel];
-                    return result.concat(state.get('goal').toArray());
+                    return result.concat(state.goal.toArray());
                 };
                 container = this.stage.allocate(gfx.layout.vbox(gfx.constant(
                     this.text,

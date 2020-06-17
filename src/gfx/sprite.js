@@ -49,9 +49,9 @@ export function exprify(projection) {
         const { ctx } = stage;
         ctx.save();
 
-        const node = state.getIn(['nodes', exprId]);
-        const hasParent = node && Number.isInteger(node.get('parent'));
-        const locked = !node || node.get('locked');
+        const node = state.nodes.get(exprId);
+        const hasParent = node && Number.isInteger(node.parent);
+        const locked = !node || node.locked;
 
         const { x, y } = util.topLeftPos(this, offset);
         const w = offset.sx * this.scale.x * this.size.w;

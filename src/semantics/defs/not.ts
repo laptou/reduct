@@ -26,18 +26,18 @@ export const not: NodeDef<NotNode> = {
         }
     },
     validateStep: (semant, state, expr) => {
-        const nodes = state.get('nodes');
-        const valueId = expr.get('value');
+        const nodes = state.nodes;
+        const valueId = expr.value;
         const valueExpr = nodes.get(valueId);
 
-        if (valueExpr.get('type') !== 'bool') {
+        if (valueExpr.type !== 'bool') {
             return [valueId, '! can only NOT booleans'];
         }
 
         return null;
     },
     smallStep: (semant, stage, state, expr) => {
-        const nodes = state.get('nodes');
-        return semant.bool(!nodes.get(expr.get('value')).get('value'));
+        const nodes = state.nodes;
+        return semant.bool(!nodes.get(expr.value).value);
     }
 };

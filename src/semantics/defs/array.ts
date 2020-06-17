@@ -8,7 +8,7 @@ import type { Semantics } from '../transform';
 function arraySubexprs(module, arr) {
     const n = typeof arr.length === 'number'
         ? arr.length
-        : arr.get('length');
+        : arr.length;
     const result = [];
     for (let i = 0; i < n; i++) {
         result.push(`elem${i}`);
@@ -40,11 +40,11 @@ export type ArrayNode = BaseNode & Record<string, NodeId> & {
 // eslint-disable-next-line import/prefer-default-export
 export const array: NodeDef<ArrayNode> = {
     kind: (arr, semant, state) => {
-        const nodes = state.get('nodes');
+        const nodes = state.nodes;
         for (const field of semant.subexpressions(arr)) {
             const subexp = nodes.get(arr.get(field));
             if (semant.kind(state, subexp) == 'expression'
-                    || subexp.get('type') == 'missing') {
+                    || subexp.type == 'missing') {
                 return 'expression';
             }
         }

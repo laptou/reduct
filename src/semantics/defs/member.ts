@@ -32,33 +32,33 @@ export const member: NodeDef<MemberNode> = {
         ]
     },
     validateStep: (semant, state, expr) => {
-        const nodes = state.get('nodes');
-        const arrayId = expr.get('array');
-        const indexId = expr.get('index');
+        const nodes = state.nodes;
+        const arrayId = expr.array;
+        const indexId = expr.index;
 
         const array = nodes.get(arrayId);
         const index = nodes.get(indexId);
 
-        if (array.get('type') !== 'array') {
+        if (array.type !== 'array') {
             return [arrayId, 'This needs to be an array!'];
         }
 
-        if (index.get('type') !== 'number') {
+        if (index.type !== 'number') {
             return [indexId, 'This needs to be a number!'];
         }
-        if (index.get('value') >= array.get('length')) {
+        if (index.value >= array.length) {
             return [indexId, 'Index cannnot be greater than the length!'];
         }
 
         return null;
     },
     smallStep: (semant, stage, state, expr) => {
-        const nodes = state.get('nodes');
+        const nodes = state.nodes;
 
-        const array = nodes.get(expr.get('array'));
-        const index = nodes.get(expr.get('index'));
-        const i = index.get('value');
+        const array = nodes.get(expr.array);
+        const index = nodes.get(expr.index);
+        const i = index.value;
         const res = nodes.get((array.get(`elem${i}`)));
-        return semant.number(res.get('value'));
+        return semant.number(res.value);
     }
 };

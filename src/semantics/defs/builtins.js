@@ -14,12 +14,12 @@ function hydrateInput(expr, semant, nodes) {
 
 function builtinRepeat(expr, semant, nodes) {
     // Black-box repeat
-    const times = nodes.get(expr.get('arg_n'));
-    const fn = nodes.get(expr.get('arg_f'));
-    if (times.get('type') !== 'number') return null;
+    const times = nodes.get(expr.arg_n);
+    const fn = nodes.get(expr.arg_f);
+    if (times.type !== 'number') return null;
 
     let resultExpr = semant.lambdaVar('x');
-    for (let i = 0; i < times.get('value'); i++) {
+    for (let i = 0; i < times.value; i++) {
         // Rehydrate each time to get a new copy
         const hydratedFn = hydrateInput(fn, semant, nodes);
         delete hydratedFn.parent;
@@ -42,12 +42,12 @@ function builtinRepeat(expr, semant, nodes) {
 
 // Evaluate the "length" function. Return null if failure.
 function builtinLength(expr, semant, nodes) {
-    const arr = nodes.get(expr.get('arg_a'));
-    if (arr.get('type') === 'array') {
-        return semant.number(arr.get('length'));
+    const arr = nodes.get(expr.arg_a);
+    if (arr.type === 'array') {
+        return semant.number(arr.length);
     }
-    if (arr.get('type') === 'string') {
-        return semant.number(arr.get('value').length);
+    if (arr.type === 'string') {
+        return semant.number(arr.value.length);
     }
 
     console.error('Bad call to length');
@@ -56,14 +56,14 @@ function builtinLength(expr, semant, nodes) {
 // Evaluate the "get" function. Return null if failure.
 // Requires call has already been validated.
 function builtinGet(expr, semant, nodes) {
-    const arr = nodes.get(expr.get('arg_a'));
-    const i = nodes.get(expr.get('arg_i'));
-    const iv = i.get('value');
-    const n = arr.get('length');
-    if (arr.get('type') === 'string') {
-        return semant.string(arr.get('value')[iv]);
+    const arr = nodes.get(expr.arg_a);
+    const i = nodes.get(expr.arg_i);
+    const iv = i.value;
+    const n = arr.length;
+    if (arr.type === 'string') {
+        return semant.string(arr.value[iv]);
     }
-    if (arr.get('type') === 'array') {
+    if (arr.type === 'array') {
         return hydrateLocked(nodes.get(arr.get(`elem${iv}`)), semant, nodes);
     }
 }
@@ -72,11 +72,11 @@ function validateGet(expr, semant, state) {
     const gval = genericValidate(expr, semant, state);
     if (gval) return gval;
 
-    const nodes = state.get('nodes');
-    const arr = nodes.get(expr.get('arg_a'));
-    const i = nodes.get(expr.get('arg_i'));
-    const n = arr.get('length');
-    const iv = i.get('value');
+    const nodes = state.nodes;
+    const arr = nodes.get(expr.arg_a);
+    const i = nodes.get(expr.arg_i);
+    const n = arr.length;
+    const iv = i.value;
 
     if (iv < 0 || iv >= n) {
         return {
@@ -91,13 +91,13 @@ function validateGet(expr, semant, state) {
 // Evaluate the "set" function, which nondestructively
 // updates an array element. Return null if failure.
 function builtinSet(expr, semant, nodes) {
-    const arr = nodes.get(expr.get('arg_a'));
-    const i = nodes.get(expr.get('arg_i'));
-    const v = nodes.get(expr.get('arg_v'));
-    if (arr.get('type') !== 'array') return null;
-    if (i.get('type') !== 'number') return null;
-    const iv = i.get('value');
-    const n = arr.get('length');
+    const arr = nodes.get(expr.arg_a);
+    const i = nodes.get(expr.arg_i);
+    const v = nodes.get(expr.arg_v);
+    if (arr.type !== 'array') return null;
+    if (i.type !== 'number') return null;
+    const iv = i.value;
+    const n = arr.length;
     if (iv < 0 || iv >= n) return null;
     const elems = [];
     const new_elem = hydrateInput(v, semant, nodes);
@@ -113,11 +113,11 @@ function validateSet(expr, semant, state) {
     const gval = genericValidate(expr, semant, state);
     if (gval) return gval;
 
-    const nodes = state.get('nodes');
-    const arr = nodes.get(expr.get('arg_a'));
-    const i = nodes.get(expr.get('arg_i'));
-    const iv = i.get('value');
-    const n = arr.get('length');
+    const nodes = state.nodes;
+    const arr = nodes.get(expr.arg_a);
+    const i = nodes.get(expr.arg_i);
+    const iv = i.value;
+    const n = arr.length;
     if (iv < 0 || iv >= n) {
         return {
             subexpr: 'arg_i',
@@ -128,13 +128,13 @@ function validateSet(expr, semant, state) {
 }
 
 function builtinConcat(expr, semant, nodes) {
-    const left = nodes.get(expr.get('arg_left'));
-    const right = nodes.get(expr.get('arg_right'));
+    const left = nodes.get(expr.arg_left);
+    const right = nodes.get(expr.arg_right);
 
-    if (left.get('type') !== 'array') return null;
-    if (right.get('type') !== 'array') return null;
-    const nl = left.get('length');
-    const nr = right.get('length');
+    if (left.type !== 'array') return null;
+    if (right.type !== 'array') return null;
+    const nl = left.length;
+    const nr = right.length;
     const elems = [];
     for (let j = 0; j < nl + nr; j++) {
         const id = j < nl ? left.get(`elem${j}`)
@@ -147,12 +147,12 @@ function builtinConcat(expr, semant, nodes) {
 }
 
 function builtinMap(expr, semant, nodes) {
-    const a = hydrateLocked(nodes.get(expr.get('arg_a')), semant, nodes);
+    const a = hydrateLocked(nodes.get(expr.arg_a), semant, nodes);
     const n = a.length;
 
     const elems = [];
     for (let j = 0; j < n; j++) {
-        const f = hydrateInput(nodes.get(expr.get('arg_f')), semant, nodes); // need copy per call
+        const f = hydrateInput(nodes.get(expr.arg_f), semant, nodes); // need copy per call
 
         if (f.type == 'reference' && f.params && f.params.length == 1 && f[`arg_${f.params[0]}`].type == 'missing') {
             f[`arg_${f.params[0]}`] = a[`elem${j}`];
@@ -170,10 +170,10 @@ function builtinMap(expr, semant, nodes) {
 //     = fold(a[1..], f, f(a[0], init))
 // fold [] f init = init
 function builtinFold(expr, semant, nodes) {
-    const a = hydrateInput(nodes.get(expr.get('arg_a')), semant, nodes);
+    const a = hydrateInput(nodes.get(expr.arg_a), semant, nodes);
     const n = a.length;
-    const init = hydrateInput(nodes.get(expr.get('arg_init')), semant, nodes);
-    const f = nodes.get(expr.get('arg_f'));
+    const init = hydrateInput(nodes.get(expr.arg_init), semant, nodes);
+    const f = nodes.get(expr.arg_f);
     const f1 = hydrateInput(f, semant, nodes);
     const f2 = hydrateInput(f, semant, nodes);
 
@@ -197,9 +197,9 @@ function builtinFold(expr, semant, nodes) {
 }
 
 function builtinSlice(expr, semant, nodes) {
-    const a = hydrateInput(nodes.get(expr.get('arg_array')), semant, nodes);
-    const b = nodes.get(expr.get('arg_begin')).get('value');
-    const e = nodes.get(expr.get('arg_end')).get('value');
+    const a = hydrateInput(nodes.get(expr.arg_array), semant, nodes);
+    const b = nodes.get(expr.arg_begin).value;
+    const e = nodes.get(expr.arg_end).value;
     const n = a.length; // arr.get("length");
 
     if (a.type === 'array') {
@@ -218,11 +218,11 @@ function validateSlice(expr, semant, state) {
     const gval = genericValidate(expr, semant, state);
     if (gval) return gval;
 
-    const nodes = state.get('nodes');
-    const arr = nodes.get(expr.get('arg_array'));
-    const b = nodes.get(expr.get('arg_begin')).get('value');
-    const e = nodes.get(expr.get('arg_end')).get('value');
-    const n = arr.get('length');
+    const nodes = state.nodes;
+    const arr = nodes.get(expr.arg_array);
+    const b = nodes.get(expr.arg_begin).value;
+    const e = nodes.get(expr.arg_end).value;
+    const n = arr.length;
     if (b < 0 || b >= n) {
         return {
             subexpr: 'arg_begin',
@@ -275,30 +275,30 @@ function compatible(ty, expected) {
 }
 
 export function genericValidate(expr, semant, state) {
-    const name = expr.get('name');
+    const name = expr.name;
     const sig = builtins.get(name);
     const { params } = sig;
-    const nodes = state.get('nodes');
+    const nodes = state.nodes;
 
     for (let i = 0; i < params.length; i++) {
         const n = Object.getOwnPropertyNames(params[i]);
         const expected = params[i][n];
         const actual = nodes.get(expr.get(`arg_${n}`));
-        let ty = actual.get('type');
+        let ty = actual.type;
         if (ty == 'reference') {
-            const r = actual.get('name');
+            const r = actual.name;
             if (builtins.has(r)) {
                 ty = 'lambda';
             } else {
-                const id = state.get('globals').get(r);
+                const id = state.globals.get(r);
                 if (!id) {
                     return {
                         subexpr: `arg_${n}`,
                         msg: `The name ${r} is not defined`
                     };
                 }
-                const body = nodes.get(nodes.get(id).get('body'));
-                ty = body.get('type');
+                const body = nodes.get(nodes.get(id).body);
+                ty = body.type;
             }
         }
         if (!compatible(ty, expected)) {

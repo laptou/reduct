@@ -129,14 +129,14 @@ export const unsol: NodeDef<UnsolNode> = {
     projection: {
         type: 'default',
         shape: '()',
-        color: (expr) => expr.get('color')
+        color: (expr) => expr.color
     }
 };
 
 export const dynamicVariant: NodeDef<DynVarNode> = {
     kind: 'value',
     type: (semant, state, types, expr) => ({
-        types: new Map([[expr.get('id'), expr.get('variant')]]),
+        types: new Map([[expr.id, expr.variant]]),
         // TODO: this isn't true if it's a variant with
         // fields
         complete: true

@@ -67,16 +67,16 @@ export default class Sidebar {
 
     startLevel(state, hideGlobals = []) {
         // Only show globals if they have a reference on the board
-        const nodes = state.get('nodes');
-        const globals = state.get('globals');
+        const nodes = state.nodes;
+        const globals = state.globals;
 
         const names = new Set();
 
-        for (const id of state.get('toolbox').concat(state.get('board'))) {
+        for (const id of state.toolbox.concat(state.board)) {
             this.stage.semantics.search(nodes, id, (_, nid) => {
                 const expr = nodes.get(nid);
-                if (expr.get('type') === 'reference' && globals.has(expr.get('name')) && !hideGlobals.includes(expr.get('name'))) {
-                    names.add(expr.get('name'));
+                if (expr.type === 'reference' && globals.has(expr.name) && !hideGlobals.includes(expr.name)) {
+                    names.add(expr.name);
                 }
             });
         }
@@ -88,11 +88,11 @@ export default class Sidebar {
         while (newNames.size > 0 && count < 5) {
             const nextNames = new Set();
             for (const name of newNames) {
-                const id = state.get('globals').get(name);
+                const id = state.globals.get(name);
                 this.stage.semantics.search(nodes, id, (_, nid) => {
                     const expr = nodes.get(nid);
-                    if (expr.get('type') === 'reference' && globals.has(expr.get('name')) && !hideGlobals.includes(expr.get('name'))) {
-                        const name = expr.get('name');
+                    if (expr.type === 'reference' && globals.has(expr.name) && !hideGlobals.includes(expr.name)) {
+                        const name = expr.name;
                         if (!names.has(name)) {
                             names.add(name);
                             nextNames.add(name);
@@ -112,8 +112,8 @@ export default class Sidebar {
         }
 
         this.showing = names.size > 0
-            || state.get('board')
-                .some((id) => state.getIn(['nodes', id, 'type']) === 'define');
+            || state.board
+                .some((id) => state.nodes.get(id).type === 'define');
         return this.showing;
     }
 
@@ -180,7 +180,7 @@ export default class Sidebar {
         this.stage.drawProjection(state, this.indicator, offset);
         curY += gfx.absoluteSize(this.stage.getView(this.indicator)).h + 10;
 
-        for (const [key] of state.get('globals')) {
+        for (const [key] of state.globals) {
             if (!this.viewMap.has(key)) {
                 continue;
             }
@@ -202,7 +202,7 @@ export default class Sidebar {
     }
 
     project(state, name, id) {
-        const nodes = state.get('nodes');
+        const nodes = state.nodes;
 
         let result = null;
         const queue = [id];

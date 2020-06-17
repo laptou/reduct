@@ -28,42 +28,42 @@ const baseReference: NodeDef<InvocationNode> = {
   stepSound: 'heatup',
   type: (semant, state, types, expr) => ({
     types: new Map(),
-    complete: state.get('globals').has(expr.get('name'))
+    complete: state.globals.has(expr.name)
   }),
   targetable: (semant, state, expr) => {
-    if (expr.has('__meta') && expr.get('__meta').toolbox.targetable) {
+    if (expr.has('__meta') && expr.__meta.toolbox.targetable) {
       return true;
     }
-    if (state.get('toolbox').includes(expr.get('id'))) {
+    if (state.toolbox.includes(expr.id)) {
       // If in toolbox, only targetable if defined
-      return state.get('globals').has(expr.get('name'));
+      return state.globals.has(expr.name);
     }
-    return !expr.get('parent') || !expr.get('locked');
+    return !expr.parent || !expr.locked;
   },
   smallStep: (semant, stage, state, expr) => {
-    let res = state.get('globals').get(expr.get('name'));
+    let res = state.globals.get(expr.name);
     if (!res) return null;
 
-    const resNode = state.get('nodes').get(res);
-    if (resNode.get('type') === 'define') {
-      res = resNode.get('body');
+    const resNode = state.nodes.get(res);
+    if (resNode.type === 'define') {
+      res = resNode.body;
     }
 
-    const result = semant.clone(res, state.get('nodes'));
+    const result = semant.clone(res, state.nodes);
     return [
-      expr.get('id'),
-      [result[0].get('id')],
+      expr.id,
+      [result[0].id],
       [result[0].delete('parent').delete('parentField')].concat(result[1])
     ];
   },
   validateStep: (semant, state, expr) => {
-    if (!state.get('globals').has(expr.get('name'))) {
+    if (!state.globals.has(expr.name)) {
       return [
-        expr.get('id'),
-                `We don't know what '${expr.get('name')}' is yet! Look for a "def ${expr.get('name')}".`
+        expr.id,
+                `We don't know what '${expr.name}' is yet! Look for a "def ${expr.name}".`
       ];
     }
-    const name = expr.get('name');
+    const name = expr.name;
     if (!builtins.has(name)) return null;
 
     const { validate } = builtins.get(name);
@@ -76,8 +76,8 @@ const baseReference: NodeDef<InvocationNode> = {
   projection: {
     type: 'dynamic',
     field: (state, exprId) => {
-      const name = state.getIn(['nodes', exprId, 'name']);
-      if (state.get('globals').has(name)) {
+      const name = state.nodes.get(exprId).name;
+      if (state.globals.has(name)) {
         return 'enabled';
       }
       return 'default';
@@ -118,7 +118,7 @@ const invocationReference: NodeDef<InvocationNode2> = {
   ...baseReference,
   fields: ['name', 'params'],
   subexpressions: (semant, expr) => {
-    const params = (expr.get ? expr.get('params') : expr.params) || [];
+    const params = (expr.get ? expr.params : expr.params) || [];
     return params.map((name) => `arg_${name}`);
   },
   /* The kind of a ref with or without params:
@@ -129,16 +129,16 @@ const invocationReference: NodeDef<InvocationNode2> = {
          *  f • a • •   : expr (could be a topexpr)
          */
   kind: (ref, semant, state) => {
-    const nodes = state.get('nodes');
-    const params = ref.get('params');
+    const nodes = state.nodes;
+    const params = ref.params;
     const nparams = params ? params.length : 0;
-    const builtin = builtins.has(ref.get('name'));
+    const builtin = builtins.has(ref.name);
     let incomplete = false;
     let args = false;
     for (let i = 0; i < nparams; i++) {
       const p = params[i];
       const arg = nodes.get(ref.get(`arg_${p}`));
-      const hole = (arg.get('type') == 'missing');
+      const hole = (arg.type == 'missing');
       incomplete |= hole;
       args |= !hole;
       if (!incomplete && semant.kind(state, arg) === 'expression') {
@@ -153,20 +153,20 @@ const invocationReference: NodeDef<InvocationNode2> = {
   },
   smallStep: (semant, stage, state, expr) => {
     // TODO: reuse orig smallStep somehow
-    let res = state.get('globals').get(expr.get('name'));
+    let res = state.globals.get(expr.name);
     if (!res) return null;
 
-    const resNode = state.get('nodes').get(res);
-    if (resNode.get('type') === 'define') {
-      res = resNode.get('body');
+    const resNode = state.nodes.get(res);
+    if (resNode.type === 'define') {
+      res = resNode.body;
     }
 
-    const name = expr.get('name');
+    const name = expr.name;
 
     if (builtins.has(name)) {
       const { impl } = builtins.get(name);
       if (impl) {
-        const resultExpr = impl(expr, semant, state.get('nodes'));
+        const resultExpr = impl(expr, semant, state.nodes);
         if (resultExpr == null) {
           console.error(`Small step on ${expr.type} failed`);
           return null;
@@ -177,15 +177,15 @@ const invocationReference: NodeDef<InvocationNode2> = {
       console.error(`Undefined builtin implementation: ${name}`);
     }
 
-    if (!(expr.has('parent') && state.getIn(['nodes', expr.get('parent'), 'type']) === 'define')
-                && expr.get('params')
-                && expr.get('params').length > 0
-                && expr.get('params').some((field) => state.getIn([
+    if (!(expr.has('parent') && state.getIn(['nodes', expr.parent, 'type']) === 'define')
+                && expr.params
+                && expr.params.length > 0
+                && expr.params.some((field) => state.getIn([
                   'nodes',
                   expr.get(`arg_${field}`),
                   'type'
                 ]) !== 'missing')) {
-      const params = expr.get('params');
+      const params = expr.params;
       const result = semant.interpreter.betaReduce(
         stage,
         state,
@@ -194,21 +194,21 @@ const invocationReference: NodeDef<InvocationNode2> = {
       );
       if (result) {
         const [_, newNodeIds, addedNodes] = result;
-        return [expr.get('id'), newNodeIds, addedNodes];
+        return [expr.id, newNodeIds, addedNodes];
       }
       return null;
     }
 
-    const result = semant.clone(res, state.get('nodes'));
+    const result = semant.clone(res, state.nodes);
     return [
-      expr.get('id'),
-      [result[0].get('id')],
+      expr.id,
+      [result[0].id],
       [result[0].delete('parent').delete('parentField')].concat(result[1])
     ];
   },
   // Only care about arguments if partially filled
   substepFilter: (semant, state, expr, field) => {
-    const params = expr.get('params');
+    const params = expr.params;
     if (!params || params.length === 0) {
       // wait, wtf?
       console.warn(`es6.reference#substepFilter: No params, but asked about field ${field}?`);
@@ -218,7 +218,7 @@ const invocationReference: NodeDef<InvocationNode2> = {
     return !params.every((p) => state.getIn(['nodes', expr.get(`arg_${p}`), 'type']) === 'missing');
   },
   betaReduce: (semant, stage, state, expr, argIds) => {
-    const nodes = state.get('nodes');
+    const nodes = state.nodes;
     const result = semant.hydrate(nodes, expr);
     const np = result.params ? result.params.length : 0;
     const nmissing = 0; let i = 0; let
@@ -234,15 +234,15 @@ const invocationReference: NodeDef<InvocationNode2> = {
       result[param] = arg;
     }
     if (i != argIds.length) {
-      return ['error', expr.get('id'), 'Not enough holes for the supplied arguments'];
+      return ['error', expr.id, 'Not enough holes for the supplied arguments'];
     }
     return core.makeResult(expr, result, semant);
   },
   projection: {
     type: 'dynamic',
     field: (state, exprId) => {
-      const name = state.getIn(['nodes', exprId, 'name']);
-      if (state.get('globals').has(name)) {
+      const name = state.nodes.get(exprId).name;
+      if (state.globals.has(name)) {
         return 'enabled';
       }
       return 'default';

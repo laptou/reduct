@@ -515,7 +515,7 @@ export class Semantics {
 
     /** Check whether two notches on two nodes can attach. */
     public notchesAttachable(stage, state, parentId, childId, notchPair) {
-      const nodes = state.get('nodes');
+      const nodes = state.nodes;
       const parent = nodes.get(parentId);
 
       // Prevent double-attaching
@@ -553,8 +553,8 @@ export class Semantics {
 
     /** Check whether two nodes have any compatible notches. */
     public notchesCompatible(node1, node2) {
-      const notches1 = node1.get('notches');
-      const notches2 = node2.get('notches');
+      const notches1 = node1.notches;
+      const notches2 = node2.notches;
       const result = [];
       if (notches1 && notches2) {
         for (let i = 0; i < notches1.size; i++) {
@@ -598,14 +598,14 @@ export class Semantics {
       const result = [];
       this.map(nodes, exprId, (nodes, id) => {
         const node = nodes.get(id);
-        if (node.get('type') === 'lambdaVar' && node.get('name') === targetName) {
+        if (node.type === 'lambdaVar' && node.name === targetName) {
           result.push(id);
           return [node, nodes];
         }
         return [node, nodes];
       }, (nodes, node) => (
-        node.get('type') !== 'lambda'
-                || nodes.get(node.get('arg')).get('name') !== targetName));
+        node.type !== 'lambda'
+                || nodes.get(node.arg).name !== targetName));
       return result;
     }
 

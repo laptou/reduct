@@ -580,16 +580,16 @@ window.addNodeToBoard = function() {
         const flattened_s = es6.flatten(parsed_s).map(immutable.Map);
 
         // create temporary nodes
-        const tempNodes = st.get('nodes').withMutations((nodes) => {
+        const tempNodes = st.nodes.withMutations((nodes) => {
             for (const node of flattened_s) {
-                nodes.set(node.get('id'), node);
+                nodes.set(node.id, node);
             }
         });
 
         // define views
         for (const aa of flattened_s) {
-            newInputIds.push(aa.get('id'));
-            views[aa.get('id')] = es6.project(stg, tempNodes, aa);
+            newInputIds.push(aa.id);
+            views[aa.id] = es6.project(stg, tempNodes, aa);
         }
 
         if (place === 'board') {

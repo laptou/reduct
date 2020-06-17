@@ -151,7 +151,7 @@ export function genericBetaReduce(semant: Semantics, state: DeepReadonly<RState>
   // Prevent application when there are missing nodes
   const missingNodes = semant.search(
     nodes,
-    topNode.get('id'),
+    topNode.id,
     (nodes, id) => {
       const node = nodes.get(id)!;
       if (node.type === 'missing') {
@@ -273,7 +273,7 @@ export function genericBetaReduce(semant: Semantics, state: DeepReadonly<RState>
   }
 
   const name = config.targetName(targetNode);
-  let [bodyClone, newNodes, curNodes] = semant.clone(topNode.get('body'), nodes);
+  let [bodyClone, newNodes, curNodes] = semant.clone(topNode.body, nodes);
   newNodes.push(bodyClone);
 
   const [newTop] = semant.map(curNodes, bodyClone.id, (nodes, id) => {
@@ -309,7 +309,7 @@ export function genericBetaReduce(semant: Semantics, state: DeepReadonly<RState>
     // Spill vtuple onto the board
     // TODO: should we delete parent/parentField?
     return [
-      topNode.get('id'),
+      topNode.id,
       semant.subexpressions(newTop).map((field) => newTop.subexpressions[field]),
       newNodes.slice(1).map((node) => (node.parent === newTop.id
         ? produce(node, draft => {

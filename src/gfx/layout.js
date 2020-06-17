@@ -177,13 +177,13 @@ export function vbox(childrenFunc, options = {}, baseProjection = roundedRect) {
     projection.type = 'vbox';
 
     projection.isEllipsized = function(id, exprId, state) {
-        const parent = state.getIn(['nodes', exprId, 'parent']);
-        const parent2 = state.getIn(['nodes', parent, 'parent']);
+        const parent = state.nodes.get(exprId).parent;
+        const parent2 = state.nodes.get(parent).parent;
         return this.ellipsize
             && (id === exprId) // Are we the top-level projection for this expression?
             && parent && parent2
-            && state.getIn(['nodes', exprId, 'type']) === state.getIn(['nodes', parent, 'type'])
-            && state.getIn(['nodes', parent, 'type']) === state.getIn(['nodes', parent2, 'type']);
+            && state.nodes.get(exprId).type === state.nodes.get(parent).type
+            && state.nodes.get(parent).type === state.nodes.get(parent2).type;
     };
 
     projection.prepare = function(id, exprId, state, stage) {

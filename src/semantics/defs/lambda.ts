@@ -26,8 +26,8 @@ export interface LambdaVarNode extends BaseNode {
 export const lambda: NodeDef<LambdaNode> = {
     kind: 'value',
     type: (semant, state, types, expr) => ({
-        types: new Map([[expr.get('id'), 'lambda']]),
-        complete: typeof types.get(expr.get('body')) !== 'undefined'
+        types: new Map([[expr.id, 'lambda']]),
+        complete: typeof types.get(expr.body) !== 'undefined'
     }),
     fields: [],
     subexpressions: ['arg', 'body'],
@@ -46,17 +46,17 @@ export const lambda: NodeDef<LambdaNode> = {
     },
     betaReduce: (semant, stage, state, expr, argIds) => genericBetaReduce(semant, state, {
         topNode: expr,
-        targetNode: state.get('nodes').get(expr.get('arg')),
+        targetNode: state.nodes.get(expr.arg),
         argIds,
-        targetName: (node) => node.get('name'),
-        isVar: (node) => node.get('type') === 'lambdaVar',
-        varName: (node) => node.get('name'),
-        isCapturing: (node) => node.get('type') === 'lambda',
-        captureName: (nodes, node) => nodes.get(node.get('arg')).get('name'),
+        targetName: (node) => node.name,
+        isVar: (node) => node.type === 'lambdaVar',
+        varName: (node) => node.name,
+        isCapturing: (node) => node.type === 'lambda',
+        captureName: (nodes, node) => nodes.get(node.arg).name,
         animateInvalidArg: (id) => {
-            const node = state.getIn(['nodes', id]);
-            if (node.get('type') === 'lambdaVar') {
-                stage.feedback.update('#000', [`We don't know what ${node.get('name')} is!`]);
+            const node = state.nodes.get(id);
+            if (node.type === 'lambdaVar') {
+                stage.feedback.update('#000', [`We don't know what ${node.name} is!`]);
             }
             fx.error(stage, stage.views[id]);
         }
@@ -67,8 +67,8 @@ export const lambdaArg: NodeDef<LambdaArgNode> = {
     fields: ['name', 'functionHole'],
     subexpressions: [],
     targetable: (semant, state, expr) => {
-        const nodes = state.get('nodes');
-        const lambdaParent = nodes.get(expr.get('parent'));
+        const nodes = state.nodes;
+        const lambdaParent = nodes.get(expr.parent);
         return !lambdaParent.has('parent');
     },
     projection: {
@@ -77,7 +77,7 @@ export const lambdaArg: NodeDef<LambdaArgNode> = {
             type: 'dynamic',
             resetFields: ['text', 'color'],
             field: (state, exprId) => {
-                const isFunctionHole = !!state.getIn(['nodes', exprId, 'functionHole']);
+                const isFunctionHole = !!state.nodes.get(exprId).functionHole;
                 if (isFunctionHole) return 'functionHole';
                 return 'default';
             },
@@ -96,8 +96,8 @@ export const lambdaArg: NodeDef<LambdaArgNode> = {
         }
     },
     betaReduce: (semant, stage, state, expr, argIds) => {
-        if (expr.get('parent')) {
-            return semant.interpreter.betaReduce(stage, state, expr.get('parent'), argIds);
+        if (expr.parent) {
+            return semant.interpreter.betaReduce(stage, state, expr.parent, argIds);
         }
         return null;
     }
@@ -109,13 +109,13 @@ export const lambdaVar: NodeDef<LambdaVarNode> = {
     projection: {
         type: 'dynamic',
         field: (state, exprId) => {
-            const nodes = state.get('nodes');
+            const nodes = state.nodes;
             let current = nodes.get(exprId);
-            const myName = current.get('name');
-            while (current.get('parent')) {
-                current = nodes.get(current.get('parent'));
-                if (current.get('type') === 'lambda'
-                        && nodes.get(current.get('arg')).get('name') === myName) {
+            const myName = current.name;
+            while (current.parent) {
+                current = nodes.get(current.parent);
+                if (current.type === 'lambda'
+                        && nodes.get(current.arg).name === myName) {
                     return 'enabled';
                 }
             }
@@ -129,14 +129,14 @@ export const lambdaVar: NodeDef<LambdaVarNode> = {
                     color: '#6df902'
                 });
 
-                const nodes = state.get('nodes');
+                const nodes = state.nodes;
                 let current = nodes.get(exprId);
-                const myName = current.get('name');
-                while (current.get('parent')) {
-                    current = nodes.get(current.get('parent'));
-                    if (current.get('type') === 'lambda'
-                            && nodes.get(current.get('arg')).get('name') === myName) {
-                        fx.blink(stage, stage.getView(current.get('arg')), {
+                const myName = current.name;
+                while (current.parent) {
+                    current = nodes.get(current.parent);
+                    if (current.type === 'lambda'
+                            && nodes.get(current.arg).name === myName) {
+                        fx.blink(stage, stage.getView(current.arg), {
                             times: 3,
                             speed: 100,
                             color: '#6df902',

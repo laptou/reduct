@@ -96,7 +96,7 @@ export function startLevel(description, parse, store, stage) {
     stage.registerNewDefinedNames(newDefinedNames.map((elem) => elem[0]));
 
     const state = stage.getState();
-    const nodes = state.get('nodes');
+    const nodes = state.nodes;
 
     // Lay out the board.
     const positions = layout.repulsorPacking(stage, {
@@ -104,7 +104,7 @@ export function startLevel(description, parse, store, stage) {
         y: 200,
         w: stage.width - 60,
         h: (stage.height - (stage.toolbox.size.h) - 25 - 10 - 200)
-    }, state.get('board').toArray().filter((id) => nodes.get(id).get('type') !== 'defineAttach'));
+    }, Array.from(state.board).filter((id) => nodes.get(id).type !== 'defineAttach'));
 
 
     if (positions !== null) {
@@ -119,9 +119,9 @@ export function startLevel(description, parse, store, stage) {
     // notches along the side for defines. Eventually we would want
     // this to be customizable as well.
     let notchY = 160;
-    for (const nodeId of state.get('board')) {
+    for (const nodeId of state.board) {
         const node = nodes.get(nodeId);
-        if (node.get('type') === 'defineAttach') {
+        if (node.type === 'defineAttach') {
             stage.views[nodeId].pos.y = notchY;
             notchY += 160;
         }
@@ -130,7 +130,7 @@ export function startLevel(description, parse, store, stage) {
     // For anything that is fading, spawn the old node on top
     const checkFade = (source) => (nodeId, idx) => {
         if (stage.semantics.search(
-            state.get('nodes'), nodeId, (_, id) => progression.isFadeBorder(state.getIn(['nodes', id, 'type']))
+            state.nodes, nodeId, (_, id) => progression.isFadeBorder(state.nodes.get(id).type)
         ).length > 0) {
             const descr = description[source][idx];
 
@@ -138,7 +138,7 @@ export function startLevel(description, parse, store, stage) {
                 const flattened = stage.semantics.flatten(parse(descr, macros));
                 const topNode = flattened[0].id;
 
-                const tempNodes = state.get('nodes').withMutations((n) => {
+                const tempNodes = state.nodes.withMutations((n) => {
                     for (const node of flattened) {
                         n.set(node.id, immutable.Map(node));
                     }
@@ -161,12 +161,12 @@ export function startLevel(description, parse, store, stage) {
             });
         }
     };
-    state.get('board').forEach(checkFade('board'));
-    state.get('toolbox').forEach(checkFade('toolbox'));
+    state.board.forEach(checkFade('board'));
+    state.toolbox.forEach(checkFade('toolbox'));
 
     // "Inflate" animation.
     let i = 0;
-    for (const nodeId of stage.getState().get('board')) {
+    for (const nodeId of stage.getState().board) {
         stage.views[nodeId].scale = { x: 0.0, y: 0.0 };
         stage.views[nodeId].anchor = { x: 0.5, y: 0.5 };
         animate.tween(stage.views[nodeId].scale, { x: 1.0, y: 1.0 }, {
@@ -178,7 +178,7 @@ export function startLevel(description, parse, store, stage) {
 
     // Bump things away from edges
     animate.after(500).then(() => {
-        for (const topViewId of stage.getState().get('board')) {
+        for (const topViewId of stage.getState().board) {
             stage.bumpAwayFromEdges(topViewId);
         }
     });
@@ -191,8 +191,8 @@ export function startLevel(description, parse, store, stage) {
 }
 
 export function checkVictory(state, semantics, partial = false) {
-    const board = state.get('board').filter((n) => !semantics.ignoreForVictory(state, state.getIn(['nodes', n])));
-    const goal = state.get('goal');
+    const board = state.board.filter((n) => !semantics.ignoreForVictory(state, state.nodes.get(n)));
+    const goal = state.goal;
 
     if (board.size !== goal.size && !partial) {
         return false;
@@ -233,20 +233,20 @@ export function serialize(state, semantics) {
     const board = [];
     const goal = [];
     const toolbox = [];
-    const nodes = state.get('nodes');
-    for (const id of state.get('board')) {
+    const nodes = state.nodes;
+    for (const id of state.board) {
         const result = semantics.parser.unparse(semantics.hydrate(nodes, nodes.get(id)));
         if (result !== null) {
             board.push(result);
         }
     }
-    for (const id of state.get('goal')) {
+    for (const id of state.goal) {
         const result = semantics.parser.unparse(semantics.hydrate(nodes, nodes.get(id)));
         if (result !== null) {
             goal.push(result);
         }
     }
-    for (const id of state.get('toolbox')) {
+    for (const id of state.toolbox) {
         const result = semantics.parser.unparse(semantics.hydrate(nodes, nodes.get(id)));
         if (result !== null) {
             toolbox.push(result);

@@ -35,8 +35,8 @@ export const TITLE_LEVEL_ID = -2;
 export const REQUIRE_PASSWORDS = false;
 
 const params = new URL(window.location).searchParams;
-export const DEVELOPMENT_BUILD = typeof params.get('nodev') !== 'string' && (
-    typeof params.get('dev') === 'string'
+export const DEVELOPMENT_BUILD = typeof params.nodev !== 'string' && (
+    typeof params.dev === 'string'
         || process.env.NODE_ENV !== 'production');
 
 class Logger {
@@ -285,9 +285,9 @@ class Logger {
                 });
             } else if (act.type === ActionKind.FillHole) {
                 let parent = act.holeId;
-                const nodes = beforeState.get('nodes');
+                const nodes = beforeState.nodes;
                 while (nodes.get(parent).has('parent')) {
-                    parent = nodes.get(parent).get('parent');
+                    parent = nodes.get(parent).parent;
                 }
 
                 const savedParent = saveNode(parent, nodes);
@@ -295,7 +295,7 @@ class Logger {
                 this.log('placed-expr', {
                     before,
                     after,
-                    field: nodes.get(act.holeId).get('parentField'),
+                    field: nodes.get(act.holeId).parentField,
                     item: saveNode(act.childId),
                     target: savedParent
                 });
@@ -303,7 +303,7 @@ class Logger {
                 this.log('attached-expr', {
                     before,
                     after,
-                    parent: saveNode(act.parentId, beforeState.get('nodes')),
+                    parent: saveNode(act.parentId, beforeState.nodes),
                     item: saveNode(act.childId),
                     parentNotchIdx: act.notchIdx,
                     childNotchIdx: act.childNotchIdx

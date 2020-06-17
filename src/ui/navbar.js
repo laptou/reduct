@@ -150,7 +150,7 @@ export default class Navbar {
     }
 
     drawImpl(state) {
-        const rawState = this.stage.store.getState().get('program');
+        const rawState = this.stage.store.getState().program;
         this.stage.getView(this.undo).enabled = rawState.get('$past').size > 0;
         this.stage.getView(this.redo).enabled = rawState.get('$future').size > 0;
 

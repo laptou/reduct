@@ -48,9 +48,9 @@ export default class StuckEffect {
             reverseMatching[matching[id]] = id;
         });
 
-        const board = state.get('board')
-            .filter((n) => !this.stage.semantics.ignoreForVictory(state, state.getIn(['nodes', n])));
-        const goal = state.get('goal');
+        const board = state.board
+            .filter((n) => !this.stage.semantics.ignoreForVictory(state, state.nodes.get(n)));
+        const goal = state.goal;
 
         const blinkers = [];
         const msg = [['Oh no, we\'re stuck!']];
