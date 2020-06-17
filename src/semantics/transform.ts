@@ -30,6 +30,10 @@ import type {
   LambdaArgNode, DynVarNode, SymbolNode, MissingNode, DefineNode
 } from './defs';
 import type { ReductSymbol } from './defs/value';
+import { dethunk, DeepReadonly } from '@/util/helper';
+import { RState } from '@/reducer/state';
+import { produce } from 'immer';
+import BaseStage from '@/stage/basestage';
 
 const NotchRecord = immutable.Record({
   side: 'left',
@@ -44,18 +48,6 @@ export interface SemanticParserDefinition {
     extractDefines(semantics: Semantics, expr: Im<ReductNode>): [string, any];
     extractGlobals(semantics: Semantics, expr: Im<ReductNode>): [string, Im<ReductNode>];
     extractGlobalNames(semantics: Semantics, name: string, expr: Im<ReductNode>): [string, any];
-    postParse(
-        nodes: NodeMap,
-        goal: ImList<NodeId>,
-        board: ImList<NodeId>,
-        toolbox: ImList<NodeId>,
-        globals: ImMap<string, NodeId>): {
-        nodes: NodeMap;
-        goal: ImList<NodeId>;
-        board: ImList<NodeId>;
-        toolbox: ImList<NodeId>;
-        globals: ImMap<string, NodeId>;
-    };
 }
 
 export interface SemanticParser {
@@ -65,24 +57,12 @@ export interface SemanticParser {
     extractDefines(semantics: Semantics, expr: Im<ReductNode>): [string, any];
     extractGlobals(semantics: Semantics, expr: Im<ReductNode>): [string, Im<ReductNode>];
     extractGlobalNames(semantics: Semantics, name: string, expr: Im<ReductNode>): [string, any];
-    postParse(
-        nodes: NodeMap,
-        goal: ImList<NodeId>,
-        board: ImList<NodeId>,
-        toolbox: ImList<NodeId>,
-        globals: ImMap<string, NodeId>): {
-        nodes: NodeMap;
-        goal: ImList<NodeId>;
-        board: ImList<NodeId>;
-        toolbox: ImList<NodeId>;
-        globals: ImMap<string, NodeId>;
-    };
 }
 
 export interface SemanticDefinition {
     name: string;
     parser: SemanticParserDefinition;
-    expressions: Record<string, NodeDef<ReductNode> | NodeDef<ReductNode>[]>;
+    expressions: { [K in ReductNode['type']]: NodeDef<ReductNode> | Array<NodeDef<ReductNode>> };
 }
 
 /**
@@ -186,7 +166,7 @@ export class Semantics {
         };
         let i = 0;
         for (const child of children) {
-          result[`child${i}`] = child;
+          result.fields[`child${i}`] = child;
           i += 1;
         }
         return result;
@@ -203,22 +183,26 @@ export class Semantics {
           const innerFadeLevel = fadeLevel; // Capture value inside loop body
           fadeLevel += 1;
           const ctor = (...params: any[]) => {
-            const result = { type: exprName, locked: true };
+            const result: ReductNode = { type: exprName, locked: true };
             if (typeof exprDefinition.locked !== 'undefined') {
               result.locked = exprDefinition.locked;
             }
+
             if (typeof exprDefinition.notches !== 'undefined') {
-              result.notches = ImList(exprDefinition.notches.map((n) => new NotchRecord(n)));
+              result.notches = exprDefinition.notches.map((n) => new NotchRecord(n));
             }
 
             let argPointer = 0;
             for (const fieldName of exprDefinition.fields) {
-              result[fieldName] = params[argPointer++];
+              result.fields[fieldName] = params[argPointer++];
             }
-            const subexprs = getField(exprDefinition, 'subexpressions', this, ImMap(result));
+
+            const subexprs = dethunk(exprDefinition.subexpressions, this, result);
+            
             for (const fieldName of subexprs) {
-              result[fieldName] = params[argPointer++];
+              result.subexpressions[fieldName] = params[argPointer++];
             }
+            
             result.fadeLevel = innerFadeLevel;
             return result;
           };
@@ -265,7 +249,6 @@ export class Semantics {
         templatizeName: (name) => definition.parser.templatizeName(this, name),
         parse: definition.parser.parse(this),
         unparse: definition.parser.unparse(this),
-        postParse: definition.parser.postParse,
         extractDefines: definition.parser.extractDefines,
         extractGlobals: definition.parser.extractGlobals,
         extractGlobalNames: definition.parser.extractGlobalNames
@@ -275,7 +258,7 @@ export class Semantics {
     }
 
     /** The remnants of type checking. */
-    public collectTypes(state, rootExpr) {
+    public collectTypes(state: RState, rootExpr) {
       const result = new Map();
       const completeness = new Map();
       const nodes = state.get('nodes');
@@ -344,12 +327,12 @@ export class Semantics {
     }
 
     /** Check the equality of all subexpressions as well. */
-    public deepEqual(nodes: NodeMap, n1: Im<BaseNode>, n2: Im<BaseNode>) {
+    public deepEqual(nodes: NodeMap, n1: ReductNode, n2: ReductNode) {
       if (!this.shallowEqual(n1, n2)) return false;
 
-      if (n1.get('type') === 'array') {
-        if (n1.get('length') !== n2.get('length')) return false;
-        for (let i = 0; i < n1.get('length'); i++) {
+      if (n1.type === 'array') {
+        if (n1.length !== n2.length) return false;
+        for (let i = 0; i < n1.length; i++) {
           const e1 = nodes.get(n1.get(`elem${i}`));
           const e2 = nodes.get(n2.get(`elem${i}`));
 
@@ -361,8 +344,12 @@ export class Semantics {
     }
 
     /** Get the definition of the given expression, accounting for fade level. */
-    public definitionOf(exprOrType, fadeLevel?: number) {
-      const type = exprOrType.get ? exprOrType.get('type') : (exprOrType.type || exprOrType);
+    public definitionOf<N extends ReductNode>(node: DeepReadonly<N>, fadeLevel?: number): NodeDef<N>;
+
+    public definitionOf<N extends ReductNode>(nodeType: N['type'], fadeLevel?: number): NodeDef<N>;
+
+    public definitionOf(nodeOrType: DeepReadonly<ReductNode> | ReductNode['type'], fadeLevel?: number) {
+      const type = typeof nodeOrType === 'object' ? nodeOrType.type : nodeOrType;
       const result = this.definition.expressions[type];
       if (Array.isArray(result)) {
         return result[typeof fadeLevel === 'number' ? fadeLevel : progression.getFadeLevel(type)];
@@ -371,13 +358,17 @@ export class Semantics {
     }
 
     /** Check whether a node is detachable from its parent. */
-    public detachable(state, parentId, childId) {
-      const nodes = state.get('nodes');
-      const defn = this.definitionOf(nodes.get(parentId));
-      const parentField = nodes.get(childId).get('parentField');
-      if (parentField.slice(0, 5) !== 'notch') {
+    public detachable(state: DeepReadonly<RState>, parentId: NodeId, childId: NodeId) {
+      const parent = state.nodes.get(parentId)!;
+      const child = state.nodes.get(childId)!;
+
+      const defn = this.definitionOf(parent);
+      const parentField = child.parentField;
+
+      if (!parentField.startsWith('notch')) {
         return true;
       }
+
       const notchIdx = window.parseInt(parentField.slice(5), 10);
       if (defn && defn.notches && defn.notches[notchIdx]) {
         const notchDefn = defn.notches[notchIdx];
@@ -396,58 +387,49 @@ export class Semantics {
     /**
      * Can an expression have something dropped into it?
      */
-    public droppable(state, itemId, targetId) {
+    public droppable(state: DeepReadonly<RState>, itemId: NodeId, targetId: NodeId) {
       // TODO: don't hardcode these checks
-      const item = state.getIn(['nodes', itemId]);
-      const target = state.getIn(['nodes', targetId]);
+      const item = state.nodes.get(itemId)!;
+      const target = state.nodes.get(targetId)!;
 
-      if (item.get('type') === 'define') {
+      if (item.type === 'define') {
         return false;
       }
-      if (target.get('type') === 'missing') {
+      if (target.type === 'missing') {
         // Use type inference to decide whether hole can be filled
-        const holeType = target.get('ty');
-        const exprType = item.get('ty');
+        const holeType = target.ty;
+        const exprType = item.ty;
         if (!holeType || !exprType || holeType === exprType) {
           return 'hole';
         }
-      } else if (target.get('type') === 'lambdaArg'
-                && !state.getIn(['nodes', target.get('parent'), 'parent'])
+      } else if (target.type === 'lambdaArg'
+                && !state.nodes.get(target.parent!)!.parent
                 // Lambda vars can't be dropped into lambda args
-                && item.get('type') !== 'lambdaVar') {
+                && item.type !== 'lambdaVar') {
         return 'arg';
       }
       return false;
     }
 
     /** Check whether a node has any notches. */
-    public hasNotches(node) {
-      return node.get('notches');
-    }
-
-    /** Turn an immutable expression into a mutable one (recursively). */
-    public hydrate(nodes, expr) {
-      return expr.withMutations((e) => {
-        for (const field of this.subexpressions(e)) {
-          e.set(field, this.hydrate(nodes, nodes.get(e.get(field))));
-        }
-      }).toJS();
+    public hasNotches(node: ReductNode) {
+      return 'notches' in node;
     }
 
     /**
      * Check whether we should ignore the given node when matching
      * nodes to determine victory.
      */
-    public ignoreForVictory(state, node) {
+    public ignoreForVictory(state: DeepReadonly<RState>, node: ReductNode) {
       const defn = this.definitionOf(node);
       return this.kind(state, node) === 'syntax' || (defn && defn.ignoreForVictory);
     }
 
 
     /** Get the kind of an expression (e.g., "expression", "value", "statement"). */
-    public kind(state, expr) {
-      const def = this.definitionOf(expr);
-      return getField(def, 'kind', expr, this, state);
+    public kind(state: DeepReadonly<RState>, node: DeepReadonly<ReductNode>) {
+      const def = this.definitionOf(node);
+      return dethunk(def.kind, node, this, state);
     }
 
     /**
@@ -464,20 +446,14 @@ export class Semantics {
     }
 
     /** Determine if a level could possibly be completed. */
-    public mightBeCompleted(state, checkVictory) {
-      const nodes = state.get('nodes');
-      const board = state.get('board');
-      const toolbox = state.get('toolbox');
-
-      const remainingNodes = board.concat(toolbox);
-
-      const containsReduceableExpr = remainingNodes.some((id) => {
-        const node = nodes.get(id);
+    public mightBeCompleted(state: DeepReadonly<RState>, checkVictory) {
+      const containsReduceableExpr = [...state.board.values(), ...state.toolbox.values()].some((id) => {
+        const node = state.nodes.get(id)!;
         const kind = this.kind(state, node);
         return kind === 'expression'
             || kind === 'statement'
-            || node.get('type') === 'lambda'
-            || node.get('type') === 'reference';
+            || node.type === 'lambda'
+            || node.type === 'reference';
       });
 
       if (containsReduceableExpr) {
@@ -486,15 +462,16 @@ export class Semantics {
 
       // Level is not yet completed, no reducible expressions, and
       // nothing in toolbox -> level can't be completed
-      if (toolbox.size === 0) {
+      if (state.toolbox.size === 0) {
         return false;
       }
 
       // Only one thing in toolbox - does using it complete the level?
-      if (toolbox.size === 1) {
-        return checkVictory(state.withMutations((s) => {
-          s.set('toolbox', immutable.List());
-          s.set('board', remainingNodes);
+      if (state.toolbox.size === 1) {
+        return checkVictory(produce(state, draft => {
+          for (const toolboxNode of draft.toolbox)
+            draft.board.add(toolboxNode);
+          draft.toolbox.clear();
         }));
       }
 
@@ -504,8 +481,10 @@ export class Semantics {
       // Thanks to Nina Scholz @ SO:
       // https://stackoverflow.com/a/42774126
       // Generates all array subsets (its powerset).
-      const powerset = (array) => {
-        const fork = (i, t) => {
+      const powerset = <U>(array: U[]) => {
+        const result: U[][] = [];
+
+        const fork = (i: number, t: U[]) => {
           if (i === array.length) {
             result.push(t);
             return;
@@ -514,16 +493,18 @@ export class Semantics {
           fork(i + 1, t);
         };
 
-        const result = [];
         fork(0, []);
         return result;
       };
 
-      for (const subset of powerset(toolbox.toArray())) {
-        const matching = checkVictory(state.withMutations((s) => {
-          s.set('toolbox', toolbox.filter((i) => subset.indexOf(i) === -1));
-          s.set('board', board.concat(immutable.List(subset)));
+      for (const subset of powerset(Array.from(state.toolbox))) {
+        const matching = checkVictory(produce(state, (draft) => {
+          for (const subsetNodeId of subset) {
+            draft.toolbox.delete(subsetNodeId);
+            draft.board.add(subsetNodeId);
+          }
         }));
+
         if (matching && Object.keys(matching).length > 0) {
           return true;
         }
@@ -604,17 +585,16 @@ export class Semantics {
      * won't have been updated yet.
      * @param expr - The immutable expression to create a view for.
      */
-    public project(stage, nodes, expr) {
-      const type = expr.get('type');
-      if (!this.projections[type]) throw `semantics.project: Unrecognized expression type ${type}`;
-      return this.projections[type][progression.getFadeLevel(type)](stage, nodes, expr);
+    public project(stage: BaseStage, nodes: NodeMap, expr: DeepReadonly<ReductNode>) {
+      if (!this.projections[expr.type]) throw `semantics.project: Unrecognized expression type ${expr.type}`;
+      return this.projections[expr.type][progression.getFadeLevel(expr.type)](stage, nodes, expr);
     }
 
     /**
      * Search for lambda variable nodes, ignoring ones bound by a
      * lambda with the same parameter name deeper in the tree.
      */
-    public searchNoncapturing(nodes, targetName, exprId) {
+    public searchNoncapturing(nodes: NodeMap, targetName: string, exprId: NodeId) {
       const result = [];
       this.map(nodes, exprId, (nodes, id) => {
         const node = nodes.get(id);
@@ -630,11 +610,14 @@ export class Semantics {
     }
 
     /** Check for equality of fields (but not of subexpressions). */
-    public shallowEqual(n1: Im<BaseNode>, n2: Im<BaseNode>) {
-      if (n1.get('type') !== n2.get('type')) return false;
+    public shallowEqual<
+      T1 extends ReductNode, 
+      T2 extends ReductNode
+    >(n1: DeepReadonly<T1>, n2: DeepReadonly<T2>) {
+      if (n1.type !== n2.type) return false;
 
       for (const field of this.definitionOf(n1).fields) {
-        if (n1.get(field) !== n2.get(field)) return false;
+        if (n1.fields[field] !== n2.fields[field]) return false;
       }
 
       return true;
@@ -644,31 +627,26 @@ export class Semantics {
      * Return a list of field names containing subexpressions of an expression.
      * The expression may be represented in either hydrated or immutable form.
      */
-    public subexpressions(expr: ReductNode | Im<ReductNode>) {
-      const type = 'type' in expr ? expr.type : expr.get('type');
-
-      if (type === 'vtuple') {
+    public subexpressions(expr: ReductNode) {
+      if (expr.type === 'vtuple') {
         const result = [];
-        const nc = expr.get?.('numChildren') ?? expr.numChildren;
-        for (let i = 0; i < nc; i++) {
+        for (let i = 0; i < expr.numChildren; i++) {
           result.push(`child${i}`);
         }
         return result;
       }
 
-      if (type === 'array') {
+      if (expr.type === 'array') {
         const result = [];
-        const nc = expr.get ? expr.get('length') : expr.length;
-        for (let i = 0; i < nc; i++) {
+        for (let i = 0; i < expr.length; i++) {
           result.push(`elem${i}`);
         }
         return result;
       }
 
-      const fadeLevel = expr.get ? expr.get('fadeLevel') : expr.fadeLevel;
-
-      const defn = this.definitionOf(type, fadeLevel);
-      if (!defn) throw `semantics.subexpressions: Unrecognized expression type ${type}`;
+      const defn = this.definitionOf(expr.type, expr.fadeLevel);
+      if (!defn) 
+        throw new Error(`semantics.subexpressions: Unrecognized expression type ${expr.type}`);
 
       const subexprBase = defn.reductionOrder || defn.subexpressions;
       const subexprs = typeof subexprBase === 'function'
@@ -679,7 +657,7 @@ export class Semantics {
         const result = subexprs.slice();
         for (let i = 0; i < defn.notches.length; i++) {
           const field = `notch${i}`;
-          if (expr[field] || (expr.get && expr.get(field))) {
+          if (expr.fields[field]) {
             result.push(field);
           }
         }
@@ -691,11 +669,11 @@ export class Semantics {
     /**
      * Is an expression selectable/hoverable by the mouse?
      */
-    public targetable(state, expr) {
+    public targetable(state: RState, expr: ReductNode) {
       const defn = this.definitionOf(expr);
       if (defn && defn.targetable && typeof defn.targetable === 'function') {
         return defn.targetable(this, state, expr);
       }
-      return !expr.get('parent') || !expr.get('locked') || (defn && defn.alwaysTargetable);
+      return !expr.parent || !expr.locked || (defn?.alwaysTargetable === true);
     }
 }

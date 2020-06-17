@@ -1,5 +1,7 @@
 import { NodeId, NodeMap, ReductNode } from '@/semantics';
 import { ImList, ImMap, ImSet } from '@/util/im';
+import { Semantics } from '@/semantics/transform';
+import BaseStage from '@/stage/basestage';
 
 export enum ActionKind {
   UseToolbox = 'use-toolbox',
@@ -24,14 +26,6 @@ export enum ActionKind {
   AddNodeToBoard = 'add-node-to-stage',
 }
 
-export interface StartLevelAction {
-  type: ActionKind.StartLevel;
-  nodes: NodeMap;
-  goal: ImSet<NodeId>;
-  board: ImSet<NodeId>;
-  toolbox: ImSet<NodeId>;
-  globals: ImMap<string, NodeId>;
-}
 
 export interface AddNodeToBoardAction {
   type: ActionKind.AddNodeToBoard;
@@ -40,7 +34,9 @@ export interface AddNodeToBoardAction {
 
 export type ReductAction = 
   StartLevelAction |
-  AddNodeToBoardAction;
+  AddNodeToBoardAction |
+  AddNodeToToolboxAction |
+  SmallStepAction;
 
 /**
  * Creates an action which will add the specified node to the board, removing it
@@ -51,6 +47,14 @@ export function createAddNodeToBoard(nodeId: NodeId) {
   return { type: ActionKind.AddNodeToBoard, nodeId };
 }
 
+export interface StartLevelAction {
+  type: ActionKind.StartLevel;
+  nodes: NodeMap;
+  goal: Set<NodeId>;
+  board: Set<NodeId>;
+  toolbox: Set<NodeId>;
+  globals: Map<string, NodeId>;
+}
 
 /**
  * Redux action to start a new level.
@@ -63,121 +67,143 @@ export function createAddNodeToBoard(nodeId: NodeId) {
  * Flattened trees are doubly-linked: children know their parent, and
  * which parent field they are stored in.
  *
- * @param {basestage.BaseStage} stage
- * @param {Array} goal - List of (mutable) expressions for the goal.
- * @param {Array} board - List of (mutable) expressions for the board.
- * @param {Array} toolbox - List of (mutable) expressions for the toolbox.
- * @param {Object} globals - Map of (mutable) expressions for globals.
+ * @param stage
+ * @param goal - List of expressions for the goal.
+ * @param board - List of expressions for the board.
+ * @param toolbox - List of expressions for the toolbox.
+ * @param globals - Map of expressions for globals.
  */
-export function startLevel(stage, goal, board, toolbox, globals): StartLevelAction {
-    const { semantics } = stage;
+export function startLevel(
+  stage: BaseStage,
+  goal: Iterable<ReductNode>, 
+  board: Iterable<ReductNode>, 
+  toolbox: Iterable<ReductNode>, 
+  globals: Record<string, ReductNode>
+): StartLevelAction {
+  const { semantics } = stage;
+  const _nodes: Map<NodeId, ReductNode> = new Map();
+  const _goal: Set<NodeId> = new Set();
+  const _board: Set<NodeId> = new Set();
+  const _toolbox: Set<NodeId> = new Set();
+  const _globals: Map<string, NodeId> = new Map();
 
-    let _nodes: Record<number, ReductNode> = {};
-    let _goal: NodeId[] = [];
-    let _board: NodeId[] = [];
-    let _toolbox: NodeId[] = [];
-    let _globals: Record<string, NodeId> = {};
-
-    for (const expr of goal) {
-        for (const newExpr of semantics.flatten(expr)) {
-            _nodes[newExpr.id] = newExpr;
-        }
-        _goal.push(expr.id);
-    }
-    for (const expr of board) {
-        for (const newExpr of semantics.flatten(expr)) {
-            _nodes[newExpr.id] = newExpr;
-        }
-        _board.push(expr.id);
-    }
-    for (const expr of toolbox) {
-        for (const newExpr of semantics.flatten(expr)) {
-            _nodes[newExpr.id] = newExpr;
-        }
-        _toolbox.push(expr.id);
-    }
-    for (const [name, expr] of Object.entries(globals)) {
-        for (const newExpr of semantics.flatten(expr)) {
-            _nodes[newExpr.id] = newExpr;
-        }
-        _globals[name] = expr.id;
+  for (const expr of goal) {
+    for (const newExpr of semantics.flatten(expr)) {
+      _nodes.set(newExpr.id, newExpr);
     }
 
+    _goal.add(expr.id);
+  }
+  for (const expr of board) {
+    for (const newExpr of semantics.flatten(expr)) {
+      _nodes.set(newExpr.id, newExpr);
+    }
 
-    ({
-        nodes: _nodes,
-        goal: _goal,
-        board: _board,
-        toolbox: _toolbox,
-        globals: _globals
-    } = semantics.parser.postParse(_nodes, _goal, _board, _toolbox, _globals));
+    _board.add(expr.id);
+  }
 
-    const finalNodes = ImMap(
-        Object
-            .values(_nodes)
-            .map((node: BaseNode) => [node.id, ImMap(node)])
-    );
+  for (const expr of toolbox) {
+    for (const newExpr of semantics.flatten(expr)) {
+      _nodes.set(newExpr.id, newExpr);
+    }
 
-    finalNodes.forEach((node, nodeId) => {
-        stage.views[nodejId] = semantics.project(stage, finalNodes, node);
-    });
+    _toolbox.add(expr.id);
+  }
 
-    return {
-        type: ActionKind.StartLevel,
-        nodes: finalNodes,
-        goal: ImSet(_goal),
-        board: ImSet(_board),
-        toolbox: ImSet(_toolbox),
-        globals: ImMap(_globals)
-    };
+  for (const [name, expr] of Object.entries(globals)) {
+    for (const newExpr of semantics.flatten(expr)) {
+      _nodes.set(newExpr.id, newExpr);
+    }
+
+    _globals.set(name, expr.id);
+  }
+
+  // TODO: remove
+  for (const [nodeId, node] of _nodes.entries())
+    stage.views[nodeId] = semantics.project(stage, _nodes, node);
+
+  return {
+    type: ActionKind.StartLevel,
+    nodes: _nodes,
+    goal: _goal,
+    board: _board,
+    toolbox: _toolbox,
+    globals: _globals
+  };
 }
 
-export function addToolboxItem(newNodeId, newNodes) {
-    return {
-        type: ActionKind.AddToolboxItem,
-        newNodeId,
-        addedNodes: newNodes
-    };
+export interface AddNodeToToolboxAction {
+  type: ActionKind.AddToolboxItem;
+  newNodeId: NodeId;
+  addedNodes: Iterable<ReductNode>;
+}
+
+/**
+ * Adds a node and its descendants to the toolbox. Intended to be used on newly
+ * created nodes, not on nodes that are already somewhere else (like on the
+ * board.)
+ *
+ * @param newNodeId The ID of the node to be added to the toolbox.
+ * @param newNodes The node being added, as well as all of its descendant nodes.
+ */
+export function addToolboxItem(
+  newNodeId: NodeId, 
+  newNodes: Iterable<ReductNode>
+): AddNodeToToolboxAction {
+  return {
+    type: ActionKind.AddToolboxItem,
+    newNodeId,
+    addedNodes: newNodes
+  };
 }
 
 export function addGoalItem(newNodeId, newNodes) {
-    return {
-        type: ActionKind.AddGoalItem,
-        newNodeId,
-        addedNodes: newNodes
-    };
+  return {
+    type: ActionKind.AddGoalItem,
+    newNodeId,
+    addedNodes: newNodes
+  };
 }
 
 export function changeGoal(goal_id, newNodeIds, newNodes) {
-    return {
-        type: ActionKind.ChangeGoal,
-        goal_id,
-        newNodeIds,
-        addedNodes: newNodes
-    };
+  return {
+    type: ActionKind.ChangeGoal,
+    goal_id,
+    newNodeIds,
+    addedNodes: newNodes
+  };
 }
 
 export function addBoardItem(newNodeIds, addedNodes) {
-    return {
-        type: ActionKind.AddBoardItem,
-        newNodeIds,
-        addedNodes
-    };
+  return {
+    type: ActionKind.AddBoardItem,
+    newNodeIds,
+    addedNodes
+  };
+}
+
+export interface SmallStepAction {
+  type: ActionKind.SmallStep;
+  topNodeId: NodeId;
+  newNodeIds: NodeId[];
+  addedNodes: ReductNode[];
 }
 
 /**
  * Node ``nodeId`` took a small step to produce ``newNode`` which
- * contains ``newNodes`` as nested nodes. All of these are immutable
- * nodes.
+ * contains ``newNodes`` as nested nodes.
  */
-export function smallStep(nodeId, newNodeIds, newNodes) {
-    console.log(JSON.stringify(newNodes));
-    return {
-        type: ActionKind.SmallStep,
-        topNodeId: nodeId,
-        newNodeIds,
-        addedNodes: newNodes
-    };
+export function smallStep(
+  nodeId: NodeId, 
+  newNodeIds: Iterable<NodeId>, 
+  newNodes: Iterable<ReductNode>
+): SmallStepAction {
+  return {
+    type: ActionKind.SmallStep,
+    topNodeId: nodeId,
+    newNodeIds,
+    addedNodes: newNodes
+  };
 }
 
 /**
@@ -185,12 +211,12 @@ export function smallStep(nodeId, newNodeIds, newNodes) {
  * adding ``addedNodes`` to the store).
  */
 export function unfold(nodeId, newNodeId, addedNodes) {
-    return {
-        type: ActionKind.Unfold,
-        nodeId,
-        newNodeId,
-        addedNodes
-    };
+  return {
+    type: ActionKind.Unfold,
+    nodeId,
+    newNodeId,
+    addedNodes
+  };
 }
 
 /**
@@ -201,13 +227,13 @@ export function unfold(nodeId, newNodeId, addedNodes) {
  * replicators.
  */
 export function betaReduce(topNodeId, argNodeId, newNodeIds, addedNodes) {
-    return {
-        type: ActionKind.BetaReduce,
-        topNodeId,
-        argNodeId,
-        newNodeIds,
-        addedNodes
-    };
+  return {
+    type: ActionKind.BetaReduce,
+    topNodeId,
+    argNodeId,
+    newNodeIds,
+    addedNodes
+  };
 }
 
 /**
@@ -220,56 +246,56 @@ export function betaReduce(topNodeId, argNodeId, newNodeIds, addedNodes) {
  * figured it was easier to just break separation in this case.
  */
 export function raise(nodeId) {
-    return {
-        type: ActionKind.Raise,
-        nodeId
-    };
+  return {
+    type: ActionKind.Raise,
+    nodeId
+  };
 }
 
 /**
  * Detach the given node from its parent.
  */
 export function detach(nodeId) {
-    return {
-        type: ActionKind.Detach,
-        nodeId
-    };
+  return {
+    type: ActionKind.Detach,
+    nodeId
+  };
 }
 
 /**
  * Replace the given hole by the given expression.
  */
 export function fillHole(holeId, childId) {
-    return {
-        type: ActionKind.FillSlot,
-        holeId,
-        childId
-    };
+  return {
+    type: ActionKind.FillSlot,
+    holeId,
+    childId
+  };
 }
 
 /**
  * Attach the child to the given parent through the given notches
  */
 export function attachNotch(parentId, notchIdx, childId, childNotchIdx) {
-    return {
-        type: ActionKind.AttachNotch,
-        parentId,
-        childId,
-        notchIdx,
-        childNotchIdx
-    };
+  return {
+    type: ActionKind.AttachNotch,
+    parentId,
+    childId,
+    notchIdx,
+    childNotchIdx
+  };
 }
 
 /**
  * Take the given node out of the toolbox.
  */
 export function useToolbox(nodeId, clonedNodeId = null, addedNodes = null) {
-    return {
-        type: ActionKind.UseToolbox,
-        nodeId,
-        clonedNodeId,
-        addedNodes
-    };
+  return {
+    type: ActionKind.UseToolbox,
+    nodeId,
+    clonedNodeId,
+    addedNodes
+  };
 }
 
 /**
@@ -279,9 +305,9 @@ export function useToolbox(nodeId, clonedNodeId = null, addedNodes = null) {
  * from drawing anymore.
  */
 export function victory() {
-    return {
-        type: ActionKind.Victory
-    };
+  return {
+    type: ActionKind.Victory
+  };
 }
 
 /**
@@ -289,42 +315,42 @@ export function victory() {
  * undo/redo stack.
  */
 export function skipUndo(action) {
-    action.skipUndo = true;
-    return action;
+  action.skipUndo = true;
+  return action;
 }
 
 /**
  * Replace a node with its unfaded variant temporarily.
  */
 export function unfade(source, nodeId, newNodeId, addedNodes) {
-    return {
-        type: ActionKind.Unfade,
-        source,
-        nodeId,
-        newNodeId,
-        addedNodes
-    };
+  return {
+    type: ActionKind.Unfade,
+    source,
+    nodeId,
+    newNodeId,
+    addedNodes
+  };
 }
 
 /**
  * Replace an unfaded node with its faded variant.
  */
 export function fade(source, unfadedId, fadedId) {
-    return {
-        type: ActionKind.Fade,
-        source,
-        unfadedId,
-        fadedId
-    };
+  return {
+    type: ActionKind.Fade,
+    source,
+    unfadedId,
+    fadedId
+  };
 }
 
 /**
  * Define the given name as the given node ID.
  */
 export function define(name, id) {
-    return {
-        type: ActionKind.Define,
-        name,
-        id
-    };
+  return {
+    type: ActionKind.Define,
+    name,
+    id
+  };
 }

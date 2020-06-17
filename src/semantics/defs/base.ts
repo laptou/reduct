@@ -1,9 +1,10 @@
-import { Im, Thunk } from '@/util/im';
+import { Im } from '@/util/im';
 import { RState } from '@/reducer/state';
 import type Stage from '@/stage/stage';
 import type { ProjectionDef } from '@/gfx/projection';
 import type { BaseNode, NodeId, NodeType } from '..';
 import type { Semantics } from '../transform';
+import type { Thunk } from '@/util/helper';
 
 export type NodeKind = 'expression' | 'placeholder' | 'value' | 'statement' | 'syntax';
 
@@ -25,7 +26,7 @@ export interface NodeDef<N extends BaseNode> {
      * instance, a number expression would have a value field, or
      * definition syntax might have a name field.
      */
-    fields?: Exclude<keyof N, keyof BaseNode>[];
+    fields: Array<keyof N['fields'] | Exclude<keyof N, keyof BaseNode>>;
 
     /**
      * A (possibly empty) list of additional fields that contain child

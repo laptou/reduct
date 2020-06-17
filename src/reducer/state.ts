@@ -1,24 +1,21 @@
-import { NodeMap } from '@/semantics';
-import type { NodeId } from '@/semantics/defs';
-import type {
-  Im, ImMap, ImSet, ImStack 
-} from '@/util/im';
+import { NodeId, NodeMap } from '@/semantics';
+import type { ImStack } from '@/util/im';
 
 
 export interface RState {
   nodes: NodeMap;
-  goal: ImSet<NodeId>;
-  board: ImSet<NodeId>;
-  toolbox: ImSet<NodeId>;
-  globals: ImMap<string, NodeId>;
+  goal: Set<NodeId>;
+  board: Set<NodeId>;
+  toolbox: Set<NodeId>;
+  globals: Map<string, NodeId>;
 }
 
 export interface GlobalState {
-  program: Im<ProgramState>;
+  program: ProgramState;
 }
 
 export interface ProgramState {
-  $present: Im<RState>;
+  $present: RState;
   $past: ImStack<any>;
   $future: ImStack<any>;
   $presentExtra: any;

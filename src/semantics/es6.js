@@ -12,120 +12,112 @@ import * as letExpr from './defs/letExpr';
 import * as member from './defs/member';
 import * as missing from './defs/missing';
 import * as not from './defs/not';
-import reference from './defs/reference';
+import * as reference from './defs/reference';
 import * as value from './defs/value';
 
 function capitalize(s) {
-    return s.charAt(0).toUpperCase() + s.substr(1);
+  return s.charAt(0).toUpperCase() + s.substr(1);
 }
 
 export default new Semantics({
-    name: 'ECMAScript 6',
-    parser: {
-        parse: (semantics) => {
-            // gradually introducing class-based model
-            const parser = new ES6Parser(semantics);
-            return parser.parse.bind(parser);
-        },
-        unparse: makeUnparser,
+  name: 'ECMAScript 6',
+  parser: {
+    parse: (semantics) => {
+      // gradually introducing class-based model
+      const parser = new ES6Parser(semantics);
+      return parser.parse.bind(parser);
+    },
+    unparse: makeUnparser,
 
-        templatizeName: (semant, name) => {
-            const defn = semant.definitionOf('symbol');
-            const replacements = defn.nameReplacements || [];
+    templatizeName: (semant, name) => {
+      const defn = semant.definitionOf('symbol');
+      const replacements = defn.nameReplacements || [];
 
-            for (const [key, replacement] of replacements) {
-                const Key = capitalize(key);
-                const Replacement = capitalize(replacement);
-                name = name.replace(new RegExp(key, 'g'), replacement)
-                    .replace(new RegExp(Key, 'g'), Replacement);
-            }
-            return name;
-        },
-
-        extractDefines: (semant, expr) => {
-            if (expr.type !== 'define') {
-                return null;
-            }
-            // needs to be a thunk
-            let thunk = null;
-            // we have access to expr.params, so generate a thunk that
-            // can take arguments
-            if (expr.params) {
-                const { params } = expr;
-                thunk = (...args) => {
-                    const missing = params.map((_, idx) => {
-                        if (args[idx]) {
-                            return args[idx];
-                        }
-                        // TODO: why is locked not respected?
-                        const a = semant.missing();
-                        a.locked = false;
-                        return a;
-                    });
-
-                    return semant.reference(expr.name, params, ...missing);
-                };
-                // Flag to the parser that this thunk can take arguments
-                thunk.takesArgs = true;
-            } else {
-                thunk = () => semant.reference(expr.name, []);
-            }
-            return [expr.name, thunk];
-        },
-
-        extractGlobals: (semant, expr) => {
-            if (expr.type !== 'define') {
-                return null;
-            }
-            // We have access to expr.params
-            return [expr.name, expr];
-        },
-
-        extractGlobalNames: (semant, name, expr) => {
-            // We have access to expr.params
-            if (expr.params) {
-                const { params } = expr;
-                const thunk = (...args) => {
-                    const missing = params.map((_, idx) => {
-                        if (args[idx]) {
-                            return args[idx];
-                        }
-                        // TODO: why is locked not respected?
-                        const a = semant.missing();
-                        a.locked = false;
-                        return a;
-                    });
-                    return semant.reference(expr.name, params, ...missing);
-                };
-                // Flag to the parser that this thunk can take arguments
-                thunk.takesArgs = true;
-                return [name, thunk];
-            }
-            return [name, () => semant.reference(name)];
-        },
-
-        postParse: (nodes, goal, board, toolbox, globals) => ({
-            nodes,
-            goal,
-            board,
-            toolbox,
-            globals
-        })
+      for (const [key, replacement] of replacements) {
+        const Key = capitalize(key);
+        const Replacement = capitalize(replacement);
+        name = name.replace(new RegExp(key, 'g'), replacement)
+          .replace(new RegExp(Key, 'g'), Replacement);
+      }
+      return name;
     },
 
-    expressions: {
-        ...apply,
-        ...array,
-        ...autograder,
-        ...binop,
-        ...conditional,
-        ...define,
-        ...lambda,
-        ...letExpr,
-        ...member,
-        ...missing,
-        ...not,
-        ...reference,
-        ...value
+    extractDefines: (semant, expr) => {
+      if (expr.type !== 'define') {
+        return null;
+      }
+      // needs to be a thunk
+      let thunk = null;
+      // we have access to expr.params, so generate a thunk that
+      // can take arguments
+      if (expr.params) {
+        const { params } = expr;
+        thunk = (...args) => {
+          const missing = params.map((_, idx) => {
+            if (args[idx]) {
+              return args[idx];
+            }
+            // TODO: why is locked not respected?
+            const a = semant.missing();
+            a.locked = false;
+            return a;
+          });
+
+          return semant.reference(expr.name, params, ...missing);
+        };
+        // Flag to the parser that this thunk can take arguments
+        thunk.takesArgs = true;
+      } else {
+        thunk = () => semant.reference(expr.name, []);
+      }
+      return [expr.name, thunk];
+    },
+
+    extractGlobals: (semant, expr) => {
+      if (expr.type !== 'define') {
+        return null;
+      }
+      // We have access to expr.params
+      return [expr.name, expr];
+    },
+
+    extractGlobalNames: (semant, name, expr) => {
+      // We have access to expr.params
+      if (expr.params) {
+        const { params } = expr;
+        const thunk = (...args) => {
+          const missing = params.map((_, idx) => {
+            if (args[idx]) {
+              return args[idx];
+            }
+            // TODO: why is locked not respected?
+            const a = semant.missing();
+            a.locked = false;
+            return a;
+          });
+          return semant.reference(expr.name, params, ...missing);
+        };
+        // Flag to the parser that this thunk can take arguments
+        thunk.takesArgs = true;
+        return [name, thunk];
+      }
+      return [name, () => semant.reference(name)];
     }
+  },
+
+  expressions: {
+    ...apply,
+    ...array,
+    ...autograder,
+    ...binop,
+    ...conditional,
+    ...define,
+    ...lambda,
+    ...letExpr,
+    ...member,
+    ...missing,
+    ...not,
+    ...reference,
+    ...value
+  }
 });

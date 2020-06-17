@@ -6,21 +6,24 @@ import { combineReducers } from 'redux-immutable';
 import {
   Im, ImList, ImMap, ImSet 
 } from '@/util/im';
-import type { NodeId, BaseNode, ReductNode } from '@/semantics';
+import type {
+  NodeId, BaseNode, ReductNode, NodeMap 
+} from '@/semantics';
 import type { Semantics } from '@/semantics/transform';
 import { ActionKind, ReductAction } from './action';
 import * as gfx from '../gfx/core';
 import * as animate from '../gfx/animate';
 import { undoable } from './undo';
 import { RState } from './state';
+import { produce } from 'immer';
 
-const initialProgram = ImMap({
-  nodes: ImMap(),
-  goal: ImSet(),
-  board: ImSet(),
-  toolbox: ImSet(),
-  globals: ImMap()
-}) as unknown as Im<RState>;
+const initialProgram: RState = {
+  nodes: new Map(),
+  goal: new Set(),
+  board: new Set(),
+  toolbox: new Set(),
+  globals: new Map()
+};
 
 let idCounter = 0;
 
@@ -34,18 +37,18 @@ export function nextId(): NodeId {
 // To speed up type checking, we only type check nodes that have
 // changed.
 let dirty = new Set();
-function markDirty(nodes: ImMap<number, Im<ReductNode>>, id: NodeId) {
-  let expr = nodes.get(id)!; // warning: assuming node w/ given ID exists
-  let parentId = expr.get('parent');
+function markDirty(nodes: NodeMap, id: NodeId) {
+  let node = nodes.get(id)!; // warning: assuming node w/ given ID exists
+  let parentId = node.parent;
 
   // travel to the root node
   while (typeof parentId === 'number') {
-    expr = nodes.get(parentId)!;
-    parentId = expr.get('parent');
+    node = nodes.get(parentId)!;
+    parentId = node.parent;
   }
 
   // add root node to dirty set
-  dirty.add(expr.get('id'));
+  dirty.add(node.id);
 }
 
 /**
@@ -59,131 +62,128 @@ function markDirty(nodes: ImMap<number, Im<ReductNode>>, id: NodeId) {
  * the view's position was recorded).
  */
 export function reduct(semantics: Semantics, views, restorePos) {
-  function program(state = initialProgram, act: ReductAction) {
+  function program(state = initialProgram, act: ReductAction): RState {
     switch (act.type) {
     case ActionKind.AddNodeToBoard: {
       // if this node was in the toolbox, remove it from there unless it has a
       // meta tag that specifies that it has infinite uses
 
-      const imNode = state.get('nodes').get(act.nodeId);
+      const node = state.nodes.get(act.nodeId);
 
-      if (!imNode) return state;
-      
-      const node = imNode.toJS();
+      if (!node) return state;
 
       if (!node.__meta?.toolbox?.unlimited) {
-        const toolbox = state.get('toolbox').remove(act.nodeId);
-        const board = state.get('board').add(act.nodeId);
-        return state.set('toolbox', toolbox).set('board', board);
+        return produce(state, draft => {
+          draft.toolbox.delete(act.nodeId);
+          draft.board.add(act.nodeId);
+        });
       } else {
-        
+        return state;
       }
-      
     }
 
     case ActionKind.StartLevel: {
-      act.nodes.forEach((n) => markDirty(act.nodes, n.get('id')));
+      act.nodes.forEach((n) => markDirty(act.nodes, n.id));
       act.toolbox.forEach((n) => markDirty(act.nodes, n));
-      return state.merge({
+      return {
         nodes: act.nodes,
         goal: act.goal,
         board: act.board,
         toolbox: act.toolbox,
         globals: act.globals
-      });
+      };
     }
 
     case ActionKind.Raise: {
-      const board = state.get('board');
-      if (board.contains(act.nodeId)) {
-        const newBoard = board.filter((n) => n !== act.nodeId).add(act.nodeId);
-        return state.set('board', newBoard);
+      if (state.board.has(act.nodeId)) {
+        return produce(state, draft => {
+          draft.board.delete(act.nodeId);
+          draft.board.add(act.nodeId);
+        });
       }
 
       return state;
     }
+
     case ActionKind.SmallStep: {
       // console.log("@@SMALL_STEP_REDUCE@@");
-      const oldNode: Im<BaseNode> = state.getIn(['nodes', act.topNodeId]);
+      const oldNode = state.nodes.get(act.topNodeId)!;
 
-      let newNodes = state.get('nodes')
-        .withMutations((n) => {
-          for (const node of act.addedNodes) {
-            n.set(node.get('id'), node);
-          }
-        });
+      if (oldNode.parent && act.newNodeIds.length !== 1)
+      // TODO: handle this more gracefully? Create a vtuple?
+      // TODO: handle when an expression doesn't create anything??
+        throw new Error('Cannot small-step a child expression to multiple new expressions.');
+          
+      const newNodeId = act.newNodeIds[0];
 
-      let newBoard = state.get('board').filter((id) => id !== act.topNodeId);
-      if (!oldNode.get('parent')) {
-        newBoard = newBoard.concat(act.newNodeIds);
-      } else if (act.newNodeIds.length !== 1) {
-        console.log('Cannot small-step a child expression to multiple new expressions.');
-        // TODO: handle this more gracefully? Create a vtuple?
-      } else {
-        const parent = newNodes.get(oldNode.get('parent'))!
-          .set(oldNode.get('parentField'), act.newNodeIds[0]);
+      const newState = produce(state, draft => {
+        // update the node map
+        for (const node of act.addedNodes) {
+          draft.nodes.set(node.id, node);
+        }
 
-        const child = newNodes.get(act.newNodeIds[0])!.withMutations((nn) => {
-          nn.set('parent', parent.get('id'));
-          nn.set('parentField', oldNode.get('parentField'));
-        });
+        if (oldNode.parent) {
+          const parent = draft.nodes.get(oldNode.parent)!;
+          // TODO: refactor child node structure
+          parent[newNodeId] = act.newNodeIds[0];
 
-        newNodes = newNodes.withMutations((n) => {
-          n.set(oldNode.get('parent'), parent);
-          n.set(act.newNodeIds[0], child);
-        });
-      }
+          const child = draft.nodes.get(newNodeId)!;
+          child.parent = parent.id;
+          child.parentField = oldNode.parentField;
 
-      act.newNodeIds.forEach((id) => markDirty(newNodes, id));
-      // console.log("@@SMALL_STEP_REDUCE - 2@@ " + newBoard);
-      return state
-        .set('nodes', newNodes)
-        .set('board', newBoard);
+          draft.nodes.set(oldNode.parent, parent);
+          draft.nodes.set(newNodeId, child);
+        }
+
+        // update the board
+        draft.board.delete(act.topNodeId);
+
+        // if the old node was a top level node, add the nodes that it was
+        // turned into to the board
+        if (!oldNode.parent)
+          for (const newNodeId of act.newNodeIds)
+            draft.board.add(newNodeId);
+      });
+
+      act.newNodeIds.forEach((id) => markDirty(newState.nodes, id));
+      
+      return newState;
     }
+
     case ActionKind.AddToolboxItem: {
-      const newNodes = state.get('nodes')
-        .withMutations((n) => {
-          for (const node of act.addedNodes) {
-            n.set(node.get('id'), node);
-          }
-        });
+      return produce(state, draft => {
+        for (const node of act.addedNodes) {
+          draft.nodes.set(node.id, node);
+        }
 
-      const newToolbox = state.get('toolbox').add(act.newNodeId);
-
-      return state
-        .set('nodes', newNodes)
-        .set('toolbox', newToolbox);
+        draft.toolbox.add(act.newNodeId);
+      });
     }
+
     case ActionKind.AddGoalItem: {
-      const newNodes = state.get('nodes')
-        .withMutations((n) => {
-          for (const node of act.addedNodes) {
-            n.set(node.get('id'), node);
-          }
-        });
+      return produce(state, draft => {
+        for (const node of act.addedNodes) {
+          draft.nodes.set(node.id, node);
+        }
 
-      const addedGoal = state.get('goal').add(act.newNodeId);
-
-      return state
-        .set('nodes', newNodes)
-        .set('goal', addedGoal);
+        draft.goal.add(act.newNodeId);
+      });
     }
+
     case ActionKind.AddBoardItem: {
-      const newNodes = state.get('nodes')
-        .withMutations((n) => {
-          for (const node of act.addedNodes) {
-            n.set(node.get('id'), node);
-          }
-        });
+      return produce(state, draft => {
+        for (const node of act.addedNodes) {
+          draft.nodes.set(node.id, node);
+        }
 
-      const newBoard = state.get('board').concat(act.newNodeIds);
+        for (const nodeId of act.newNodeIds) {
+          draft.board.add(nodeId);
+        }
 
-      act.newNodeIds.forEach((id) => markDirty(newNodes, id));
-
-      return state
-        .set('nodes', newNodes)
-        .set('board', newBoard);
+        draft.board.add(act.newNodeId);
+      });
     }
+
     case ActionKind.ChangeGoal: {
       const newNodes = state.get('nodes')
         .withMutations((n) => {
@@ -201,6 +201,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
         .set('nodes', newNodes)
         .set('goal', newGoal);
     }
+
     case ActionKind.Unfold: {
       const nodes = state.get('nodes');
       const ref = nodes.get(act.nodeId);
@@ -276,35 +277,32 @@ export function reduct(semantics: Semantics, views, restorePos) {
       });
     }
     case ActionKind.FillSlot: {
-      const hole = state.getIn(['nodes', act.holeId]);
+      const newState = produce(state, draft => {
+        const hole = draft.nodes.get(act.holeId)!;
+        if (!hole.parent) throw `Hole ${act.holeId} has no parent!`;
+  
+        const parent = draft.nodes.get(hole.parent);
+        const child = draft.nodes.get(act.childId)!;
+        if (child.parent) throw 'Dragging objects from one hole to another is unsupported.';
 
-      const holeParent = state.getIn(['nodes', act.holeId, 'parent']);
-      if (holeParent === undefined) throw `Hole ${act.holeId} has no parent!`;
+        draft.board.delete(act.childId);
+        draft.toolbox.delete(act.childId);
 
-      const child = state.getIn(['nodes', act.childId]);
-      if (child.get('parent')) throw 'Dragging objects from one hole to another is unsupported.';
+        // Cache the hole in the parent, so that we
+        // don't have to create a new hole if they
+        // detach the field later.
+        parent[`${hole.parentField}__hole`] = parent[hole.parentField];
 
-      return state.withMutations((map) => {
-        map.set('board', map.get('board').filter((n) => n != act.childId));
-        map.set('toolbox', map.get('toolbox').filter((n) => n != act.childId));
-        map.set('nodes', map.get('nodes').withMutations((nodes) => {
-          nodes.set(holeParent, nodes.get(holeParent).withMutations((holeParent) => {
-            // Cache the hole in the parent, so that we
-            // don't have to create a new hole if they
-            // detach the field later.
-            holeParent.set(`${hole.get('parentField')}__hole`, holeParent.get(hole.get('parentField')));
-            holeParent.set(hole.get('parentField'), act.childId);
-          }));
-          nodes.set(act.childId, child.withMutations((child) => {
-            child.set('parentField', hole.get('parentField'));
-            child.set('parent', holeParent);
-            child.set('locked', false);
-          }));
-        }));
-
-        markDirty(map.get('nodes'), act.childId);
+        child.parentField = hole.parentField;
+        child.parent = hole.parent;
+        child.locked = false;
       });
+
+      markDirty(newState.nodes, act.childId);
+
+      return newState;
     }
+
     case ActionKind.AttachNotch: {
       const child = state.getIn(['nodes', act.childId]);
       if (child.get('parent')) throw 'Dragging objects from one hole to another is unsupported.';
@@ -341,6 +339,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
         }
       });
     }
+
     case ActionKind.UseToolbox: {
       if (state.get('toolbox').contains(act.nodeId)) {
         // If node has __meta indicating infinite uses, clone
@@ -413,9 +412,9 @@ export function reduct(semantics: Semantics, views, restorePos) {
       });
     }
     case ActionKind.Victory: {
-      return state.withMutations((map) => {
-        map.set('board', ImList());
-        map.set('goal', ImList());
+      return produce(state, draft => {
+        draft.board.clear();
+        draft.goal.clear();
       });
     }
     case ActionKind.Unfade: {
@@ -432,17 +431,21 @@ export function reduct(semantics: Semantics, views, restorePos) {
       });
     }
     case ActionKind.Fade: {
-      return state.withMutations((s) => {
-        s.set(
-          act.source,
-          s.get(act.source).map((n) => (n === act.unfadedId ? act.fadedId : n))
-        );
+      return produce(state, draft => {
+        draft[act.source] = act.fadedId;
       });
+
+      // return state.withMutations((s) => {
+      //   s.set(
+      //     act.source,
+      //     s.get(act.source).map((n) => (n === act.unfadedId ? act.fadedId : n))
+      //   );
+      // });
     }
     case ActionKind.Define: {
-      return state.withMutations((s) => {
-        s.set('globals', state.get('globals').set(act.name, act.id));
-        s.set('board', state.get('board').filter((id) => id !== act.id));
+      return produce(state, draft => {
+        draft.globals.set(act.name, act.id);
+        draft.board.delete(act.id);
       });
     }
     default: return state;

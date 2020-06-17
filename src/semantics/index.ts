@@ -52,6 +52,10 @@ export interface BaseNode {
 
     complete: boolean;
 
+    fields: Record<string, any>;
+    
+    subexpressions: Record<string, ReductNode | NodeId>;
+
     __meta?: NodeMetadata;
 }
 
@@ -70,7 +74,7 @@ export type NodeType = {
     complete: boolean;
 }
 
-export type NodeMap = ImMap<NodeId, Im<ReductNode>>;
+export type NodeMap = Map<NodeId, Readonly<ReductNode>>;
 
 export interface MissingNode extends BaseNode {
   type: 'missing';

@@ -27,7 +27,11 @@ import Loader from './loader';
 import Logging, { TITLE_LEVEL_ID, DEVELOPMENT_BUILD } from './logging/logging';
 
 import * as ajax from './util/ajax';
+import { enableMapSet, enablePatches } from 'immer';
 import { initReactApp } from './view';
+
+enableMapSet();
+enablePatches();
 
 // Whether the game will ask for (valid) user ids
 const USER_IDS = false;

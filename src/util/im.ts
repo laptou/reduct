@@ -36,13 +36,3 @@ export interface Im<T> extends ImMap<keyof T, T[keyof T]> {
         context?: any
     ): ImMap<keyof T, T[keyof T] | M>;
 }
-
-
-// disallow T being a function because otherwise how
-// can we tell whether this is a thunk
-export type Thunk<A extends Array<unknown>, T> =
-    T extends Function ? never : (((...args: A) => T) | T);
-
-export function thunk<A extends Array<unknown>, T>(t: Thunk<A, T>, ...args: A): T {
-  return typeof t === 'function' ? t(...args) : t;
-}
