@@ -151,8 +151,8 @@ export default class Navbar {
 
     drawImpl(state) {
         const rawState = this.stage.store.getState().program;
-        this.stage.getView(this.undo).enabled = rawState.get('$past').size > 0;
-        this.stage.getView(this.redo).enabled = rawState.get('$future').size > 0;
+        this.stage.getView(this.undo).enabled = rawState.$past.length > 0;
+        this.stage.getView(this.redo).enabled = rawState.$future.length > 0;
 
         const levelDisplay = this.stage.getView(this.levelDisplay);
         levelDisplay.pos.x = this.stage.width - 25;

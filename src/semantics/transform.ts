@@ -162,7 +162,12 @@ export class Semantics {
          */
       this.vtuple = function vtuple(children) {
         const result = {
-          type: 'vtuple', kind: 'expression', locked: true, numChildren: children.length
+          type: 'vtuple',
+          kind: 'expression',
+          locked: true,
+          numChildren: children.length,
+          subexpressions: {},
+          fields: {}
         };
         let i = 0;
         for (const child of children) {
@@ -183,7 +188,9 @@ export class Semantics {
           const innerFadeLevel = fadeLevel; // Capture value inside loop body
           fadeLevel += 1;
           const ctor = (...params: any[]) => {
-            const result: ReductNode = { type: exprName, locked: true };
+            const result: ReductNode = {
+              type: exprName, locked: true, fields: {}, subexpressions: {} 
+            };
             if (typeof exprDefinition.locked !== 'undefined') {
               result.locked = exprDefinition.locked;
             }
@@ -415,6 +422,14 @@ export class Semantics {
     public hasNotches(node: ReductNode) {
       return 'notches' in node;
     }
+
+    public hydrate(nodes: DeepReadonly<NodeMap>, node: ReductNode) {
+      return produce(node, (draft) => {
+        for (const field of this.subexpressions(draft)) {
+          draft.subexpressions[field] = this.hydrate(nodes, nodes.get(draft.subexpressions[field]));
+        }
+      });
+    };
 
     /**
      * Check whether we should ignore the given node when matching

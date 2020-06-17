@@ -4,7 +4,7 @@ import type Stage from '@/stage/stage';
 import type { ProjectionDef } from '@/gfx/projection';
 import type { BaseNode, NodeId, NodeType } from '..';
 import type { Semantics } from '../transform';
-import type { Thunk } from '@/util/helper';
+import type { Thunk, DeepReadonly } from '@/util/helper';
 
 export type NodeKind = 'expression' | 'placeholder' | 'value' | 'statement' | 'syntax';
 
@@ -15,7 +15,7 @@ export interface NodeDef<N extends BaseNode> {
      * ``expression`` can be clicked on, for instance, and reaching a
      * ``value`` will stop evaluation!
      */
-    kind?: NodeKind | ((expr: Im<N>, semantics: Semantics, state: Im<RState>) => NodeKind);
+    kind?: NodeKind | ((expr: DeepReadonly<N>, semantics: Semantics, state: DeepReadonly<RState>) => NodeKind);
 
 
     // TODO: strong type for notches
@@ -33,16 +33,16 @@ export interface NodeDef<N extends BaseNode> {
      * expressions. For instance, definition syntax might have a
      * subexpression for the body.
      */
-    subexpressions?: Thunk<[Semantics, Im<N>], Exclude<keyof N, keyof BaseNode>[]>;
+    subexpressions?: Thunk<[Semantics, DeepReadonly<N>], Array<keyof N['subexpressions'] | Exclude<keyof N, keyof BaseNode>>>;
 
     projection: ProjectionDef<N>;
 
-    type?: N['type'] | Thunk<[Semantics, Im<RState>, any, Im<N>], NodeType>;
+    type?: N['type'] | Thunk<[Semantics, DeepReadonly<RState>, any, DeepReadonly<N>], NodeType>;
 
     targetable?: (
         semantics: Semantics,
-        state: Im<RState>,
-        expr: Im<N>
+        state: DeepReadonly<RState>,
+        expr: DeepReadonly<N>
     ) => boolean;
 
     alwaysTargetable?: boolean;
@@ -92,9 +92,9 @@ export interface NodeDef<N extends BaseNode> {
     smallStep?: (
         semantics: Semantics,
         stage: Stage,
-        state: Im<RState>,
-        expr: Im<N>
-    ) => [NodeId, NodeId[], BaseNode[]] | NodeDef<any> | Im<NodeDef<any>>;
+        state: DeepReadonly<RState>,
+        expr: DeepReadonly<N>
+    ) => [NodeId, NodeId[], BaseNode[]] | NodeDef<any>;
 
     /**
      * This is similar to ``smallStep``, except you now have an array of
@@ -109,23 +109,23 @@ export interface NodeDef<N extends BaseNode> {
     betaReduce?: (
         semantics: Semantics,
         stage: Stage,
-        state: Im<RState>,
-        expr: Im<N>,
+        state: DeepReadonly<RState>,
+        expr: DeepReadonly<N>,
         argIds: NodeId[]
     ) => [NodeId, NodeId[], BaseNode[]];
 
     stepAnimation?: (
         semantics: Semantics,
         stage: Stage,
-        state: Im<RState>,
-        expr: Im<N>
+        state: DeepReadonly<RState>,
+        expr: DeepReadonly<N>
     ) => Promise<void>;
 
     stepSound?: string | string[] | ((
         semantics: Semantics,
         stage: Stage,
-        state: Im<RState>,
-        expr: Im<N>
+        state: DeepReadonly<RState>,
+        expr: DeepReadonly<N>
     ) => string | string[]);
 
     /**
@@ -135,8 +135,8 @@ export interface NodeDef<N extends BaseNode> {
      */
     validateStep?: string | ((
         semantics: Semantics,
-        state: Im<RState>,
-        expr: Im<N>
+        state: DeepReadonly<RState>,
+        expr: DeepReadonly<N>
     ) => [NodeId, string] | null);
 
     /**
@@ -160,8 +160,8 @@ export interface NodeDef<N extends BaseNode> {
      */
     substepFilter?: (
         semantics: Semantics,
-        state: Im<RState>,
-        expr: Im<N>,
+        state: DeepReadonly<RState>,
+        expr: DeepReadonly<N>,
         field: string
     ) => boolean;
 }

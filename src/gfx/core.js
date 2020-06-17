@@ -560,7 +560,7 @@ export function dynamic(mapping, keyFunc, options) {
         const field = keyFunc;
         keyFunc = function(state, exprId) {
             const expr = state.nodes.get(exprId);
-            return expr.get(field);
+            return expr.fields[field];
         };
     }
 

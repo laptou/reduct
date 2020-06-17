@@ -72,7 +72,7 @@ export default class Sidebar {
 
         const names = new Set();
 
-        for (const id of state.toolbox.concat(state.board)) {
+        for (const id of [...state.toolbox, ...state.board]) {
             this.stage.semantics.search(nodes, id, (_, nid) => {
                 const expr = nodes.get(nid);
                 if (expr.type === 'reference' && globals.has(expr.name) && !hideGlobals.includes(expr.name)) {
@@ -112,13 +112,12 @@ export default class Sidebar {
         }
 
         this.showing = names.size > 0
-            || state.board
-                .some((id) => state.nodes.get(id).type === 'define');
+            || Array.from(state.board).some((id) => state.nodes.get(id).type === 'define');
         return this.showing;
     }
 
     addGlobal(state, name) {
-        const nodeId = state.getIn(['globals', name]);
+        const nodeId = state.globals.get(name);
         let viewId = nodeId;
         if (this.stage.getView(nodeId)) {
             const view = this.stage.getView(viewId);

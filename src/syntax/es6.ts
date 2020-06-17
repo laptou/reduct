@@ -309,64 +309,64 @@ export function makeUnparser(_: Semantics) {
             return '_';
         }
         case 'symbol': {
-            return `"${node.name}"`;
+            return `"${node.fields.name}"`;
         }
         case 'lambda': {
-            if (node.body.type === 'vtuple') {
-                if (node.body.child0.type === 'lambdaVar') {
+            if (node.subexpressions.body.type === 'vtuple') {
+                if (node.subexpressions.body.subexpressions.child0.type === 'lambdaVar') {
                     // Unparse replicator block
                     const replicator = [];
-                    for (let i = 0; i < node.body.numChildren; i++) {
-                        replicator.push(node.body.child0.name);
+                    for (let i = 0; i < node.subexpressions.body.fields.numChildren; i++) {
+                        replicator.push(node.subexpressions.body.subexpressions.child0.name);
                     }
-                    return `(${unparseES6(node.arg)}) => ${replicator.join('')}`;
+                    return `(${unparseES6(node.subexpressions.arg)}) => ${replicator.join('')}`;
                 }
 
                 const cases = [];
-                for (let i = 0; i < node.body.numChildren; i++) {
-                    cases.push(unparseES6(node.body[`child${i}`]));
+                for (let i = 0; i < node.subexpressions.body.fields.numChildren; i++) {
+                    cases.push(unparseES6(node.subexpressions.body.subexpressions[`child${i}`]));
                 }
                 return `__tests(${cases.join(', ')})`;
             }
-            return `(${unparseES6(node.arg)}) => ${unparseES6(node.body)}`;
+            return `(${unparseES6(node.subexpressions.arg)}) => ${unparseES6(node.subexpressions.body)}`;
         }
         case 'letExpr': {
             return `${node.variable} = ${unparseES6(node.e1)} in (${unparseES6(node.e2.body)})`;
         }
         case 'reference': {
-            if (node.params && node.params.some((name) => node[`arg_${name}`].type !== 'missing')) {
-                const args = node.params.map((name) => unparseES6(node[`arg_${name}`])).join(', ');
-                return `${node.name}(${args})`;
+            if (node.fields.params && node.fields.params.some((name) => node.fields[`arg_${name}`].type !== 'missing')) {
+                const args = node.fields.params.map((name) => unparseES6(node.fields[`arg_${name}`])).join(', ');
+                return `${node.fields.name}(${args})`;
             }
-            return `${node.name}`;
+            return `${node.fields.name}`;
         }
         case 'lambdaArg':
         case 'lambdaVar': {
-            return `${node.name}`;
+            return `${node.fields.name}`;
         }
         case 'not': {
-            return `!${node.value}`;
+            return `!${node.subexpressions.value}`;
         }
         case 'binop': {
-            return `(${unparseES6(node.left)}) ${node.op.name} (${unparseES6(node.right)})`;
+            return `(${unparseES6(node.subexpressions.left)}) ${node.subexpressions.op.fields.name} (${unparseES6(node.subexpressions.right)})`;
         }
         case 'apply': {
-            return `(${unparseES6(node.callee)})(${unparseES6(node.argument)})`;
+            return `(${unparseES6(node.subexpressions.callee)})(${unparseES6(node.subexpressions.argument)})`;
         }
         case 'number': {
-            return `${node.value}`;
+            return `${node.fields.value}`;
         }
         case 'bool': {
-            return `${node.value}`;
+            return `${node.fields.value}`;
         }
         case 'string': {
-            return `${node.value}`;
+            return `${node.fields.value}`;
         }
         case 'dynamicVariant': {
             return `__variant_${node.variant}_${node.value}`;
         }
         case 'conditional': {
-            return `(${unparseES6(node.condition)}) ? (${unparseES6(node.positive)}) : (${unparseES6(node.negative)})`;
+            return `(${unparseES6(node.subexpressions.condition)}) ? (${unparseES6(node.subexpressions.positive)}) : (${unparseES6(node.subexpressions.negative)})`;
         }
         case 'define': {
             // Make sure we accurately capture what exactly the user
@@ -376,8 +376,8 @@ export function makeUnparser(_: Semantics) {
             // the argument name "x", but has no body. The user
             // instead places (y) => y.
             const args = '';
-            const { body } = node;
-            return `function ${node.name}(${args}) { return ${unparseES6(body)}; }`;
+            const { body } = node.subexpressions;
+            return `function ${node.fields.name}(${args}) { return ${unparseES6(body)}; }`;
         }
         case 'defineAttach': {
             // TODO: don't hardcode this
@@ -390,11 +390,11 @@ export function makeUnparser(_: Semantics) {
         case 'array': {
             let result = '['; const
                 first = true;
-            if (typeof node.length !== 'number') {
-                throw `array length is not a number: ${node.length}`;
+            if (typeof node.fields.length !== 'number') {
+                throw `array length is not a number: ${node.fields.length}`;
             }
-            for (let i = 0; i < node.length; i++) {
-                const e = node[`elem${i}`];
+            for (let i = 0; i < node.fields.length; i++) {
+                const e = node.subexpressions[`elem${i}`];
                 if (!first) result += ',';
                 result += unparseES6(e);
             }
@@ -402,13 +402,13 @@ export function makeUnparser(_: Semantics) {
             return result;
         }
         case 'member': {
-            return `${node.array}[${node.index}]`;
+            return `${node.subexpressions.array}[${node.fields.index}]`;
         }
         case 'autograder': {
-            return `__autograder(${node.goalId})`;
+            return `__autograder(${node.fields.goalId})`;
         }
         case 'unsol': {
-            return `${node.value}`;
+            return `${node.fields.value}`;
         }
         case 'vtuple': {
             return;

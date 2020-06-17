@@ -39,7 +39,7 @@ export function argumentBar() {
             this.names = [];
             const params = Array.isArray(define.params)
                 ? define.params
-                : state.getIn(['nodes', state.getIn(['globals', define.name]), 'params']);
+                : state.nodes.get(state.globals.get(define.fields.name)).fields.params;
 
             let maxY = 50;
             for (const name of params) {

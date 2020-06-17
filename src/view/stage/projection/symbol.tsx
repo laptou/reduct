@@ -8,7 +8,7 @@ interface SymbolProjectionOwnProps {
 
 export const SymbolProjection: FunctionComponent<SymbolProjectionOwnProps> = 
   (props) => {
-    switch (props.node.name) {
+    switch (props.node.fields.name) {
     case 'circle':
       return (
         <div className='projection symbol circle'>

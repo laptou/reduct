@@ -207,7 +207,7 @@ export default class Stage extends BaseStage {
       return [null, null, false];
     }
 
-    for (const nodeId of state.board.toArray().reverse()) {
+    for (const nodeId of Array.from(state.board).reverse()) {
       if (nodeId === selectedId) continue;
 
       const res = this.testExprAtPos(state, pos, nodeId, nodeId, null, this.makeBaseOffset());

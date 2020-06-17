@@ -98,7 +98,7 @@ function defaultProjector<N extends ReductNode>(
           }
 
           if (field.field) {
-            fields.push(stage.allocate(gfx.text(expr.get(field.field), textOptions)));
+            fields.push(stage.allocate(gfx.text(expr.fields[field.field], textOptions)));
           } else if (field.text) {
             fields.push(stage.allocate(gfx.text(field.text, textOptions)));
           } else {
@@ -109,7 +109,7 @@ function defaultProjector<N extends ReductNode>(
           if (match) {
             fields.push(stage.allocate(gfx.text(match[1])));
           } else if (rootConfig.fields.includes(field)) {
-            fields.push(stage.allocate(gfx.text(expr.get(field))));
+            fields.push(stage.allocate(gfx.text(expr.fields[field])));
           } else {
             fields.push(field);
           }
@@ -174,7 +174,7 @@ function casesProjector<N extends ReductNode>(
 
   return function casesProjectorFactory(stage, nodes, expr) {
     // TODO: better error handling if not found
-    const key = projection.key?.(nodes, expr) ?? expr.get(projection.on);
+    const key = projection.key?.(nodes, expr) ?? expr.fields[projection.on];
 
     if (typeof cases[key] === 'undefined') {
       throw new Error(`Unrecognized case ${key} for projection of ${projection}`);

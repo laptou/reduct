@@ -5,6 +5,7 @@ import cx from 'classnames';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { getProjectionForNode } from '.';
+import { DeepReadonly } from '@/util/helper';
 
 /**
  * Props retrieved from Redux.
@@ -77,15 +78,15 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
  */
 export const StageProjection = connect(
   (
-    state: Im<GlobalState>, 
+    state: DeepReadonly<GlobalState>, 
     ownProps: StageProjectionOwnProps
   ) => {
     if (ownProps.nodeId) {
       const node = state.program
-        .get('$present')
+        .$present
         .nodes
-        .get(ownProps.nodeId);
-      return { node: node ? node.toJS() : null };
+        .get(ownProps.nodeId) ?? null;
+      return { node };
     }
     return { node: null };
   }

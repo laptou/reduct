@@ -2,6 +2,7 @@ import type { BaseNode, NodeId, NodeMap } from '@/semantics';
 import type { Im, Thunk } from '@/util/im';
 import type { RState } from '@/reducer/state';
 import { SymbolNode } from '@/semantics/defs';
+import { DeepReadonly } from '@/util/helper';
 
 export interface ProjectionPadding {
     left: number;
@@ -29,7 +30,7 @@ export type ProjectionDef<N extends BaseNode> =
     SymbolProjectionDef;
 
 export interface BaseProjectionDef<N> {
-    color?: Thunk<[Im<N>], string>;
+    color?: Thunk<[DeepReadonly<N>], string>;
     strokeWhenChild?: boolean;
     shadowOffset?: number;
     radius?: number;
@@ -39,15 +40,15 @@ export interface BaseProjectionDef<N> {
     shadow?: string;
     shadowColor?: string;
     horizontalAlign?: string;
-    stroke?: Thunk<[Im<N>], string>;
-    highlightColor?: Thunk<[Im<N>], string>;
+    stroke?: Thunk<[DeepReadonly<N>], string>;
+    highlightColor?: Thunk<[DeepReadonly<N>], string>;
     ellipsize?: boolean;
 }
 
 export interface DefaultProjectionDef<N extends BaseNode> extends BaseProjectionDef<N> {
     type: 'default';
     shape?: ProjectionShape;
-    fields?: Thunk<[Im<N>], string[]>;
+    fields?: Thunk<[DeepReadonlyIm<N>], string[]>;
 }
 
 export interface VboxProjectionDef<N extends BaseNode> extends BaseProjectionDef<N> {
@@ -74,7 +75,7 @@ export interface DynPropProjectionDef<
     P extends ProjectionDef<N>
 > extends BaseProjectionDef<N> {
     type: 'dynamicProperty';
-    field(state: Im<RState>, nodeId: NodeId): string;
+    field(state: DeepReadonly<RState>, nodeId: NodeId): string;
     fields: Record<string, Record<string, (proj: P) => void>>;
     projection: P;
 }
@@ -86,7 +87,7 @@ export interface DynProjectionDef<
     P extends ProjectionDef<N>
 > extends BaseProjectionDef<N> {
     type: 'dynamic';
-    field(state: Im<RState>, nodeId: NodeId): string;
+    field(state: DeepReadonly<RState>, nodeId: NodeId): string;
     cases: Record<string, P>;
     default: P;
 
@@ -125,7 +126,7 @@ export interface CaseKeyProjectionDef<
     K extends string | number | symbol = string | number | symbol
 > extends BaseProjectionDef<N> {
     type: 'case' | 'cases';
-    key?(nodes: NodeMap, expr: Im<N>): K;
+    key?(nodes: NodeMap, expr: DeepReadonly<N>): K;
     cases: Record<K, ProjectionDef<N>>;
 }
 
@@ -136,7 +137,7 @@ export interface SymbolProjectionDef extends BaseProjectionDef<SymbolNode> {
 
 export interface SpriteProjectionDef<N extends BaseNode> extends BaseProjectionDef<N> {
     type: 'sprite';
-    image: Thunk<[Im<N>], string>;
+    image: Thunk<[DeepReadonly<N>], string>;
     scale?: number;
     size?: { w: number; h: number };
 }
