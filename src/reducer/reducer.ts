@@ -1,21 +1,13 @@
-// import Map as ImMap to avoid conflicting with built-in
-// Map type, and the others for consistency
-import { compose } from 'redux';
-import { combineReducers } from 'redux-immutable';
-
-import {
-  Im, ImList, ImMap, ImSet 
-} from '@/util/im';
-import type {
-  NodeId, BaseNode, ReductNode, NodeMap 
-} from '@/semantics';
+import type { NodeId, NodeMap } from '@/semantics';
 import type { Semantics } from '@/semantics/transform';
-import { ActionKind, ReductAction } from './action';
-import * as gfx from '../gfx/core';
-import * as animate from '../gfx/animate';
-import { undoable } from './undo';
-import { RState } from './state';
 import { produce } from 'immer';
+import { combineReducers, compose } from 'redux';
+import * as animate from '../gfx/animate';
+import * as gfx from '../gfx/core';
+import { ActionKind, ReductAction } from './action';
+import { RState } from './state';
+import { undoable } from './undo';
+
 
 const initialProgram: RState = {
   nodes: new Map(),
@@ -276,7 +268,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
         }
         const parent = draft.nodes.get(oldNode.parent)!;
         parent.subexpressions[oldNode.parentField] = act.newNodeIds[0];
-        
+
         if (!oldNode.parent) {
           for (const newNodeId of act.newNodeIds) {
             draft.board.add(newNodeId);
