@@ -30,7 +30,7 @@ export const define: NodeDef<DefineNode> = {
         type: 'dynamicProperty',
         field: (state, exprId) => {
             const node = state.nodes.get(exprId);
-            if (node.has('parent')) {
+            if (node.parent) {
                 return 'attached';
             }
             return 'default';

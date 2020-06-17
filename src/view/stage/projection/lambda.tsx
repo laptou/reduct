@@ -12,7 +12,7 @@ export const LambdaArgProjection: FunctionComponent<LambdaArgProjectionOwnProps>
   (props) => {
     return (
       <div className='projection lambda-arg'>
-        {props.node.name}
+        {props.node.fields.name}
       </div>
     );
   };
@@ -25,7 +25,7 @@ export const LambdaVarProjection: FunctionComponent<LambdaVarProjectionOwnProps>
   (props) => {
     return (
       <div className='projection lambda-var'>
-        {props.node.name}
+        {props.node.fields.name}
       </div>
     );
   };
@@ -48,13 +48,13 @@ export const LambdaProjectionImpl: FunctionComponent<LambdaProjectionProps> =
     return (
       <div className='projection lambda'>
         <div className='arg'>
-          <StageProjection nodeId={props.node.arg} />
+          <StageProjection nodeId={props.node.subexpressions.arg} />
         </div>
         <span className='arrow'>
           =&gt;
         </span>
         <div className='body'>
-          <StageProjection nodeId={props.node.body} />
+          <StageProjection nodeId={props.node.subexpressions.body} />
         </div>
       </div>
     );

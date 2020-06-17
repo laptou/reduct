@@ -15,25 +15,25 @@ export const ValueProjection: FunctionComponent<ValueProjectionOwnProps> =
     switch (props.node.type) {
     case 'bool':
       return (
-        <div className={cx('projection', props.node.type)}>
+        <div className='projection bool'>
           <BooleanShape>
-            {props.node.value.toString()}
+            {props.node.fields.value.toString()}
           </BooleanShape>
         </div>
       );
     case 'string':
       return (
-        <div className={cx('projection', props.node.type)}>
+        <div className='projection string'>
           <StringShape>
-            {props.node.value.toString()}
+            {props.node.fields.value.toString()}
           </StringShape>
         </div>
       );
     case 'number':
       return (
-        <div className={cx('projection', props.node.type)}>
+        <div className='projection number'>
           <NumberShape>
-            {props.node.value.toString()}
+            {props.node.fields.value.toString()}
           </NumberShape>
         </div>
       );

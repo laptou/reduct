@@ -14,7 +14,7 @@ export const NotProjection: FunctionComponent<NotProjectionOwnProps> =
       <div className='projection not'>
         <BooleanShape>
           <span>not</span>
-          <StageProjection nodeId={props.node.value} />
+          <StageProjection nodeId={props.node.subexpressions.value} />
         </BooleanShape>
       </div>
     )

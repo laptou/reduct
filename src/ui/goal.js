@@ -108,7 +108,7 @@ export default class Goal {
 
                 const contents = (_id, state) => {
                     const result = [goalLabel];
-                    return result.concat(state.goal.toArray());
+                    return result.concat(Array.from(state.goal));
                 };
                 container = this.stage.allocate(gfx.layout.vbox(gfx.constant(
                     this.text,

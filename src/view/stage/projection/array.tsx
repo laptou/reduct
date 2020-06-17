@@ -13,8 +13,8 @@ export const ArrayProjection: FunctionComponent<ArrayProjectionOwnProps> =
     const itemIds: Array<NodeId | null> = [];
     
     // array nodes have members elem0, elem1, ... elem{length - 1}
-    for (let i = 0; i < props.node.length; i++) {
-      itemIds.push(props.node[`elem${i}`] ?? null);
+    for (let i = 0; i < props.node.fields.length; i++) {
+      itemIds.push(props.node.subexpressions[`elem${i}`] ?? null);
     }
 
     return (

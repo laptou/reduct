@@ -31,10 +31,10 @@ const baseReference: NodeDef<InvocationNode> = {
     complete: state.globals.has(expr.name)
   }),
   targetable: (semant, state, expr) => {
-    if (expr.has('__meta') && expr.__meta.toolbox.targetable) {
+    if (expr.__meta?.toolbox.targetable) {
       return true;
     }
-    if (state.toolbox.includes(expr.id)) {
+    if (state.toolbox.has(expr.id)) {
       // If in toolbox, only targetable if defined
       return state.globals.has(expr.name);
     }

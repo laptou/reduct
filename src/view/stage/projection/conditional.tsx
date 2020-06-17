@@ -13,16 +13,16 @@ export const ConditionalProjection: FunctionComponent<ConditionalProjectionOwnPr
       <div className='projection conditional'>
         <div className='if'>
           <span>if</span>
-          <StageProjection nodeId={props.node.condition} />
+          <StageProjection nodeId={props.node.subexpressions.condition} />
         </div>
         <div className='positive'>
-          <StageProjection nodeId={props.node.positive} />
+          <StageProjection nodeId={props.node.subexpressions.positive} />
         </div>
         <div className='else'>
           <span>else</span>
         </div>
         <div className='negative'>
-          <StageProjection nodeId={props.node.negative} />
+          <StageProjection nodeId={props.node.subexpressions.negative} />
         </div>
       </div>
     )

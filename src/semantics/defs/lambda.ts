@@ -46,11 +46,11 @@ export const lambda: NodeDef<LambdaNode> = {
   },
   betaReduce: (semant, stage, state, expr, argIds) => genericBetaReduce(semant, state, {
     topNode: expr,
-    targetNode: state.nodes.get(expr.arg),
+    targetNode: state.nodes.get(expr.subexpressions.arg),
     argIds,
-    targetName: (node) => node.name,
+    targetName: (node) => node.fields.name,
     isVar: (node) => node.type === 'lambdaVar',
-    varName: (node) => node.name,
+    varName: (node) => node.fields.name,
     isCapturing: (node) => node.type === 'lambda',
     captureName: (nodes, node) => nodes.get(node.subexpressions.arg).fields.name,
     animateInvalidArg: (id) => {

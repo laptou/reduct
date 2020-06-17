@@ -136,7 +136,7 @@ export class Semantics {
       this.projections.vtuple = [() => gfx.layout.vbox((id, state) => {
         const node = state.nodes.get(id);
         const result = [];
-        for (let i = 0; i < node.numChildren; i++) {
+        for (let i = 0; i < node.fields.numChildren; i++) {
           result.push(node.subexpressions[`child${i}`]);
         }
         return result;
@@ -165,9 +165,8 @@ export class Semantics {
           type: 'vtuple',
           kind: 'expression',
           locked: true,
-          numChildren: children.length,
           subexpressions: {},
-          fields: {}
+          fields: { numChildren: children.length }
         };
         let i = 0;
         for (const child of children) {
@@ -613,14 +612,14 @@ export class Semantics {
       const result = [];
       this.map(nodes, exprId, (nodes, id) => {
         const node = nodes.get(id);
-        if (node.type === 'lambdaVar' && node.name === targetName) {
+        if (node.type === 'lambdaVar' && node.fields.name === targetName) {
           result.push(id);
           return [node, nodes];
         }
         return [node, nodes];
       }, (nodes, node) => (
         node.type !== 'lambda'
-                || nodes.get(node.arg).name !== targetName));
+                || nodes.get(node.subexpressions.arg).fields.name !== targetName));
       return result;
     }
 
@@ -645,7 +644,7 @@ export class Semantics {
     public subexpressions(expr: ReductNode) {
       if (expr.type === 'vtuple') {
         const result = [];
-        for (let i = 0; i < expr.numChildren; i++) {
+        for (let i = 0; i < expr.fields.numChildren; i++) {
           result.push(`child${i}`);
         }
         return result;
@@ -653,7 +652,7 @@ export class Semantics {
 
       if (expr.type === 'array') {
         const result = [];
-        for (let i = 0; i < expr.length; i++) {
+        for (let i = 0; i < expr.fields.length; i++) {
           result.push(`elem${i}`);
         }
         return result;

@@ -273,10 +273,10 @@ export function genericBetaReduce(semant: Semantics, state: DeepReadonly<RState>
   }
 
   const name = config.targetName(targetNode);
-  let [bodyClone, newNodes, curNodes] = semant.clone(topNode.body, nodes);
+  let [bodyClone, newNodes, curNodes] = semant.clone(topNode.subexpressions.body, nodes);
   newNodes.push(bodyClone);
 
-  const [newTop] = semant.map(curNodes, bodyClone.id, (nodes, id) => {
+  let [newTop] = semant.map(curNodes, bodyClone.id, (nodes, id) => {
     const node = nodes.get(id);
     if (config.isVar(node) && config.varName(node) === name) {
       const [cloned, resultNewNodes, nodesStore] = semant.clone(argIds[0], nodes);
@@ -288,7 +288,7 @@ export function genericBetaReduce(semant: Semantics, state: DeepReadonly<RState>
 
       newNodes.push(result);
       newNodes = newNodes.concat(resultNewNodes);
-      return [result, nodesStore.set(result.id, result)];
+      return [result, produce(nodesStore, draft => draft.set(result.id, result))];
     }
 
     const [result, resultNewNodes, nodesStore] = semant.clone(id, nodes);
@@ -302,8 +302,10 @@ export function genericBetaReduce(semant: Semantics, state: DeepReadonly<RState>
     return true;
   });
 
-  delete newTop.parent;
-  delete newTop.parentField;
+  newTop = produce(newTop, draft => {
+    draft.parent = null;
+    draft.parentField = null;
+  });
 
   if (newTop.type === 'vtuple') {
     // Spill vtuple onto the board

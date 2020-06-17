@@ -17,10 +17,10 @@ export const ReferenceProjection: FunctionComponent<ReferenceProjectionOwnProps>
   (props) => {
     let paramIds: Record<string, NodeId> | null = null;
 
-    if ('params' in props.node) {
+    if ('params' in props.node.fields) {
       paramIds = {};
-      for (const param of props.node.params) {
-        paramIds[param] = props.node[`arg_${param}`];
+      for (const param of props.node.fields.params) {
+        paramIds[param] = props.node.subexpressions[`arg_${param}`];
       }
     }
 
@@ -28,7 +28,7 @@ export const ReferenceProjection: FunctionComponent<ReferenceProjectionOwnProps>
       <div className='projection invocation'>
         <div className='invocation-signature'>
           <div className='invocation-name'>
-            {props.node.name}
+            {props.node.fields.name}
           </div>
           {
             paramIds

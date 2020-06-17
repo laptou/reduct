@@ -37,15 +37,15 @@ export function argumentBar() {
             throw 'Dynamic parameter lists are unimplemented.';
         } else {
             this.names = [];
-            const params = Array.isArray(define.params)
-                ? define.params
+            const params = Array.isArray(define.fields.params)
+                ? define.fields.params
                 : state.nodes.get(state.globals.get(define.fields.name)).fields.params;
 
             let maxY = 50;
             for (const name of params) {
                 const subexprField = `arg_${name}`;
-                if (define.get(subexprField)) {
-                    const subexprId = define.get(subexprField);
+                if (define.subexpressions[subexprField]) {
+                    const subexprId = define.subexpressions[subexprField];
                     const childProjection = stage.getView(subexprId);
                     childProjection.parent = this;
                     childProjection.pos.x = this.size.w;
@@ -74,8 +74,8 @@ export function argumentBar() {
 
             for (const name of params) {
                 const subexprField = `arg_${name}`;
-                if (define.get(subexprField)) {
-                    const subexprId = define.get(subexprField);
+                if (define.subexpressions[subexprField]) {
+                    const subexprId = define.subexpressions[subexprField];
                     const childProjection = stage.getView(subexprId);
                     childProjection.pos.y = (this.size.h - (childProjection.size.h * childProjection.scale.y)) / 2;
                 }

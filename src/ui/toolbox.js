@@ -161,7 +161,7 @@ export default class Toolbox {
             projection.prepare(nodeId, nodeId, state, this.stage);
 
 
-            if (node.has('__meta') && node.__meta.toolbox.unlimited) {
+            if (node.__meta?.toolbox.unlimited) {
                 projection.draw(nodeId, nodeId, state, this.stage, this.stage.makeBaseOffset({
                     x: 2,
                     y: 6
@@ -170,7 +170,7 @@ export default class Toolbox {
 
             projection.draw(nodeId, nodeId, state, this.stage, this.stage.makeBaseOffset());
 
-            if (node.has('__meta') && node.__meta.toolbox.unlimited) {
+            if (node.__meta?.toolbox.unlimited) {
                 projection.draw(nodeId, nodeId, state, this.stage, this.stage.makeBaseOffset({
                     x: -2,
                     y: -6

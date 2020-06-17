@@ -1,5 +1,5 @@
 import * as chroma from 'chroma-js';
-import * as immutable from 'immutable';
+import { produce } from 'immer';
 
 import * as action from '../reducer/action';
 import * as level from '../game/level';
@@ -280,7 +280,7 @@ export default class Stage extends BaseStage {
 
     let result = null;
 
-    for (const nodeId of state.board.toArray().reverse()) {
+    for (const nodeId of Array.from(state.board).reverse()) {
       const res = check(pos, nodeId, nodeId, null, this.makeBaseOffset());
       if (res) {
         result = res;
@@ -563,11 +563,11 @@ export default class Stage extends BaseStage {
 
     if (prevTarget !== null) {
       const prevTargetNode = nodes.get(prevTarget);
-      if (prevTargetNode.has('parent') && nodes.get(prevTargetNode.parent).has('body')) {
+      if (prevTargetNode.parent && nodes.get(prevTargetNode.parent).subexpressions.body) {
         // Clear previous preview
         this.semantics.map(
           nodes,
-          nodes.get(prevTargetNode.parent).body,
+          nodes.get(prevTargetNode.parent).subexpressions.body,
           (nodes, id) => {
             if (this.views[id]) {
               delete this.views[id].preview;
@@ -590,7 +590,7 @@ export default class Stage extends BaseStage {
     const targetNode = nodes.get(target);
     if (targetNode.type !== 'lambdaArg') return;
 
-    const lambdaBody = nodes.get(targetNode.parent).body;
+    const lambdaBody = nodes.get(targetNode.parent).subexpressions.body;
 
     const targetName = targetNode.name;
     this.semantics.searchNoncapturing(nodes, targetName, lambdaBody).forEach((id) => {
@@ -877,7 +877,7 @@ export default class Stage extends BaseStage {
       const origExp = this.saveNode(topNode);
       const origArg = this.saveNode(arg);
       const tempNodes = produce(state.nodes, draft  => {
-        for (const node of addedNodes) {
+        for (const node of newNodes) {
           draft.set(node.id, node);
         }
       });

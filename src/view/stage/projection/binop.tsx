@@ -7,6 +7,7 @@ import { GlobalState } from '@/reducer/state';
 import { Im } from '@/util/im';
 import { NumberShape } from '../shape/number';
 import { BooleanShape } from '../shape/boolean';
+import { DeepReadonly } from '@/util/helper';
 
 interface BinOpProjectionOwnProps {
   node: BinOpNode;
@@ -30,13 +31,13 @@ const BinOpProjectionImpl: FunctionComponent<BinOpProjectionProps> =
         <div className='projection binop'>
           <NumberShape>
             <div className='left'>
-              <StageProjection nodeId={props.node.left} />
+              <StageProjection nodeId={props.node.subexpressions.left} />
             </div>
             <div className='operation'>
-              <StageProjection nodeId={props.node.op} />
+              <StageProjection nodeId={props.node.subexpressions.op} />
             </div>
             <div className='right'>
-              <StageProjection nodeId={props.node.right} />
+              <StageProjection nodeId={props.node.subexpressions.right} />
             </div>
           </NumberShape>
         </div>
@@ -50,13 +51,13 @@ const BinOpProjectionImpl: FunctionComponent<BinOpProjectionProps> =
         <div className='projection binop'>
           <BooleanShape>
             <div className='left'>
-              <StageProjection nodeId={props.node.left} />
+              <StageProjection nodeId={props.node.subexpressions.left} />
             </div>
             <div className='operation'>
-              <StageProjection nodeId={props.node.op} />
+              <StageProjection nodeId={props.node.subexpressions.op} />
             </div>
             <div className='right'>
-              <StageProjection nodeId={props.node.right} />
+              <StageProjection nodeId={props.node.subexpressions.right} />
             </div>
           </BooleanShape>
         </div>
@@ -70,8 +71,8 @@ const BinOpProjectionImpl: FunctionComponent<BinOpProjectionProps> =
     }
   };
 
-export const BinOpProjection = connect((store: Im<GlobalState>, ownProps: BinOpProjectionOwnProps) => {
-  const opNode = store.program.get('$present').nodes.get(ownProps.node.op)?.toJS();
+export const BinOpProjection = connect((store: DeepReadonly<GlobalState>, ownProps: BinOpProjectionOwnProps) => {
+  const opNode = store.program.$present.nodes.get(ownProps.node.subexpressions.op);
 
   if (opNode && opNode.type === 'op') {
     return { op: opNode.name }

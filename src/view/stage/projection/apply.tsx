@@ -12,10 +12,10 @@ export const ApplyProjection: FunctionComponent<ApplyProjectionOwnProps> =
     return (
       <div className='projection apply'>
         <div className='apply-callee'>
-          <StageProjection nodeId={props.node.callee} />
+          <StageProjection nodeId={props.node.subexpressions.callee} />
         </div>
         <div className='apply-param'>
-          <StageProjection nodeId={props.node.argument} />
+          <StageProjection nodeId={props.node.subexpressions.argument} />
         </div>
       </div>
     )
