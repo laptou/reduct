@@ -1,19 +1,20 @@
 import * as immutable from 'immutable';
 
 import { ActionKind } from './action';
+import produce from 'immer';
 
 /** Undo the last action. */
 export function undo() {
-    return {
-        type: ActionKind.Undo
-    };
+  return {
+    type: ActionKind.Undo
+  };
 }
 
 /** Redo the last undone action. */
 export function redo() {
-    return {
-        type: ActionKind.Redo
-    };
+  return {
+    type: ActionKind.Redo
+  };
 }
 
 /**
@@ -31,83 +32,76 @@ export function redo() {
  * state, record any state that lives outside of Redux.
  */
 export function undoable(reducer, options = {}) {
-    const initialState = immutable.Map({
-        $present: reducer(undefined, {}),
-        $past: immutable.Stack(),
-        $future: immutable.Stack(),
-        // "Extra" state (used to store node positions)
-        $presentExtra: {},
-        $pastExtra: immutable.Stack(),
-        $futureExtra: immutable.Stack()
-    });
+  const initialState = {
+    $present: reducer(undefined, {}),
+    $past: [],
+    $future: [],
+    // "Extra" state (used to store node positions)
+    $presentExtra: {},
+    $pastExtra: [],
+    $futureExtra: []
+  };
 
-    return function(state = initialState, action) {
-        const $present = state.get('$present');
-        const $past = state.get('$past');
-        const $future = state.get('$future');
+  return function(state = initialState, action) {
+    switch (action.type) {
+    case ActionKind.StartLevel: {
+      return produce(state, draft => {
+        draft.$present = reducer(draft.$present, action);
+        draft.$presentExtra = {};
+      });
+    }
+    case ActionKind.Undo: {
+      if (state.$past.isEmpty()) return state;
 
-        // Additional state to preserve that isn't part of Redux.
-        const $presentExtra = state.get('$presentExtra');
-        const $pastExtra = state.get('$pastExtra');
-        const $futureExtra = state.get('$futureExtra');
+      const newState = produce(state, draft => {
+        draft.$future.unshift(draft.$present);
+        draft.$present = draft.$past.shift();
+        draft.$futureExtra.unshift(draft.$presentExtra);
+        draft.$presentExtra = draft.$pastExtra.shift();
+      });
 
-        switch (action.type) {
-        case ActionKind.StartLevel: {
-            return initialState.withMutations((is) => {
-                is.set('$present', reducer($present, action));
-                is.set('$presentExtra', {});
-            });
+      options.restoreExtraState($past.peek(), $present, $pastExtra.peek());
+      return newState;
+    }
+    case ActionKind.Redo: {
+      if ($future.isEmpty()) return state;
+
+      const newState = state.withMutations((map) => {
+        map
+          .set('$past', $past.unshift($present))
+          .set('$present', $future.peek())
+          .set('$future', $future.shift())
+          .set('$pastExtra', $pastExtra.unshift($presentExtra))
+          .set('$presentExtra', $futureExtra.peek())
+          .set('$futureExtra', $futureExtra.shift());
+      });
+      options.restoreExtraState($future.peek(), $present, $futureExtra.peek());
+      return newState;
+    }
+    default: {
+      return produce(state, draft => {
+        const newPresent = reducer(draft.$present, action);
+
+        if (newPresent === draft.$present) {
+          return;
         }
-        case ActionKind.Undo: {
-            if ($past.isEmpty()) return state;
 
-            const newState = state.withMutations((map) => {
-                map
-                    .set('$past', $past.shift())
-                    .set('$present', $past.peek())
-                    .set('$future', $future.unshift($present))
-                    .set('$pastExtra', $pastExtra.shift())
-                    .set('$presentExtra', $pastExtra.peek())
-                    .set('$futureExtra', $futureExtra.unshift($presentExtra));
-            });
-            options.restoreExtraState($past.peek(), $present, $pastExtra.peek());
-            return newState;
+        if (options.actionFilter && options.actionFilter(action)) {
+          draft.$present = newPresent;
+          return;
         }
-        case ActionKind.Redo: {
-            if ($future.isEmpty()) return state;
 
-            const newState = state.withMutations((map) => {
-                map
-                    .set('$past', $past.unshift($present))
-                    .set('$present', $future.peek())
-                    .set('$future', $future.shift())
-                    .set('$pastExtra', $pastExtra.unshift($presentExtra))
-                    .set('$presentExtra', $futureExtra.peek())
-                    .set('$futureExtra', $futureExtra.shift());
-            });
-            options.restoreExtraState($future.peek(), $present, $futureExtra.peek());
-            return newState;
-        }
-        default: {
-            const newPresent = reducer($present, action);
-            if (newPresent === $present) {
-                return state;
-            }
-            if (options.actionFilter && options.actionFilter(action)) {
-                return state.set('$present', newPresent);
-            }
+        const extraState = options.extraState($present, newPresent);
 
-            const extraState = options.extraState($present, newPresent);
-            return state.withMutations((map) => {
-                map
-                    .set('$past', $past.unshift($present))
-                    .set('$present', newPresent)
-                    .set('$future', immutable.Stack())
-                    .set('$pastExtra', $pastExtra.unshift($presentExtra))
-                    .set('$presentExtra', extraState)
-                    .set('$futureExtra', immutable.Stack());
-            });
-        }
-        }
-    };
+        draft.$past.unshift(draft.$present);
+        draft.$present = newPresent;
+        draft.$future = [];
+
+        draft.$pastExtra.unshift(draft.$presentExtra);
+        draft.$presentExtra = extraState;
+        draft.$futureExtra = [];
+      });
+    }
+    }
+  };
 }

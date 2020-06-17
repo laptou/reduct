@@ -31,3 +31,9 @@ export type DeepReadonly<T> =
   T extends Set<infer U> ? ReadonlySet<DeepReadonly<U>> :
   T extends Map<infer U, infer V> ? ReadonlyMap<U, DeepReadonly<V>> :
   { readonly [K in keyof T]: DeepReadonly<T[K]> };
+
+export function* map<T, U>(iterable: Iterable<T>, mapper: (item: T) => U): Iterable<U> {
+  for (const item of iterable) {
+    yield mapper(item);
+  }
+}

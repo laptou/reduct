@@ -1,12 +1,12 @@
 import { GlobalState } from '@/reducer/state';
 import { NodeId } from '@/semantics';
-import { Im, ImList } from '@/util/im';
+import { DeepReadonly, map } from '@/util/helper';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { StageProjection } from './projection/base';
 
 interface ToolboxStoreProps {
-  nodeIds: ImList<NodeId>;
+  nodeIds: DeepReadonly<Set<NodeId>>;
 }
 
 type ToolboxProps = ToolboxStoreProps;
@@ -35,13 +35,13 @@ const ToolboxImpl: FunctionComponent<ToolboxProps> =
   (props) => {
     return (
       <div id='reduct-toolbox' onDragOver={onDragOver} onDrop={onDrop}>
-        {props.nodeIds.map(nodeId => <StageProjection nodeId={nodeId} key={nodeId} />)}
+        {map(props.nodeIds, nodeId => <StageProjection nodeId={nodeId} key={nodeId} />)}
       </div>
     );
   };
 
 export const Toolbox = connect(
-  (state: Im<GlobalState>) => ({
-    nodeIds: state.get('program').get('$present').get('toolbox') 
+  (state: DeepReadonly<GlobalState>) => ({
+    nodeIds: state.program.$present.toolbox
   })
 )(ToolboxImpl);

@@ -289,9 +289,7 @@ const invocationReference: NodeDef<InvocationNode2> = {
   }
 };
 
-export default {
-  reference: [
-    baseReference,
-    invocationReference
-  ]
-};
+export const reference = [
+  baseReference,
+  invocationReference
+];

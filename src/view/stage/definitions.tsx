@@ -1,12 +1,12 @@
 import { GlobalState } from '@/reducer/state';
 import { NodeId } from '@/semantics';
-import { Im, ImList } from '@/util/im';
+import { DeepReadonly } from '@/util/helper';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { StageProjection } from './projection/base';
 
 interface DefinitionsStoreProps {
-  nodeIds: ImList<NodeId>;
+  nodeIds: NodeId[];
 }
 
 type DefinitionsProps = DefinitionsStoreProps;
@@ -41,9 +41,9 @@ const DefinitionsImpl: FunctionComponent<DefinitionsProps> =
   };
 
 export const Definitions = connect(
-  (state: Im<GlobalState>) => ({
+  (state: DeepReadonly<GlobalState>) => ({
     // TODO: only show globals which are referenced by something on the board
     // or in the toolbox
-    nodeIds: state.get('program').get('$present').get('globals').valueSeq() as unknown as ImList<NodeId>
+    nodeIds: Array.from(state.program.$present.globals.values())
   })
 )(DefinitionsImpl);

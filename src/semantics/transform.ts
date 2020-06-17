@@ -134,10 +134,10 @@ export class Semantics {
       this.projections = {};
 
       this.projections.vtuple = [() => gfx.layout.vbox((id, state) => {
-        const node = state.getIn(['nodes', id]);
+        const node = state.nodes.get(id);
         const result = [];
-        for (let i = 0; i < node.get('numChildren'); i++) {
-          result.push(node.get(`child${i}`));
+        for (let i = 0; i < node.numChildren; i++) {
+          result.push(node.subexpressions[`child${i}`]);
         }
         return result;
       }, {
@@ -166,7 +166,7 @@ export class Semantics {
         };
         let i = 0;
         for (const child of children) {
-          result.fields[`child${i}`] = child;
+          result.subexpressions[`child${i}`] = child;
           i += 1;
         }
         return result;

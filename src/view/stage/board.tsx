@@ -1,13 +1,13 @@
 import { createAddNodeToBoard } from '@/reducer/action';
 import { GlobalState } from '@/reducer/state';
 import { NodeId } from '@/semantics';
-import { Im, ImSet } from '@/util/im';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { StageProjection } from './projection/base';
+import { DeepReadonly, map } from '@/util/helper';
 
 interface BoardStoreProps {
-  nodeIds: ImSet<NodeId>;
+  nodeIds: DeepReadonly<Set<NodeId>>;
 }
 
 interface BoardDispatchProps {
@@ -40,14 +40,14 @@ const BoardImpl: FunctionComponent<BoardProps> =
   (props) => {
     return (
       <div id='reduct-board' onDragOver={onDragOver} onDrop={e => onDrop(e, props)}>
-        {props.nodeIds.map(nodeId => <StageProjection nodeId={nodeId} key={nodeId} />)}
+        {map(props.nodeIds, nodeId => <StageProjection nodeId={nodeId} key={nodeId} />)}
       </div>
     );
   };
 
 export const Board = connect(
-  (state: Im<GlobalState>) => ({
-    nodeIds: state.get('program').get('$present').get('board') 
+  (state: DeepReadonly<GlobalState>) => ({
+    nodeIds: state.program.$present.board
   }),
   (dispatch) => ({
     addNodeToBoard(id: NodeId) { dispatch(createAddNodeToBoard(id)); }
