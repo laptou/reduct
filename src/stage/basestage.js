@@ -170,7 +170,7 @@ export default class BaseStage {
      * Get the current Redux state.
      */
     getState() {
-        return this.store.getState().getIn(['program', '$present']);
+        return this.store.getState().program.$present;
     }
 
     /**
@@ -311,7 +311,7 @@ export default class BaseStage {
                 this.setCursor('grabbing');
             }
         } else if (touchRecord.hoverNode !== null) {
-            const node = this.getState().getIn(['nodes', touchRecord.hoverNode]);
+            const node = this.getState().nodes.get(touchRecord.hoverNode);
             const view = this.getView(touchRecord.hoverNode);
             if (view && view.onmousedown && (typeof view.enabled === 'undefined' || view.enabled)) {
                 this.setCursor('pointer');

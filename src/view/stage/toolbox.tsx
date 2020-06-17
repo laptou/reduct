@@ -35,7 +35,7 @@ const ToolboxImpl: FunctionComponent<ToolboxProps> =
   (props) => {
     return (
       <div id='reduct-toolbox' onDragOver={onDragOver} onDrop={onDrop}>
-        {map(props.nodeIds, nodeId => <StageProjection nodeId={nodeId} key={nodeId} />)}
+        {[...props.nodeIds].map(nodeId => <StageProjection nodeId={nodeId} key={nodeId} />)}
       </div>
     );
   };

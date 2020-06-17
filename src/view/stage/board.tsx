@@ -40,7 +40,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
   (props) => {
     return (
       <div id='reduct-board' onDragOver={onDragOver} onDrop={e => onDrop(e, props)}>
-        {map(props.nodeIds, nodeId => <StageProjection nodeId={nodeId} key={nodeId} />)}
+        {[...props.nodeIds].map(nodeId => <StageProjection nodeId={nodeId} key={nodeId} />)}
       </div>
     );
   };
