@@ -1,9 +1,7 @@
-import * as immutable from 'immutable';
-import { ImMap, Im, ImList } from '@/util/im';
 import type { RState } from '@/reducer/state';
-import type { ReductNode, NodeId, NodeMap } from '.';
 import { DeepReadonly } from '@/util/helper';
 import { produce } from 'immer';
+import type { NodeId, NodeMap, ReductNode } from '.';
 import { Semantics } from './transform';
 
 type GenericNodeCreator<F> =

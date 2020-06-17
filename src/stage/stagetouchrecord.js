@@ -55,10 +55,10 @@ export default class TouchRecord extends BaseTouchRecord {
 
     startHighlight() {
         const state = this.stage.getState();
-        const nodes = state.get('nodes');
+        const nodes = state.nodes;
 
         const topNode = nodes.get(this.topNode);
-        const highlightSidebar = topNode.get('type') === 'define';
+        const highlightSidebar = topNode.type === 'define';
 
         // sidebar highlighting for defines
         let sidebarScale = null;
@@ -78,7 +78,7 @@ export default class TouchRecord extends BaseTouchRecord {
         }
 
         // highlighting droppable targets for the topNode
-        state.get('board').forEach((id) => {
+        state.board.forEach((id) => {
             if (id === this.topNode) return;
 
             this.dropTargets = this.dropTargets.concat(this.stage.semantics.search(
@@ -103,7 +103,7 @@ export default class TouchRecord extends BaseTouchRecord {
                     lineWidth: 3 + (1.5 * Math.cos(time / 750))
                 };
 
-                if (state.getIn(['nodes', targetId, 'type']) === 'lambdaArg') {
+                if (state.nodes.get(targetId).type === 'lambdaArg') {
                     view.outerStroke = stroke;
                 } else {
                     view.stroke = stroke;
@@ -133,15 +133,14 @@ export default class TouchRecord extends BaseTouchRecord {
         if (this.stage.alreadyWon) return;
 
         super.onstart(mousePos);
-        this.isExpr = this.stage.getState().get('nodes').has(this.topNode);
+        this.isExpr = this.stage.getState().nodes.has(this.topNode);
         if (this.isExpr && this.topNode) {
             this.stage.store.dispatch(action.raise(this.topNode));
 
             const state = this.stage.getState();
-            const selected = state.getIn(['nodes', this.topNode]);
+            const selected = state.nodes.get(this.topNode);
             this.clonable = this.fromToolbox
-                && selected.has('__meta')
-                && selected.get('__meta').toolbox.unlimited;
+                && selected.__meta?.toolbox.unlimited;
         }
 
         const referenceId = this.stage.getReferenceNameAtPos(mousePos);
@@ -255,9 +254,9 @@ export default class TouchRecord extends BaseTouchRecord {
 
         if (this.isExpr && this.topNode && this.hoverNode) {
             const state = this.stage.getState();
-            const holeExprType = state.getIn(['nodes', this.hoverNode, 'type']);
-            const holeType = state.getIn(['nodes', this.hoverNode, 'ty']);
-            const exprType = state.getIn(['nodes', this.topNode, 'ty']);
+            const holeExprType = state.nodes.get(this.hoverNode).type;
+            const holeType = state.nodes.get(this.hoverNode).ty;
+            const exprType = state.nodes.get(this.topNode).ty;
             // TODO: don't hardcode these checks
             if ((holeExprType !== 'missing'
                  && holeExprType !== 'lambdaArg')
@@ -380,7 +379,7 @@ export default class TouchRecord extends BaseTouchRecord {
             view.pos = cp;
         }
 
-        if (this.isExpr && !this.dragged && this.topNode !== null && !this.fromToolbox && state.get('board').includes(this.topNode)) {
+        if (this.isExpr && !this.dragged && this.topNode !== null && !this.fromToolbox && state.board.has(this.topNode)) {
             if (Date.now() - this.currTime < 10000) {
                 // Click on object to reduce; always targets toplevel node
                 if (this.stage.functionDef) {
@@ -432,8 +431,8 @@ export default class TouchRecord extends BaseTouchRecord {
             }
         } else if (this.isExpr && !this.dragged && this.topNode !== null && this.fromToolbox) {
             return; // unimplemented
-            const node = state.getIn(['nodes', this.topNode]);
-            if (node.get('name') == 'Library') {
+            const node = state.nodes.get(this.topNode);
+            if (node.name == 'Library') {
                 this.stage.library(state, this.topNode);
             }
         }
@@ -445,7 +444,7 @@ export default class TouchRecord extends BaseTouchRecord {
             const topLeft = gfxCore.absolutePos(projection);
             const bottom = { x: 0, y: topLeft.y + projection.size.h };
             if (this.stage.toolbox.containsPoint(bottom)
-                && !this.stage.getState().get('toolbox').includes(this.topNode)) {
+                && !this.stage.getState().toolbox.has(this.topNode)) {
                 Logging.log('toolbox-reject', this.stage.saveNode(this.topNode));
                 fx.error(this.stage, this.stage.getView(this.topNode));
                 this.stage.feedback.update('#000', ['We can\'t put things back in the toolbox!']);
