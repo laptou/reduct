@@ -1,4 +1,3 @@
-import type { ImMap, Im } from '@/util/im';
 import {
   ApplyNode,
   ArrayNode,
@@ -23,6 +22,7 @@ import {
   InvocationNode2
 } from './defs';
 import { VTupleNode } from './transform';
+import { DeepReadonly } from '@/util/helper';
 
 export type NodeId = number;
 
@@ -36,13 +36,13 @@ export interface BaseNode {
     id: NodeId;
 
     /** The ID of this node's parent. */
-    parent?: NodeId;
+    parent?: NodeId | null;
 
     /**
      * The field in the parent node which this node
      * occupies.
      */
-    parentField: string;
+    parentField?: string | null;
 
     type: string;
 
@@ -52,12 +52,14 @@ export interface BaseNode {
 
     complete: boolean;
 
-    fields: Record<string, any>;
+    fields: Record<string | number, any>;
     
-    subexpressions: Record<string, ReductNode | NodeId>;
+    subexpressions: Record<string, ReductNode>;
 
     __meta?: NodeMetadata;
 }
+
+export type Flattened<N extends BaseNode> = N & { subexpressions: { [K in keyof N['subexpressions']]: NodeId } };
 
 export interface NodeMetadata {
   toolbox: { 
@@ -74,7 +76,7 @@ export type NodeType = {
     complete: boolean;
 }
 
-export type NodeMap = Map<NodeId, Readonly<ReductNode>>;
+export type NodeMap = Map<NodeId, DeepReadonly<Flattened<ReductNode>>>;
 
 export interface MissingNode extends BaseNode {
   type: 'missing';

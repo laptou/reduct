@@ -1,9 +1,9 @@
+import { BaseNode, ReductNode } from '..';
 import type { NodeDef } from './base';
-import { BaseNode, NodeId } from '..';
 
 export interface OpNode extends BaseNode {
     type: 'op';
-    name: '+' | '-' | '<' | '>' | '==' | '&&' | '||';
+    fields: { name: '+' | '-' | '<' | '>' | '==' | '&&' | '||' };
 }
 
 export const op: NodeDef<OpNode> = {
@@ -20,9 +20,9 @@ export interface BinOpNode extends BaseNode {
   type: 'binop';
 
   subexpressions: {
-    left: NodeId;
-    op: NodeId;
-    right: NodeId;
+    left: ReductNode;
+    op: OpNode;
+    right: ReductNode;
   };
 }
 
@@ -32,7 +32,7 @@ export const binop: NodeDef<BinOpNode> = {
   subexpressions: ['left', 'op', 'right'],
   projection: {
     type: 'case',
-    key: (nodes, expr) => nodes.get(expr.subexpressions.op).fields.name,
+    key: (nodes, expr) => nodes.get(expr.subexpressions.op)!.fields.name,
     cases: {
       '+': {
         type: 'default',

@@ -50,8 +50,8 @@ export default new Semantics({
       let thunk = null;
       // we have access to expr.params, so generate a thunk that
       // can take arguments
-      if (expr.params) {
-        const { params } = expr;
+      if (expr.fields.params) {
+        const { params } = expr.fields;
         thunk = (...args) => {
           const missing = params.map((_, idx) => {
             if (args[idx]) {
@@ -63,14 +63,14 @@ export default new Semantics({
             return a;
           });
 
-          return semant.reference(expr.name, params, ...missing);
+          return semant.reference(expr.fields.name, params, ...missing);
         };
         // Flag to the parser that this thunk can take arguments
         thunk.takesArgs = true;
       } else {
-        thunk = () => semant.reference(expr.name, []);
+        thunk = () => semant.reference(expr.fields.name, []);
       }
-      return [expr.name, thunk];
+      return [expr.fields.name, thunk];
     },
 
     extractGlobals: (semant, expr) => {
@@ -78,13 +78,13 @@ export default new Semantics({
         return null;
       }
       // We have access to expr.params
-      return [expr.name, expr];
+      return [expr.fields.name, expr];
     },
 
     extractGlobalNames: (semant, name, expr) => {
       // We have access to expr.params
-      if (expr.params) {
-        const { params } = expr;
+      if (expr.fields.params) {
+        const { params } = expr.fields;
         const thunk = (...args) => {
           const missing = params.map((_, idx) => {
             if (args[idx]) {
@@ -95,7 +95,7 @@ export default new Semantics({
             a.locked = false;
             return a;
           });
-          return semant.reference(expr.name, params, ...missing);
+          return semant.reference(expr.fields.name, params, ...missing);
         };
         // Flag to the parser that this thunk can take arguments
         thunk.takesArgs = true;

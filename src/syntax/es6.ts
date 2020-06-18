@@ -334,8 +334,8 @@ export function makeUnparser(_: Semantics) {
             return `${node.variable} = ${unparseES6(node.e1)} in (${unparseES6(node.e2.body)})`;
         }
         case 'reference': {
-            if (node.fields.params && node.fields.params.some((name) => node.fields[`arg_${name}`].type !== 'missing')) {
-                const args = node.fields.params.map((name) => unparseES6(node.fields[`arg_${name}`])).join(', ');
+            if (node.fields.params?.some((name) => node.subexpressions[`arg_${name}`].type !== 'missing')) {
+                const args = node.fields.params.map((name) => unparseES6(node.subexpressions[`arg_${name}`])).join(', ');
                 return `${node.fields.name}(${args})`;
             }
             return `${node.fields.name}`;

@@ -1,8 +1,9 @@
-import type { BaseNode, NodeId, NodeMap } from '@/semantics';
-import type { Im, Thunk } from '@/util/im';
 import type { RState } from '@/reducer/state';
+import type {
+  BaseNode, Flattened, NodeId, NodeMap 
+} from '@/semantics';
 import { SymbolNode } from '@/semantics/defs';
-import { DeepReadonly } from '@/util/helper';
+import { DeepReadonly, Thunk } from '@/util/helper';
 
 export interface ProjectionPadding {
     left: number;
@@ -29,8 +30,8 @@ export type ProjectionDef<N extends BaseNode> =
     SpriteProjectionDef<N> |
     SymbolProjectionDef;
 
-export interface BaseProjectionDef<N> {
-    color?: Thunk<[DeepReadonly<N>], string>;
+export interface BaseProjectionDef<N extends BaseNode> {
+    color?: Thunk<[DeepReadonly<Flattened<N>>], string>;
     strokeWhenChild?: boolean;
     shadowOffset?: number;
     radius?: number;
@@ -40,15 +41,15 @@ export interface BaseProjectionDef<N> {
     shadow?: string;
     shadowColor?: string;
     horizontalAlign?: string;
-    stroke?: Thunk<[DeepReadonly<N>], string>;
-    highlightColor?: Thunk<[DeepReadonly<N>], string>;
+    stroke?: Thunk<[DeepReadonly<Flattened<N>>], string>;
+    highlightColor?: Thunk<[DeepReadonly<Flattened<N>>], string>;
     ellipsize?: boolean;
 }
 
 export interface DefaultProjectionDef<N extends BaseNode> extends BaseProjectionDef<N> {
     type: 'default';
     shape?: ProjectionShape;
-    fields?: Thunk<[DeepReadonlyIm<N>], string[]>;
+    fields?: Thunk<[DeepReadonly<Flattened<N>>], string[]>;
 }
 
 export interface VboxProjectionDef<N extends BaseNode> extends BaseProjectionDef<N> {
@@ -126,7 +127,7 @@ export interface CaseKeyProjectionDef<
     K extends string | number | symbol = string | number | symbol
 > extends BaseProjectionDef<N> {
     type: 'case' | 'cases';
-    key?(nodes: NodeMap, expr: DeepReadonly<N>): K;
+    key?(nodes: NodeMap, expr: DeepReadonly<Flattened<N>>): K;
     cases: Record<K, ProjectionDef<N>>;
 }
 
@@ -137,7 +138,7 @@ export interface SymbolProjectionDef extends BaseProjectionDef<SymbolNode> {
 
 export interface SpriteProjectionDef<N extends BaseNode> extends BaseProjectionDef<N> {
     type: 'sprite';
-    image: Thunk<[DeepReadonly<N>], string>;
+    image: Thunk<[DeepReadonly<Flattened<N>>], string>;
     scale?: number;
     size?: { w: number; h: number };
 }

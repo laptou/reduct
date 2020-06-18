@@ -1,26 +1,32 @@
+import type { BaseNode, ReductNode } from '..';
 import * as fx from '../../gfx/fx';
 import { genericBetaReduce } from '../core';
 import type { NodeDef } from './base';
-import type { BaseNode, NodeId } from '..';
 
 export interface LambdaNode extends BaseNode {
-    type: 'lambda';
+  type: 'lambda';
 
-    arg: NodeId;
-    body: NodeId;
+  subexpressions: {
+    arg: LambdaArgNode;
+    body: ReductNode;
+  };
 }
 
 export interface LambdaArgNode extends BaseNode {
-    type: 'lambdaArg';
+  type: 'lambdaArg';
 
+  fields: {
     name: string;
     functionHole: any;
+  };
 }
 
 export interface LambdaVarNode extends BaseNode {
-    type: 'lambdaVar';
+  type: 'lambdaVar';
 
+  fields: {
     name: string;
+  };
 }
 
 export const lambda: NodeDef<LambdaNode> = {

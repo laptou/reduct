@@ -1,3 +1,6 @@
+import type { Flattened, BaseNode, ReductNode } from '@/semantics';
+import { produce } from 'immer';
+
 /**
  * Type representing all objects, but is not `any` so that we can use Exclude<T,
  * P> on it.
@@ -32,8 +35,13 @@ export type DeepReadonly<T> =
   T extends Map<infer U, infer V> ? ReadonlyMap<U, DeepReadonly<V>> :
   { readonly [K in keyof T]: DeepReadonly<T[K]> };
 
-export function* map<T, U>(iterable: Iterable<T>, mapper: (item: T) => U): Iterable<U> {
-  for (const item of iterable) {
-    yield mapper(item);
-  }
+/**
+ * Returns a version of the node that has no reference to its parent (parent and parentField are set to null).
+ * @param node 
+ */
+export function orphaned<N extends DeepReadonly<ReductNode> | DeepReadonly<Flattened<ReductNode>>>(node: N): N {
+  return produce(node, draft => {
+    draft.parent = null;
+    draft.parentField = null;
+  });
 }
