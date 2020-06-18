@@ -260,7 +260,7 @@ export default class TouchRecord extends BaseTouchRecord {
             const exprType = state.getIn(['nodes', this.topNode, 'ty']);
             // TODO: don't hardcode these checks
             if ((holeExprType !== 'missing'
-                 && holeExprType !== 'lambdaArg')
+                && holeExprType !== 'lambdaArg')
                 || (holeType && exprType && holeType !== exprType)) {
                 this.hoverNode = null;
             }
@@ -393,7 +393,7 @@ export default class TouchRecord extends BaseTouchRecord {
         } else if (mousePos.sidebar && this.isExpr && this.stage.dropDefines(this.topNode)) {
             // Drop definitions in sidebar to activate them
         } else if (this.isExpr && this.dragged && this.hoverNode
-                 && this.stage.semantics.droppable(state, this.topNode, this.hoverNode) === 'hole') {
+            && this.stage.semantics.droppable(state, this.topNode, this.hoverNode) === 'hole') {
             // Drag something into hole
             if (this.fromToolbox) this.useToolboxItem();
 
