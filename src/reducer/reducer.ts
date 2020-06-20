@@ -239,7 +239,12 @@ export function reduct(semantics: Semantics, views, restorePos) {
 
       const newState = produce(state, draft => {
         for (const key of removedNodes) {
-          draft.nodes.delete(key);
+          // TODO iaa34: eliminate nodes that were removed by beta reduction in
+          // this action. For now, this is currently handled by the stage for
+          // animation reasons.
+
+          // draft.nodes.delete(key);
+
           draft.board.delete(key);
           draft.toolbox.delete(key);
         }

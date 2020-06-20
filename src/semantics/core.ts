@@ -1,5 +1,5 @@
 import type { RState } from '@/reducer/state';
-import { DeepReadonly } from '@/util/helper';
+import { DeepReadonly, orphaned } from '@/util/helper';
 import { produce } from 'immer';
 import type { NodeId, NodeMap, ReductNode } from '.';
 import { Semantics } from './transform';
@@ -274,7 +274,6 @@ export function genericBetaReduce(semant: Semantics, state: DeepReadonly<RState>
 
   const name = config.targetName(targetNode);
   let [bodyClone, newNodes, curNodes] = semant.clone(topNode.subexpressions.body, nodes);
-  newNodes.push(bodyClone);
 
   let [newTop] = semant.map(curNodes, bodyClone.id, (nodes, id) => {
     const node = nodes.get(id);
@@ -286,12 +285,12 @@ export function genericBetaReduce(semant: Semantics, state: DeepReadonly<RState>
         draft.locked = true;
       });
 
-      newNodes.push(result, ...resultNewNodes);
+      newNodes.push(...resultNewNodes);
       return [result, produce(nodesStore, draft => draft.set(result.id, result))];
     }
 
     const [result, resultNewNodes, nodesStore] = semant.clone(id, nodes);
-    newNodes.push(result, ...resultNewNodes);
+    newNodes.push(...resultNewNodes);
     return [result, produce(nodesStore, draft => draft.set(result.id, result))];
   }, (nodes, node) => {
     if (config.isCapturing(node)) {
@@ -300,10 +299,7 @@ export function genericBetaReduce(semant: Semantics, state: DeepReadonly<RState>
     return true;
   });
 
-  newTop = produce(newTop, draft => {
-    draft.parent = null;
-    draft.parentField = null;
-  });
+  newTop = orphaned(newTop);
 
   if (newTop.type === 'vtuple') {
     // Spill vtuple onto the board
@@ -312,11 +308,7 @@ export function genericBetaReduce(semant: Semantics, state: DeepReadonly<RState>
       topNode.id,
       semant.subexpressions(newTop).map((field) => newTop.subexpressions[field]),
       newNodes.slice(1).map((node) => (node.parent === newTop.id
-        ? produce(node, draft => {
-          delete draft.parent;
-          delete draft.parentField;
-        })
-        : node))
+        ? orphaned(node) : node))
     ];
   }
 
