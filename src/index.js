@@ -29,6 +29,7 @@ import Logging, { TITLE_LEVEL_ID, DEVELOPMENT_BUILD } from './logging/logging';
 import * as ajax from './util/ajax';
 import { enableMapSet, enablePatches } from 'immer';
 import { initReactApp } from './view';
+import BaseStage from './stage/basestage';
 
 enableMapSet();
 enablePatches();
@@ -106,6 +107,7 @@ Loader.finished.then(() => window.startup());
 
 const views = {};
 export let store;
+/** @type {BaseStage} */
 let stg;
 let canvas;
 
