@@ -3,9 +3,10 @@ import '@resources/style/react/projection/not.scss';
 import React, { FunctionComponent } from 'react';
 import { BooleanShape } from '../shape/boolean';
 import { StageProjection } from './base';
+import { Flat } from '@/semantics';
 
 interface NotProjectionOwnProps {
-    node: NotNode;
+    node: Flat<NotNode>;
 }
 
 export const NotProjection: FunctionComponent<NotProjectionOwnProps> = 

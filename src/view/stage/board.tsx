@@ -32,7 +32,7 @@ function onDrop(event: React.DragEvent<HTMLDivElement>, props: BoardProps) {
     props.addNodeToBoard(nodeId);
   } catch (e) {
     // TODO: show toast to user
-    console.warn('could not detach', e);
+    console.warn('could not add node to board', e);
   }
 }
 

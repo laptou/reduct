@@ -1,11 +1,12 @@
 import { fillHole } from '@/reducer/action';
-import { NodeId, ReductNode } from '@/semantics';
+import { Flat, NodeId } from '@/semantics';
+import { MissingNode } from '@/semantics/defs';
 import cx from 'classnames';
 import React, { FunctionComponent, useState } from 'react';
 import { connect } from 'react-redux';
 
 interface MissingProjectionOwnProps {
-  node: ReductNode;
+  node: Flat<MissingNode>;
 }
 
 interface MissingProjectionDispatchProps {

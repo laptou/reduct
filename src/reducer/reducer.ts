@@ -7,7 +7,9 @@ import * as gfx from '../gfx/core';
 import { ActionKind, ReductAction } from './action';
 import { RState } from './state';
 import { undoable } from './undo';
+import { orphaned } from '@/util/helper';
 
+export { nextId } from '@/util/nodes';
 
 const initialProgram: RState = {
   nodes: new Map(),
@@ -17,14 +19,6 @@ const initialProgram: RState = {
   globals: new Map()
 };
 
-let idCounter = 0;
-
-/**
- * Returns the next unique ID. Used to assign IDs to nodes and views.
- */
-export function nextId(): NodeId {
-  return idCounter++;
-}
 
 // To speed up type checking, we only type check nodes that have
 // changed.
@@ -70,7 +64,9 @@ export function reduct(semantics: Semantics, views, restorePos) {
           draft.board.add(act.nodeId);
         });
       } else {
-        return state;
+        return produce(state, draft => {
+          draft.board.add(act.nodeId);
+        });
       }
     }
 
@@ -116,15 +112,11 @@ export function reduct(semantics: Semantics, views, restorePos) {
 
         if (oldNode.parent) {
           const parent = draft.nodes.get(oldNode.parent)!;
-          // TODO: refactor child node structure
-          parent[newNodeId] = act.newNodeIds[0];
+          parent.subexpressions[newNodeId] = act.newNodeIds[0];
 
           const child = draft.nodes.get(newNodeId)!;
           child.parent = parent.id;
           child.parentField = oldNode.parentField;
-
-          draft.nodes.set(oldNode.parent, parent);
-          draft.nodes.set(newNodeId, child);
         }
 
         // update the board
@@ -223,16 +215,12 @@ export function reduct(semantics: Semantics, views, restorePos) {
     }
     case ActionKind.BetaReduce: {
       const queue = [act.topNodeId, act.argNodeId];
-      const removedNodes: Record<number, boolean> = {};
+      const removedNodes = new Set<number>();
 
       const addedNodes = act.addedNodes.map((n) => {
         const id = n.id;
         if (act.newNodeIds.indexOf(id) >= 0) {
-          const orphaned = produce(n, draft => {
-            delete draft.parent;
-            delete draft.parentField;
-          });
-          return [id, orphaned];
+          return [id, orphaned(n)];
         }
 
         return [id, n];
@@ -241,7 +229,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
       while (queue.length > 0) {
         const current = queue.pop();
         const currentNode = state.nodes.get(current)!;
-        removedNodes[current] = true;
+        removedNodes.add(current);
         for (const subexpField of semantics.subexpressions(currentNode)) {
           queue.push(currentNode.subexpressions[subexpField]);
         }
@@ -249,40 +237,42 @@ export function reduct(semantics: Semantics, views, restorePos) {
 
       const oldNode = state.nodes.get(act.topNodeId)!;
 
-      return produce(state, draft => {
-        for (const [key, removed] of Object.entries(removedNodes)) {
-          if (removed) {
-            draft.nodes.delete(key);
-            draft.board.delete(key);
-            draft.toolbox.delete(key);
-          }
+      const newState = produce(state, draft => {
+        for (const key of removedNodes) {
+          draft.nodes.delete(key);
+          draft.board.delete(key);
+          draft.toolbox.delete(key);
         }
 
-        for (const [key, node] of Object.entries(addedNodes)) {
+        for (const [key, node] of addedNodes) {
           draft.nodes.set(key, node);
         }
-
-        if (act.newNodeIds.length > 1) {
-          console.error('Can\'t beta reduce nested lambda that produced multiple new nodes!');
-          return;
-        }
-        const parent = draft.nodes.get(oldNode.parent)!;
-        parent.subexpressions[oldNode.parentField] = act.newNodeIds[0];
-
+        
         if (!oldNode.parent) {
           for (const newNodeId of act.newNodeIds) {
             draft.board.add(newNodeId);
           }
+        } else {
+          if (act.newNodeIds.length > 1) {
+            console.error('Can\'t beta reduce nested lambda that produced multiple new nodes!');
+            return;
+          }
+
+          const parent = draft.nodes.get(oldNode.parent)!;
+          parent.subexpressions[oldNode.parentField] = act.newNodeIds[0];
         }
-        act.newNodeIds.forEach((id) => markDirty(draft.nodes, id));
       });
+
+      act.newNodeIds.forEach((id) => markDirty(newState.nodes, id));
+
+      return newState;
     }
     case ActionKind.FillSlot: {
       const newState = produce(state, draft => {
         const hole = draft.nodes.get(act.holeId)!;
         if (!hole.parent) throw `Hole ${act.holeId} has no parent!`;
   
-        const parent = draft.nodes.get(hole.parent);
+        const parent = draft.nodes.get(hole.parent)!;
         const child = draft.nodes.get(act.childId)!;
         if (child.parent) throw 'Dragging objects from one hole to another is unsupported.';
 
@@ -292,8 +282,9 @@ export function reduct(semantics: Semantics, views, restorePos) {
         // Cache the hole in the parent, so that we
         // don't have to create a new hole if they
         // detach the field later.
-        parent[`${hole.parentField}__hole`] = parent[hole.parentField];
+        parent.subexpressions[`${hole.parentField}__hole`] = parent.subexpressions[hole.parentField];
 
+        parent.subexpressions[hole.parentField] = child.id;
         child.parentField = hole.parentField;
         child.parent = hole.parent;
         child.locked = false;

@@ -1,17 +1,17 @@
-import { ReductNode } from '@/semantics';
+import { FlatReductNode } from '@/semantics';
 import React from 'react';
 import { ApplyProjection } from './apply';
 import { ArrayProjection } from './array';
 import { BinOpProjection } from './binop';
 import { ConditionalProjection } from './conditional';
+import { DefineProjection } from './define';
 import { LambdaArgProjection, LambdaProjection, LambdaVarProjection } from './lambda';
 import { MissingProjection } from './missing';
 import { NotProjection } from './not';
 import { OpProjection } from './op';
-import { ValueProjection } from './value';
-import { SymbolProjection } from './symbol';
-import { DefineProjection } from './define';
 import { ReferenceProjection } from './reference';
+import { SymbolProjection } from './symbol';
+import { ValueProjection } from './value';
 import { VTupleProjection } from './vtuple';
 
 /**
@@ -26,7 +26,7 @@ import { VTupleProjection } from './vtuple';
  * Gets the stage projection for the given node.
  * @param node The node that is to be displayed on the stage.
  */
-export function getProjectionForNode(node: ReductNode | null) {
+export function getProjectionForNode(node: FlatReductNode | null) {
   if (!node) return null;
 
   switch (node.type) {

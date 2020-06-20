@@ -5,9 +5,10 @@ import React, { FunctionComponent } from 'react';
 import { BooleanShape } from '../shape/boolean';
 import { NumberShape } from '../shape/number';
 import { StringShape } from '../shape/string';
+import { Flat } from '@/semantics';
 
 interface ValueProjectionOwnProps {
-    node: StrNode | BoolNode | NumberNode;
+    node: Flat<StrNode> | Flat<BoolNode> | Flat<NumberNode>;
 }
 
 export const ValueProjection: FunctionComponent<ValueProjectionOwnProps> = 

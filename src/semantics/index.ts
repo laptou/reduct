@@ -59,7 +59,9 @@ export interface BaseNode {
     __meta?: NodeMetadata;
 }
 
-export type Flattened<N extends BaseNode> = N & { subexpressions: { [K in keyof N['subexpressions']]: NodeId } };
+export type Flat<N extends BaseNode> = { 
+  [K in keyof N]: K extends 'subexpressions' ? Record<keyof N['subexpressions'], NodeId> : N[K];
+};
 
 export interface NodeMetadata {
   toolbox: { 
@@ -76,7 +78,7 @@ export type NodeType = {
     complete: boolean;
 }
 
-export type NodeMap = Map<NodeId, DeepReadonly<Flattened<ReductNode>>>;
+export type NodeMap = Map<NodeId, DeepReadonly<FlatReductNode>>;
 
 export interface MissingNode extends BaseNode {
   type: 'missing';
@@ -107,3 +109,28 @@ export type ReductNode =
     InvocationNode2 |
     VTupleNode |
     MissingNode;
+
+export type FlatReductNode =
+  Flat<ApplyNode> |
+  Flat<ArrayNode> |
+  Flat<AutograderNode> |
+  Flat<BinOpNode> |
+  Flat<OpNode> |
+  Flat<ConditionalNode> |
+  Flat<DefineNode> |
+  Flat<LambdaNode> |
+  Flat<LambdaVarNode> |
+  Flat<LambdaArgNode> |
+  Flat<LetNode> |
+  Flat<MemberNode> |
+  Flat<NotNode> |
+  Flat<NumberNode> |
+  Flat<StrNode> |
+  Flat<BoolNode> |
+  Flat<UnsolNode> |
+  Flat<SymbolNode> |
+  Flat<DynVarNode> |
+  Flat<InvocationNode> |
+  Flat<InvocationNode2> |
+  Flat<VTupleNode> |
+  Flat<MissingNode>;

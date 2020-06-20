@@ -442,7 +442,7 @@ export default class Stage extends BaseStage {
     const state = this.getState();
     const selected = state.nodes.get(selectedNode);
     // TODO: fix this check/use Record
-    if (selected.has('__meta') && selected.__meta.toolbox.unlimited) {
+    if (selected.__meta?.toolbox.unlimited) {
       // If node has __meta indicating infinite uses,
       // clone instead.
       const [clonedNode, addedNodes] = this.semantics.clone(
@@ -883,8 +883,8 @@ export default class Stage extends BaseStage {
       });
 
       const topNodeRecord = state.nodes.get(topNode);
-      if (topNodeRecord.body && this.views[topNodeRecord.body]) {
-        const body = topNodeRecord.body;
+      if (topNodeRecord.subexpressions.body && this.views[topNodeRecord.subexpressions.body]) {
+        const body = topNodeRecord.subexpressions.body;
         Audio.play('371270__mafon2__water-drip-2');
 
         this.views[topNode].pos = gfxCore.centerPos(this.views[topNode]);
@@ -949,7 +949,7 @@ export default class Stage extends BaseStage {
     } else {
       let applyTarget = target;
       const targetNode = state.nodes.get(target);
-      if (targetNode.has('parent')) {
+      if (targetNode.parent) {
         applyTarget = targetNode.parent;
       }
       Logging.log('reduction-lambda-failed', {

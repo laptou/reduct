@@ -29,7 +29,7 @@ export const apply: NodeDef<ApplyNode> = {
     }
   },
   stepAnimation: (semant, stage, state, expr) => {
-    const callee = state.getIn(['nodes', expr.callee]);
+    const callee = state.nodes.get(expr.subexpressions.callee)!;
     const isCalleeLambda = callee.type === 'lambda';
 
     const introDuration = animate.scaleDuration(400, 'expr-apply');
@@ -39,7 +39,7 @@ export const apply: NodeDef<ApplyNode> = {
     // How long to wait before clearing the 'animating' flag
     const restTime = totalTime + introDuration + outroDuration;
 
-    const argView = stage.views[expr.argument];
+    const argView = stage.views[expr.subexpressions.argument];
     const applyView = stage.views[expr.id];
 
     // List of tweens to reset at end
@@ -58,13 +58,13 @@ export const apply: NodeDef<ApplyNode> = {
     }));
 
     // Jump argument to hole
-    const calleeView = stage.views[expr.callee];
-    const lambdaBody = isCalleeLambda ? callee.body : null;
-    const lambdaView = isCalleeLambda ? stage.views[callee.id] : null;
+    const calleeView = stage.views[expr.subexpressions.callee];
+    const lambdaBody = callee.type === 'lambda' ? callee.subexpressions.body : null;
+    const lambdaView = callee.type === 'lambda' ? stage.views[callee.id] : null;
 
     let centerX = gfx.centerPos(calleeView).x - gfx.absolutePos(applyView).x;
-    if (isCalleeLambda) {
-      centerX = gfx.centerPos(stage.views[callee.arg]).x
+    if (callee.type === 'lambda') {
+      centerX = gfx.centerPos(stage.views[callee.subexpressions.arg]).x
                     - gfx.absolutePos(lambdaView).x;
     }
 
@@ -119,7 +119,7 @@ export const apply: NodeDef<ApplyNode> = {
         lambdaView.strokeWhenChild = false;
 
         for (const [childId, exprId] of lambdaView.children(callee.id, state)) {
-          if (exprId !== callee.body) {
+          if (exprId !== callee.subexpressions.body) {
             reset.push(animate.tween(stage.views[childId], {
               scale: { x: 0 },
               opacity: 0
@@ -139,14 +139,14 @@ export const apply: NodeDef<ApplyNode> = {
           }
         }
 
-        const targetName = state.getIn(['nodes', callee.arg, 'name']);
+        const targetName = state.nodes.get(callee.subexpressions.arg)?.fields.name;
         stage.semantics.searchNoncapturing(state.nodes, targetName, lambdaBody)
           .forEach((id) => {
             if (stage.views[id]) {
               stage.views[id].previewOptions = {
                 duration
               };
-              stage.views[id].preview = expr.argument;
+              stage.views[id].preview = expr.subexpressions.argument;
               clearPreview.push(stage.views[id]);
             }
           });
@@ -167,7 +167,7 @@ export const apply: NodeDef<ApplyNode> = {
         }));
 
         for (const [childId, exprId] of applyView.children(expr.id, state)) {
-          if (exprId !== expr.callee && exprId !== expr.argument) {
+          if (exprId !== expr.subexpressions.callee && exprId !== expr.subexpressions.argument) {
             reset.push(animate.tween(stage.views[childId], {
               scale: { x: 0 },
               opacity: 0
@@ -199,12 +199,12 @@ export const apply: NodeDef<ApplyNode> = {
   },
   stepSound: 'heatup',
   validateStep: (semant, state, expr) => {
-    const callee = state.getIn(['nodes', expr.callee]);
+    const callee = state.nodes.get(expr.subexpressions.callee);
     const kind = semant.kind(state, callee);
     if (kind === 'value'
                     && callee.type !== 'lambda'
                     && callee.type !== 'reference') {
-      return [expr.callee, 'We can only apply functions!'];
+      return [expr.subexpressions.callee, 'We can only apply functions!'];
     }
     return null;
   },
@@ -212,8 +212,8 @@ export const apply: NodeDef<ApplyNode> = {
     const [topNodeId, newNodeIds, addedNodes] = semant.interpreter.betaReduce(
       stage,
       state,
-      expr.callee,
-      [expr.argument]
+      expr.subexpressions.callee,
+      [expr.subexpressions.argument]
     );
 
     return [expr.id, newNodeIds, addedNodes];

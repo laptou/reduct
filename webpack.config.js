@@ -20,7 +20,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 exports.default = (env) => ({
   context: __dirname,
   entry: ['react-hot-loader/patch', './src/index.js'],
-  devtool: env.development ? 'source-map' : false,
+  devtool: env.development ? 'eval-source-map' : false,
   devServer: {
     port: 1234,
     hot: true

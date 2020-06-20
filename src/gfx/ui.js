@@ -7,46 +7,46 @@ import Audio from '../resource/audio';
  * @alias gfx.ui.button
  */
 export function button(stage, label, options) {
-    if (typeof label === 'string') {
-        label = gfx.constant(stage.allocate(gfx.text(label, {
-            fontSize: 32,
-            color: '#FFF'
-        })));
-    }
-    const projection = gfx.layout.hbox(label, {
-        color: options.color || 'lightblue',
-        padding: {
-            left: 20,
-            right: 20,
-            inner: 10
-        },
-        size: {
-            w: 50,
-            h: 70
-        },
-        anchor: {
-            x: 0.5,
-            y: 0.5
-        },
-        shadow: true,
-        shadowColor: 'black',
-        ...options
-    });
+  if (typeof label === 'string') {
+    label = gfx.constant(stage.allocate(gfx.text(label, {
+      fontSize: 32,
+      color: '#FFF'
+    })));
+  }
+  const projection = gfx.layout.hbox(label, {
+    color: options.color || 'lightblue',
+    padding: {
+      left: 20,
+      right: 20,
+      inner: 10
+    },
+    size: {
+      w: 50,
+      h: 70
+    },
+    anchor: {
+      x: 0.5,
+      y: 0.5
+    },
+    shadow: true,
+    shadowColor: 'black',
+    ...options
+  });
 
-    projection.onclick = function() {
-        this.shadow = true;
-        this.offset.y -= 3;
+  projection.onclick = function() {
+    this.shadow = true;
+    this.offset.y -= 3;
 
-        Audio.play('convert');
-        if (options.click) options.click();
-    };
+    Audio.play('convert');
+    if (options.click) options.click();
+  };
 
-    projection.onmousedown = function() {
-        this.shadow = false;
-        this.offset.y += 3;
-    };
+  projection.onmousedown = function() {
+    this.shadow = false;
+    this.offset.y += 3;
+  };
 
-    return projection;
+  return projection;
 }
 
 /**
@@ -54,68 +54,68 @@ export function button(stage, label, options) {
  * @alias gfx.ui.imageButton
  */
 export function imageButton(images, options = {}) {
-    const projection = gfx.baseProjection({ enabled: true, ...options });
+  const projection = gfx.baseProjection({ enabled: true, ...options });
 
-    const sprites = {
-        normal: gfx.sprite({ image: images.normal }),
-        hover: gfx.sprite({ image: images.hover }),
-        active: gfx.sprite({ image: images.active })
-    };
+  const sprites = {
+    normal: gfx.sprite({ image: images.normal }),
+    hover: gfx.sprite({ image: images.hover }),
+    active: gfx.sprite({ image: images.active })
+  };
 
-    projection.size = {
-        w: images.normal.naturalWidth,
-        h: images.normal.naturalHeight,
-        ...options.size || {}
-    };
+  projection.size = {
+    w: images.normal.naturalWidth,
+    h: images.normal.naturalHeight,
+    ...options.size || {}
+  };
 
-    let state = 'normal';
+  let state = 'normal';
 
-    projection.onclick = function() {
-        if (!this.enabled) {
-            state = 'normal';
-            return;
-        }
-        Audio.play('convert');
-        if (options.click) options.click();
-        state = 'normal';
-    };
+  projection.onclick = function() {
+    if (!this.enabled) {
+      state = 'normal';
+      return;
+    }
+    Audio.play('convert');
+    if (options.click) options.click();
+    state = 'normal';
+  };
 
-    projection.onmousedown = function() {
-        if (!this.enabled) {
-            state = 'normal';
-            return;
-        }
-        state = 'active';
-    };
+  projection.onmousedown = function() {
+    if (!this.enabled) {
+      state = 'normal';
+      return;
+    }
+    state = 'active';
+  };
 
-    projection.onmouseenter = function() {
-        if (!this.enabled) {
-            state = 'normal';
-            return;
-        }
-        state = 'hover';
-    };
+  projection.onmouseenter = function() {
+    if (!this.enabled) {
+      state = 'normal';
+      return;
+    }
+    state = 'hover';
+  };
 
-    projection.onmouseexit = function() {
-        if (!this.enabled) {
-            state = 'normal';
-            return;
-        }
-        state = 'normal';
-    };
+  projection.onmouseexit = function() {
+    if (!this.enabled) {
+      state = 'normal';
+      return;
+    }
+    state = 'normal';
+  };
 
-    projection.draw = function(id, exprId, boardState, stage, offset) {
-        sprites[state].draw.call(this, id, exprId, boardState, stage, { ...offset, opacity: offset.opacity * (this.enabled ? 1 : 0.3) });
-    };
+  projection.draw = function(id, exprId, boardState, stage, offset) {
+    sprites[state].draw.call(this, id, exprId, boardState, stage, { ...offset, opacity: offset.opacity * (this.enabled ? 1 : 0.3) });
+  };
 
-    projection.highlight = function() {
-        if (!this.enabled) {
-            state = 'normal';
-            return;
-        }
+  projection.highlight = function() {
+    if (!this.enabled) {
+      state = 'normal';
+      return;
+    }
 
-        state = 'hover';
-    };
+    state = 'hover';
+  };
 
-    return projection;
+  return projection;
 }

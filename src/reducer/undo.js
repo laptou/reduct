@@ -1,7 +1,5 @@
-import * as immutable from 'immutable';
-
+import { produce } from 'immer';
 import { ActionKind } from './action';
-import produce from 'immer';
 
 /** Undo the last action. */
 export function undo() {
@@ -51,7 +49,7 @@ export function undoable(reducer, options = {}) {
       });
     }
     case ActionKind.Undo: {
-      if (state.$past.isEmpty()) return state;
+      if (state.$past.length === 0) return state;
 
       const newState = produce(state, draft => {
         draft.$future.unshift(draft.$present);
@@ -60,11 +58,15 @@ export function undoable(reducer, options = {}) {
         draft.$presentExtra = draft.$pastExtra.shift();
       });
 
-      options.restoreExtraState($past.peek(), $present, $pastExtra.peek());
+      options.restoreExtraState(
+        newState.$past[newState.$past.length - 1], 
+        newState.$present, 
+        newState.$pastExtra[newState.$pastExtra.length - 1]
+      );
       return newState;
     }
     case ActionKind.Redo: {
-      if ($future.isEmpty()) return state;
+      if (state.$future.length === 0) return state;
 
       const newState = state.withMutations((map) => {
         map
@@ -80,9 +82,10 @@ export function undoable(reducer, options = {}) {
     }
     default: {
       return produce(state, draft => {
-        const newPresent = reducer(draft.$present, action);
+        // use state.$present, do not allow draft objects to escape from this function
+        const newPresent = reducer(state.$present, action);
 
-        if (newPresent === draft.$present) {
+        if (newPresent === state.$present) {
           return;
         }
 
@@ -91,7 +94,8 @@ export function undoable(reducer, options = {}) {
           return;
         }
 
-        const extraState = options.extraState($present, newPresent);
+        // use state.$present, do not allow draft objects to escape from this function
+        const extraState = options.extraState(state.$present, newPresent);
 
         draft.$past.unshift(draft.$present);
         draft.$present = newPresent;

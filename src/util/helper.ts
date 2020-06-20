@@ -1,4 +1,4 @@
-import type { Flattened, BaseNode, ReductNode } from '@/semantics';
+import type { Flat, BaseNode, ReductNode } from '@/semantics';
 import { produce } from 'immer';
 
 /**
@@ -39,7 +39,7 @@ export type DeepReadonly<T> =
  * Returns a version of the node that has no reference to its parent (parent and parentField are set to null).
  * @param node 
  */
-export function orphaned<N extends DeepReadonly<ReductNode> | DeepReadonly<Flattened<ReductNode>>>(node: N): N {
+export function orphaned<N extends DeepReadonly<ReductNode> | DeepReadonly<Flat<ReductNode>>>(node: N): N {
   return produce(node, draft => {
     draft.parent = null;
     draft.parentField = null;

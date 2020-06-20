@@ -1,7 +1,8 @@
-import type { BaseNode, ReductNode } from '..';
+import type { BaseNode, ReductNode, Flat, FlatReductNode } from '..';
 import * as fx from '../../gfx/fx';
 import { genericBetaReduce } from '../core';
 import type { NodeDef } from './base';
+import { DeepReadonly } from '@/util/helper';
 
 export interface LambdaNode extends BaseNode {
   type: 'lambda';
@@ -83,7 +84,7 @@ export const lambdaArg: NodeDef<LambdaArgNode> = {
       type: 'dynamic',
       resetFields: ['text', 'color'],
       field: (state, exprId) => {
-        const isFunctionHole = !!state.nodes.get(exprId).functionHole;
+        const isFunctionHole = !!state.nodes.get(exprId)?.subexpressions.functionHole;
         if (isFunctionHole) return 'functionHole';
         return 'default';
       },
@@ -116,12 +117,11 @@ export const lambdaVar: NodeDef<LambdaVarNode> = {
     type: 'dynamic',
     field: (state, exprId) => {
       const nodes = state.nodes;
-      let current = nodes.get(exprId);
-      const myName = current.name;
+      let current: DeepReadonly<FlatReductNode> = nodes.get(exprId)!;
+      const myName = (current as DeepReadonly<Flat<LambdaVarNode>>).fields.name;
       while (current.parent) {
-        current = nodes.get(current.parent);
-        if (current.type === 'lambda'
-                        && nodes.get(current.subexpressions.arg).fields.name === myName) {
+        current = nodes.get(current.parent)!;
+        if (current.type === 'lambda' && nodes.get(current.subexpressions.arg)!.fields.name === myName) {
           return 'enabled';
         }
       }
@@ -141,7 +141,7 @@ export const lambdaVar: NodeDef<LambdaVarNode> = {
         while (current.parent) {
           current = nodes.get(current.parent);
           if (current.type === 'lambda'
-                            && nodes.get(current.subexpressions.arg).name === myName) {
+                            && nodes.get(current.subexpressions.arg).fields.name === myName) {
             fx.blink(stage, stage.getView(current.arg), {
               times: 3,
               speed: 100,

@@ -8,112 +8,112 @@ import Audio from '../resource/audio';
  * @module StuckEffect
  */
 export default class StuckEffect {
-    constructor(stage) {
-        this.stage = stage;
-        this.opacity = 0.0;
+  constructor(stage) {
+    this.stage = stage;
+    this.opacity = 0.0;
 
-        Audio.play('stuck');
-        animate.tween(this, {
-            opacity: 0.5
-        }, {
-            duration: 1000,
-            easing: animate.Easing.Cubic.Out
-        }).then(() => this.highlightMismatches());
+    Audio.play('stuck');
+    animate.tween(this, {
+      opacity: 0.5
+    }, {
+      duration: 1000,
+      easing: animate.Easing.Cubic.Out
+    }).then(() => this.highlightMismatches());
 
-        this.infinite = null;
-        this.blinkers = [];
+    this.infinite = null;
+    this.blinkers = [];
+  }
+
+  cancel() {
+    if (this.infinite) this.infinite.stop();
+
+    for (const id of this.blinkers) {
+      this.stage.getView(id).stroke = null;
     }
 
-    cancel() {
-        if (this.infinite) this.infinite.stop();
+    return animate.tween(this, {
+      opacity: 0
+    }, {
+      duration: 400,
+      easing: animate.Easing.Cubic.Out
+    });
+  }
 
-        for (const id of this.blinkers) {
-            this.stage.getView(id).stroke = null;
-        }
+  highlightMismatches() {
+    // Get a partial matching between board/goal
+    const state = this.stage.getState();
+    const matching = level.checkVictory(state, this.stage.semantics, true);
+    const reverseMatching = {};
+    Object.keys(matching).forEach((id) => {
+      reverseMatching[matching[id]] = id;
+    });
 
-        return animate.tween(this, {
-            opacity: 0
-        }, {
-            duration: 400,
-            easing: animate.Easing.Cubic.Out
-        });
+    const board = [...state.board]
+      .filter((n) => !this.stage.semantics.ignoreForVictory(state, state.nodes.get(n)));
+    const goal = state.goal;
+
+    const blinkers = [];
+    const msg = [['Oh no, we\'re stuck!']];
+
+    const extraMsg = ['We have extra things: '];
+    for (const id of board) {
+      if (typeof reverseMatching[id] === 'undefined') {
+        blinkers.push(id);
+        // Clone view to avoid messing up positioning
+        extraMsg.push([this.stage.allocate({
+
+          ...this.stage.getView(id),
+          pos: { x: 0, y: 0 },
+          anchor: { x: 0, y: 0 },
+          animating: 0
+        }), id]);
+        this.stage.getView(id).stroke = { color: '#F00', lineWidth: 0 };
+      }
     }
 
-    highlightMismatches() {
-        // Get a partial matching between board/goal
-        const state = this.stage.getState();
-        const matching = level.checkVictory(state, this.stage.semantics, true);
-        const reverseMatching = {};
-        Object.keys(matching).forEach((id) => {
-            reverseMatching[matching[id]] = id;
-        });
+    const missingMsg = ['We\'re still missing:'];
+    for (const id of goal) {
+      if (typeof matching[id] === 'undefined') {
+        blinkers.push(id);
+        // Clone view to avoid messing up positioning
+        missingMsg.push([this.stage.allocate({
 
-        const board = state.board
-            .filter((n) => !this.stage.semantics.ignoreForVictory(state, state.nodes.get(n)));
-        const goal = state.goal;
+          ...this.stage.getView(id),
+          pos: { x: 0, y: 0 },
+          animating: 0
+        }), id]);
 
-        const blinkers = [];
-        const msg = [['Oh no, we\'re stuck!']];
-
-        const extraMsg = ['We have extra things: '];
-        for (const id of board) {
-            if (typeof reverseMatching[id] === 'undefined') {
-                blinkers.push(id);
-                // Clone view to avoid messing up positioning
-                extraMsg.push([this.stage.allocate({
-
-                    ...this.stage.getView(id),
-                    pos: { x: 0, y: 0 },
-                    anchor: { x: 0, y: 0 },
-                    animating: 0
-                }), id]);
-                this.stage.getView(id).stroke = { color: '#F00', lineWidth: 0 };
-            }
-        }
-
-        const missingMsg = ['We\'re still missing:'];
-        for (const id of goal) {
-            if (typeof matching[id] === 'undefined') {
-                blinkers.push(id);
-                // Clone view to avoid messing up positioning
-                missingMsg.push([this.stage.allocate({
-
-                    ...this.stage.getView(id),
-                    pos: { x: 0, y: 0 },
-                    animating: 0
-                }), id]);
-
-                this.stage.getView(id).stroke = { color: '#F00', lineWidth: 0 };
-            }
-        }
-
-        let time = 0;
-        this.blinkers = blinkers;
-        this.infinite = animate.infinite((dt) => {
-            time += dt;
-            for (const id of blinkers) {
-                this.stage.getView(id).stroke.lineWidth = 2 * (1 + Math.sin(time / 100));
-            }
-        });
-
-        if (extraMsg.length > 1) msg.push(extraMsg);
-        if (missingMsg.length > 1) msg.push(missingMsg);
-
-        msg.push(['Reset or undo and keep trying!']);
-        this.stage.feedback.update('#FFF', ...msg);
+        this.stage.getView(id).stroke = { color: '#F00', lineWidth: 0 };
+      }
     }
 
-    prepare() {
+    let time = 0;
+    this.blinkers = blinkers;
+    this.infinite = animate.infinite((dt) => {
+      time += dt;
+      for (const id of blinkers) {
+        this.stage.getView(id).stroke.lineWidth = 2 * (1 + Math.sin(time / 100));
+      }
+    });
 
-    }
+    if (extraMsg.length > 1) msg.push(extraMsg);
+    if (missingMsg.length > 1) msg.push(missingMsg);
 
-    draw() {
-        const { ctx, width, height } = this.stage;
+    msg.push(['Reset or undo and keep trying!']);
+    this.stage.feedback.update('#FFF', ...msg);
+  }
 
-        ctx.save();
-        ctx.fillStyle = '#000';
-        ctx.globalAlpha = this.opacity;
-        ctx.fillRect(0, 0, width, height);
-        ctx.restore();
-    }
+  prepare() {
+
+  }
+
+  draw() {
+    const { ctx, width, height } = this.stage;
+
+    ctx.save();
+    ctx.fillStyle = '#000';
+    ctx.globalAlpha = this.opacity;
+    ctx.fillRect(0, 0, width, height);
+    ctx.restore();
+  }
 }

@@ -1,6 +1,6 @@
 import type { RState } from '@/reducer/state';
 import type {
-  BaseNode, Flattened, NodeId, NodeMap 
+  BaseNode, Flat, NodeId, NodeMap 
 } from '@/semantics';
 import { SymbolNode } from '@/semantics/defs';
 import { DeepReadonly, Thunk } from '@/util/helper';
@@ -31,7 +31,7 @@ export type ProjectionDef<N extends BaseNode> =
     SymbolProjectionDef;
 
 export interface BaseProjectionDef<N extends BaseNode> {
-    color?: Thunk<[DeepReadonly<Flattened<N>>], string>;
+    color?: Thunk<[DeepReadonly<Flat<N>>], string>;
     strokeWhenChild?: boolean;
     shadowOffset?: number;
     radius?: number;
@@ -41,15 +41,15 @@ export interface BaseProjectionDef<N extends BaseNode> {
     shadow?: string;
     shadowColor?: string;
     horizontalAlign?: string;
-    stroke?: Thunk<[DeepReadonly<Flattened<N>>], string>;
-    highlightColor?: Thunk<[DeepReadonly<Flattened<N>>], string>;
+    stroke?: Thunk<[DeepReadonly<Flat<N>>], string>;
+    highlightColor?: Thunk<[DeepReadonly<Flat<N>>], string>;
     ellipsize?: boolean;
 }
 
 export interface DefaultProjectionDef<N extends BaseNode> extends BaseProjectionDef<N> {
     type: 'default';
     shape?: ProjectionShape;
-    fields?: Thunk<[DeepReadonly<Flattened<N>>], string[]>;
+    fields?: Thunk<[DeepReadonly<Flat<N>>], string[]>;
 }
 
 export interface VboxProjectionDef<N extends BaseNode> extends BaseProjectionDef<N> {
@@ -127,7 +127,7 @@ export interface CaseKeyProjectionDef<
     K extends string | number | symbol = string | number | symbol
 > extends BaseProjectionDef<N> {
     type: 'case' | 'cases';
-    key?(nodes: NodeMap, expr: DeepReadonly<Flattened<N>>): K;
+    key?(nodes: NodeMap, expr: DeepReadonly<Flat<N>>): K;
     cases: Record<K, ProjectionDef<N>>;
 }
 
@@ -138,7 +138,7 @@ export interface SymbolProjectionDef extends BaseProjectionDef<SymbolNode> {
 
 export interface SpriteProjectionDef<N extends BaseNode> extends BaseProjectionDef<N> {
     type: 'sprite';
-    image: Thunk<[DeepReadonly<Flattened<N>>], string>;
+    image: Thunk<[DeepReadonly<Flat<N>>], string>;
     scale?: number;
     size?: { w: number; h: number };
 }

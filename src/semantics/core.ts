@@ -286,14 +286,12 @@ export function genericBetaReduce(semant: Semantics, state: DeepReadonly<RState>
         draft.locked = true;
       });
 
-      newNodes.push(result);
-      newNodes = newNodes.concat(resultNewNodes);
+      newNodes.push(result, ...resultNewNodes);
       return [result, produce(nodesStore, draft => draft.set(result.id, result))];
     }
 
     const [result, resultNewNodes, nodesStore] = semant.clone(id, nodes);
-    newNodes.push(result);
-    newNodes = newNodes.concat(resultNewNodes);
+    newNodes.push(result, ...resultNewNodes);
     return [result, produce(nodesStore, draft => draft.set(result.id, result))];
   }, (nodes, node) => {
     if (config.isCapturing(node)) {

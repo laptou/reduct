@@ -2,9 +2,10 @@ import { DefineNode } from '@/semantics/defs';
 import '@resources/style/react/projection/define.scss';
 import React, { FunctionComponent } from 'react';
 import { StageProjection } from './base';
+import { Flat } from '@/semantics';
 
 interface DefineProjectionOwnProps {
-    node: DefineNode;
+    node: Flat<DefineNode>;
 }
 
 export const DefineProjection: FunctionComponent<DefineProjectionOwnProps> = 

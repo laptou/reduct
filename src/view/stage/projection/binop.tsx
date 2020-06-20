@@ -1,20 +1,20 @@
+import { GlobalState } from '@/reducer/state';
+import { Flat } from '@/semantics';
 import { BinOpNode, OpNode } from '@/semantics/defs';
+import { DeepReadonly } from '@/util/helper';
 import '@resources/style/react/projection/binop.scss';
 import React, { FunctionComponent } from 'react';
-import { StageProjection } from './base';
 import { connect } from 'react-redux';
-import { GlobalState } from '@/reducer/state';
-import { Im } from '@/util/im';
-import { NumberShape } from '../shape/number';
 import { BooleanShape } from '../shape/boolean';
-import { DeepReadonly } from '@/util/helper';
+import { NumberShape } from '../shape/number';
+import { StageProjection } from './base';
 
 interface BinOpProjectionOwnProps {
-  node: BinOpNode;
+  node: Flat<BinOpNode>;
 }
 
 interface BinOpProjectionStoreProps {
-  op: OpNode['name'] | null;
+  op: OpNode['fields']['name'] | null;
 }
 
 type BinOpProjectionProps = BinOpProjectionOwnProps & BinOpProjectionStoreProps;
@@ -75,7 +75,7 @@ export const BinOpProjection = connect((store: DeepReadonly<GlobalState>, ownPro
   const opNode = store.program.$present.nodes.get(ownProps.node.subexpressions.op);
 
   if (opNode && opNode.type === 'op') {
-    return { op: opNode.name }
+    return { op: opNode.fields.name }
   }
 
   return { op: null }

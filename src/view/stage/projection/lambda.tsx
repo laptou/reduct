@@ -3,9 +3,10 @@ import '@resources/style/react/projection/lambda.scss';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { StageProjection } from './base';
+import { Flat } from '@/semantics';
 
 interface LambdaArgProjectionOwnProps {
-  node: LambdaArgNode;
+  node: Flat<LambdaArgNode>;
 }
 
 export const LambdaArgProjection: FunctionComponent<LambdaArgProjectionOwnProps> = 
@@ -17,9 +18,9 @@ export const LambdaArgProjection: FunctionComponent<LambdaArgProjectionOwnProps>
     );
   };
 
-  interface LambdaVarProjectionOwnProps {
-    node: LambdaVarNode;
-  }
+interface LambdaVarProjectionOwnProps {
+  node: Flat<LambdaVarNode>;
+}
 
 export const LambdaVarProjection: FunctionComponent<LambdaVarProjectionOwnProps> = 
   (props) => {
@@ -31,7 +32,7 @@ export const LambdaVarProjection: FunctionComponent<LambdaVarProjectionOwnProps>
   };
 
 interface LambdaProjectionOwnProps {
-  node: LambdaNode;
+  node: Flat<LambdaNode>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

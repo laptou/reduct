@@ -1,9 +1,10 @@
 import { SymbolNode } from '@/semantics/defs/value';
 import '@resources/style/react/projection/symbol.scss';
 import React, { FunctionComponent } from 'react';
+import { Flat } from '@/semantics';
 
 interface SymbolProjectionOwnProps {
-    node: SymbolNode;
+  node: Flat<SymbolNode>;
 }
 
 export const SymbolProjection: FunctionComponent<SymbolProjectionOwnProps> = 

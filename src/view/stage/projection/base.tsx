@@ -1,11 +1,10 @@
 import { GlobalState } from '@/reducer/state';
-import { NodeId, ReductNode } from '@/semantics';
-import { Im } from '@/util/im';
+import { FlatReductNode, NodeId } from '@/semantics';
+import { DeepReadonly } from '@/util/helper';
 import cx from 'classnames';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { getProjectionForNode } from '.';
-import { DeepReadonly } from '@/util/helper';
 
 /**
  * Props retrieved from Redux.
@@ -14,7 +13,7 @@ interface StageProjectionStoreProps {
   /**
    * The node to display here.
    */
-  node: ReductNode | null;
+  node: FlatReductNode | null;
 }
 
 /**

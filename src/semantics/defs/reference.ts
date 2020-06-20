@@ -36,7 +36,7 @@ const baseReference: NodeDef<InvocationNode> = {
     }
     if (state.toolbox.has(expr.id)) {
       // If in toolbox, only targetable if defined
-      return state.globals.has(expr.name);
+      return state.globals.has(expr.fields.name);
     }
     return !expr.parent || !expr.locked;
   },
