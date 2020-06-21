@@ -123,7 +123,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
       // nodes that are added in the first part are not drafted
       // by Immer since they come from outside, so we need to
       // call produce() again in order to be able to edit them
-      
+
       newState = produce(newState, draft => {
         if (oldNode.parent) {
           const parent = draft.nodes.get(oldNode.parent)!;
@@ -293,7 +293,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
         // Cache the hole in the parent, so that we
         // don't have to create a new hole if they
         // detach the field later.
-        parent.subexpressions[`${hole.parentField}__hole`] = parent.subexpressions[hole.parentField];
+        parent.subexpressions[`${hole.parentField}:hole`] = parent.subexpressions[hole.parentField];
 
         parent.subexpressions[hole.parentField] = child.id;
         child.parentField = hole.parentField;
@@ -373,14 +373,14 @@ export function reduct(semantics: Semantics, views, restorePos) {
 
       return produce(state, (draft) => {
         draft.board.add(act.nodeId);
-        
+        const node = draft.nodes.get(act.nodeId)!;
         const parent = draft.nodes.get(parentId)!;
-        const oldHole = parent.subexpressions[`${node.parentField}__hole`];
+        const oldHole = parent.subexpressions[`${node.parentField}:hole`];
         if (oldHole) {
           parent.subexpressions[node.parentField] = oldHole;
-          delete parent.subexpressions[`${node.parentField}__hole`];
+          delete parent.subexpressions[`${node.parentField}:hole`];
         } else if (node.parentField.startsWith('notch')) {
-          delete parent.subexpressions[node.parentField];
+          parent.subexpressions[node.parentField] = null;
         } else {
           throw 'Unimplemented: creating new hole';
         }
@@ -401,9 +401,8 @@ export function reduct(semantics: Semantics, views, restorePos) {
           }
         }
 
-        const node = draft.nodes.get(act.nodeId)!;
-        delete node.parentField;
-        delete node.parentField;
+        node.parentField = null;
+        node.parent = null;
 
         markDirty(draft.nodes, parentId);
       });

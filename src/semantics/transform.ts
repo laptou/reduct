@@ -197,7 +197,7 @@ export class Semantics {
               parent: null,
               parentField: null
             };
-            
+
             if (typeof exprDefinition.locked !== 'undefined') {
               result.locked = exprDefinition.locked;
             }
@@ -379,7 +379,7 @@ export class Semantics {
       const defn = this.definitionOf(parent);
       const parentField = child.parentField;
 
-      if (!parentField.startsWith('notch')) {
+      if (!parentField?.startsWith('notch')) {
         return true;
       }
 
