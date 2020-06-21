@@ -1,4 +1,4 @@
-import type { Flat, BaseNode, ReductNode } from '@/semantics';
+import type { Flat, BaseNode, ReductNode, NodeId } from '@/semantics';
 import { produce } from 'immer';
 
 /**
@@ -36,12 +36,36 @@ export type DeepReadonly<T> =
   { readonly [K in keyof T]: DeepReadonly<T[K]> };
 
 /**
+ * A Reduct node that is completely read-only (attempting to write to it or any
+ * of its property values will give an error) and flat (the subexpressions
+ * property contains node IDs instead of the nodes themselves).
+ */
+export type DRF<T extends ReductNode = ReductNode> = DeepReadonly<Flat<T>>;
+
+/**
  * Returns a version of the node that has no reference to its parent (parent and parentField are set to null).
  * @param node 
  */
-export function orphaned<N extends DeepReadonly<ReductNode> | DeepReadonly<Flat<ReductNode>>>(node: N): N {
+export function withoutParent<N extends DeepReadonly<ReductNode> | DRF>(node: N): N {
   return produce(node, draft => {
     draft.parent = null;
     draft.parentField = null;
+  });
+}
+
+export function withParent<N extends DeepReadonly<ReductNode> | DRF>(
+  node: N, 
+  parent: NodeId, 
+  field: string
+): N {
+  return produce(node, (draft: ReductNode) => {
+    draft.parent = parent;
+    draft.parentField = field;
+  });
+}
+
+export function withoutChild<N extends DeepReadonly<ReductNode> | DRF>(node: N, field: keyof N['subexpressions']): N {
+  return produce(node, draft => {
+    (draft.subexpressions as Record<typeof field, any>)[field] = null;
   });
 }

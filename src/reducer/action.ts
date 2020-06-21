@@ -24,6 +24,7 @@ export enum ActionKind {
   Hover = 'hover',
 
   AddNodeToBoard = 'add-node-to-stage',
+  EvalLambda = 'apply-lambda'
 }
 
 
@@ -36,7 +37,8 @@ export type ReductAction =
   StartLevelAction |
   AddNodeToBoardAction |
   AddNodeToToolboxAction |
-  SmallStepAction;
+  SmallStepAction |
+  EvalLambdaAction;
 
 /**
  * Creates an action which will add the specified node to the board, removing it
@@ -154,6 +156,31 @@ export function addToolboxItem(
     type: ActionKind.AddToolboxItem,
     newNodeId,
     addedNodes: newNodes
+  };
+}
+
+export interface EvalLambdaAction {
+  type: ActionKind.EvalLambda;
+  paramNodeId: NodeId;
+  lambdaNodeId: NodeId;
+}
+
+/**
+ * Returns an action which will evaluate a lambda using a given parameter.
+ *
+ * @param paramNodeId The ID of the node that represents the parameter that is
+ * given to this lambda.
+ * @param lambdaNodeId The ID of the node that represents the lambda being
+ * called.
+ */
+export function createEvalLambda(
+  paramNodeId: NodeId, 
+  lambdaNodeId: NodeId
+): EvalLambdaAction {
+  return {
+    type: ActionKind.EvalLambda,
+    paramNodeId,
+    lambdaNodeId
   };
 }
 

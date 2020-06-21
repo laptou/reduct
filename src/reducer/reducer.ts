@@ -1,13 +1,18 @@
-import type { NodeId, NodeMap } from '@/semantics';
+import type { NodeId, NodeMap, Flat } from '@/semantics';
 import type { Semantics } from '@/semantics/transform';
-import { produce } from 'immer';
+import { produce, castDraft } from 'immer';
 import { combineReducers, compose } from 'redux';
 import * as animate from '../gfx/animate';
 import * as gfx from '../gfx/core';
 import { ActionKind, ReductAction } from './action';
 import { RState } from './state';
 import { undoable } from './undo';
-import { orphaned } from '@/util/helper';
+import {
+  withoutParent, DeepReadonly, DRF, withParent 
+} from '@/util/helper';
+import { LambdaArgNode, LambdaNode } from '@/semantics/defs';
+import { mapNodeDeep, cloneNodeDeep } from '@/util/nodes';
+import { lambdaArg } from '@/semantics/defs/lambda';
 
 export { nextId } from '@/util/nodes';
 
@@ -80,6 +85,104 @@ export function reduct(semantics: Semantics, views, restorePos) {
         toolbox: act.toolbox,
         globals: act.globals
       };
+    }
+
+    case ActionKind.EvalLambda: {
+      // for now, this is the same thing as beta-reduce, except handled entirely
+      // in the reducer where it should be - iaa34
+
+      const lambdaNode = state.nodes.get(act.lambdaNodeId) as DRF<LambdaNode>;
+
+      // node that represents lambda argument in function signature
+      const argNode = state.nodes.get(lambdaNode.subexpressions.arg) as DRF<LambdaArgNode>;
+      const argName = argNode.fields.name;
+
+      // node that represents parameter that lambda was called with
+      const paramNode = state.nodes.get(act.paramNodeId) as DRF;
+      
+      const addedNodes = [];
+
+      // replace lambda variables in lambda body with parameter
+      let [
+        mappedBody, 
+        , // arg 2 is not needed
+        mappedNodeMap
+      ] = mapNodeDeep(
+        lambdaNode.subexpressions.body, 
+        state.nodes, 
+        (nodeToMap, nodeMap) => {
+          // we only want to replace lambda variables
+          if (nodeToMap.type !== 'lambdaVar') return [nodeToMap, nodeMap];
+          if (nodeToMap.fields.name !== argName) return [nodeToMap, nodeMap];
+          
+          const [
+            clonedParamNode,
+            clonedDescendantNodes,
+            newNodeMap
+          ] = cloneNodeDeep(paramNode.id, nodeMap);
+
+          addedNodes.push(clonedParamNode, ...clonedDescendantNodes);
+
+          return [clonedParamNode, newNodeMap];
+        },
+        (nodeToFilter, nodeMap) => {
+          // do not go inside of nested lambda functions
+          if (nodeToFilter.type === 'lambda') return false;
+
+          return true;
+        });
+
+      // replace lambda with nodes
+      if (lambdaNode.parent) {
+        mappedBody = withParent(
+          mappedBody, 
+          lambdaNode.parent, 
+          lambdaNode.parentField!
+        );
+
+        mappedNodeMap = produce(mappedNodeMap, draft => {
+          const lambdaParent = draft.get(lambdaNode.parent!)!;
+          (lambdaParent.subexpressions as Record<string, NodeId>)[lambdaNode.parentField!] = mappedBody.id;
+        });
+
+        return produce(
+          {
+            ...state,
+            nodes: mappedNodeMap
+          }, 
+          draft => {
+            draft.board.delete(lambdaNode.id);
+            draft.board.delete(argNode.id);
+
+            draft.nodes.delete(lambdaNode.id);
+            draft.nodes.delete(argNode.id);
+          })
+      } else {
+        mappedBody = withoutParent(mappedBody);
+
+        // if the lambda evaluated to a vtuple, split it up on the board
+        const addedNodeIds = 
+          mappedBody.type === 'vtuple' 
+            ? Object.values(mappedBody.subexpressions)
+            : [mappedBody.id];
+
+        return produce(
+          {
+            ...state,
+            nodes: mappedNodeMap
+          }, 
+          draft => {
+            draft.board.delete(lambdaNode.id);
+            draft.board.delete(argNode.id);
+    
+            draft.nodes.delete(lambdaNode.id);
+            draft.nodes.delete(argNode.id);
+
+            for (const addedNodeId of addedNodeIds) {
+              draft.board.add(addedNodeId);
+            }
+          });
+      }
     }
 
     case ActionKind.Raise: {
@@ -226,7 +329,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
       const addedNodes = act.addedNodes.map((n) => {
         const id = n.id;
         if (act.newNodeIds.indexOf(id) >= 0) {
-          return [id, orphaned(n)];
+          return [id, withoutParent(n)];
         }
 
         return [id, n];

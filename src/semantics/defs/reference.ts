@@ -2,7 +2,7 @@ import * as core from '../core';
 import { builtins, genericValidate } from './builtins';
 import { BaseNode, NodeId } from '..';
 import { NodeDef } from './base';
-import { orphaned } from '@/util/helper';
+import { withoutParent } from '@/util/helper';
 
 /**
  * A node which represents a reference to a name.
@@ -199,7 +199,7 @@ const invocationReference: NodeDef<InvocationNode2> = {
     return [
       expr.id,
       [result[0].id],
-      [orphaned(result[0]), ...result[1]]
+      [withoutParent(result[0]), ...result[1]]
     ];
   },
   // Only care about arguments if partially filled

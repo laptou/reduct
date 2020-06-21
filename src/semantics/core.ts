@@ -1,5 +1,5 @@
 import type { RState } from '@/reducer/state';
-import { DeepReadonly, orphaned } from '@/util/helper';
+import { DeepReadonly, withoutParent } from '@/util/helper';
 import { produce } from 'immer';
 import type {
   NodeId, NodeMap, ReductNode, Flat 
@@ -306,7 +306,7 @@ export function genericBetaReduce(semant: Semantics, state: DeepReadonly<RState>
     return true;
   });
 
-  newTop = orphaned(newTop);
+  newTop = withoutParent(newTop);
 
   if (newTop.type === 'vtuple') {
     // Spill vtuple onto the board
@@ -315,7 +315,7 @@ export function genericBetaReduce(semant: Semantics, state: DeepReadonly<RState>
       topNode.id,
       semant.subexpressions(newTop).map((field) => newTop.subexpressions[field]),
       newNodes.slice(1).map((node) => (node.parent === newTop.id
-        ? orphaned(node) : node))
+        ? withoutParent(node) : node))
     ];
   }
 
