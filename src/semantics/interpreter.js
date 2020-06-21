@@ -1,5 +1,3 @@
-import * as immutable from 'immutable';
-
 import Audio from '../resource/audio';
 
 import * as animate from '../gfx/animate';
@@ -41,13 +39,10 @@ export default function(module) {
       // TODO iaa34: verify that smallStep works correctly, using unproven
       // implementation
       console.warn('smallStep: using unproven implementation');
-      // TODO: is this quite correct?
-      const res2 = [expr.id, [result.id], [result]];
-      return res2;
 
       // Return [topLevelNodeId, newNodeIds[], addedNodes[]]
       result.id = nextId();
-      const addedNodes = module.flatten(result).map(immutable.Map);
+      const addedNodes = module.flatten(result);
       const r3 = [expr.id, [addedNodes[0].id], addedNodes];
       return r3;
     }
