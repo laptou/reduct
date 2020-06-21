@@ -93,8 +93,8 @@ export const binop: NodeDef<BinOpNode> = {
     }
   },
   stepSound: (semant, state, expr) => {
-    const op = state.nodes.get(expr.op);
-    if (op.name === '==') {
+    const op = state.nodes.get(expr.subexpressions.op);
+    if (op.fields.name === '==') {
       return ['shatter1', 'heatup'];
     }
     return ['heatup'];
@@ -126,8 +126,8 @@ export const binop: NodeDef<BinOpNode> = {
       //  strings and numbers?
     } else {
       result.set(id, 'number');
-      result.set(expr.left, 'number');
-      result.set(expr.right, 'number');
+      result.set(expr.subexpressions.left, 'number');
+      result.set(expr.subexpressions.right, 'number');
     }
 
     return {
@@ -192,7 +192,7 @@ export const binop: NodeDef<BinOpNode> = {
     const nodes = state.nodes;
     const op = nodes.get(expr.subexpressions.op).fields.name;
     if (op === '+') {
-      if (nodes.get(expr.left).type === 'number') {
+      if (nodes.get(expr.subexpressions.left).type === 'number') {
         return semant.number(nodes.get(expr.subexpressions.left).fields.value
                         + nodes.get(expr.subexpressions.right).fields.value);
       }

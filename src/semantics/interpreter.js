@@ -38,11 +38,12 @@ export default function(module) {
         return result;
       }
 
-      if (immutable.Map.isMap(result)) {
-        // TODO: is this quite correct?
-        const res2 = [expr.id, [result.id], [result]];
-        return res2;
-      }
+      // TODO iaa34: verify that smallStep works correctly, using unproven
+      // implementation
+      console.warn('smallStep: using unproven implementation');
+      // TODO: is this quite correct?
+      const res2 = [expr.id, [result.id], [result]];
+      return res2;
 
       // Return [topLevelNodeId, newNodeIds[], addedNodes[]]
       result.id = nextId();
@@ -117,7 +118,7 @@ export default function(module) {
       console.log(`semant.interpreter.singleStep: could not step since ${expr.id} is '${kind}', not 'expression'`);
       let reason = 'This expression can\'t step!';
       if (kind === 'placeholder') {
-        reason = 'There\'s a hole that needs to be filled in!';
+        reason = 'There\'s a slot that needs to be filled in!';
       }
       return ['error', expr.id, reason];
     }
@@ -132,7 +133,7 @@ export default function(module) {
     if (!exprFilter(state, expr)) {
       for (const field of module.subexpressions(expr)) {
         console.log(`considering subexpression ${field}`);
-        const subexprId = expr.get(field);
+        const subexprId = expr.subexpressions[field];
         const subexpr = nodes.get(subexprId);
         const subexprKind = module.kind(state, subexpr);
         console.log(`subexpr kind is ${subexprKind}`);
@@ -147,7 +148,7 @@ export default function(module) {
         if (subexpr.type === 'reference') {
           if (expr.type !== 'apply' && (
             !subexpr.params
-                            || module.subexpressions(subexpr).some((f) => nodes.get(subexpr.get(f)).type === 'missing')
+                            || module.subexpressions(subexpr).some((f) => nodes.get(subexpr.subexpressions[f]).type === 'missing')
           )) {
             console.log('delaying expansion because of missing arguments');
             continue;
