@@ -104,19 +104,10 @@ export function reduct(semantics: Semantics, views, restorePos) {
           
       const newNodeId = act.newNodeIds[0];
 
-      const newState = produce(state, draft => {
+      let newState = produce(state, draft => {
         // update the node map
         for (const node of act.addedNodes) {
           draft.nodes.set(node.id, node);
-        }
-
-        if (oldNode.parent) {
-          const parent = draft.nodes.get(oldNode.parent)!;
-          parent.subexpressions[newNodeId] = act.newNodeIds[0];
-
-          const child = draft.nodes.get(newNodeId)!;
-          child.parent = parent.id;
-          child.parentField = oldNode.parentField;
         }
 
         // update the board
@@ -127,6 +118,21 @@ export function reduct(semantics: Semantics, views, restorePos) {
         if (!oldNode.parent)
           for (const newNodeId of act.newNodeIds)
             draft.board.add(newNodeId);
+      });
+
+      // nodes that are added in the first part are not drafted
+      // by Immer since they come from outside, so we need to
+      // call produce() again in order to be able to edit them
+      
+      newState = produce(newState, draft => {
+        if (oldNode.parent) {
+          const parent = draft.nodes.get(oldNode.parent)!;
+          parent.subexpressions[oldNode.parentField] = act.newNodeIds[0];
+
+          const child = draft.nodes.get(newNodeId)!;
+          child.parent = parent.id;
+          child.parentField = oldNode.parentField;
+        }
       });
 
       act.newNodeIds.forEach((id) => markDirty(newState.nodes, id));

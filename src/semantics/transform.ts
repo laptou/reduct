@@ -166,7 +166,9 @@ export class Semantics {
           kind: 'expression',
           locked: true,
           subexpressions: {},
-          fields: { numChildren: children.length }
+          fields: { numChildren: children.length },
+          parent: null,
+          parentField: null
         };
         let i = 0;
         for (const child of children) {
@@ -188,8 +190,14 @@ export class Semantics {
           fadeLevel += 1;
           const ctor = (...params: any[]) => {
             const result: ReductNode = {
-              type: exprName, locked: true, fields: {}, subexpressions: {} 
+              type: exprName, 
+              locked: true, 
+              fields: {}, 
+              subexpressions: {},
+              parent: null,
+              parentField: null
             };
+            
             if (typeof exprDefinition.locked !== 'undefined') {
               result.locked = exprDefinition.locked;
             }
