@@ -81,7 +81,7 @@ export default class ReductToolbar {
         const toDelete = [];
 
         for (const [id, { el: toolbar }] of this.ids.entries()) {
-            if (!board.includes(id)) {
+            if (!board.has(id)) {
                 toDelete.push(id);
                 continue;
             }

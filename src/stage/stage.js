@@ -832,7 +832,7 @@ export default class Stage extends BaseStage {
         // TODO: actually handle multiple new nodes
         for (const id of newNodeIds) {
           let n = updatedNodes.get(id);
-          while (n.has('parent')) {
+          while (n.parent) {
             n = updatedNodes.get(n.parent);
           }
           reducing.push(n.id);
