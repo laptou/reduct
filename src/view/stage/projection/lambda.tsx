@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { StageProjection } from './base';
 import { Flat, NodeId } from '@/semantics';
 import { createEvalLambda } from '@/reducer/action';
+import cx from 'classnames';
 
 interface LambdaArgProjectionOwnProps {
   node: Flat<LambdaArgNode>;
@@ -90,7 +91,7 @@ export const LambdaProjectionImpl: FunctionComponent<LambdaProjectionProps> =
     const [hover, setHover] = useState(false);
 
     return (
-      <div className='projection lambda'>
+      <div className={cx('projection lambda', { hover })}>
         <div className='arg' 
           onDragOver={e => onDragOver(e, setHover)}
           onDragLeave={e => onDragLeave(e, setHover)}

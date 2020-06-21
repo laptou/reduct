@@ -11,7 +11,7 @@ import {
   withoutParent, DeepReadonly, DRF, withParent 
 } from '@/util/helper';
 import { LambdaArgNode, LambdaNode } from '@/semantics/defs';
-import { mapNodeDeep, cloneNodeDeep } from '@/util/nodes';
+import { mapNodeDeep, cloneNodeDeep, findNodesDeep } from '@/util/nodes';
 import { lambdaArg } from '@/semantics/defs/lambda';
 
 export { nextId } from '@/util/nodes';
@@ -99,7 +99,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
 
       // node that represents parameter that lambda was called with
       const paramNode = state.nodes.get(act.paramNodeId) as DRF;
-      
+
       const addedNodes = [];
 
       // replace lambda variables in lambda body with parameter
@@ -132,57 +132,53 @@ export function reduct(semantics: Semantics, views, restorePos) {
           return true;
         });
 
-      // replace lambda with nodes
-      if (lambdaNode.parent) {
-        mappedBody = withParent(
-          mappedBody, 
-          lambdaNode.parent, 
-          lambdaNode.parentField!
-        );
+      // obtain a list of IDs for param node and descendants
+      const paramNodeDescendants = findNodesDeep(paramNode.id, state.nodes, () => true);
 
-        mappedNodeMap = produce(mappedNodeMap, draft => {
-          const lambdaParent = draft.get(lambdaNode.parent!)!;
-          (lambdaParent.subexpressions as Record<string, NodeId>)[lambdaNode.parentField!] = mappedBody.id;
-        });
+      return produce(
+        {
+          ...state,
+          nodes: mappedNodeMap
+        }, 
+        draft => {
+          if (lambdaNode.parent) {
+            mappedBody = withParent(
+              mappedBody, 
+              lambdaNode.parent, 
+              lambdaNode.parentField!
+            );
+  
+            const lambdaParent = draft.nodes.get(lambdaNode.parent)!;
+            (lambdaParent.subexpressions as Record<string, NodeId>)[lambdaNode.parentField!] = mappedBody.id;
+          } else {
+            mappedBody = withoutParent(mappedBody);
 
-        return produce(
-          {
-            ...state,
-            nodes: mappedNodeMap
-          }, 
-          draft => {
-            draft.board.delete(lambdaNode.id);
-            draft.board.delete(argNode.id);
-
-            draft.nodes.delete(lambdaNode.id);
-            draft.nodes.delete(argNode.id);
-          })
-      } else {
-        mappedBody = withoutParent(mappedBody);
-
-        // if the lambda evaluated to a vtuple, split it up on the board
-        const addedNodeIds = 
-          mappedBody.type === 'vtuple' 
-            ? Object.values(mappedBody.subexpressions)
-            : [mappedBody.id];
-
-        return produce(
-          {
-            ...state,
-            nodes: mappedNodeMap
-          }, 
-          draft => {
-            draft.board.delete(lambdaNode.id);
-            draft.board.delete(argNode.id);
-    
-            draft.nodes.delete(lambdaNode.id);
-            draft.nodes.delete(argNode.id);
+            // if the lambda evaluated to a vtuple, split it up on the board
+            const addedNodeIds = 
+              mappedBody.type === 'vtuple' 
+                ? Object.values(mappedBody.subexpressions)
+                : [mappedBody.id];
 
             for (const addedNodeId of addedNodeIds) {
               draft.board.add(addedNodeId);
             }
-          });
-      }
+          }
+
+          // add evaluated lambda body to list of nodes
+          draft.nodes.set(mappedBody.id, castDraft(mappedBody));
+
+          // param node is no longer needed, eliminate it
+          for (const paramNodeDescendant of paramNodeDescendants)
+            draft.nodes.delete(paramNodeDescendant.id);
+
+          // lambda node is no longer needed, eliminate it
+          draft.board.delete(lambdaNode.id);
+          draft.board.delete(argNode.id);
+
+          // param node should be consumed from board or toolbox
+          draft.board.delete(paramNode.id);
+          draft.toolbox.delete(paramNode.id);
+        });
     }
 
     case ActionKind.Raise: {

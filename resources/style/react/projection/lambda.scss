@@ -14,4 +14,8 @@
   & > .arg, & > .arrow, & > .body {
     @extend %value-container;
   }
+
+  &.hover {
+    color: theme.$projection-color-function;
+  }
 }
