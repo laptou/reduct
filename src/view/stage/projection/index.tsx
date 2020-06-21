@@ -13,6 +13,7 @@ import { ReferenceProjection } from './reference';
 import { SymbolProjection } from './symbol';
 import { ValueProjection } from './value';
 import { VTupleProjection } from './vtuple';
+import { DRF } from '@/util/helper';
 
 /**
  * Definitions:
@@ -26,7 +27,7 @@ import { VTupleProjection } from './vtuple';
  * Gets the stage projection for the given node.
  * @param node The node that is to be displayed on the stage.
  */
-export function getProjectionForNode(node: FlatReductNode | null) {
+export function getProjectionForNode(node: DRF | null) {
   if (!node) return null;
 
   switch (node.type) {

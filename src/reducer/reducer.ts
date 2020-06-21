@@ -167,7 +167,11 @@ export function reduct(semantics: Semantics, views, restorePos) {
           // add evaluated lambda body to list of nodes
           draft.nodes.set(mappedBody.id, castDraft(mappedBody));
 
-          // param node is no longer needed, eliminate it
+          // param node should be consumed from board or toolbox
+          draft.board.delete(paramNode.id);
+          draft.toolbox.delete(paramNode.id);
+
+          // descendants are no longer needed, eliminate them
           for (const paramNodeDescendant of paramNodeDescendants)
             draft.nodes.delete(paramNodeDescendant.id);
 
@@ -175,9 +179,8 @@ export function reduct(semantics: Semantics, views, restorePos) {
           draft.board.delete(lambdaNode.id);
           draft.board.delete(argNode.id);
 
-          // param node should be consumed from board or toolbox
-          draft.board.delete(paramNode.id);
-          draft.toolbox.delete(paramNode.id);
+          draft.nodes.delete(lambdaNode.id);
+          draft.nodes.delete(argNode.id);
         });
     }
 

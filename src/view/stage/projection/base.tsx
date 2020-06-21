@@ -1,10 +1,11 @@
 import { GlobalState } from '@/reducer/state';
-import { FlatReductNode, NodeId } from '@/semantics';
-import { DeepReadonly } from '@/util/helper';
+import { NodeId } from '@/semantics';
+import { DeepReadonly, DRF } from '@/util/helper';
 import cx from 'classnames';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { getProjectionForNode } from '.';
+import { CSSTransition } from 'react-transition-group';
 
 /**
  * Props retrieved from Redux.
@@ -13,7 +14,7 @@ interface StageProjectionStoreProps {
   /**
    * The node to display here.
    */
-  node: FlatReductNode | null;
+  node: DRF | null;
 }
 
 /**
@@ -47,8 +48,6 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
       return null;
     }
 
-    const component = getProjectionForNode(props.node);
-
     // top level nodes (nodes w/o parents) should not be considered locked
     // TODO: don't mark top level nodes as locked
     const locked = props.node.parent ? props.node.locked : false;
@@ -60,11 +59,14 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
       && !locked;
 
     return (
-      <div className={cx('projection wrapper', { locked })}
+      <div 
+        id={`projection-${props.node.id}`}
+        data-projection-node-id={props.node.id}
+        className={cx('projection wrapper', { locked })}
         draggable={draggable} 
         onDragStart={e => onDragStart(e, props)}
       >
-        {component}
+        {getProjectionForNode(props.node)}
       </div>
     );
   };

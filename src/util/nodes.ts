@@ -146,7 +146,7 @@ export function findNodesDeep(
 ): Array<DeepReadonly<Flat<ReductNode>>> {
   const root = nodeMap.get(id)!;
 
-  if (filter(root, nodeMap)) {
+  if (!filter(root, nodeMap)) {
     return [];
   }
 

@@ -1,10 +1,11 @@
 import { createAddNodeToBoard } from '@/reducer/action';
 import { GlobalState } from '@/reducer/state';
 import { NodeId } from '@/semantics';
+import { DeepReadonly } from '@/util/helper';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { StageProjection } from './projection/base';
-import { DeepReadonly, map } from '@/util/helper';
 
 interface BoardStoreProps {
   nodeIds: DeepReadonly<Set<NodeId>>;
@@ -40,7 +41,13 @@ const BoardImpl: FunctionComponent<BoardProps> =
   (props) => {
     return (
       <div id='reduct-board' onDragOver={onDragOver} onDrop={e => onDrop(e, props)}>
-        {[...props.nodeIds].map(nodeId => <StageProjection nodeId={nodeId} key={nodeId} />)}
+        <TransitionGroup>
+          {[...props.nodeIds].map(nodeId => 
+            <CSSTransition classNames='projection' timeout={20000} key={nodeId}>
+              <StageProjection nodeId={nodeId} key={nodeId} />
+            </CSSTransition>
+          )}
+        </TransitionGroup>
       </div>
     );
   };

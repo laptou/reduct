@@ -12,6 +12,15 @@
   vertical-align: middle;
 }
 
+.projection-enter {
+  filter: blur(16px);
+}
+
+.projection-enter-active {
+  filter: blur(0px);
+  transition: filter 2000ms;
+}
+
 .projection.slot {
   display: inline-block;
   min-width: 2.5rem;
