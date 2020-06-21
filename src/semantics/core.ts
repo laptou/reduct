@@ -1,21 +1,23 @@
 import type { RState } from '@/reducer/state';
 import { DeepReadonly, orphaned } from '@/util/helper';
 import { produce } from 'immer';
-import type { NodeId, NodeMap, ReductNode } from '.';
+import type {
+  NodeId, NodeMap, ReductNode, Flat 
+} from '.';
 import { Semantics } from './transform';
 
 type GenericNodeCreator<F> =
     (
         getNextId: () => number,
-        getSubExpressions: (node: DeepReadonly<ReductNode>) => string[]
+        getSubExpressions: (node: DeepReadonly<Flat<ReductNode> | ReductNode>) => string[]
     ) => F;
 
 type GenericNodeTransformer<F> =
     (
-        getSubExpressions: (node: DeepReadonly<ReductNode>) => string[]
+        getSubExpressions: (node: DeepReadonly<Flat<ReductNode> | ReductNode>) => string[]
     ) => F;
 
-export const genericFlatten: GenericNodeCreator<(expr: ReductNode) => ReductNode[]> =
+export const genericFlatten: GenericNodeCreator<(expr: ReductNode) => Array<Flat<ReductNode>>> =
     (getNextId, getSubExpressions) => function flatten(expr) {
       expr.id = getNextId();
       let result = [expr];
@@ -40,21 +42,26 @@ export const genericMap: GenericNodeTransformer<(
     nodes: DeepReadonly<NodeMap>,
     nodeId: NodeId,
     mapper: (nodeMap: DeepReadonly<NodeMap>, id: NodeId) => [ReductNode, NodeMap],
-    filter?: (nodes: DeepReadonly<NodeMap>, node: DeepReadonly<ReductNode>) => boolean,
+    filter?: (nodes: DeepReadonly<NodeMap>, node: DeepReadonly<Flat<ReductNode>>) => boolean,
     top?: boolean
 ) => [ReductNode, NodeMap]> =
     (getSubExpressions) => function map(nodeMap, nodeId, mapper, filter?, top = true) {
-      const currentNode = nodeMap.get(nodeId)!;
+      let currentNode = nodeMap.get(nodeId)!;
 
       if (!filter?.(nodeMap, currentNode)) {
         return [currentNode, nodeMap];
       }
 
-      for (const field of getSubExpressions(currentNode)) {
-        const [newNode, newNodeMap] = map(nodeMap, currentNode.subexpressions[field], transformer, filter, false);
-        currentNode.subexpressions[field] = newNode.id;
-        nodeMap = produce(newNodeMap, draft => draft.set(newNode.id, newNode));
-      }
+      currentNode = produce(currentNode, draft => {
+        for (const field of getSubExpressions(currentNode)) {
+          const [newNode, newNodeMap] = map(nodeMap, currentNode.subexpressions[field], mapper, filter, false);
+        
+          draft.subexpressions[field] = newNode.id;
+          nodeMap = newNodeMap;
+        }
+      });
+
+      nodeMap = produce(nodeMap, draft => { draft.set(currentNode.id, currentNode); });
 
       // Function returns [new node, new store]
       return mapper(nodeMap, currentNode.id);
@@ -115,8 +122,8 @@ export const genericClone: GenericNodeCreator<(
         const newId = nextId();
         draft.id = newId;
 
-        for (const field of getSubExpressions(draft)) {
-          let [childClone, descendantClones, descendantNodeMap] = clone(draft.subexpressions[field], nodeMap, locked);
+        for (const field of getSubExpressions(root)) {
+          let [childClone, descendantClones, descendantNodeMap] = clone(root.subexpressions[field], nodeMap, locked);
           nodeMap = descendantNodeMap;
   
           childClone = produce(childClone, childCloneDraft => {
@@ -273,7 +280,7 @@ export function genericBetaReduce(semant: Semantics, state: DeepReadonly<RState>
   }
 
   const name = config.targetName(targetNode);
-  let [bodyClone, newNodes, curNodes] = semant.clone(topNode.subexpressions.body, nodes);
+  const [bodyClone, newNodes, curNodes] = semant.clone(topNode.subexpressions.body, nodes);
 
   let [newTop] = semant.map(curNodes, bodyClone.id, (nodes, id) => {
     const node = nodes.get(id);
