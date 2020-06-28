@@ -1,5 +1,5 @@
 import { GlobalState } from '@/reducer/state';
-import { Flat } from '@/semantics';
+import { Flat, NodeId } from '@/semantics';
 import { BinOpNode, OpNode } from '@/semantics/defs';
 import { DeepReadonly } from '@/util/helper';
 import '@resources/style/react/projection/binop.scss';
@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { BooleanShape } from '../shape/boolean';
 import { NumberShape } from '../shape/number';
 import { StageProjection } from './base';
+import { createEvalOperator } from '@/reducer/action';
 
 interface BinOpProjectionOwnProps {
   node: Flat<BinOpNode>;
@@ -17,10 +18,27 @@ interface BinOpProjectionStoreProps {
   op: OpNode['fields']['name'] | null;
 }
 
-type BinOpProjectionProps = BinOpProjectionOwnProps & BinOpProjectionStoreProps;
+interface BinOpProjectionDispatchProps {
+  eval(): void;
+}
+
+type BinOpProjectionProps = 
+  BinOpProjectionOwnProps & 
+  BinOpProjectionStoreProps & 
+  BinOpProjectionDispatchProps;
 
 // TODO: why do we need a separate node for the operation?
 // Not Doing That seems simpler
+
+function onClick(
+  event: React.MouseEvent<HTMLDivElement>,
+  props: BinOpProjectionProps
+) {
+  // stop parent projections from hijacking the click
+  event.stopPropagation();
+
+  props.eval();
+};
 
 const BinOpProjectionImpl: FunctionComponent<BinOpProjectionProps> = 
   (props) => {
@@ -28,7 +46,7 @@ const BinOpProjectionImpl: FunctionComponent<BinOpProjectionProps> =
     case '+':
     case '-':
       return (
-        <div className='projection binop'>
+        <div className='projection binop' onClick={e => onClick(e, props)}>
           <NumberShape>
             <div className='left'>
               <StageProjection nodeId={props.node.subexpressions.left} />
@@ -71,12 +89,18 @@ const BinOpProjectionImpl: FunctionComponent<BinOpProjectionProps> =
     }
   };
 
-export const BinOpProjection = connect((store: DeepReadonly<GlobalState>, ownProps: BinOpProjectionOwnProps) => {
-  const opNode = store.program.$present.nodes.get(ownProps.node.subexpressions.op);
+export const BinOpProjection = connect(
+  (store: DeepReadonly<GlobalState>, ownProps: BinOpProjectionOwnProps) => {
+    const opNode = store.program.$present.nodes.get(ownProps.node.subexpressions.op);
 
-  if (opNode && opNode.type === 'op') {
-    return { op: opNode.fields.name }
-  }
+    if (opNode && opNode.type === 'op') {
+      return { op: opNode.fields.name }
+    }
 
-  return { op: null }
-})(BinOpProjectionImpl);
+    return { op: null }
+  },
+  (dispatch, ownProps) => {
+    return {
+      eval() { dispatch(createEvalOperator(ownProps.node.id)); }
+    }
+  })(BinOpProjectionImpl);

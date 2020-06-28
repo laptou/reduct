@@ -37,7 +37,6 @@ interface LambdaProjectionOwnProps {
   node: Flat<LambdaNode>;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface LambdaProjectionDispatchProps {
   evalLambda(paramNodeId: NodeId): void;
 }

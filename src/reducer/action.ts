@@ -24,8 +24,11 @@ export enum ActionKind {
   Hover = 'hover',
 
   AddNodeToBoard = 'add-node-to-stage',
-  EvalLambda = 'apply-lambda',
-  EvalOperator = 'apply-operator',
+
+  Eval = 'eval',
+  EvalLambda = 'eval-lambda',
+  EvalOperator = 'eval-operator',
+  EvalConditional = 'eval-conditional'
 }
 
 
@@ -40,7 +43,8 @@ export type ReductAction =
   AddNodeToToolboxAction |
   SmallStepAction |
   EvalLambdaAction |
-  EvalOperatorAction;
+  EvalOperatorAction |
+  EvalConditionalAction;
 
 /**
  * Creates an action which will add the specified node to the board, removing it
@@ -202,6 +206,25 @@ export function createEvalOperator(
   return {
     type: ActionKind.EvalOperator,
     operatorNodeId
+  };
+}
+
+export interface EvalConditionalAction {
+  type: ActionKind.EvalConditional;
+  conditionalNodeId: NodeId;
+}
+
+/**
+ * Returns an action which will evaluate a conditional (if-else) node.
+ *
+ * @param operatorNodeId The ID of the node that represents the conditional.
+ */
+export function createEvalConditional(
+  conditionalNodeId: NodeId, 
+): EvalConditionalAction {
+  return {
+    type: ActionKind.EvalConditional,
+    conditionalNodeId
   };
 }
 

@@ -11,11 +11,11 @@ import {
   withoutParent, DeepReadonly, DRF, withParent 
 } from '@/util/helper';
 import {
-  LambdaArgNode, LambdaNode, BinOpNode, OpNode, StrNode, BoolNode, NumberNode 
+  LambdaArgNode, LambdaNode, BinOpNode, OpNode, StrNode, BoolNode, NumberNode, ConditionalNode 
 } from '@/semantics/defs';
-import { mapNodeDeep, cloneNodeDeep, findNodesDeep } from '@/util/nodes';
+import { mapNodeDeep, cloneNodeDeep, findNodesDeep, getRootForNode } from '@/util/nodes';
 import { lambdaArg } from '@/semantics/defs/lambda';
-import { MissingNodeError, WrongTypeError } from './errors';
+import { MissingNodeError, WrongTypeError, NotOnBoardError } from './errors';
 import {
   getKindForNode, createBoolNode, createNumberNode, createStrNode 
 } from '@/semantics/util';
@@ -103,6 +103,9 @@ export function reduct(semantics: Semantics, views, restorePos) {
       // for now, this is the same thing as beta-reduce, except handled entirely
       // in the reducer where it should be - iaa34
 
+      if (!state.board.has(getRootForNode(act.lambdaNodeId, state.nodes).id))
+        throw new NotOnBoardError(act.lambdaNodeId);
+
       const lambdaNode = state.nodes.get(act.lambdaNodeId) as DRF<LambdaNode>;
 
       // node that represents lambda argument in function signature
@@ -113,6 +116,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
       const paramNode = state.nodes.get(act.paramNodeId) as DRF;
 
       const addedNodes: DRF[] = [];
+      const lambdaVarNodes: DRF[] = [];
 
       // replace lambda variables in lambda body with parameter
       let [
@@ -133,6 +137,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
             newNodeMap
           ] = cloneNodeDeep(paramNode.id, nodeMap);
 
+          lambdaVarNodes.push(nodeToMap);
           addedNodes.push(clonedParamNode, ...clonedDescendantNodes);
 
           return [clonedParamNode, newNodeMap];
@@ -196,6 +201,12 @@ export function reduct(semantics: Semantics, views, restorePos) {
             draft.removed.add(paramNodeDescendant.id);
           }
 
+          // lambda var nodes are no longer needed, eliminate them
+          for (const lambdaVarNode of lambdaVarNodes) {
+            draft.nodes.delete(lambdaVarNode.id);
+            draft.removed.add(lambdaVarNode.id);
+          }
+
           // lambda node is no longer needed, eliminate it
           draft.board.delete(lambdaNode.id);
           draft.board.delete(argNode.id);
@@ -208,10 +219,12 @@ export function reduct(semantics: Semantics, views, restorePos) {
     case ActionKind.EvalOperator: {
       // for now, this is the same thing as small-stepping a binary operator,
       // except handled entirely in the reducer where it should be - iaa34
-
+      if (!state.board.has(getRootForNode(act.operatorNodeId, state.nodes).id))
+        throw new NotOnBoardError(act.operatorNodeId);
+      
       const binOpNode = state.nodes.get(act.operatorNodeId) as DRF<BinOpNode>;
       const opNode = state.nodes.get(binOpNode.subexpressions.op) as DRF<OpNode>;
-
+      
       const leftNode = state.nodes.get(binOpNode.subexpressions.left) as DRF;
       const rightNode = state.nodes.get(binOpNode.subexpressions.right) as DRF;
 
@@ -327,8 +340,68 @@ export function reduct(semantics: Semantics, views, restorePos) {
         draft.added.clear();
         draft.added.set(binOpNode.id, [resultNode.id]);
 
+        if (binOpNode.parent) {
+          const parentNode = draft.nodes.get(binOpNode.parent)!;
+          resultNode.parent = binOpNode.parent;
+          resultNode.parentField = binOpNode.parentField;
+          parentNode.subexpressions[binOpNode.parentField!] = resultNode.id;
+        } else {
+          draft.board.add(resultNode.id);
+        }
+
         draft.nodes.set(resultNode.id, resultNode);
-        draft.board.add(resultNode.id);
+      });
+    }
+    
+    case ActionKind.EvalConditional: {
+      if (!state.board.has(getRootForNode(act.conditionalNodeId, state.nodes).id))
+        throw new NotOnBoardError(act.conditionalNodeId);
+
+      // conditional block
+      const blockNode = state.nodes.get(act.conditionalNodeId) as DRF<ConditionalNode>;
+      // conditional condition
+      const condNode = state.nodes.get(blockNode.subexpressions.condition)!;
+
+      const positiveNode = state.nodes.get(blockNode.subexpressions.positive)!;
+      const negativeNode = state.nodes.get(blockNode.subexpressions.negative)!;
+
+      if (condNode.type !== 'boolean')
+        throw new WrongTypeError(condNode.id, ['boolean'], condNode.type);
+
+      if (negativeNode.type === 'missing')
+        throw new MissingNodeError(negativeNode.id);
+
+      if (positiveNode.type === 'missing')
+        throw new MissingNodeError(positiveNode.id);
+
+      let resultNode = condNode.fields.value ? positiveNode : negativeNode;
+      const removedNode = !condNode.fields.value ? positiveNode : negativeNode;
+
+      return produce(state, draft => {
+        draft.board.delete(blockNode.id);
+        draft.board.delete(condNode.id);
+  
+        draft.nodes.delete(blockNode.id);
+        draft.nodes.delete(condNode.id);
+        draft.nodes.delete(removedNode.id);
+  
+        draft.removed.clear();
+        draft.removed.add(blockNode.id);
+        draft.removed.add(condNode.id);
+        draft.removed.add(removedNode.id);
+  
+        draft.added.clear();
+        draft.added.set(blockNode.id, [resultNode.id]);
+
+        if (blockNode.parent) {
+          const parentNode = draft.nodes.get(blockNode.parent)!;
+          parentNode.subexpressions[blockNode.parentField!] = resultNode.id;
+          resultNode = withParent(resultNode, parentNode.id, blockNode.parentField!);
+        } else {
+          draft.board.add(resultNode.id);
+        }
+  
+        draft.nodes.set(resultNode.id, resultNode);
       });
     }
 

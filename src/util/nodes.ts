@@ -107,7 +107,7 @@ export function mapNodeDeep(
 ): MapResult {
   const root = nodeMap.get(id)!;
   const mappedGrandChildren: DRF[] = [];
-  const mappedChildren: DRF[] = [];
+  const mappedChildren: Map<string, DRF> = new Map();
 
   if (!filter(root, nodeMap)) {
     return [root, [], nodeMap];
@@ -119,7 +119,7 @@ export function mapNodeDeep(
       nodeMap = newNodeMap;
 
       mappedGrandChildren.push(...mappedGrandChildren);
-      mappedChildren.push(mappedChild);
+      mappedChildren.set(childPath, mappedChild);
 
       (draft.subexpressions as Record<string, number>)[childPath] = mappedChild.id;
     }
@@ -127,7 +127,11 @@ export function mapNodeDeep(
 
   const [mappedRoot, mappedNodeMap] = mapper(rootWithMappedDescendants, nodeMap);
 
-  const reparentedChildren = mappedChildren.map(mappedChild => ({ ...mappedChild, parent: mappedRoot.id } as DRF));
+  const reparentedChildren = Array.from(mappedChildren).map(([childPath, mappedChild]) => ({ 
+    ...mappedChild, 
+    parent: mappedRoot.id,
+    parentField: childPath 
+  } as DRF));
 
   const finalNodeMap = produce(mappedNodeMap, draft => {
     draft.set(mappedRoot.id, castDraft(mappedRoot));
@@ -183,4 +187,20 @@ export function findNodesDeep(
   }
 
   return foundNodes;
+}
+
+/**
+ * Traverses up the node graph until this node's parent is found.
+ * 
+ * @param id The node whose root should be found.
+ * @param nodes A map from IDs to nodes.
+ */
+export function getRootForNode(id: NodeId, nodes: NodeMap): DRF {
+  let current = nodes.get(id)!;
+  
+  while (current.parent) {
+    current = nodes.get(current.parent)!;
+  }
+
+  return current;
 }
