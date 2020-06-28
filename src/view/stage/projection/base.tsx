@@ -62,7 +62,7 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
       <div 
         id={`projection-${props.node.id}`}
         data-projection-node-id={props.node.id}
-        className={cx('projection wrapper', { locked })}
+        className={cx('projection wrapper', { locked, draggable })}
         draggable={draggable} 
         onDragStart={e => onDragStart(e, props)}
       >

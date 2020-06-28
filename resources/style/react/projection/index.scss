@@ -6,6 +6,10 @@
   user-select: none;
 }
 
+.projection.draggable {
+  cursor: grab;
+}
+
 .projection, .projection .content {
   display: inline-flex;
   align-items: stretch;
