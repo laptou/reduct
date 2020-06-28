@@ -23,18 +23,13 @@ export enum ActionKind {
   ChangeGoal = 'change-goal',
   Hover = 'hover',
 
-  AddNodeToBoard = 'add-node-to-stage',
+  MoveNodeToBoard = 'add-node-to-stage',
 
+  Cleanup = 'cleanup',
   Eval = 'eval',
   EvalLambda = 'eval-lambda',
   EvalOperator = 'eval-operator',
   EvalConditional = 'eval-conditional'
-}
-
-
-export interface AddNodeToBoardAction {
-  type: ActionKind.AddNodeToBoard;
-  nodeId: NodeId;
 }
 
 export type ReductAction = 
@@ -44,7 +39,26 @@ export type ReductAction =
   SmallStepAction |
   EvalLambdaAction |
   EvalOperatorAction |
-  EvalConditionalAction;
+  EvalConditionalAction |
+  CleanupAction;
+
+/**
+ * If the target node is scheduled for cleanup (its ID is in the 'removed'
+ * set) then it and its descendants will be deleted from the node map.
+ */
+export interface CleanupAction {
+  type: ActionKind.Cleanup;
+  target: NodeId;
+}
+
+export function createCleanup(target: NodeId): CleanupAction {
+  return { type: ActionKind.Cleanup, target };
+}
+
+export interface AddNodeToBoardAction {
+  type: ActionKind.MoveNodeToBoard;
+  nodeId: NodeId;
+}
 
 /**
  * Creates an action which will add the specified node to the board, removing it
@@ -52,7 +66,7 @@ export type ReductAction =
  * @param nodeId The node to add to the board.
  */
 export function createAddNodeToBoard(nodeId: NodeId) {
-  return { type: ActionKind.AddNodeToBoard, nodeId };
+  return { type: ActionKind.MoveNodeToBoard, nodeId };
 }
 
 export interface StartLevelAction {

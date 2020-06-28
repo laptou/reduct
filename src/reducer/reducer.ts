@@ -67,7 +67,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
     if (!act) return state;
     
     switch (act.type) {
-    case ActionKind.AddNodeToBoard: {
+    case ActionKind.MoveNodeToBoard: {
 
       const node = state.nodes.get(act.nodeId)!;
 
@@ -197,28 +197,24 @@ export function reduct(semantics: Semantics, views, restorePos) {
           draft.added.clear();
           draft.added.set(lambdaNode.id, addedNodes.map(n => n.id));
 
-          draft.removed.clear();
+          // lambda node is no longer needed, eliminate it
+          draft.board.delete(lambdaNode.id);
+          draft.board.delete(argNode.id);
+
+          // mark these nodes for cleanup
           draft.removed.add(lambdaNode.id);
           draft.removed.add(argNode.id);
+          draft.removed.add(paramNode.id);
 
           // descendants are no longer needed, eliminate them
           for (const paramNodeDescendant of paramNodeDescendants) {
-            draft.nodes.delete(paramNodeDescendant.id);
             draft.removed.add(paramNodeDescendant.id);
           }
 
           // lambda var nodes are no longer needed, eliminate them
           for (const lambdaVarNode of lambdaVarNodes) {
-            draft.nodes.delete(lambdaVarNode.id);
             draft.removed.add(lambdaVarNode.id);
           }
-
-          // lambda node is no longer needed, eliminate it
-          draft.board.delete(lambdaNode.id);
-          draft.board.delete(argNode.id);
-
-          draft.nodes.delete(lambdaNode.id);
-          draft.nodes.delete(argNode.id);
         });
     }
 
@@ -332,17 +328,6 @@ export function reduct(semantics: Semantics, views, restorePos) {
         draft.board.delete(leftNode.id);
         draft.board.delete(rightNode.id);
 
-        draft.nodes.delete(binOpNode.id);
-        draft.nodes.delete(opNode.id);
-        draft.nodes.delete(leftNode.id);
-        draft.nodes.delete(rightNode.id);
-
-        draft.removed.clear();
-        draft.removed.add(binOpNode.id);
-        draft.removed.add(opNode.id);
-        draft.removed.add(leftNode.id);
-        draft.removed.add(rightNode.id);
-
         draft.added.clear();
         draft.added.set(binOpNode.id, [resultNode.id]);
 
@@ -356,6 +341,12 @@ export function reduct(semantics: Semantics, views, restorePos) {
         }
 
         draft.nodes.set(resultNode.id, resultNode);
+
+        // schedule for cleanup
+        draft.removed.add(binOpNode.id);
+        draft.removed.add(opNode.id);
+        draft.removed.add(leftNode.id);
+        draft.removed.add(rightNode.id);
       });
     }
     
@@ -387,15 +378,6 @@ export function reduct(semantics: Semantics, views, restorePos) {
         draft.board.delete(blockNode.id);
         draft.board.delete(condNode.id);
   
-        draft.nodes.delete(blockNode.id);
-        draft.nodes.delete(condNode.id);
-        draft.nodes.delete(removedNode.id);
-  
-        draft.removed.clear();
-        draft.removed.add(blockNode.id);
-        draft.removed.add(condNode.id);
-        draft.removed.add(removedNode.id);
-  
         draft.added.clear();
         draft.added.set(blockNode.id, [resultNode.id]);
 
@@ -404,10 +386,26 @@ export function reduct(semantics: Semantics, views, restorePos) {
           parentNode.subexpressions[blockNode.parentField!] = resultNode.id;
           resultNode = withParent(resultNode, parentNode.id, blockNode.parentField!);
         } else {
+          resultNode = withoutParent(resultNode);
           draft.board.add(resultNode.id);
         }
   
         draft.nodes.set(resultNode.id, resultNode);
+
+        // schedule for cleanup
+        draft.removed.add(blockNode.id);
+        draft.removed.add(condNode.id);
+        draft.removed.add(removedNode.id);
+      });
+    }
+
+    case ActionKind.Cleanup: {
+      const { target } = act;
+      if (!state.removed.has(target)) return state;
+
+      return produce(state, draft => {
+        draft.nodes.delete(target);
+        draft.removed.delete(target);
       });
     }
 
@@ -801,6 +799,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
                     || act.type === ActionKind.Hover
                     // Prevent people from undoing start of level
                     || act.type === ActionKind.StartLevel
+                    || act.type === ActionKind.Cleanup
                     || act.skipUndo,
         extraState: (state, newState) => {
           const result = {};

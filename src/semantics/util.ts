@@ -14,7 +14,7 @@ import { missing } from './defs/missing';
 import { not } from './defs/not';
 import { reference } from './defs/reference';
 import {
-  bool, BoolNode, dynamicVariant, number, string, symbol, unsol, NumberNode, StrNode 
+  boolean, BoolNode, dynamicVariant, number, string, symbol, unsol, NumberNode, StrNode 
 } from './defs/value';
 
 /**
@@ -72,7 +72,7 @@ export function getKindForNode(node: DRF, nodes: NodeMap): NodeKind {
   case 'autograder': return dethunk(autograder.kind, node, nodes);
   case 'array': return dethunk(array.kind, node, nodes);
   case 'binop': return dethunk(binop.kind, node, nodes);
-  case 'boolean': return dethunk(bool.kind, node, nodes);
+  case 'boolean': return dethunk(boolean.kind, node, nodes);
   case 'conditional': return dethunk(conditional.kind, node, nodes);
   case 'define': return dethunk(define.kind, node, nodes);
   case 'dynamicVariant': return dethunk(dynamicVariant.kind, node, nodes);

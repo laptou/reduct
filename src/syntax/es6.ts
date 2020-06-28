@@ -356,7 +356,7 @@ export function makeUnparser(_: Semantics) {
     case 'number': {
       return `${node.fields.value}`;
     }
-    case 'bool': {
+    case 'boolean': {
       return `${node.fields.value}`;
     }
     case 'string': {

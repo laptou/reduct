@@ -2,10 +2,10 @@ import { GlobalState } from '@/reducer/state';
 import { NodeId } from '@/semantics';
 import { DeepReadonly, DRF } from '@/util/helper';
 import cx from 'classnames';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { getProjectionForNode } from '.';
-import { CSSTransition } from 'react-transition-group';
+import { createCleanup } from '@/reducer/action';
 
 /**
  * Props retrieved from Redux.
@@ -18,6 +18,17 @@ interface StageProjectionStoreProps {
 }
 
 /**
+ * Methods that dispatch Redux actions.
+ */
+interface StageProjectionDispatchProps { 
+  /**
+   * If this node was scheduled for deletion by a previous action,
+   * remove it from the node map.
+   */
+  cleanup(): void;
+}
+
+/**
  * Props provided directly.
  */
 interface StageProjectionOwnProps { 
@@ -27,7 +38,10 @@ interface StageProjectionOwnProps {
   nodeId: NodeId | null;
 }
 
-type StageProjectionProps = StageProjectionOwnProps & StageProjectionStoreProps;
+type StageProjectionProps = 
+  StageProjectionOwnProps & 
+  StageProjectionDispatchProps &
+  StageProjectionStoreProps;
 
 function onDragStart(
   event: React.DragEvent<HTMLDivElement>,
@@ -44,6 +58,11 @@ function onDragStart(
 
 const StageProjectionImpl: FunctionComponent<StageProjectionProps> = 
   (props) => {
+    // run when this component is unmounted
+    useEffect(() => () => {
+      props.cleanup();
+    }, []);
+
     if (!props.node) {
       return null;
     }
@@ -90,5 +109,17 @@ export const StageProjection = connect(
       return { node };
     }
     return { node: null };
+  },
+  (
+    dispatch,
+    ownProps
+  ) => {
+    return { 
+      cleanup() { 
+        if (ownProps.nodeId) {
+          dispatch(createCleanup(ownProps.nodeId)); 
+        }
+      } 
+    }
   }
 )(StageProjectionImpl);

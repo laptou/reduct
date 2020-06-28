@@ -8,7 +8,7 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { StageProjection } from './projection/base';
 
 interface BoardStoreProps {
-  nodeIds: DeepReadonly<Set<NodeId>>;
+  nodeIds: DeepReadonly<NodeId[]>;
 }
 
 interface BoardDispatchProps {
@@ -39,12 +39,20 @@ function onDrop(event: React.DragEvent<HTMLDivElement>, props: BoardProps) {
 
 const BoardImpl: FunctionComponent<BoardProps> = 
   (props) => {
+    // exit transitions don't really work b/c nodes are often removed from the
+    // node map and from the board at the same time TODO: separate removing from
+    // board and removing from node map into 2 actions
     return (
       <div id='reduct-board' onDragOver={onDragOver} onDrop={e => onDrop(e, props)}>
-        <TransitionGroup>
-          {[...props.nodeIds].map(nodeId => 
-            <CSSTransition classNames='projection' timeout={20000} key={nodeId}>
-              <StageProjection nodeId={nodeId} key={nodeId} />
+        <TransitionGroup childFactory={child => React.cloneElement(child)}>
+          {props.nodeIds.map(nodeId => 
+            <CSSTransition 
+              classNames='projection' 
+              timeout={5000}
+              unmountOnExit
+              key={nodeId}
+            >
+              <StageProjection nodeId={nodeId} />
             </CSSTransition>
           )}
         </TransitionGroup>
@@ -54,7 +62,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
 
 export const Board = connect(
   (state: DeepReadonly<GlobalState>) => ({
-    nodeIds: state.program.$present.board
+    nodeIds: [...state.program.$present.board]
   }),
   (dispatch) => ({
     addNodeToBoard(id: NodeId) { dispatch(createAddNodeToBoard(id)); }
