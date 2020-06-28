@@ -1,5 +1,5 @@
 import type {
-  Flat, NodeId, NodeMap, ReductNode 
+  Flat, NodeId, NodeMap, ReductNode, FlatReductNode 
 } from '@/semantics';
 import { castDraft, produce } from 'immer';
 import { DeepReadonly, DRF, withParent } from './helper';
@@ -31,7 +31,7 @@ type CloneResult = [
  * @returns A tuple: [cloned root node, cloned descendant nodes,
  * modified node map containing cloned nodes and originals].
  */
-export function cloneNodeDeep(id: NodeId, nodeMap: NodeMap, locked = false): CloneResult {
+export function cloneNodeDeep(id: NodeId, nodeMap: NodeMap, locked?: boolean): CloneResult {
   const root = nodeMap.get(id)!;
   const clonedDescendants: DRF[] = [];
   const clonedChildren: DRF[] = [];
@@ -41,19 +41,21 @@ export function cloneNodeDeep(id: NodeId, nodeMap: NodeMap, locked = false): Clo
     draft.id = newId;
 
     for (const [childPath, childId] of Object.entries(draft.subexpressions)) {
-      let [clonedChild, clonedGrandChildren, descendantNodeMap] = cloneNodeDeep(childId, nodeMap, locked);
+      const [clonedChild, clonedGrandChildren, descendantNodeMap] = cloneNodeDeep(childId, nodeMap, locked);
       nodeMap = descendantNodeMap;
 
-      clonedChild = {
+      const reparentedChild = {
         ...clonedChild,
-        parent: newId,
-        locked
-      } as DRF;
+        parent: newId
+      } as FlatReductNode;
+
+      if (typeof locked === 'boolean')
+        reparentedChild.locked = locked;
 
       clonedDescendants.push(...clonedGrandChildren);
-      clonedChildren.push(clonedChild);
+      clonedChildren.push(reparentedChild);
 
-      (draft.subexpressions as Record<string, number>)[childPath] = clonedChild.id;
+      (draft.subexpressions as Record<string, number>)[childPath] = reparentedChild.id;
       // TODO: delete any cached __missing fields
     }
   });

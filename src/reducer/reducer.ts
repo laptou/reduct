@@ -135,7 +135,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
             clonedParamNode,
             clonedDescendantNodes,
             newNodeMap
-          ] = cloneNodeDeep(paramNode.id, nodeMap);
+          ] = cloneNodeDeep(paramNode.id, nodeMap, nodeToMap.locked);
 
           lambdaVarNodes.push(nodeToMap);
           addedNodes.push(clonedParamNode, ...clonedDescendantNodes);
@@ -144,7 +144,11 @@ export function reduct(semantics: Semantics, views, restorePos) {
         },
         (nodeToFilter, nodeMap) => {
           // do not go inside of nested lambda functions
-          if (nodeToFilter.type === 'lambda') return false;
+          // that have the same parameter name
+          if (nodeToFilter.type === 'lambda') {
+            const nodeToFilterArg = nodeMap.get(nodeToFilter.subexpressions.arg) as DRF<LambdaArgNode>;
+            if (nodeToFilterArg.fields.name === argName) return false;
+          }
 
           return true;
         });
