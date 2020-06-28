@@ -28,6 +28,10 @@ export function dethunk<A extends Array<unknown>, T extends Primitive | object>(
   return typeof t === 'function' ? t(...args) : t;
 }
 
+/**
+ * Represents a version of type T which is completely immutable: neither it nor
+ * any of its fields can be modified.
+ */
 export type DeepReadonly<T> = 
   T extends Primitive | Function ? T : 
   T extends Array<infer U> ? ReadonlyArray<DeepReadonly<U>> :
@@ -36,6 +40,8 @@ export type DeepReadonly<T> =
   { readonly [K in keyof T]: DeepReadonly<T[K]> };
 
 /**
+ * Stands for deep readonly & flat.
+ * 
  * A Reduct node that is completely read-only (attempting to write to it or any
  * of its property values will give an error) and flat (the subexpressions
  * property contains node IDs instead of the nodes themselves).

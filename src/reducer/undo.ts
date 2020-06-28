@@ -1,5 +1,6 @@
 import { produce } from 'immer';
 import { ActionKind } from './action';
+import type { Reducer } from 'redux';
 
 /** Undo the last action. */
 export function undo() {
@@ -13,6 +14,17 @@ export function redo() {
   return {
     type: ActionKind.Redo
   };
+}
+
+export interface UndoableState<S>
+{
+  $present: S;
+  $past: S[];
+  $future: S[];
+
+  $presentExtra: any;
+  $pastExtra: any[];
+  $futureExtra: any[];
 }
 
 /**
@@ -29,22 +41,22 @@ export function redo() {
  * @param {Function} options.extraState - Given the previous and new
  * state, record any state that lives outside of Redux.
  */
-export function undoable(reducer, options = {}) {
-  const initialState = {
-    $present: reducer(undefined, {}),
-    $past: [],
-    $future: [],
+export function undoable<S >(reducer: Reducer<S>, options = {}) {
+  const initialState: UndoableState<S> = {
+    $present: reducer(undefined),
+    $past: [] as S[],
+    $future: [] as S[],
     // "Extra" state (used to store node positions)
     $presentExtra: {},
     $pastExtra: [],
     $futureExtra: []
   };
 
-  return function(state = initialState, action) {
+  return function(state: UndoableState<S> = initialState, action): UndoableState<S> {
     switch (action.type) {
     case ActionKind.StartLevel: {
       return produce(state, draft => {
-        draft.$present = reducer(draft.$present, action);
+        draft.$present = reducer(state.$present, action);
         draft.$presentExtra = {};
       });
     }
@@ -52,9 +64,9 @@ export function undoable(reducer, options = {}) {
       if (state.$past.length === 0) return state;
 
       const newState = produce(state, draft => {
-        draft.$future.unshift(draft.$present);
+        draft.$future.unshift(state.$present);
         draft.$present = draft.$past.shift();
-        draft.$futureExtra.unshift(draft.$presentExtra);
+        draft.$futureExtra.unshift(state.$presentExtra);
         draft.$presentExtra = draft.$pastExtra.shift();
       });
 

@@ -2,7 +2,7 @@ import type {
   Flat, NodeId, NodeMap, ReductNode 
 } from '@/semantics';
 import { castDraft, produce } from 'immer';
-import type { DeepReadonly } from './helper';
+import { DeepReadonly, DRF, withParent } from './helper';
 
 let idCounter = 0;
 
@@ -33,39 +33,49 @@ type CloneResult = [
  */
 export function cloneNodeDeep(id: NodeId, nodeMap: NodeMap, locked = false): CloneResult {
   const root = nodeMap.get(id)!;
-  const clonedNodes: Array<DeepReadonly<Flat<ReductNode>>> = [];
+  const clonedDescendants: DRF[] = [];
+  const clonedChildren: DRF[] = [];
+  const newId = nextId();
 
   const clonedRoot = produce(root, (draft) => {
-    const newId = nextId();
     draft.id = newId;
 
     for (const [childPath, childId] of Object.entries(draft.subexpressions)) {
-      let [childClone, descendantClones, descendantNodeMap] = cloneNodeDeep(childId, nodeMap, locked);
+      let [clonedChild, clonedGrandChildren, descendantNodeMap] = cloneNodeDeep(childId, nodeMap, locked);
       nodeMap = descendantNodeMap;
 
-      childClone = produce(childClone, childCloneDraft => {
-        childCloneDraft.parent = newId;
-        childCloneDraft.parentField = childPath;
-        childCloneDraft.locked = locked;
-      });
+      clonedChild = {
+        ...clonedChild,
+        parent: newId,
+        locked
+      } as DRF;
 
-      clonedNodes.push(childClone, ...descendantClones);
+      clonedDescendants.push(...clonedGrandChildren);
+      clonedChildren.push(clonedChild);
 
-      (draft.subexpressions as Record<string, number>)[childPath] = childClone.id;
+      (draft.subexpressions as Record<string, number>)[childPath] = clonedChild.id;
       // TODO: delete any cached __missing fields
     }
   });
 
-  nodeMap = produce(nodeMap, draft => draft.set(clonedRoot.id, castDraft(clonedRoot)));
+  nodeMap = produce(nodeMap, draft => {
+    draft.set(clonedRoot.id, castDraft(clonedRoot));
 
-  return [clonedRoot, clonedNodes, nodeMap];
+    // node map contains reference to old cloned children with wrong parent and
+    // parentField information
+    for (const clonedChild of clonedChildren) {
+      draft.set(clonedChild.id, castDraft(clonedChild));
+    }
+  });
+
+  return [clonedRoot, clonedChildren.concat(clonedDescendants), nodeMap];
 }
 
 type MapResult = [
   /** mapped root node */
-  DeepReadonly<Flat<ReductNode>>,
+  DRF,
   /** mapped descendant nodes */
-  Array<DeepReadonly<Flat<ReductNode>>>,
+  DRF[],
   /** modified node map containing mapped nodes, but not originals */
   NodeMap
 ];
@@ -87,16 +97,17 @@ export function mapNodeDeep(
   id: NodeId,
   nodeMap: NodeMap, 
   mapper: (
-    node: DeepReadonly<Flat<ReductNode>>, 
+    node: DRF, 
     nodeMap: NodeMap
-  ) => [DeepReadonly<Flat<ReductNode>>, NodeMap],
+  ) => [DRF, NodeMap],
   filter: (
-    node: DeepReadonly<Flat<ReductNode>>, 
+    node: DRF, 
     nodeMap: NodeMap
   ) => boolean = () => true
 ): MapResult {
   const root = nodeMap.get(id)!;
-  const mappedNodes: Array<DeepReadonly<Flat<ReductNode>>> = [];
+  const mappedGrandChildren: DRF[] = [];
+  const mappedChildren: DRF[] = [];
 
   if (!filter(root, nodeMap)) {
     return [root, [], nodeMap];
@@ -106,16 +117,27 @@ export function mapNodeDeep(
     for (const [childPath, childId] of Object.entries(draft.subexpressions)) {
       const [mappedChild, mappedGrandChildren, newNodeMap] = mapNodeDeep(childId, nodeMap, mapper);
       nodeMap = newNodeMap;
-      mappedNodes.push(mappedChild, ...mappedGrandChildren);
+
+      mappedGrandChildren.push(...mappedGrandChildren);
+      mappedChildren.push(mappedChild);
+
       (draft.subexpressions as Record<string, number>)[childPath] = mappedChild.id;
     }
   });
 
   const [mappedRoot, mappedNodeMap] = mapper(rootWithMappedDescendants, nodeMap);
 
-  const finalNodeMap = produce(mappedNodeMap, draft => draft.set(mappedRoot.id, castDraft(mappedRoot)));
+  const reparentedChildren = mappedChildren.map(mappedChild => ({ ...mappedChild, parent: mappedRoot.id } as DRF));
 
-  return [mappedRoot, mappedNodes, finalNodeMap];
+  const finalNodeMap = produce(mappedNodeMap, draft => {
+    draft.set(mappedRoot.id, castDraft(mappedRoot));
+
+    for (const reparentedChild of reparentedChildren) {
+      draft.set(reparentedChild.id, castDraft(reparentedChild));
+    }
+  });
+
+  return [mappedRoot, reparentedChildren.concat(mappedGrandChildren), finalNodeMap];
 }
 
 /**

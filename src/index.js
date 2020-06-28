@@ -106,7 +106,9 @@ window.startup = async () => {
 Loader.finished.then(() => window.startup());
 
 const views = {};
+/** @type {import('redux').Store<import('./reducer/state').GlobalState>} */
 export let store;
+
 /** @type {BaseStage} */
 let stg;
 let canvas;
@@ -235,6 +237,22 @@ function initialize() {
 
   // When the state changes, redraw the state.
   store.subscribe(() => {
+    const newState = store.getState();
+    const newPresent = newState.program.$present;
+    const newNodesMap = newPresent.added;
+
+    // TODO: remove this when stage renderer is retired
+    // project nodes that were created inside of the reducer
+    if (newNodesMap) {
+      for (const [, newNodeIds] of newNodesMap) {
+        for (const newNodeId of newNodeIds) {
+          if (newNodeId in stg.views) continue;
+          
+          stg.views[newNodeId] = stg.semantics.project(stg, newPresent.nodes, newPresent.nodes.get(newNodeId));
+        }
+      }
+    }
+
     stg.draw();
 
     if (!stg.alreadyWon) {

@@ -5,7 +5,7 @@ import { combineReducers, compose } from 'redux';
 import * as animate from '../gfx/animate';
 import * as gfx from '../gfx/core';
 import { ActionKind, ReductAction } from './action';
-import { RState } from './state';
+import { RState, GlobalState } from './state';
 import { undoable } from './undo';
 import {
   withoutParent, DeepReadonly, DRF, withParent 
@@ -21,7 +21,9 @@ const initialProgram: RState = {
   goal: new Set(),
   board: new Set(),
   toolbox: new Set(),
-  globals: new Map()
+  globals: new Map(),
+  added: new Map(),
+  removed: new Set()
 };
 
 
@@ -53,7 +55,9 @@ function markDirty(nodes: NodeMap, id: NodeId) {
  * the view's position was recorded).
  */
 export function reduct(semantics: Semantics, views, restorePos) {
-  function program(state = initialProgram, act: ReductAction): RState {
+  function program(state = initialProgram, act?: ReductAction): RState {
+    if (!act) return state;
+    
     switch (act.type) {
     case ActionKind.AddNodeToBoard: {
       // if this node was in the toolbox, remove it from there unless it has a
@@ -83,7 +87,9 @@ export function reduct(semantics: Semantics, views, restorePos) {
         goal: act.goal,
         board: act.board,
         toolbox: act.toolbox,
-        globals: act.globals
+        globals: act.globals,
+        added: new Map([[null, Array.from(act.nodes.keys())]]),
+        removed: new Set()
       };
     }
 
@@ -100,7 +106,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
       // node that represents parameter that lambda was called with
       const paramNode = state.nodes.get(act.paramNodeId) as DRF;
 
-      const addedNodes = [];
+      const addedNodes: DRF[] = [];
 
       // replace lambda variables in lambda body with parameter
       let [
@@ -171,9 +177,18 @@ export function reduct(semantics: Semantics, views, restorePos) {
           draft.board.delete(paramNode.id);
           draft.toolbox.delete(paramNode.id);
 
+          draft.added.clear();
+          draft.added.set(lambdaNode.id, addedNodes.map(n => n.id));
+
+          draft.removed.clear();
+          draft.removed.add(lambdaNode.id);
+          draft.removed.add(argNode.id);
+
           // descendants are no longer needed, eliminate them
-          for (const paramNodeDescendant of paramNodeDescendants)
+          for (const paramNodeDescendant of paramNodeDescendants) {
             draft.nodes.delete(paramNodeDescendant.id);
+            draft.removed.add(paramNodeDescendant.id);
+          }
 
           // lambda node is no longer needed, eliminate it
           draft.board.delete(lambdaNode.id);
@@ -568,7 +583,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
   }
 
   return {
-    reducer: combineReducers({
+    reducer: combineReducers<GlobalState>({
       program: undoable(compose(annotateTypes, program), {
         actionFilter: (act) => act.type === ActionKind.Raise
                     || act.type === ActionKind.Hover
