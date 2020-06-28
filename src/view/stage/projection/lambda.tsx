@@ -47,18 +47,29 @@ type LambdaProjectionProps =
 
 function onDragOver(
   event: React.DragEvent<HTMLDivElement>, 
+  props: LambdaProjectionProps,
   setHover: (hover: boolean) => void
 ) {
+  // you can't drop a parameter on a locked node
+  if (props.node.locked && props.node.parent)
+    return;
+
   if (!event.dataTransfer.types.includes('application/reduct-node')) return;
   event.preventDefault();
+  event.dataTransfer.dropEffect = 'move';
   
   setHover(true);
 }
   
 function onDragLeave(
   event: React.DragEvent<HTMLDivElement>,
+  props: LambdaProjectionProps,
   setHover: (hover: boolean) => void
 ) {
+  // you can't drop a parameter on a locked node
+  if (props.node.locked && props.node.parent)
+    return;
+
   event.preventDefault();
   
   // TODO: add validation on whether the node being dragged can be dropped in
@@ -71,8 +82,12 @@ function onDrop(
   props: LambdaProjectionProps,
   setHover: (hover: boolean) => void
 ) {
-  const nodeId = parseInt(event.dataTransfer.getData('application/reduct-node'));
-  if (!nodeId || isNaN(nodeId)) return;
+  // you can't drop a parameter on a locked node
+  if (props.node.locked && props.node.parent)
+    return;
+
+  const droppedNodeId = parseInt(event.dataTransfer.getData('application/reduct-node'));
+  if (!droppedNodeId || isNaN(droppedNodeId)) return;
   
   event.preventDefault();
   
@@ -82,7 +97,7 @@ function onDrop(
   setHover(false);
   
   // fill this slot with the node that was dropped on it
-  props.evalLambda(nodeId);
+  props.evalLambda(droppedNodeId);
 }
 
 export const LambdaProjectionImpl: FunctionComponent<LambdaProjectionProps> = 
@@ -92,8 +107,8 @@ export const LambdaProjectionImpl: FunctionComponent<LambdaProjectionProps> =
     return (
       <div className={cx('projection lambda', { hover })}>
         <div className='arg' 
-          onDragOver={e => onDragOver(e, setHover)}
-          onDragLeave={e => onDragLeave(e, setHover)}
+          onDragOver={e => onDragOver(e, props, setHover)}
+          onDragLeave={e => onDragLeave(e, props, setHover)}
           onDrop={e => onDrop(e, props, setHover)}
         >
           <StageProjection nodeId={props.node.subexpressions.arg} />

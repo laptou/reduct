@@ -205,25 +205,25 @@ export const binop: NodeDef<BinOpNode> = {
                                      - nodes.get(expr.subexpressions.right).fields.value);
     }
     if (op === '>') {
-      return semant.bool(nodes.get(expr.subexpressions.left).fields.value
+      return semant.boolean(nodes.get(expr.subexpressions.left).fields.value
                                    > nodes.get(expr.subexpressions.right).fields.value);
     }
 
     if (op === '<') {
-      return semant.bool(nodes.get(expr.subexpressions.left).fields.value
+      return semant.boolean(nodes.get(expr.subexpressions.left).fields.value
                                    < nodes.get(expr.subexpressions.right).fields.value);
     }
     if (op === '==') {
-      return semant.bool(semant.deepEqual(nodes,
+      return semant.boolean(semant.deepEqual(nodes,
         nodes.get(expr.subexpressions.left),
         nodes.get(expr.subexpressions.right)));
     }
     if (op === '||') {
-      return semant.bool(nodes.get(expr.subexpressions.left).fields.value
+      return semant.boolean(nodes.get(expr.subexpressions.left).fields.value
                                    || nodes.get(expr.subexpressions.right).fields.value);
     }
     if (op === '&&') {
-      return semant.bool(nodes.get(expr.subexpressions.left).fields.value
+      return semant.boolean(nodes.get(expr.subexpressions.left).fields.value
                                    && nodes.get(expr.subexpressions.right).fields.value);
     }
     throw `Unrecognized operator ${op}`;

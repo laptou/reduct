@@ -114,7 +114,7 @@ export function makeParser(jssemant) {
 
     case 'Literal': {
       if (typeof node.value === 'number') return jssemant.number(node.value);
-      if (typeof node.value === 'boolean') return jssemant.bool(node.value);
+      if (typeof node.value === 'boolean') return jssemant.boolean(node.value);
 
       if (node.value === 'star'
                 || node.value === 'circle'

@@ -326,7 +326,7 @@ export function raise(nodeId) {
 /**
  * Detach the given node from its parent.
  */
-export function detach(nodeId) {
+export function createDetach(nodeId) {
   return {
     type: ActionKind.Detach,
     nodeId

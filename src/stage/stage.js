@@ -494,7 +494,7 @@ export default class Stage extends BaseStage {
   detachFromHole(selectedNode, targetNode) {
     if (this.isDetachable(targetNode)) {
       const pos = gfxCore.absolutePos(this.views[targetNode]);
-      this.store.dispatch(action.detach(targetNode));
+      this.store.dispatch(action.createDetach(targetNode));
       this.views[targetNode].pos = pos;
       this.views[targetNode].parent = null;
       this.views[targetNode].scale.x = 1;

@@ -130,7 +130,7 @@ export class ES6Parser {
 
       case 'Literal': {
         if (typeof node.value === 'number') return this.semantics.number(node.value);
-        if (typeof node.value === 'boolean') return this.semantics.bool(node.value);
+        if (typeof node.value === 'boolean') return this.semantics.boolean(node.value);
 
         if (node.value === 'star'
             || node.value === 'circle'

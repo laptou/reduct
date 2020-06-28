@@ -109,7 +109,7 @@ export class Semantics {
 
     public vtuple!: (children: ReductNode[]) => VTupleNode;
 
-    public bool!: (value: boolean) => BoolNode;
+    public boolean!: (value: boolean) => BoolNode;
 
     public str!: (value: string) => StrNode;
 

@@ -3,15 +3,39 @@ import '@resources/style/react/projection/conditional.scss';
 import React, { FunctionComponent } from 'react';
 import { StageProjection } from './base';
 import { Flat } from '@/semantics';
+import { connect } from 'react-redux';
+import { createEvalConditional } from '@/reducer/action';
 
-interface ConditionalProjectionOwnProps {
-    node: Flat<ConditionalNode>;
+interface ConditionalProjectionDispatchProps {
+  eval(): void;
 }
 
-export const ConditionalProjection: FunctionComponent<ConditionalProjectionOwnProps> = 
+interface ConditionalProjectionOwnProps {
+  node: Flat<ConditionalNode>;
+}
+
+type ConditionalProjectionProps =
+  ConditionalProjectionOwnProps &
+  ConditionalProjectionDispatchProps;
+
+function onClick(
+  event: React.MouseEvent<HTMLDivElement>,
+  props: ConditionalProjectionProps
+) {
+  // cannot evaluate locked nodes
+  if (props.node.locked && props.node.parent)
+    return;
+
+  // stop parent projections from hijacking the click
+  event.stopPropagation();
+
+  props.eval();
+};
+
+const ConditionalProjectionImpl: FunctionComponent<ConditionalProjectionProps> = 
   (props) => {
     return (
-      <div className='projection conditional'>
+      <div className='projection conditional' onClick={e => onClick(e, props)}>
         <div className='if'>
           <span>if</span>
           <StageProjection nodeId={props.node.subexpressions.condition} />
@@ -29,3 +53,12 @@ export const ConditionalProjection: FunctionComponent<ConditionalProjectionOwnPr
     )
   };
   
+export const ConditionalProjection = 
+  connect(
+    null, 
+    (dispatch, ownProps: ConditionalProjectionOwnProps) => {
+      return {
+        eval() { dispatch(createEvalConditional(ownProps.node.id)); }
+      }
+    }
+  )(ConditionalProjectionImpl);

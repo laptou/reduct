@@ -4,7 +4,7 @@ import { produce, castDraft } from 'immer';
 import { combineReducers, compose } from 'redux';
 import * as animate from '../gfx/animate';
 import * as gfx from '../gfx/core';
-import { ActionKind, ReductAction } from './action';
+import { ActionKind, ReductAction, createDetach } from './action';
 import { RState, GlobalState } from './state';
 import { undoable } from './undo';
 import {
@@ -13,7 +13,9 @@ import {
 import {
   LambdaArgNode, LambdaNode, BinOpNode, OpNode, StrNode, BoolNode, NumberNode, ConditionalNode 
 } from '@/semantics/defs';
-import { mapNodeDeep, cloneNodeDeep, findNodesDeep, getRootForNode } from '@/util/nodes';
+import {
+  mapNodeDeep, cloneNodeDeep, findNodesDeep, getRootForNode 
+} from '@/util/nodes';
 import { lambdaArg } from '@/semantics/defs/lambda';
 import { MissingNodeError, WrongTypeError, NotOnBoardError } from './errors';
 import {
@@ -66,23 +68,22 @@ export function reduct(semantics: Semantics, views, restorePos) {
     
     switch (act.type) {
     case ActionKind.AddNodeToBoard: {
-      // if this node was in the toolbox, remove it from there unless it has a
-      // meta tag that specifies that it has infinite uses
 
-      const node = state.nodes.get(act.nodeId);
+      const node = state.nodes.get(act.nodeId)!;
 
-      if (!node) return state;
-
-      if (!node.__meta?.toolbox?.unlimited) {
-        return produce(state, draft => {
-          draft.toolbox.delete(act.nodeId);
-          draft.board.add(act.nodeId);
-        });
-      } else {
-        return produce(state, draft => {
-          draft.board.add(act.nodeId);
-        });
+      // if the node has a parent, detach it first
+      if (node.parent) {
+        state = program(state, createDetach(node.id));
       }
+
+      return produce(state, draft => {
+        // if this node was in the toolbox, remove it from there unless it has a
+        // meta tag that specifies that it has infinite uses
+        if (draft.toolbox.has(node.id) && !node.__meta?.toolbox?.unlimited)
+          draft.toolbox.delete(act.nodeId);
+        
+        draft.board.add(act.nodeId);
+      });
     }
 
     case ActionKind.StartLevel: {

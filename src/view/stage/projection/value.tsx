@@ -14,7 +14,7 @@ interface ValueProjectionOwnProps {
 export const ValueProjection: FunctionComponent<ValueProjectionOwnProps> = 
   (props) => {
     switch (props.node.type) {
-    case 'bool':
+    case 'boolean':
       return (
         <div className='projection bool'>
           <BooleanShape>

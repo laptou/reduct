@@ -38,6 +38,6 @@ export const not: NodeDef<NotNode> = {
   },
   smallStep: (semant, stage, state, expr) => {
     const nodes = state.nodes;
-    return semant.bool(!nodes.get(expr.value).value);
+    return semant.boolean(!nodes.get(expr.value).value);
   }
 };

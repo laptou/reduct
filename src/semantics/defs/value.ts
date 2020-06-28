@@ -91,7 +91,7 @@ export const symbol: NodeDef<SymbolNode> = {
   }
 };
 
-export const bool: NodeDef<BoolNode> = {
+export const boolean: NodeDef<BoolNode> = {
   kind: 'value',
   type: 'boolean',
   fields: ['value'],

@@ -99,8 +99,8 @@ export const conditional: NodeDef<ConditionalNode> = {
   substepFilter: (semant, state, expr, field) => field === 'condition',
   stepPosition: (semant, stage, state, expr) => {
     const nodes = state.nodes;
-    const cond = nodes.get(expr.condition).value;
-    const view = stage.getView(expr.get(cond ? 'positive' : 'negative'));
+    const cond = nodes.get(expr.subexpressions.condition).fields.value;
+    const view = stage.getView(expr.subexpressions[cond ? 'positive' : 'negative']);
     return {
       x: gfx.centerPos(view).x,
       y: gfx.centerPos(view).y

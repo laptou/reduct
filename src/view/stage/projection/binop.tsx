@@ -34,6 +34,10 @@ function onClick(
   event: React.MouseEvent<HTMLDivElement>,
   props: BinOpProjectionProps
 ) {
+  // cannot evaluate locked nodes
+  if (props.node.locked && props.node.parent)
+    return;
+
   // stop parent projections from hijacking the click
   event.stopPropagation();
 
@@ -66,7 +70,7 @@ const BinOpProjectionImpl: FunctionComponent<BinOpProjectionProps> =
     case '||':
     case '==':
       return (
-        <div className='projection binop'>
+        <div className='projection binop' onClick={e => onClick(e, props)}>
           <BooleanShape>
             <div className='left'>
               <StageProjection nodeId={props.node.subexpressions.left} />
@@ -82,7 +86,7 @@ const BinOpProjectionImpl: FunctionComponent<BinOpProjectionProps> =
       );
     default:
       return (
-        <div className='projection binop'>
+        <div className='projection binop' onClick={e => onClick(e, props)}>
           {`{${props.op}}`}
         </div>
       );
