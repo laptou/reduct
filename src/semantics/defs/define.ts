@@ -4,16 +4,16 @@ import type { NodeDef } from './base';
 import { LambdaNode } from './lambda';
 
 export interface DefineNode extends BaseNode {
-    type: 'define';
+  type: 'define';
 
-    fields: {
-      name: string;
-      params: string[];
-    };
+  fields: {
+    name: string;
+    params: string[];
+  };
 
-    subexpressions: {
-      body: LambdaNode;
-    };
+  subexpressions: {
+    body: LambdaNode;
+  };
 }
 
 export type DefineAttachNode = BaseNode;

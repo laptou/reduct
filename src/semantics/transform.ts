@@ -30,7 +30,7 @@ import type {
   LambdaArgNode, DynVarNode, SymbolNode, MissingNode, DefineNode
 } from './defs';
 import type { ReductSymbol } from './defs/value';
-import { dethunk, DeepReadonly } from '@/util/helper';
+import { dethunk, DeepReadonly, DRF } from '@/util/helper';
 import { RState } from '@/reducer/state';
 import { produce } from 'immer';
 import BaseStage from '@/stage/basestage';
@@ -449,7 +449,7 @@ export class Semantics {
 
 
     /** Get the kind of an expression (e.g., "expression", "value", "statement"). */
-    public kind(state: DeepReadonly<RState>, node: DeepReadonly<ReductNode>) {
+    public kind(state: DeepReadonly<RState>, node: DeepReadonly<ReductNode> | DRF) {
       const def = this.definitionOf(node);
       return dethunk(def.kind, node, this, state);
     }
@@ -649,7 +649,7 @@ export class Semantics {
      * Return a list of field names containing subexpressions of an expression.
      * The expression may be represented in either hydrated or immutable form.
      */
-    public subexpressions(expr: ReductNode) {
+    public subexpressions(expr: DeepReadonly<ReductNode> | DRF) {
       if (expr.type === 'vtuple') {
         const result = [];
         for (let i = 0; i < expr.fields.numChildren; i++) {

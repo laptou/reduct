@@ -2,42 +2,42 @@ import type { BaseNode } from '..';
 import type { NodeDef } from './base';
 
 export interface ValueNode<T> extends BaseNode {
-    fields: { value: T };
+  fields: { value: T };
 }
 
 export interface NumberNode extends ValueNode<number> {
-    type: 'number';
+  type: 'number';
 }
 
 export interface StrNode extends ValueNode<string> {
-    type: 'string';
+  type: 'string';
 }
 
 export interface BoolNode extends ValueNode<boolean> {
-    type: 'boolean';
+  type: 'boolean';
 }
 
 export interface UnsolNode extends BaseNode {
-    type: 'unsol';
-    fields: {
-      color: string;
-      value: any;
-    };
+  type: 'unsol';
+  fields: {
+    color: string;
+    value: any;
+  };
 }
 
 export interface DynVarNode extends BaseNode {
-    type: 'dynamicVariant';
-    fields: {
-      value: any;
-      variant: any;
-    };
+  type: 'dynamicVariant';
+  fields: {
+    value: any;
+    variant: any;
+  };
 }
 
 export type ReductSymbol = 'star' | 'circle' | 'triangle' | 'rect';
 
 export interface SymbolNode extends BaseNode {
-    type: 'symbol';
-    fields: { name: ReductSymbol };
+  type: 'symbol';
+  fields: { name: ReductSymbol };
 }
 
 export const number: NodeDef<NumberNode> = {

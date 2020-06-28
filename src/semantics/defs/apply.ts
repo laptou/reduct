@@ -6,12 +6,12 @@ import type { NodeDef } from './base';
 import { InvocationNode } from './reference';
 
 export interface ApplyNode extends BaseNode {
-    type: 'apply';
+  type: 'apply';
 
-    subexpressions: {
-      callee: InvocationNode;
-      argument: ReductNode;
-    };
+  subexpressions: {
+    callee: InvocationNode;
+    argument: ReductNode;
+  };
 }
 
 // eslint-disable-next-line import/prefer-default-export

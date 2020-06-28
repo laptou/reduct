@@ -10,9 +10,12 @@ import { undoable } from './undo';
 import {
   withoutParent, DeepReadonly, DRF, withParent 
 } from '@/util/helper';
-import { LambdaArgNode, LambdaNode } from '@/semantics/defs';
+import {
+  LambdaArgNode, LambdaNode, BinOpNode, OpNode 
+} from '@/semantics/defs';
 import { mapNodeDeep, cloneNodeDeep, findNodesDeep } from '@/util/nodes';
 import { lambdaArg } from '@/semantics/defs/lambda';
+import { MissingNodeError } from './errors';
 
 export { nextId } from '@/util/nodes';
 
@@ -197,6 +200,36 @@ export function reduct(semantics: Semantics, views, restorePos) {
           draft.nodes.delete(lambdaNode.id);
           draft.nodes.delete(argNode.id);
         });
+    }
+
+    case ActionKind.EvalOperator: {
+      // for now, this is the same thing as small-stepping a binary operator,
+      // except handled entirely in the reducer where it should be - iaa34
+
+      const binOpNode = state.nodes.get(act.operatorNodeId) as DRF<BinOpNode>;
+      const opNode = state.nodes.get(binOpNode.subexpressions.op) as DRF<OpNode>;
+
+      const leftNode = state.nodes.get(binOpNode.subexpressions.left) as DRF;
+      const rightNode = state.nodes.get(binOpNode.subexpressions.right) as DRF;
+
+      if (leftNode.type === 'missing')
+        throw new MissingNodeError(leftNode.id);
+
+      if (rightNode.type === 'missing')
+        throw new MissingNodeError(rightNode.id);
+
+      if (leftNode.)
+
+      switch (opNode.fields.name) {
+      case '+':
+      case '-':
+      case '>':
+      case '<':
+        {
+          
+        }
+
+      }
     }
 
     case ActionKind.Raise: {

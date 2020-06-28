@@ -1,16 +1,13 @@
-import { Im, ImMap } from '@/util/im';
-import type { NodeDef } from './base';
+import { DeepReadonly, DRF } from '@/util/helper';
 import type { BaseNode, NodeId } from '..';
 import type { Semantics } from '../transform';
+import type { NodeDef } from './base';
 
 // Returns the names of the subexpressions of an array: elem0, elem1, etc.
 // Requires: arr is a hydrated array node or an immutable map for an array node
-function arraySubexprs(module, arr) {
-  const n = typeof arr.length === 'number'
-    ? arr.length
-    : arr.length;
+function arraySubexprs(arr: DeepReadonly<ArrayNode> | DRF<ArrayNode>) {
   const result = [];
-  for (let i = 0; i < n; i++) {
+  for (let i = 0; i < arr.length; i++) {
     result.push(`elem${i}`);
   }
   return result;
@@ -18,8 +15,8 @@ function arraySubexprs(module, arr) {
 
 // Returns the fields that are supposed to be displayed by
 // the projection of an array
-function arrayDisplayParts(expr) {
-  const a = arraySubexprs(null, ImMap(expr));
+function arrayDisplayParts(expr: DeepReadonly<ArrayNode> | DRF<ArrayNode>) {
+  const a = arraySubexprs(expr);
   const result = [];
   let first = true;
   result.push('\'[\'');
@@ -32,20 +29,19 @@ function arrayDisplayParts(expr) {
   return result;
 }
 
-export type ArrayNode = BaseNode & Record<string, NodeId> & {
-    type: 'array';
+export interface ArrayNode extends BaseNode {
+  type: 'array';
 
-    fields: {
-      length: number;
-    };
+  fields: Record<string, NodeId> & {
+    length: number;
+  };
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export const array: NodeDef<ArrayNode> = {
   kind: (arr, semant, state) => {
     const nodes = state.nodes;
     for (const field of semant.subexpressions(arr)) {
-      const subexp = nodes.get(arr.get(field));
+      const subexp = nodes.get(arr.subexpressions[field]);
       if (semant.kind(state, subexp) == 'expression'
                     || subexp.type == 'missing') {
         return 'expression';
@@ -55,7 +51,7 @@ export const array: NodeDef<ArrayNode> = {
   },
   type: 'array',
   fields: ['length'],
-  subexpressions: arraySubexprs as ((s: Semantics, e: Im<ArrayNode>) => any),
+  subexpressions: arraySubexprs as ((s: Semantics, e: DRF<ArrayNode>) => any),
   projection: {
     type: 'default',
     fields: arrayDisplayParts,

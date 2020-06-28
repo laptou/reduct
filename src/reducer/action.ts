@@ -24,7 +24,8 @@ export enum ActionKind {
   Hover = 'hover',
 
   AddNodeToBoard = 'add-node-to-stage',
-  EvalLambda = 'apply-lambda'
+  EvalLambda = 'apply-lambda',
+  EvalOperator = 'apply-operator',
 }
 
 
@@ -38,7 +39,8 @@ export type ReductAction =
   AddNodeToBoardAction |
   AddNodeToToolboxAction |
   SmallStepAction |
-  EvalLambdaAction;
+  EvalLambdaAction |
+  EvalOperatorAction;
 
 /**
  * Creates an action which will add the specified node to the board, removing it
@@ -181,6 +183,25 @@ export function createEvalLambda(
     type: ActionKind.EvalLambda,
     paramNodeId,
     lambdaNodeId
+  };
+}
+
+export interface EvalOperatorAction {
+  type: ActionKind.EvalOperator;
+  operatorNodeId: NodeId;
+}
+
+/**
+ * Returns an action which will evaluate a binary operator (+, -, >, ==, etc.)
+ *
+ * @param operatorNodeId The ID of the node that represents the binary operator.
+ */
+export function createEvalOperator(
+  operatorNodeId: NodeId, 
+): EvalOperatorAction {
+  return {
+    type: ActionKind.EvalOperator,
+    operatorNodeId
   };
 }
 

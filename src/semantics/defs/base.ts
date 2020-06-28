@@ -1,11 +1,16 @@
-import { Im } from '@/util/im';
+import type { ProjectionDef } from '@/gfx/projection';
 import { RState } from '@/reducer/state';
 import type Stage from '@/stage/stage';
-import type { ProjectionDef } from '@/gfx/projection';
-import type { BaseNode, NodeId, NodeType, Flat } from '..';
+import type { DeepReadonly, Thunk } from '@/util/helper';
+import type { BaseNode, Flat, NodeId, NodeType } from '..';
 import type { Semantics } from '../transform';
-import type { Thunk, DeepReadonly } from '@/util/helper';
 
+/**
+ * What kind of expression (``value``, ``expression``, ``statement``,
+ * ``syntax``, or ``placeholder``). This is important—only an
+ * ``expression`` can be clicked on, for instance, and reaching a
+ * ``value`` will stop evaluation!
+ */
 export type NodeKind = 'expression' | 'placeholder' | 'value' | 'statement' | 'syntax';
 
 export interface NodeDef<N extends BaseNode> {

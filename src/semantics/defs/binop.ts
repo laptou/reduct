@@ -2,8 +2,8 @@ import { BaseNode, ReductNode } from '..';
 import type { NodeDef } from './base';
 
 export interface OpNode extends BaseNode {
-    type: 'op';
-    fields: { name: '+' | '-' | '<' | '>' | '==' | '&&' | '||' };
+  type: 'op';
+  fields: { name: '+' | '-' | '<' | '>' | '==' | '&&' | '||' };
 }
 
 export const op: NodeDef<OpNode> = {
