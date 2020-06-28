@@ -195,7 +195,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
           draft.toolbox.delete(paramNode.id);
 
           draft.added.clear();
-          draft.added.set(lambdaNode.id, addedNodes.map(n => n.id));
+          draft.added.set(mappedBody.id, lambdaNode.id);
 
           // lambda node is no longer needed, eliminate it
           draft.board.delete(lambdaNode.id);
@@ -328,8 +328,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
         draft.board.delete(leftNode.id);
         draft.board.delete(rightNode.id);
 
-        draft.added.clear();
-        draft.added.set(binOpNode.id, [resultNode.id]);
+        draft.added.set(resultNode.id, binOpNode.id);
 
         if (binOpNode.parent) {
           const parentNode = draft.nodes.get(binOpNode.parent)!;
@@ -379,7 +378,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
         draft.board.delete(condNode.id);
   
         draft.added.clear();
-        draft.added.set(blockNode.id, [resultNode.id]);
+        draft.added.set(resultNode.id, blockNode.id);
 
         if (blockNode.parent) {
           const parentNode = draft.nodes.get(blockNode.parent)!;

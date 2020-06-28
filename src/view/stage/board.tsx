@@ -44,7 +44,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
     // board and removing from node map into 2 actions
     return (
       <div id='reduct-board' onDragOver={onDragOver} onDrop={e => onDrop(e, props)}>
-        <TransitionGroup childFactory={child => React.cloneElement(child)}>
+        <TransitionGroup component={null}>
           {props.nodeIds.map(nodeId => 
             <CSSTransition 
               classNames='projection' 

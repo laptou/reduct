@@ -29,11 +29,11 @@ export interface RState {
   globals: Map<string, NodeId>;
 
   /**
-   * Nodes which were added by the most recent action. The keys are the
+   * Nodes which were added by the most recent action. The values are the
    * "sources" of the nodes: for example, if you step an addition operator and
    * get a number, the "source" of the number node is the addition node.
    */
-  added: Map<NodeId | null, NodeId[]>;
+  added: Map<NodeId | null, NodeId>;
 
   /**
    * Nodes which were removed by the most recent action.
