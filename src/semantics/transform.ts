@@ -2,38 +2,40 @@
 /**
  * @module transform
  */
-import * as immutable from 'immutable';
-
+import { RState } from '@/reducer/state';
 import {
-  genericClone, genericSearch, genericEqual, genericFlatten, genericMap, getField
+  genericClone, genericEqual, genericFlatten, genericMap, genericSearch 
 } from '@/semantics/core';
-
-import { Im, ImMap, ImList } from '@/util/im';
+import BaseStage from '@/stage/basestage';
+import { DeepReadonly, dethunk, DRF } from '@/util/helper';
+import { Im } from '@/util/im';
+import { produce } from 'immer';
+import * as immutable from 'immutable';
+import {
+  BaseNode, NodeId, NodeMap, ReductNode 
+} from '.';
 import * as progression from '../game/progression';
-import Logging from '../logging/logging';
-
 import * as gfx from '../gfx/core';
 import * as fx from '../gfx/fx';
 import { getProjector, ViewFn } from '../gfx/projector';
-
-
-import * as meta from './meta';
-import makeInterpreter from './interpreter';
-
+import Logging from '../logging/logging';
 import { nextId } from '../reducer/reducer';
-import {
-  BaseNode, NodeId, ReductNode, NodeMap
-} from '.';
-import { NodeDef } from './defs/base';
 import type {
-  BoolNode, StrNode, NumberNode, LambdaVarNode,
-  LambdaArgNode, DynVarNode, SymbolNode, MissingNode, DefineNode
+  BoolNode,
+  DefineNode, DynVarNode, LambdaArgNode, LambdaVarNode,
+  MissingNode, NumberNode, StrNode,
+  SymbolNode
 } from './defs';
+import { NodeDef } from './defs/base';
 import type { ReductSymbol } from './defs/value';
-import { dethunk, DeepReadonly, DRF } from '@/util/helper';
-import { RState } from '@/reducer/state';
-import { produce } from 'immer';
-import BaseStage from '@/stage/basestage';
+import makeInterpreter from './interpreter';
+import * as meta from './meta';
+
+
+
+
+
+
 
 const NotchRecord = immutable.Record({
   side: 'left',
@@ -113,7 +115,7 @@ export class Semantics {
 
     public number!: (value: number) => NumberNode;
 
-    public symbol!: (value: ReductSymbol) => SymbolNode;
+    public symbol!: (name: ReductSymbol) => SymbolNode;
 
     public lambdaVar!: (name: string) => LambdaVarNode;
 
@@ -358,11 +360,11 @@ export class Semantics {
     }
 
     /** Get the definition of the given expression, accounting for fade level. */
-    public definitionOf<N extends ReductNode>(node: DeepReadonly<N>, fadeLevel?: number): NodeDef<N>;
+    public definitionOf<N extends ReductNode>(node: DeepReadonly<N> | DRF<N>, fadeLevel?: number): NodeDef<N>;
 
     public definitionOf<N extends ReductNode>(nodeType: N['type'], fadeLevel?: number): NodeDef<N>;
 
-    public definitionOf(nodeOrType: DeepReadonly<ReductNode> | ReductNode['type'], fadeLevel?: number) {
+    public definitionOf(nodeOrType: DeepReadonly<ReductNode> | DRF<ReductNode> | ReductNode['type'], fadeLevel?: number) {
       const type = typeof nodeOrType === 'object' ? nodeOrType.type : nodeOrType;
       const result = this.definition.expressions[type];
       if (Array.isArray(result)) {
@@ -449,9 +451,9 @@ export class Semantics {
 
 
     /** Get the kind of an expression (e.g., "expression", "value", "statement"). */
-    public kind(state: DeepReadonly<RState>, node: DeepReadonly<ReductNode> | DRF) {
+    public kind(state: DeepReadonly<RState>, node: DRF) {
       const def = this.definitionOf(node);
-      return dethunk(def.kind, node, this, state);
+      return dethunk(def.kind, node, state.nodes);
     }
 
     /**

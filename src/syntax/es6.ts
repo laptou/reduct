@@ -133,9 +133,9 @@ export class ES6Parser {
         if (typeof node.value === 'boolean') return this.semantics.bool(node.value);
 
         if (node.value === 'star'
-                || node.value === 'circle'
-                || node.value === 'triangle'
-                || node.value === 'rect') {
+            || node.value === 'circle'
+            || node.value === 'triangle'
+            || node.value === 'rect') {
           return this.semantics.symbol(node.value);
         }
 

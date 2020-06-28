@@ -1,7 +1,8 @@
 import { DeepReadonly, DRF } from '@/util/helper';
-import type { BaseNode, NodeId } from '..';
+import type { BaseNode, NodeId, ReductNode } from '..';
 import type { Semantics } from '../transform';
 import type { NodeDef } from './base';
+import { getKindForNode } from '../util';
 
 // Returns the names of the subexpressions of an array: elem0, elem1, etc.
 // Requires: arr is a hydrated array node or an immutable map for an array node
@@ -32,18 +33,18 @@ function arrayDisplayParts(expr: DeepReadonly<ArrayNode> | DRF<ArrayNode>) {
 export interface ArrayNode extends BaseNode {
   type: 'array';
 
-  fields: Record<string, NodeId> & {
+  subexpressions: Record<string, ReductNode>;
+
+  fields: {
     length: number;
   };
 };
 
 export const array: NodeDef<ArrayNode> = {
-  kind: (arr, semant, state) => {
-    const nodes = state.nodes;
-    for (const field of semant.subexpressions(arr)) {
-      const subexp = nodes.get(arr.subexpressions[field]);
-      if (semant.kind(state, subexp) == 'expression'
-                    || subexp.type == 'missing') {
+  kind: (arr, nodes) => {
+    for (const subExprId of Object.values(arr.subexpressions)) {
+      const subExpr = nodes.get(subExprId)!;
+      if (getKindForNode(subExpr, nodes) === 'expression' || subExpr.type === 'missing') {
         return 'expression';
       }
     }

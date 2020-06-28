@@ -1,17 +1,12 @@
 import type { ProjectionDef } from '@/gfx/projection';
 import { RState } from '@/reducer/state';
 import type Stage from '@/stage/stage';
-import type { DeepReadonly, Thunk } from '@/util/helper';
-import type { BaseNode, Flat, NodeId, NodeType } from '..';
+import type { DeepReadonly, Thunk, DRF } from '@/util/helper';
+import type {
+  BaseNode, Flat, NodeId, NodeType, NodeMap 
+} from '..';
 import type { Semantics } from '../transform';
-
-/**
- * What kind of expression (``value``, ``expression``, ``statement``,
- * ``syntax``, or ``placeholder``). This is important—only an
- * ``expression`` can be clicked on, for instance, and reaching a
- * ``value`` will stop evaluation!
- */
-export type NodeKind = 'expression' | 'placeholder' | 'value' | 'statement' | 'syntax';
+import type { NodeKind } from '../util';
 
 export interface NodeDef<N extends BaseNode> {
     /**
@@ -20,7 +15,7 @@ export interface NodeDef<N extends BaseNode> {
      * ``expression`` can be clicked on, for instance, and reaching a
      * ``value`` will stop evaluation!
      */
-    kind?: NodeKind | ((expr: DeepReadonly<Flat<N>>, semantics: Semantics, state: DeepReadonly<RState>) => NodeKind);
+    kind: Thunk<[DRF, NodeMap], NodeKind>;
 
 
     // TODO: strong type for notches

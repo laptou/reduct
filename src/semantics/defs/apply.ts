@@ -14,7 +14,6 @@ export interface ApplyNode extends BaseNode {
   };
 }
 
-// eslint-disable-next-line import/prefer-default-export
 export const apply: NodeDef<ApplyNode> = {
   kind: 'expression',
   fields: [],

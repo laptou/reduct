@@ -50,11 +50,11 @@ export interface BaseNode {
 
     locked: boolean;
 
-    complete: boolean;
+    complete?: boolean;
 
     fields: Record<string | number, any>;
     
-    subexpressions: Record<string, ReductNode>;
+    subexpressions: {};
 
     __meta?: NodeMetadata;
 }

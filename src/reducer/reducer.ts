@@ -11,11 +11,14 @@ import {
   withoutParent, DeepReadonly, DRF, withParent 
 } from '@/util/helper';
 import {
-  LambdaArgNode, LambdaNode, BinOpNode, OpNode 
+  LambdaArgNode, LambdaNode, BinOpNode, OpNode, StrNode, BoolNode, NumberNode 
 } from '@/semantics/defs';
 import { mapNodeDeep, cloneNodeDeep, findNodesDeep } from '@/util/nodes';
 import { lambdaArg } from '@/semantics/defs/lambda';
-import { MissingNodeError } from './errors';
+import { MissingNodeError, WrongTypeError } from './errors';
+import {
+  getKindForNode, createBoolNode, createNumberNode, createStrNode 
+} from '@/semantics/util';
 
 export { nextId } from '@/util/nodes';
 
@@ -218,18 +221,115 @@ export function reduct(semantics: Semantics, views, restorePos) {
       if (rightNode.type === 'missing')
         throw new MissingNodeError(rightNode.id);
 
-      if (leftNode.)
+      let resultValue: boolean | number | string;
 
       switch (opNode.fields.name) {
       case '+':
+      {
+        if (leftNode.type !== 'number' && leftNode.type !== 'string')
+          throw new WrongTypeError(leftNode.id, ['number', 'string'], leftNode.type);
+  
+        if (rightNode.type !== leftNode.type)
+          throw new WrongTypeError(rightNode.id, leftNode.type, rightNode.type);
+  
+        const leftValue = leftNode.fields.value;
+        const rightValue = rightNode.fields.value;
+  
+        // cast to any b/c we have already verified that these are the same type
+        resultValue = leftValue as any + rightValue;
+        break;
+      }
       case '-':
       case '>':
       case '<':
-        {
-          
-        }
+      {
+        if (leftNode.type !== 'number')
+          throw new WrongTypeError(leftNode.id, ['number'], leftNode.type);
 
+        if (rightNode.type !== 'number')
+          throw new WrongTypeError(rightNode.id, ['number'], rightNode.type);
+
+        const leftValue = leftNode.fields.value;
+        const rightValue = rightNode.fields.value;
+
+        switch (opNode.fields.name) {
+        case '-': resultValue = leftValue - rightValue; break;
+        case '>': resultValue = leftValue > rightValue; break;
+        case '<': resultValue = leftValue < rightValue; break;
+        }
+        break;
       }
+      case '&&':
+      case '||':
+      {
+        if (leftNode.type !== 'boolean')
+          throw new WrongTypeError(leftNode.id, ['boolean'], leftNode.type);
+
+        if (rightNode.type !== 'boolean')
+          throw new WrongTypeError(rightNode.id, ['boolean'], rightNode.type);
+
+        const leftValue = leftNode.fields.value;
+        const rightValue = rightNode.fields.value;
+
+        switch (opNode.fields.name) {
+        case '&&': resultValue = leftValue && rightValue; break;
+        case '||': resultValue = leftValue || rightValue; break;
+        }
+        break;
+      }
+      case '==':
+      {
+        if (leftNode.type !== 'number' 
+          && leftNode.type !== 'string'
+          && leftNode.type !== 'boolean'
+          && leftNode.type !== 'symbol')
+          throw new WrongTypeError(leftNode.id, ['number', 'string', 'boolean', 'symbol'], leftNode.type);
+  
+        if (rightNode.type !== leftNode.type)
+          throw new WrongTypeError(rightNode.id, leftNode.type, rightNode.type);
+
+        const leftValue = leftNode.type === 'symbol' ? leftNode.fields.name : leftNode.fields.value;
+        const rightValue = rightNode.type === 'symbol' ? rightNode.fields.name : rightNode.fields.value;
+
+        resultValue = leftValue === rightValue;
+        break;
+      }
+      }
+
+      let resultNode: BoolNode | NumberNode | StrNode;
+
+      if (typeof resultValue === 'boolean')
+        resultNode = createBoolNode(resultValue);
+      
+      if (typeof resultValue === 'number')
+        resultNode = createNumberNode(resultValue);
+
+      if (typeof resultValue === 'string')
+        resultNode = createStrNode(resultValue);
+
+      return produce(state, draft => {
+        draft.board.delete(binOpNode.id);
+        draft.board.delete(opNode.id);
+        draft.board.delete(leftNode.id);
+        draft.board.delete(rightNode.id);
+
+        draft.nodes.delete(binOpNode.id);
+        draft.nodes.delete(opNode.id);
+        draft.nodes.delete(leftNode.id);
+        draft.nodes.delete(rightNode.id);
+
+        draft.removed.clear();
+        draft.removed.add(binOpNode.id);
+        draft.removed.add(opNode.id);
+        draft.removed.add(leftNode.id);
+        draft.removed.add(rightNode.id);
+
+        draft.added.clear();
+        draft.added.set(binOpNode.id, [resultNode.id]);
+
+        draft.nodes.set(resultNode.id, resultNode);
+        draft.board.add(resultNode.id);
+      });
     }
 
     case ActionKind.Raise: {

@@ -1,4 +1,4 @@
-import { NodeId } from '@/semantics';
+import { NodeId, ReductNode } from '@/semantics';
 
 export class MissingNodeError extends Error {
   public slotId: NodeId;
@@ -9,19 +9,28 @@ export class MissingNodeError extends Error {
   }
 }
 
-type NodeType = 'string' | 'number' | 'boolean' | 'symbol';
+type NodeType = ReductNode['type'];
 
 export class WrongTypeError extends Error {
+  /**
+   * The ID of the node whose type is unacceptable.
+   */
   public nodeId: NodeId;
 
-  public expected: NodeType;
+  /**
+   * Types of nodes that would have been accepted in this location.
+   */
+  public expected: Array<NodeType>;
 
+  /**
+   * Type of node that was found.
+   */
   public actual: NodeType;
 
-  public constructor(nodeId: NodeId, expected: NodeType, actual: NodeType) {
+  public constructor(nodeId: NodeId, expected: NodeType | Array<NodeType>, actual: NodeType) {
     super();
     this.nodeId = nodeId;
-    this.expected = expected;
+    this.expected = Array.isArray(expected) ? expected : [expected];
     this.actual = actual;
   }
 }

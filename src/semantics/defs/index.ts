@@ -13,4 +13,3 @@ export type {
 } from './value';
 export type { InvocationNode, InvocationNode2 } from './reference';
 export type { MissingNode } from './missing';
-export type { NodeKind } from './base';

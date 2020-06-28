@@ -37,7 +37,9 @@ export type ReductSymbol = 'star' | 'circle' | 'triangle' | 'rect';
 
 export interface SymbolNode extends BaseNode {
   type: 'symbol';
-  fields: { name: ReductSymbol };
+  fields: { 
+    name: ReductSymbol;
+  };
 }
 
 export const number: NodeDef<NumberNode> = {

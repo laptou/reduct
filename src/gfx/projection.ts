@@ -115,7 +115,7 @@ export interface DecalProjectionDef<N extends BaseNode> extends BaseProjectionDe
 
 export interface CaseOnProjectionDef<
     N extends BaseNode,
-    K extends keyof N = keyof N
+    K extends keyof N['fields'] = keyof N['fields']
 > extends BaseProjectionDef<N> {
     type: 'case' | 'cases';
     on?: K;
