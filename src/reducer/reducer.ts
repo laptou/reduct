@@ -170,14 +170,15 @@ export function reduct(semantics: Semantics, views, restorePos) {
           } else {
             mappedBody = withoutParent(mappedBody);
 
-            // if the lambda evaluated to a vtuple, split it up on the board
-            const addedNodeIds = 
-              mappedBody.type === 'vtuple' 
-                ? Object.values(mappedBody.subexpressions)
-                : [mappedBody.id];
-
-            for (const addedNodeId of addedNodeIds) {
-              draft.board.add(addedNodeId);
+            if (mappedBody.type === 'vtuple') {
+              for (const subExprId of Object.values(mappedBody.subexpressions)) {
+                const subExpr = draft.nodes.get(subExprId as NodeId)!;
+                subExpr.parent = null;
+                subExpr.parentField = null;
+                draft.board.add(subExprId as NodeId);
+              }
+            } else {
+              draft.board.add(mappedBody.id);
             }
           }
 
