@@ -65,7 +65,7 @@ export interface AddNodeToBoardAction {
  * from the toolbox if necessary.
  * @param nodeId The node to add to the board.
  */
-export function createAddNodeToBoard(nodeId: NodeId) {
+export function createMoveNodeToBoard(nodeId: NodeId) {
   return { type: ActionKind.MoveNodeToBoard, nodeId };
 }
 

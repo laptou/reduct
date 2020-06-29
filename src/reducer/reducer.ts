@@ -4,7 +4,9 @@ import {
 } from '@/semantics/defs';
 import type { Semantics } from '@/semantics/transform';
 import { createBoolNode, createNumberNode, createStrNode } from '@/semantics/util';
-import { DRF, withoutParent, withParent, mapIterable } from '@/util/helper';
+import {
+  DRF, withoutParent, withParent, mapIterable 
+} from '@/util/helper';
 import {
   cloneNodeDeep, findNodesDeep, getRootForNode, mapNodeDeep 
 } from '@/util/nodes';
@@ -12,7 +14,9 @@ import { castDraft, produce } from 'immer';
 import { combineReducers, compose } from 'redux';
 import * as animate from '../gfx/animate';
 import * as gfx from '../gfx/core';
-import { ActionKind, createDetach, ReductAction } from './action';
+import {
+  ActionKind, createDetach, ReductAction, createMoveNodeToBoard 
+} from './action';
 import { MissingNodeError, NotOnBoardError, WrongTypeError } from './errors';
 import { GlobalState, RState } from './state';
 import { undoable } from './undo';
@@ -63,22 +67,49 @@ export function reduct(semantics: Semantics, views, restorePos) {
     
     switch (act.type) {
     case ActionKind.MoveNodeToBoard: {
+      if (state.board.has(act.nodeId))
+        return state;
 
       const node = state.nodes.get(act.nodeId)!;
 
-      // if the node has a parent, detach it first
-      if (node.parent) {
-        state = program(state, createDetach(node.id));
+      if (state.toolbox.has(act.nodeId)) {
+        return produce(state, draft => {
+          draft.added.clear();
+            
+          // if there is a meta tag that specifies unlimited uses, clone the node 
+          // instead of moving it
+          if (node.__meta?.toolbox?.unlimited) {
+            const [clonedNode, clonedDescendants, newNodeMap] = cloneNodeDeep(act.nodeId, state.nodes);
+  
+            draft.nodes = castDraft(newNodeMap);
+
+            // a Set iterates in insertion order; we want the new toolbox to be
+            // in the same order as the old one
+            const toolbox = [...draft.toolbox];
+            const idx = toolbox.findIndex(id => id === act.nodeId);
+            toolbox[idx] = clonedNode.id;
+            draft.toolbox = new Set(toolbox);
+            
+            draft.added.set(clonedNode.id, act.nodeId);
+            for (const clonedDescendant of clonedDescendants) {
+              draft.added.set(clonedDescendant.id, act.nodeId);
+            }
+          } else {
+            draft.toolbox.delete(act.nodeId);
+          }
+
+          draft.board.add(act.nodeId);
+        });
       }
 
-      return produce(state, draft => {
-        // if this node was in the toolbox, remove it from there unless it has a
-        // meta tag that specifies that it has infinite uses
-        if (draft.toolbox.has(node.id) && !node.__meta?.toolbox?.unlimited)
-          draft.toolbox.delete(act.nodeId);
-        
-        draft.board.add(act.nodeId);
-      });
+      // if it's not in the board and not in the toolbox, just detach it
+      // TODO: handle defs
+
+      if (node.parent) {
+        return program(state, createDetach(node.id));
+      }
+
+      return state;
     }
 
     case ActionKind.StartLevel: {
@@ -599,17 +630,21 @@ export function reduct(semantics: Semantics, views, restorePos) {
 
       return newState;
     }
+
     case ActionKind.FillSlot: {
+      state = program(state, createMoveNodeToBoard(act.childId));
+
       const newState = produce(state, draft => {
         const hole = draft.nodes.get(act.holeId)!;
-        if (!hole.parent) throw `Hole ${act.holeId} has no parent!`;
+
+        // this should be impossible
+        if (!hole.parent) 
+          throw new Error(`Slot ${act.holeId} has no parent!`);
   
         const parent = draft.nodes.get(hole.parent)!;
         const child = draft.nodes.get(act.childId)!;
-        if (child.parent) throw 'Dragging objects from one hole to another is unsupported.';
 
         draft.board.delete(act.childId);
-        draft.toolbox.delete(act.childId);
 
         // Cache the hole in the parent, so that we
         // don't have to create a new hole if they

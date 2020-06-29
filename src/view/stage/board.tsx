@@ -1,4 +1,4 @@
-import { createAddNodeToBoard } from '@/reducer/action';
+import { createMoveNodeToBoard } from '@/reducer/action';
 import { GlobalState } from '@/reducer/state';
 import { NodeId } from '@/semantics';
 import { DeepReadonly } from '@/util/helper';
@@ -65,6 +65,6 @@ export const Board = connect(
     nodeIds: [...state.program.$present.board]
   }),
   (dispatch) => ({
-    addNodeToBoard(id: NodeId) { dispatch(createAddNodeToBoard(id)); }
+    addNodeToBoard(id: NodeId) { dispatch(createMoveNodeToBoard(id)); }
   })
 )(BoardImpl);
