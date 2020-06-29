@@ -27,11 +27,13 @@
 }
 
 .projection-exit {
+  z-index: -1;
   transform: scale(1);
   opacity: 1;
 }
 
 .projection-exit-active {
+  z-index: -1;
   transform: scale(0);
   opacity: 0;
   transition: opacity 500ms linear, transform 500ms ease-in;
@@ -55,4 +57,5 @@
 
 #reduct-board > .projection {
   position: absolute;
+  transform: translate(-50%, -50%);
 }

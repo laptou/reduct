@@ -61,8 +61,10 @@ function onDragStart(
   event.dataTransfer.dropEffect = 'move';
 
   // store offset from top left of node
-  const { top, left } = event.currentTarget.getBoundingClientRect();
-  setOffset({ x: left - event.clientX, y: top  - event.clientY });
+  const {
+    top, left, width, height 
+  } = event.currentTarget.getBoundingClientRect();
+  setOffset({ x: left - event.clientX + width / 2, y: top  - event.clientY + height / 2 });
   
   // stop parent projections from hijacking the drag
   event.stopPropagation();
@@ -80,8 +82,8 @@ function onDragEnd(
   const { height, width } = event.currentTarget.getBoundingClientRect();
 
   setPosition({
-    x: Math.max(0, Math.min(boardWidth - width, event.clientX - boardLeft + offset.x)), 
-    y: Math.max(0, Math.min(boardHeight - height, event.clientY - boardTop + offset.y)) 
+    x: Math.max(width / 2, Math.min(boardWidth - width / 2, event.clientX - boardLeft + offset.x)), 
+    y: Math.max(height / 2, Math.min(boardHeight - height / 2, event.clientY - boardTop + offset.y)) 
   });
 };
 
@@ -111,13 +113,10 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
         const {
           top: srcTop, left: srcLeft, width: srcWidth, height: srcHeight 
         } = sourceProjection.getBoundingClientRect();
-        const {
-          width: thisWidth, height: thisHeight 
-        } = thisProjection.getBoundingClientRect();
 
         setPosition({ 
-          x: srcLeft + srcWidth / 2 - thisWidth / 2 - boardLeft, 
-          y: srcTop + srcHeight / 2 - thisHeight / 2 - boardTop 
+          x: srcLeft + srcWidth / 2 - boardLeft, 
+          y: srcTop + srcHeight / 2 - boardTop 
         });
       }
     }, [props.nodeId]);
