@@ -3,7 +3,7 @@ import { NodeId } from '@/semantics';
 import { DeepReadonly, DRF } from '@/util/helper';
 import cx from 'classnames';
 import React, {
-  FunctionComponent, useEffect, useRef, useState 
+  FunctionComponent, useEffect, useState 
 } from 'react';
 import { connect } from 'react-redux';
 import { getProjectionForNode } from '.';
@@ -60,11 +60,9 @@ function onDragStart(
   event.dataTransfer.setData('application/reduct-node', props.nodeId.toString());
   event.dataTransfer.dropEffect = 'move';
 
-  // store offset from center of node
-  const {
-    top, left, width, height 
-  } = event.currentTarget.getBoundingClientRect();
-  setOffset({ x: left + width / 2 - event.clientX, y: top + height / 2 - event.clientY });
+  // store offset from top left of node
+  const { top, left } = event.currentTarget.getBoundingClientRect();
+  setOffset({ x: left - event.clientX, y: top  - event.clientY });
   
   // stop parent projections from hijacking the drag
   event.stopPropagation();
@@ -76,9 +74,15 @@ function onDragEnd(
   setPosition: (pos: { x: number; y: number }) => void
 ) {
   const board = document.getElementById('reduct-board')!;
-  const { top: boardTop, left: boardLeft } = board.getBoundingClientRect();
+  const {
+    top: boardTop, left: boardLeft, height: boardHeight, width: boardWidth 
+  } = board.getBoundingClientRect();
+  const { height, width } = event.currentTarget.getBoundingClientRect();
 
-  setPosition({ x: event.clientX - boardLeft + offset.x, y: event.clientY - boardTop + offset.y });
+  setPosition({
+    x: Math.max(0, Math.min(boardWidth - width, event.clientX - boardLeft + offset.x)), 
+    y: Math.max(0, Math.min(boardHeight - height, event.clientY - boardTop + offset.y)) 
+  });
 };
 
 
@@ -91,7 +95,7 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
     // directly on the board
     const [position, setPosition] = useState({ x: 0, y: 0 });
 
-    // run when component is re-rendered
+    // run when node changes
     useEffect(() => {
       if (props.sourceId) {
         // this node was created by another node, position this node on top of
@@ -99,15 +103,24 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
 
         const board = document.getElementById('reduct-board')!;
         const sourceProjection = document.getElementById(`projection-${props.sourceId}`);
+        const thisProjection = document.getElementById(`projection-${props.nodeId}`);
 
-        if (!sourceProjection) return;
+        if (!sourceProjection || !thisProjection) return;
 
         const { top: boardTop, left: boardLeft } = board.getBoundingClientRect();
-        const { top, left } = sourceProjection.getBoundingClientRect();
+        const {
+          top: srcTop, left: srcLeft, width: srcWidth, height: srcHeight 
+        } = sourceProjection.getBoundingClientRect();
+        const {
+          width: thisWidth, height: thisHeight 
+        } = thisProjection.getBoundingClientRect();
 
-        setPosition({ x: left - boardLeft, y: top - boardTop });
+        setPosition({ 
+          x: srcLeft + srcWidth / 2 - thisWidth / 2 - boardLeft, 
+          y: srcTop + srcHeight / 2 - thisHeight / 2 - boardTop 
+        });
       }
-    });
+    }, [props.nodeId]);
 
     // run when this component is unmounted
     useEffect(() => () => {

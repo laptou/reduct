@@ -1,6 +1,6 @@
 import { GlobalState } from '@/reducer/state';
 import { NodeId } from '@/semantics';
-import { DeepReadonly, map } from '@/util/helper';
+import { DeepReadonly } from '@/util/helper';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { StageProjection } from './projection/base';

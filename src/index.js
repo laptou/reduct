@@ -244,12 +244,9 @@ function initialize() {
     // TODO: remove this when stage renderer is retired
     // project nodes that were created inside of the reducer
     if (newNodesMap) {
-      for (const [, newNodeIds] of newNodesMap) {
-        for (const newNodeId of newNodeIds) {
-          if (newNodeId in stg.views) continue;
-          
-          stg.views[newNodeId] = stg.semantics.project(stg, newPresent.nodes, newPresent.nodes.get(newNodeId));
-        }
+      for (const newNodeId of newNodesMap.keys()) {
+        if (newNodeId in stg.views) continue;
+        stg.views[newNodeId] = stg.semantics.project(stg, newPresent.nodes, newPresent.nodes.get(newNodeId));
       }
     }
 

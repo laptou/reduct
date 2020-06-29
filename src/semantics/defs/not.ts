@@ -4,7 +4,9 @@ import type { BaseNode, NodeId } from '..';
 export interface NotNode extends BaseNode {
   type: 'not';
 
-  value: NodeId;
+  subexpressions: {
+    value: NodeId;
+  };
 }
 
 export const not: NodeDef<NotNode> = {

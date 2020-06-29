@@ -3,5 +3,5 @@
 
 .projection.not {
   @extend %projection-standalone;
-  @include fx.projection-shadow-box();
+  @include fx.projection-shadow-irregular();
 }

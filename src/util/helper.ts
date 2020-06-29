@@ -81,3 +81,9 @@ export function withoutChild<N extends DeepReadonly<ReductNode> | DRF>(node: N, 
     (draft.subexpressions as Record<typeof field, any>)[field] = null;
   });
 }
+
+export function* mapIterable<T, U>(it: Iterable<T>, fn: (t: T) => U) {
+  for (const item of it) {
+    yield fn(item);
+  }
+}

@@ -33,7 +33,7 @@ export interface RState {
    * "sources" of the nodes: for example, if you step an addition operator and
    * get a number, the "source" of the number node is the addition node.
    */
-  added: Map<NodeId | null, NodeId>;
+  added: Map<NodeId, NodeId | null>;
 
   /**
    * Nodes which were removed by the most recent action.

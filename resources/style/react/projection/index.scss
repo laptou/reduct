@@ -3,6 +3,7 @@
   margin-left: 0.125rem;
   font-weight: bold;
   font-family: 'IBM Plex Mono', monospace;
+  transform-origin: center center;
   user-select: none;
 }
 
@@ -54,5 +55,4 @@
 
 #reduct-board > .projection {
   position: absolute;
-  transform: translate(-50%, -50%);
 }

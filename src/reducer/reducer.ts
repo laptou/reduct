@@ -1,26 +1,21 @@
-import type { NodeId, NodeMap, Flat } from '@/semantics';
+import type { NodeId, NodeMap } from '@/semantics';
+import {
+  BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NumberNode, OpNode, StrNode 
+} from '@/semantics/defs';
 import type { Semantics } from '@/semantics/transform';
-import { produce, castDraft } from 'immer';
+import { createBoolNode, createNumberNode, createStrNode } from '@/semantics/util';
+import { DRF, withoutParent, withParent, mapIterable } from '@/util/helper';
+import {
+  cloneNodeDeep, findNodesDeep, getRootForNode, mapNodeDeep 
+} from '@/util/nodes';
+import { castDraft, produce } from 'immer';
 import { combineReducers, compose } from 'redux';
 import * as animate from '../gfx/animate';
 import * as gfx from '../gfx/core';
-import { ActionKind, ReductAction, createDetach } from './action';
-import { RState, GlobalState } from './state';
+import { ActionKind, createDetach, ReductAction } from './action';
+import { MissingNodeError, NotOnBoardError, WrongTypeError } from './errors';
+import { GlobalState, RState } from './state';
 import { undoable } from './undo';
-import {
-  withoutParent, DeepReadonly, DRF, withParent 
-} from '@/util/helper';
-import {
-  LambdaArgNode, LambdaNode, BinOpNode, OpNode, StrNode, BoolNode, NumberNode, ConditionalNode 
-} from '@/semantics/defs';
-import {
-  mapNodeDeep, cloneNodeDeep, findNodesDeep, getRootForNode 
-} from '@/util/nodes';
-import { lambdaArg } from '@/semantics/defs/lambda';
-import { MissingNodeError, WrongTypeError, NotOnBoardError } from './errors';
-import {
-  getKindForNode, createBoolNode, createNumberNode, createStrNode 
-} from '@/semantics/util';
 
 export { nextId } from '@/util/nodes';
 
@@ -95,7 +90,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
         board: act.board,
         toolbox: act.toolbox,
         globals: act.globals,
-        added: new Map([[null, Array.from(act.nodes.keys())]]),
+        added: new Map(mapIterable(act.nodes.keys(), id => [id, null] as const)),
         removed: new Set()
       };
     }
