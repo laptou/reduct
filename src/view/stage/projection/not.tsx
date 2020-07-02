@@ -11,15 +11,10 @@ interface NotProjectionOwnProps {
   node: DRF<NotNode>;
 }
 
-interface NotProjectionDispatchProps {
-  eval(): void;
-}
-
 type NotProjectionProps = 
-  NotProjectionOwnProps &
-  NotProjectionDispatchProps;
+  NotProjectionOwnProps;
 
-const NotProjectionImpl: FunctionComponent<NotProjectionProps> = 
+export const NotProjection: FunctionComponent<NotProjectionProps> = 
   (props) => {
     return (
       <div className='projection not'>
@@ -30,12 +25,3 @@ const NotProjectionImpl: FunctionComponent<NotProjectionProps> =
       </div>
     )
   };
-
-export const NotProjection = connect(
-  null,
-  (dispatch, ownProps: NotProjectionOwnProps) => {
-    return {
-      eval() { dispatch(createEvalNot(ownProps.node.id)); }
-    }
-  }
-)(NotProjectionImpl);

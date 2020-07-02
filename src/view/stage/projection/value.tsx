@@ -26,7 +26,7 @@ export const ValueProjection: FunctionComponent<ValueProjectionOwnProps> =
       return (
         <div className='projection string'>
           <StringShape>
-            {props.node.fields.value.toString()}
+            &quot;{props.node.fields.value}&quot;
           </StringShape>
         </div>
       );

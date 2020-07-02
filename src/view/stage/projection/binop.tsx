@@ -18,31 +18,12 @@ interface BinOpProjectionStoreProps {
   op: OpNode['fields']['name'] | null;
 }
 
-interface BinOpProjectionDispatchProps {
-  eval(): void;
-}
-
 type BinOpProjectionProps = 
   BinOpProjectionOwnProps & 
-  BinOpProjectionStoreProps & 
-  BinOpProjectionDispatchProps;
+  BinOpProjectionStoreProps;
 
 // TODO: why do we need a separate node for the operation?
 // Not Doing That seems simpler
-
-function onClick(
-  event: React.MouseEvent<HTMLDivElement>,
-  props: BinOpProjectionProps
-) {
-  // cannot evaluate locked nodes
-  if (props.node.locked && props.node.parent)
-    return;
-
-  // stop parent projections from hijacking the click
-  event.stopPropagation();
-
-  props.eval();
-};
 
 const BinOpProjectionImpl: FunctionComponent<BinOpProjectionProps> = 
   (props) => {
@@ -70,7 +51,7 @@ const BinOpProjectionImpl: FunctionComponent<BinOpProjectionProps> =
     case '||':
     case '==':
       return (
-        <div className='projection binop' onClick={e => onClick(e, props)}>
+        <div className='projection binop'>
           <BooleanShape>
             <div className='left'>
               <StageProjection nodeId={props.node.subexpressions.left} />
@@ -86,7 +67,7 @@ const BinOpProjectionImpl: FunctionComponent<BinOpProjectionProps> =
       );
     default:
       return (
-        <div className='projection binop' onClick={e => onClick(e, props)}>
+        <div className='projection binop'>
           {`{${props.op}}`}
         </div>
       );
@@ -102,9 +83,5 @@ export const BinOpProjection = connect(
     }
 
     return { op: null }
-  },
-  (dispatch, ownProps) => {
-    return {
-      eval() { dispatch(createEvalOperator(ownProps.node.id)); }
-    }
-  })(BinOpProjectionImpl);
+  }
+)(BinOpProjectionImpl);
