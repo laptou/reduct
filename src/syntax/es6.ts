@@ -421,7 +421,7 @@ export function makeUnparser(_: Semantics) {
   return unparseES6;
 }
 
-function fail(message, node) {
+function fail(message, node): never {
   console.warn(message, node);
   throw { message, node };
 }

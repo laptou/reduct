@@ -1,11 +1,11 @@
 import { ApplyNode } from '@/semantics/defs';
+import { DRF } from '@/util/helper';
 import '@resources/style/react/projection/apply.scss';
 import React, { FunctionComponent } from 'react';
 import { StageProjection } from './base';
-import { Flat } from '@/semantics';
 
 interface ApplyProjectionOwnProps {
-    node: Flat<ApplyNode>;
+    node: DRF<ApplyNode>;
 }
 
 export const ApplyProjection: FunctionComponent<ApplyProjectionOwnProps> = 

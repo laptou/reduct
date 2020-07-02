@@ -29,7 +29,9 @@ export enum ActionKind {
   Eval = 'eval',
   EvalLambda = 'eval-lambda',
   EvalOperator = 'eval-operator',
-  EvalConditional = 'eval-conditional'
+  EvalConditional = 'eval-conditional',
+  EvalNot = 'eval-not',
+  EvalApply = 'eval-apply'
 }
 
 export type ReductAction = 
@@ -40,6 +42,8 @@ export type ReductAction =
   EvalLambdaAction |
   EvalOperatorAction |
   EvalConditionalAction |
+  EvalNotAction |
+  EvalApplyAction |
   CleanupAction;
 
 /**
@@ -239,6 +243,44 @@ export function createEvalConditional(
   return {
     type: ActionKind.EvalConditional,
     conditionalNodeId
+  };
+}
+
+export interface EvalNotAction {
+  type: ActionKind.EvalNot;
+  notNodeId: NodeId;
+}
+
+/**
+ * Returns an action which will evaluate a conditional (if-else) node.
+ *
+ * @param notNodeId The ID of the node that represents the conditional.
+ */
+export function createEvalNot(
+  notNodeId: NodeId, 
+): EvalNotAction {
+  return {
+    type: ActionKind.EvalNot,
+    notNodeId
+  };
+}
+
+export interface EvalApplyAction {
+  type: ActionKind.EvalApply;
+  applyNodeId: NodeId;
+}
+
+/**
+ * Returns an action which will evaluate an application node.
+ *
+ * @param applyNodeId The ID of the node that represents the application.
+ */
+export function createEvalApply(
+  applyNodeId: NodeId, 
+): EvalApplyAction {
+  return {
+    type: ActionKind.EvalApply,
+    applyNodeId
   };
 }
 

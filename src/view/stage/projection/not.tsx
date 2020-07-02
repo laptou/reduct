@@ -1,15 +1,25 @@
+import { createEvalNot } from '@/reducer/action';
 import { NotNode } from '@/semantics/defs';
+import { DRF } from '@/util/helper';
 import '@resources/style/react/projection/not.scss';
 import React, { FunctionComponent } from 'react';
+import { connect } from 'react-redux';
 import { BooleanShape } from '../shape/boolean';
 import { StageProjection } from './base';
-import { Flat } from '@/semantics';
 
 interface NotProjectionOwnProps {
-    node: Flat<NotNode>;
+  node: DRF<NotNode>;
 }
 
-export const NotProjection: FunctionComponent<NotProjectionOwnProps> = 
+interface NotProjectionDispatchProps {
+  eval(): void;
+}
+
+type NotProjectionProps = 
+  NotProjectionOwnProps &
+  NotProjectionDispatchProps;
+
+const NotProjectionImpl: FunctionComponent<NotProjectionProps> = 
   (props) => {
     return (
       <div className='projection not'>
@@ -20,3 +30,12 @@ export const NotProjection: FunctionComponent<NotProjectionOwnProps> =
       </div>
     )
   };
+
+export const NotProjection = connect(
+  null,
+  (dispatch, ownProps: NotProjectionOwnProps) => {
+    return {
+      eval() { dispatch(createEvalNot(ownProps.node.id)); }
+    }
+  }
+)(NotProjectionImpl);

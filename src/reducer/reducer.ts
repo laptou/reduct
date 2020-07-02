@@ -1,6 +1,6 @@
 import type { NodeId, NodeMap } from '@/semantics';
 import {
-  BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NumberNode, OpNode, StrNode 
+  BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NumberNode, OpNode, StrNode, NotNode, ApplyNode 
 } from '@/semantics/defs';
 import type { Semantics } from '@/semantics/transform';
 import { createBoolNode, createNumberNode, createStrNode } from '@/semantics/util';
@@ -15,7 +15,7 @@ import { combineReducers, compose } from 'redux';
 import * as animate from '../gfx/animate';
 import * as gfx from '../gfx/core';
 import {
-  ActionKind, createDetach, ReductAction, createMoveNodeToBoard 
+  ActionKind, createDetach, ReductAction, createMoveNodeToBoard, createEvalLambda 
 } from './action';
 import { MissingNodeError, NotOnBoardError, WrongTypeError } from './errors';
 import { GlobalState, RState } from './state';
@@ -421,6 +421,89 @@ export function reduct(semantics: Semantics, views, restorePos) {
         draft.removed.add(blockNode.id);
         draft.removed.add(condNode.id);
         draft.removed.add(removedNode.id);
+      });
+    }
+
+    case ActionKind.EvalNot: {
+      if (!state.board.has(getRootForNode(act.notNodeId, state.nodes).id))
+        throw new NotOnBoardError(act.notNodeId);
+
+      const notNode = state.nodes.get(act.notNodeId) as DRF<NotNode>;
+      const valueNode = state.nodes.get(notNode.subexpressions.value)!;
+
+      if (valueNode.type === 'missing')
+        throw new MissingNodeError(valueNode.id);
+      
+      if (valueNode.type !== 'boolean')
+        throw new WrongTypeError(valueNode.id, ['boolean'], valueNode.type);
+
+      let resultNode = createBoolNode(!valueNode.fields.value);
+
+      return produce(state, draft => {
+        draft.board.delete(notNode.id);
+  
+        draft.added.clear();
+        draft.added.set(resultNode.id, notNode.id);
+
+        if (notNode.parent) {
+          const parentNode = draft.nodes.get(notNode.parent)!;
+          parentNode.subexpressions[notNode.parentField!] = resultNode.id;
+          resultNode = withParent(resultNode, parentNode.id, notNode.parentField!);
+        } else {
+          resultNode = withoutParent(resultNode);
+          draft.board.add(resultNode.id);
+        }
+  
+        draft.nodes.set(resultNode.id, resultNode);
+
+        // schedule for cleanup
+        draft.removed.add(notNode.id);
+      });
+    }
+
+    case ActionKind.EvalApply: {
+      const { applyNodeId } = act;
+
+      if (!state.board.has(getRootForNode(applyNodeId, state.nodes).id))
+        throw new NotOnBoardError(applyNodeId);
+
+      const applyNode = state.nodes.get(applyNodeId) as DRF<ApplyNode>;
+      const argNode = state.nodes.get(applyNode.subexpressions.argument)!;
+      const calleeNode = state.nodes.get(applyNode.subexpressions.callee)!;
+
+      if (argNode.type === 'missing')
+        throw new MissingNodeError(argNode.id);
+
+      if (calleeNode.type === 'missing')
+        throw new MissingNodeError(calleeNode.id);
+
+      if (calleeNode.type !== 'lambda')
+        throw new WrongTypeError(calleeNode.id, 'lambda', calleeNode.type);
+      
+      state = program(state, createEvalLambda(argNode.id, calleeNode.id));
+
+      // there should only be one added node after evaluating the lambda, and it
+      // should be the result of evaluating the lambda
+      const resultNodeId = [...state.added.keys()][0];
+
+      return produce(state, draft => {
+        draft.board.delete(applyNode.id);
+        
+        const resultNode = draft.nodes.get(resultNodeId)!;
+
+        if (applyNode.parent) {
+          const parentNode = draft.nodes.get(applyNode.parent)!;
+          parentNode.subexpressions[applyNode.parentField!] = resultNodeId;
+          resultNode.parent = parentNode.id;
+          resultNode.parentField = applyNode.parentField;
+        } else {
+          resultNode.parent = null;
+          resultNode.parentField = null;
+          draft.board.add(resultNode.id);
+        }
+        
+        // schedule for cleanup
+        draft.removed.add(applyNode.id);
       });
     }
 

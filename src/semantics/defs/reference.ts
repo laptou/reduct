@@ -53,7 +53,7 @@ const baseReference: NodeDef<InvocationNode> = {
     return [
       expr.id,
       [result[0].id],
-      [result[0].delete('parent').delete('parentField')].concat(result[1])
+      [withoutParent(result[0]), ...result[1]]
     ];
   },
   validateStep: (semant, state, expr) => {

@@ -1,11 +1,12 @@
-import { NodeId, Flat } from '@/semantics';
+import { NodeId } from '@/semantics';
 import { ArrayNode } from '@/semantics/defs';
+import { DRF } from '@/util/helper';
 import '@resources/style/react/projection/array.scss';
 import React, { FunctionComponent } from 'react';
 import { StageProjection } from './base';
 
 interface ArrayProjectionOwnProps {
-    node: Flat<ArrayNode>;
+    node: DRF<ArrayNode>;
 }
 
 export const ArrayProjection: FunctionComponent<ArrayProjectionOwnProps> = 
