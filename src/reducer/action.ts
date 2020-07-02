@@ -1,15 +1,12 @@
 import { NodeId, NodeMap, ReductNode } from '@/semantics';
-import { ImList, ImMap, ImSet } from '@/util/im';
-import { Semantics } from '@/semantics/transform';
 import BaseStage from '@/stage/basestage';
 
 export enum ActionKind {
   UseToolbox = 'use-toolbox',
   Raise = 'raise',
   Detach = 'detach',
-  FillSlot = 'fill-slot',
   AttachNotch = 'attach-notch',
-  SmallStep = 'small-step',
+  SmallStep = 'small-step-legacy',
   Unfold = 'unfold',
   BetaReduce = 'beta-reduce',
   StartLevel = 'start-level',
@@ -23,8 +20,9 @@ export enum ActionKind {
   ChangeGoal = 'change-goal',
   Hover = 'hover',
 
-  MoveNodeToBoard = 'add-node-to-stage',
-
+  MoveNodeToBoard = 'move-node-to-stage',
+  MoveNodeToSlot = 'move-node-to-slot',
+  
   Cleanup = 'cleanup',
   Eval = 'eval',
   EvalLambda = 'eval-lambda',
@@ -36,7 +34,8 @@ export enum ActionKind {
 
 export type ReductAction = 
   StartLevelAction |
-  AddNodeToBoardAction |
+  MoveNodeToBoardAction |
+  MoveNodeToSlotAction |
   AddNodeToToolboxAction |
   SmallStepAction |
   EvalLambdaAction |
@@ -46,20 +45,25 @@ export type ReductAction =
   EvalApplyAction |
   CleanupAction;
 
-/**
- * If the target node is scheduled for cleanup (its ID is in the 'removed'
- * set) then it and its descendants will be deleted from the node map.
- */
+
 export interface CleanupAction {
   type: ActionKind.Cleanup;
   target: NodeId;
 }
 
+/**
+ * Nodes are not immediately deleted from the node map when they are removed
+ * from the game, to facilitate animation. Cleanup is called when the
+ * animation is finished, to delete a removed node from the node map. Has no
+ * effect if the target node is not removed.
+ * 
+ * @param target The node to delete.
+ */
 export function createCleanup(target: NodeId): CleanupAction {
   return { type: ActionKind.Cleanup, target };
 }
 
-export interface AddNodeToBoardAction {
+export interface MoveNodeToBoardAction {
   type: ActionKind.MoveNodeToBoard;
   nodeId: NodeId;
 }
@@ -69,8 +73,28 @@ export interface AddNodeToBoardAction {
  * from the toolbox if necessary.
  * @param nodeId The node to add to the board.
  */
-export function createMoveNodeToBoard(nodeId: NodeId) {
+export function createMoveNodeToBoard(nodeId: NodeId): MoveNodeToBoardAction {
   return { type: ActionKind.MoveNodeToBoard, nodeId };
+}
+
+export interface MoveNodeToSlotAction {
+  type: ActionKind.MoveNodeToSlot;
+  slotId: NodeId;
+  nodeId: NodeId;
+}
+
+/**
+ * Replaces a slot node (which represents the absence of a value) with another
+ * node.
+ * @param slotId The ID of the slot to be replaced.
+ * @param nodeId The ID of the node to put in the position of the slot.
+ */
+export function moveNodeToSlot(slotId: NodeId, nodeId: NodeId): MoveNodeToSlotAction {
+  return {
+    type: ActionKind.MoveNodeToSlot,
+    slotId: slotId,
+    nodeId: nodeId
+  };
 }
 
 export interface StartLevelAction {
@@ -386,17 +410,6 @@ export function createDetach(nodeId) {
   return {
     type: ActionKind.Detach,
     nodeId
-  };
-}
-
-/**
- * Replace the given hole by the given expression.
- */
-export function fillHole(holeId, childId) {
-  return {
-    type: ActionKind.FillSlot,
-    holeId,
-    childId
   };
 }
 

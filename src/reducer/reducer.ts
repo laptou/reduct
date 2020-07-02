@@ -30,7 +30,8 @@ const initialProgram: RState = {
   toolbox: new Set(),
   globals: new Map(),
   added: new Map(),
-  removed: new Set()
+  removed: new Set(),
+  stack: []
 };
 
 
@@ -66,55 +67,10 @@ export function reduct(semantics: Semantics, views, restorePos) {
     if (!act) return state;
     
     switch (act.type) {
-    case ActionKind.MoveNodeToBoard: {
-      if (state.board.has(act.nodeId))
-        return state;
-
-      const node = state.nodes.get(act.nodeId)!;
-
-      if (state.toolbox.has(act.nodeId)) {
-        return produce(state, draft => {
-          draft.added.clear();
-            
-          // if there is a meta tag that specifies unlimited uses, clone the node 
-          // instead of moving it
-          if (node.__meta?.toolbox?.unlimited) {
-            const [clonedNode, clonedDescendants, newNodeMap] = cloneNodeDeep(act.nodeId, state.nodes);
-  
-            draft.nodes = castDraft(newNodeMap);
-
-            // a Set iterates in insertion order; we want the new toolbox to be
-            // in the same order as the old one
-            const toolbox = [...draft.toolbox];
-            const idx = toolbox.findIndex(id => id === act.nodeId);
-            toolbox[idx] = clonedNode.id;
-            draft.toolbox = new Set(toolbox);
-            
-            draft.added.set(clonedNode.id, act.nodeId);
-            for (const clonedDescendant of clonedDescendants) {
-              draft.added.set(clonedDescendant.id, act.nodeId);
-            }
-          } else {
-            draft.toolbox.delete(act.nodeId);
-          }
-
-          draft.board.add(act.nodeId);
-        });
-      }
-
-      // if it's not in the board and not in the toolbox, just detach it
-      // TODO: handle defs
-
-      if (node.parent) {
-        return program(state, createDetach(node.id));
-      }
-
-      return state;
-    }
-
     case ActionKind.StartLevel: {
       act.nodes.forEach((n) => markDirty(act.nodes, n.id));
       act.toolbox.forEach((n) => markDirty(act.nodes, n));
+      
       return {
         nodes: act.nodes,
         goal: act.goal,
@@ -122,7 +78,8 @@ export function reduct(semantics: Semantics, views, restorePos) {
         toolbox: act.toolbox,
         globals: act.globals,
         added: new Map(mapIterable(act.nodes.keys(), id => [id, null] as const)),
-        removed: new Set()
+        removed: new Set(),
+        stack: []
       };
     }
 
@@ -501,7 +458,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
           resultNode.parentField = null;
           draft.board.add(resultNode.id);
         }
-        
+
         // schedule for cleanup
         draft.removed.add(applyNode.id);
       });
@@ -515,6 +472,83 @@ export function reduct(semantics: Semantics, views, restorePos) {
         draft.nodes.delete(target);
         draft.removed.delete(target);
       });
+    }
+
+    case ActionKind.MoveNodeToBoard: {
+      if (state.board.has(act.nodeId))
+        return state;
+
+      const node = state.nodes.get(act.nodeId)!;
+
+      if (state.toolbox.has(act.nodeId)) {
+        return produce(state, draft => {
+          draft.added.clear();
+            
+          // if there is a meta tag that specifies unlimited uses, clone the node 
+          // instead of moving it
+          if (node.__meta?.toolbox?.unlimited) {
+            const [clonedNode, clonedDescendants, newNodeMap] = cloneNodeDeep(act.nodeId, state.nodes);
+  
+            draft.nodes = castDraft(newNodeMap);
+
+            // a Set iterates in insertion order; we want the new toolbox to be
+            // in the same order as the old one
+            const toolbox = [...draft.toolbox];
+            const idx = toolbox.findIndex(id => id === act.nodeId);
+            toolbox[idx] = clonedNode.id;
+            draft.toolbox = new Set(toolbox);
+            
+            draft.added.set(clonedNode.id, act.nodeId);
+            for (const clonedDescendant of clonedDescendants) {
+              draft.added.set(clonedDescendant.id, act.nodeId);
+            }
+          } else {
+            draft.toolbox.delete(act.nodeId);
+          }
+
+          draft.board.add(act.nodeId);
+        });
+      }
+
+      // if it's not in the board and not in the toolbox, just detach it
+      // TODO: handle defs
+
+      if (node.parent) {
+        return program(state, createDetach(node.id));
+      }
+
+      return state;
+    }
+
+    case ActionKind.MoveNodeToSlot: {
+      state = program(state, createMoveNodeToBoard(act.nodeId));
+
+      const newState = produce(state, draft => {
+        const hole = draft.nodes.get(act.slotId)!;
+
+        // this should be impossible
+        if (!hole.parent) 
+          throw new Error(`Slot ${act.slotId} has no parent!`);
+  
+        const parent = draft.nodes.get(hole.parent)!;
+        const child = draft.nodes.get(act.nodeId)!;
+
+        draft.board.delete(act.nodeId);
+
+        // Cache the hole in the parent, so that we
+        // don't have to create a new hole if they
+        // detach the field later.
+        parent.subexpressions[`${hole.parentField}:hole`] = parent.subexpressions[hole.parentField];
+
+        parent.subexpressions[hole.parentField] = child.id;
+        child.parentField = hole.parentField;
+        child.parent = hole.parent;
+        child.locked = false;
+      });
+
+      markDirty(newState.nodes, act.nodeId);
+
+      return newState;
     }
 
     case ActionKind.Raise: {
@@ -654,6 +688,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
 
       return newState;
     }
+
     case ActionKind.BetaReduce: {
       const queue = [act.topNodeId, act.argNodeId];
       const removedNodes = new Set<number>();
@@ -710,37 +745,6 @@ export function reduct(semantics: Semantics, views, restorePos) {
       });
 
       act.newNodeIds.forEach((id) => markDirty(newState.nodes, id));
-
-      return newState;
-    }
-
-    case ActionKind.FillSlot: {
-      state = program(state, createMoveNodeToBoard(act.childId));
-
-      const newState = produce(state, draft => {
-        const hole = draft.nodes.get(act.holeId)!;
-
-        // this should be impossible
-        if (!hole.parent) 
-          throw new Error(`Slot ${act.holeId} has no parent!`);
-  
-        const parent = draft.nodes.get(hole.parent)!;
-        const child = draft.nodes.get(act.childId)!;
-
-        draft.board.delete(act.childId);
-
-        // Cache the hole in the parent, so that we
-        // don't have to create a new hole if they
-        // detach the field later.
-        parent.subexpressions[`${hole.parentField}:hole`] = parent.subexpressions[hole.parentField];
-
-        parent.subexpressions[hole.parentField] = child.id;
-        child.parentField = hole.parentField;
-        child.parent = hole.parent;
-        child.locked = false;
-      });
-
-      markDirty(newState.nodes, act.childId);
 
       return newState;
     }
@@ -804,6 +808,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
 
       return state;
     }
+
     case ActionKind.Detach: {
       const node = state.nodes.get(act.nodeId)!;
 
@@ -846,12 +851,14 @@ export function reduct(semantics: Semantics, views, restorePos) {
         markDirty(draft.nodes, parentId);
       });
     }
+
     case ActionKind.Victory: {
       return produce(state, draft => {
         draft.board.clear();
         draft.goal.clear();
       });
     }
+
     case ActionKind.Unfade: {
       return state.withMutations((s) => {
         s.set('nodes', s.nodes.withMutations((n) => {
@@ -865,6 +872,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
         );
       });
     }
+
     case ActionKind.Fade: {
       return produce(state, draft => {
         draft[act.source] = act.fadedId;
@@ -877,12 +885,14 @@ export function reduct(semantics: Semantics, views, restorePos) {
       //   );
       // });
     }
+
     case ActionKind.Define: {
       return produce(state, draft => {
         draft.globals.set(act.name, act.id);
         draft.board.delete(act.id);
       });
     }
+
     default: return state;
     }
   }

@@ -1,4 +1,4 @@
-import { fillHole } from '@/reducer/action';
+import { moveNodeToSlot } from '@/reducer/action';
 import { Flat, NodeId } from '@/semantics';
 import { MissingNode } from '@/semantics/defs';
 import cx from 'classnames';
@@ -74,6 +74,6 @@ export const MissingProjectionImpl: FunctionComponent<MissingProjectionProps> =
 export const MissingProjection = connect(
   null, 
   (dispatch, ownProps: MissingProjectionOwnProps) => ({
-    fill: (id: NodeId) => dispatch(fillHole(ownProps.node.id, id))
+    fill: (id: NodeId) => dispatch(moveNodeToSlot(ownProps.node.id, id))
   })
 )(MissingProjectionImpl);

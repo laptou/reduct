@@ -161,10 +161,7 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
  * common to all projections (for example, being dragged, or being locked).
  */
 export const StageProjection = connect(
-  (
-    state: DeepReadonly<GlobalState>, 
-    ownProps: StageProjectionOwnProps
-  ) => {
+  (state: DeepReadonly<GlobalState>, ownProps: StageProjectionOwnProps) => {
     if (ownProps.nodeId) {
       const node = state.program
         .$present
@@ -175,18 +172,14 @@ export const StageProjection = connect(
 
       return { node, sourceId };
     }
+    
     return { node: null, sourceId: null };
   },
-  (
-    dispatch,
-    ownProps
-  ) => {
-    return { 
-      cleanup() { 
-        if (ownProps.nodeId) {
-          dispatch(createCleanup(ownProps.nodeId)); 
-        }
-      } 
-    }
-  }
+  (dispatch, ownProps) => ({ 
+    cleanup() { 
+      if (ownProps.nodeId) {
+        dispatch(createCleanup(ownProps.nodeId)); 
+      }
+    } 
+  })
 )(StageProjectionImpl);

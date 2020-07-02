@@ -39,6 +39,11 @@ export interface RState {
    * Nodes which were removed by the most recent action.
    */
   removed: Set<NodeId>;
+
+  /**
+   * A 'call stack' that keeps track of which nodes are being stepped.
+   */
+  stack: NodeId[];
 }
 
 export interface GlobalState {
