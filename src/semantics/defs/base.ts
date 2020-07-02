@@ -15,7 +15,7 @@ export interface NodeDef<N extends BaseNode> {
      * ``expression`` can be clicked on, for instance, and reaching a
      * ``value`` will stop evaluation!
      */
-    kind: Thunk<[DRF, NodeMap], NodeKind>;
+    kind: Thunk<[DRF, DeepReadonly<NodeMap>], NodeKind>;
 
 
     // TODO: strong type for notches
@@ -154,14 +154,13 @@ export interface NodeDef<N extends BaseNode> {
      * things like evaluation if an expression hole isn't filled, but some
      * expressions, like references-with-holes, don't require that they are
      * filled.
-   *
+     *
      * The function is given the name of a subexpression field and should
      * return true or false.
      */
     substepFilter?: (
-        semantics: Semantics,
-        state: DeepReadonly<RState>,
-        expr: DeepReadonly<Flat<N>>,
-        field: string
+      state: DeepReadonly<RState>,
+      expr: DRF<N>,
+      field: string
     ) => boolean;
 }

@@ -46,7 +46,7 @@ export type DeepReadonly<T> =
  * of its property values will give an error) and flat (the subexpressions
  * property contains node IDs instead of the nodes themselves).
  */
-export type DRF<T extends ReductNode = ReductNode> = DeepReadonly<Flat<T>>;
+export type DRF<T extends BaseNode = ReductNode> = DeepReadonly<Flat<T>>;
 
 /**
  * Returns a version of the node that has no reference to its parent (parent and parentField are set to null).

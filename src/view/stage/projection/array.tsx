@@ -6,7 +6,7 @@ import React, { FunctionComponent } from 'react';
 import { StageProjection } from './base';
 
 interface ArrayProjectionOwnProps {
-    node: DRF<ArrayNode>;
+  node: DRF<ArrayNode>;
 }
 
 export const ArrayProjection: FunctionComponent<ArrayProjectionOwnProps> = 

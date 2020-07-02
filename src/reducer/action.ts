@@ -22,14 +22,17 @@ export enum ActionKind {
 
   MoveNodeToBoard = 'move-node-to-stage',
   MoveNodeToSlot = 'move-node-to-slot',
-  
+
   Cleanup = 'cleanup',
   Eval = 'eval',
   EvalLambda = 'eval-lambda',
   EvalOperator = 'eval-operator',
   EvalConditional = 'eval-conditional',
   EvalNot = 'eval-not',
-  EvalApply = 'eval-apply'
+  EvalApply = 'eval-apply',
+  
+  Execute = 'exec',
+  Step = 'step',
 }
 
 export type ReductAction = 
@@ -37,12 +40,14 @@ export type ReductAction =
   MoveNodeToBoardAction |
   MoveNodeToSlotAction |
   AddNodeToToolboxAction |
-  SmallStepAction |
+  LegacySmallStepAction |
   EvalLambdaAction |
   EvalOperatorAction |
   EvalConditionalAction |
   EvalNotAction |
   EvalApplyAction |
+  StepAction |
+  ExecuteAction |
   CleanupAction;
 
 
@@ -308,6 +313,47 @@ export function createEvalApply(
   };
 }
 
+export interface StepAction {
+  type: ActionKind.Step;
+  targetNodeId: NodeId;
+}
+
+/**
+ * Returns an action which will evaluate one subexpression of the target node,
+ * or if it doesn't have any that need evaluating, the result of evaluating the
+ * target node.
+ *
+ * @param targetNodeId The ID of the node to step.
+ */
+export function createStep(
+  targetNodeId: NodeId
+): StepAction {
+  return {
+    type: ActionKind.Step,
+    targetNodeId
+  };
+}
+
+export interface ExecuteAction {
+  type: ActionKind.Execute;
+  targetNodeId: NodeId;
+}
+
+/**
+ * Returns an action which will evaluate a node as far as possible,
+ * automatically evaluating sub-expressions as necessary.
+ *
+ * @param targetNodeId The ID of the node to execute.
+ */
+export function createExecute(
+  targetNodeId: NodeId
+): StepAction {
+  return {
+    type: ActionKind.Execute,
+    targetNodeId
+  };
+}
+
 export function addGoalItem(newNodeId, newNodes) {
   return {
     type: ActionKind.AddGoalItem,
@@ -333,7 +379,7 @@ export function addBoardItem(newNodeIds, addedNodes) {
   };
 }
 
-export interface SmallStepAction {
+export interface LegacySmallStepAction {
   type: ActionKind.SmallStep;
   topNodeId: NodeId;
   newNodeIds: NodeId[];
@@ -348,7 +394,7 @@ export function smallStep(
   nodeId: NodeId, 
   newNodeIds: Iterable<NodeId>, 
   newNodes: Iterable<ReductNode>
-): SmallStepAction {
+): LegacySmallStepAction {
   return {
     type: ActionKind.SmallStep,
     topNodeId: nodeId,

@@ -1,6 +1,6 @@
-import { dethunk, DRF } from '@/util/helper';
+import { dethunk, DRF, DeepReadonly } from '@/util/helper';
 import { nextId } from '@/util/nodes';
-import { NodeMap } from '.';
+import { NodeMap, BaseNode, ReductNode } from '.';
 import { apply } from './defs/apply';
 import { array } from './defs/array';
 import { autograder } from './defs/autograder';
@@ -16,6 +16,7 @@ import { reference } from './defs/reference';
 import {
   boolean, BoolNode, dynamicVariant, number, string, symbol, unsol, NumberNode, StrNode 
 } from './defs/value';
+import { RState } from '@/reducer/state';
 
 /**
  * Creates a partial node. Helper for "create node" functions to avoid
@@ -66,7 +67,7 @@ export function createStrNode(value: string): StrNode {
  */
 export type NodeKind = 'expression' | 'placeholder' | 'value' | 'statement' | 'syntax';
 
-export function getKindForNode(node: DRF, nodes: NodeMap): NodeKind {
+export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKind {
   switch (node.type) {
   case 'apply': return dethunk(apply.kind, node, nodes);
   case 'autograder': return dethunk(autograder.kind, node, nodes);

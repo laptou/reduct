@@ -35,7 +35,7 @@ function onClick(
 const ConditionalProjectionImpl: FunctionComponent<ConditionalProjectionProps> = 
   (props) => {
     return (
-      <div className='projection conditional' onClick={e => onClick(e, props)}>
+      <div className='projection conditional'>
         <div className='if'>
           <span>if</span>
           <StageProjection nodeId={props.node.subexpressions.condition} />

@@ -1,5 +1,4 @@
 import { NodeId, NodeMap } from '@/semantics';
-import type { ImStack } from '@/util/im';
 import { UndoableState } from './undo';
 
 
@@ -41,9 +40,13 @@ export interface RState {
   removed: Set<NodeId>;
 
   /**
-   * A 'call stack' that keeps track of which nodes are being stepped.
+   * Each item is a 'call stack' that keeps track of which nodes are being
+   * stepped. Multiple call stacks are needed because execution can split into
+   * parallel 'threads'. For example, imagine stepping a function which
+   * evaluates to a vtuple with two elements that need to be stepped further.
+   * Each of these would then have their own call stack.
    */
-  stack: NodeId[];
+  stacks: NodeId[][];
 }
 
 export interface GlobalState {

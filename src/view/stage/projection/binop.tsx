@@ -50,7 +50,7 @@ const BinOpProjectionImpl: FunctionComponent<BinOpProjectionProps> =
     case '+':
     case '-':
       return (
-        <div className='projection binop' onClick={e => onClick(e, props)}>
+        <div className='projection binop'>
           <NumberShape>
             <div className='left'>
               <StageProjection nodeId={props.node.subexpressions.left} />

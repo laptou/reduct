@@ -96,7 +96,7 @@ export const conditional: NodeDef<ConditionalNode> = {
   },
   // Filter to determine which subexpressions to evaluate
   // before stepping the overall expression.
-  substepFilter: (semant, state, expr, field) => field === 'condition',
+  substepFilter: (state, expr, field) => field === 'condition',
   stepPosition: (semant, stage, state, expr) => {
     const nodes = state.nodes;
     const cond = nodes.get(expr.subexpressions.condition).fields.value;

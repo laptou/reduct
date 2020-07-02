@@ -217,7 +217,7 @@ export const apply: NodeDef<ApplyNode> = {
 
     return [expr.id, newNodeIds, addedNodes];
   },
-  substepFilter: (semant, state, expr, field) => {
+  substepFilter: (state, expr, field) => {
     // Don't force evaluation of reference-with-holes that
     // has unfilled holes, so that it can be used in
     // argument position. However, force evaluation if it

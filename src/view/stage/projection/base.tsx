@@ -7,7 +7,8 @@ import React, {
 } from 'react';
 import { connect } from 'react-redux';
 import { getProjectionForNode } from '.';
-import { createCleanup } from '@/reducer/action';
+import { createCleanup, createStep } from '@/reducer/action';
+import { getKindForNode, NodeKind } from '@/semantics/util';
 
 /**
  * Props retrieved from Redux.
@@ -19,6 +20,11 @@ interface StageProjectionStoreProps {
   node: DRF | null;
 
   /**
+   * The kind of node that `node` is.
+   */
+  kind: NodeKind | null;
+
+  /**
    * The ID of the node which created this node.
    */
   sourceId: NodeId | null;
@@ -28,6 +34,11 @@ interface StageProjectionStoreProps {
  * Methods that dispatch Redux actions.
  */
 interface StageProjectionDispatchProps { 
+  /**
+   * Steps this node forward. See StepAction for more info.
+   */
+  step(): void;
+
   /**
    * If this node was scheduled for deletion by a previous action,
    * remove it from the node map.
@@ -85,8 +96,18 @@ function onDragEnd(
     x: Math.max(width / 2, Math.min(boardWidth - width / 2, event.clientX - boardLeft + offset.x)), 
     y: Math.max(height / 2, Math.min(boardHeight - height / 2, event.clientY - boardTop + offset.y)) 
   });
-};
+}
 
+function onClick(
+  event: React.MouseEvent<HTMLDivElement>,
+  props: StageProjectionProps,
+) {
+  if (props.kind === 'expression') {
+    props.step();
+  }
+
+  event.stopPropagation();
+}
 
 const StageProjectionImpl: FunctionComponent<StageProjectionProps> = 
   (props) => {
@@ -140,14 +161,17 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
       // can't drag locked nodes
       && !locked;
 
+    const steppable = props.kind === 'expression';
+
     return (
       <div 
         id={`projection-${props.nodeId}`}
-        className={cx('projection wrapper', { locked, draggable })}
+        className={cx('projection wrapper', { locked, draggable, steppable })}
         draggable={draggable} 
         style={{ left: position.x, top: position.y }}
         onDragStart={e => onDragStart(e, props, setOffset)}
         onDragEnd={e => onDragEnd(e, offset, setPosition)}
+        onClick={e => onClick(e, props)}
       >
         {getProjectionForNode(props.node)}
       </div>
@@ -162,23 +186,32 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
  */
 export const StageProjection = connect(
   (state: DeepReadonly<GlobalState>, ownProps: StageProjectionOwnProps) => {
+    const presentState = state.program.$present;
+
     if (ownProps.nodeId) {
-      const node = state.program
-        .$present
-        .nodes
-        .get(ownProps.nodeId) ?? null;
+      const node = presentState.nodes.get(ownProps.nodeId) ?? null;
 
-      const sourceId = node ? (state.program.$present.added.get(node.id) ?? null) : null;
+      if (!node)
+        return { node: null, kind: null, sourceId: null };
 
-      return { node, sourceId };
+      const kind = getKindForNode(node, presentState.nodes);
+
+      const sourceId = presentState.added.get(node.id) ?? null;
+
+      return { node, kind, sourceId };
     }
     
-    return { node: null, sourceId: null };
+    return { node: null, kind: null, sourceId: null };
   },
   (dispatch, ownProps) => ({ 
     cleanup() { 
       if (ownProps.nodeId) {
         dispatch(createCleanup(ownProps.nodeId)); 
+      }
+    },
+    step() { 
+      if (ownProps.nodeId) {
+        dispatch(createStep(ownProps.nodeId)); 
       }
     } 
   })

@@ -203,7 +203,7 @@ const invocationReference: NodeDef<InvocationNode2> = {
     ];
   },
   // Only care about arguments if partially filled
-  substepFilter: (semant, state, expr, field) => {
+  substepFilter: (state, expr, field) => {
     const params = expr.fields.params;
     if (!params || params.length === 0) {
       // wait, wtf?

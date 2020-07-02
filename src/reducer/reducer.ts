@@ -3,7 +3,9 @@ import {
   BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NumberNode, OpNode, StrNode, NotNode, ApplyNode 
 } from '@/semantics/defs';
 import type { Semantics } from '@/semantics/transform';
-import { createBoolNode, createNumberNode, createStrNode } from '@/semantics/util';
+import {
+  createBoolNode, createNumberNode, createStrNode, getKindForNode 
+} from '@/semantics/util';
 import {
   DRF, withoutParent, withParent, mapIterable 
 } from '@/util/helper';
@@ -15,7 +17,7 @@ import { combineReducers, compose } from 'redux';
 import * as animate from '../gfx/animate';
 import * as gfx from '../gfx/core';
 import {
-  ActionKind, createDetach, ReductAction, createMoveNodeToBoard, createEvalLambda 
+  ActionKind, createDetach, ReductAction, createMoveNodeToBoard, createEvalLambda, createStep, createEvalApply, createEvalOperator, createEvalConditional, createEvalNot 
 } from './action';
 import { MissingNodeError, NotOnBoardError, WrongTypeError } from './errors';
 import { GlobalState, RState } from './state';
@@ -31,7 +33,7 @@ const initialProgram: RState = {
   globals: new Map(),
   added: new Map(),
   removed: new Set(),
-  stack: []
+  stacks: []
 };
 
 
@@ -70,7 +72,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
     case ActionKind.StartLevel: {
       act.nodes.forEach((n) => markDirty(act.nodes, n.id));
       act.toolbox.forEach((n) => markDirty(act.nodes, n));
-      
+
       return {
         nodes: act.nodes,
         goal: act.goal,
@@ -79,7 +81,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
         globals: act.globals,
         added: new Map(mapIterable(act.nodes.keys(), id => [id, null] as const)),
         removed: new Set(),
-        stack: []
+        stacks: []
       };
     }
 
@@ -521,34 +523,91 @@ export function reduct(semantics: Semantics, views, restorePos) {
     }
 
     case ActionKind.MoveNodeToSlot: {
-      state = program(state, createMoveNodeToBoard(act.nodeId));
+      const { slotId, nodeId } = act;
+
+      state = program(state, createMoveNodeToBoard(nodeId));
 
       const newState = produce(state, draft => {
-        const hole = draft.nodes.get(act.slotId)!;
+        const slot = draft.nodes.get(slotId)!;
 
         // this should be impossible
-        if (!hole.parent) 
-          throw new Error(`Slot ${act.slotId} has no parent!`);
+        if (!slot.parent) 
+          throw new Error(`Slot ${slotId} has no parent!`);
   
-        const parent = draft.nodes.get(hole.parent)!;
-        const child = draft.nodes.get(act.nodeId)!;
+        const parent = draft.nodes.get(slot.parent)!;
+        const child = draft.nodes.get(nodeId)!;
 
-        draft.board.delete(act.nodeId);
+        draft.board.delete(nodeId);
 
-        // Cache the hole in the parent, so that we
-        // don't have to create a new hole if they
-        // detach the field later.
-        parent.subexpressions[`${hole.parentField}:hole`] = parent.subexpressions[hole.parentField];
+        // Cache the hole in the parent, so that we don't have to create a new
+        // hole if the user detaches this child later
+        if (!parent.__meta)
+          parent.__meta = {};
 
-        parent.subexpressions[hole.parentField] = child.id;
-        child.parentField = hole.parentField;
-        child.parent = hole.parent;
+        if (!parent.__meta.slots)
+          parent.__meta.slots = {};
+
+        parent.__meta.slots[slot.parentField!] = slotId;
+
+        parent.subexpressions[slot.parentField!] = child.id;
+        child.parentField = slot.parentField;
+        child.parent = slot.parent;
         child.locked = false;
       });
 
       markDirty(newState.nodes, act.nodeId);
 
       return newState;
+    }
+
+    case ActionKind.Step: {
+      const { targetNodeId } = act;
+
+      const targetNode = state.nodes.get(targetNodeId)!;
+      const targetNodeKind = getKindForNode(targetNode, state.nodes);
+
+      if (targetNodeKind !== 'expression') {
+        // TODO: more specific error type
+        throw new Error('This node is not an expression');
+      }
+
+      for (const [name, childId] of Object.entries(targetNode.subexpressions)) {
+        const childNode = state.nodes.get(childId)!;
+        const childNodeKind = getKindForNode(childNode, state.nodes);
+
+        // for conditional nodes, we don't want to step the contents of the if
+        // block or the else block, we just want to evaluate the condition and
+        // then return one of the blocks
+        if (targetNode.type === 'conditional' && name !== 'condition') {
+          continue;
+        }
+
+        // don't evaluate references unless they are being applied
+        if (targetNode.type !== 'apply' && childNode.type === 'reference') {
+          continue;
+        }
+
+        // this is a child node that needs further evaluation, return the result
+        // of stepping it once
+        if (childNodeKind !== 'value' && childNodeKind !== 'syntax') {
+          return program(state, createStep(childId));
+        }
+      }
+
+      // if we are here, all of the child nodes are fully stepped so we should
+      // just step this node
+      switch (targetNode.type) {
+      case 'apply':
+        return program(state, createEvalApply(targetNode.id));
+      case 'binop':
+        return program(state, createEvalOperator(targetNode.id));
+      case 'conditional':
+        return program(state, createEvalConditional(targetNode.id));
+      case 'not':
+        return program(state, createEvalNot(targetNode.id));
+      default:
+        throw new Error(`Cannot step a ${targetNode.type}`);
+      }
     }
 
     case ActionKind.Raise: {
@@ -819,10 +878,10 @@ export function reduct(semantics: Semantics, views, restorePos) {
         draft.board.add(act.nodeId);
         const node = draft.nodes.get(act.nodeId)!;
         const parent = draft.nodes.get(parentId)!;
-        const oldHole = parent.subexpressions[`${node.parentField}:hole`];
+        const oldHole = parent.__meta?.slots[node.parentField!];
         if (oldHole) {
           parent.subexpressions[node.parentField] = oldHole;
-          delete parent.subexpressions[`${node.parentField}:hole`];
+          delete parent.__meta!.slots![`${node.parentField}:hole`];
         } else if (node.parentField.startsWith('notch')) {
           parent.subexpressions[node.parentField] = null;
         } else {
