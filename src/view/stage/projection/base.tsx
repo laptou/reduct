@@ -102,10 +102,9 @@ function onClick(
   event: React.MouseEvent<HTMLDivElement>,
   props: StageProjectionProps,
 ) {
-  if (props.kind === 'expression') {
-    props.step();
-  }
+  if (props.kind !== 'expression') return; 
 
+  props.step();
   event.stopPropagation();
 }
 

@@ -11,6 +11,10 @@
   cursor: grab;
 }
 
+.projection.steppable {
+  cursor: pointer;
+}
+
 .projection, .projection .content {
   display: inline-flex;
   align-items: stretch;
