@@ -213,7 +213,7 @@ export class Semantics {
               result.fields[fieldName] = params[argPointer++];
             }
 
-            const subexprs = dethunk(exprDefinition.subexpressions, this, result);
+            const subexprs = dethunk(exprDefinition.subexpressions, result);
             
             for (const fieldName of subexprs) {
               result.subexpressions[fieldName] = params[argPointer++];

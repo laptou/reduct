@@ -159,6 +159,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
   
             const lambdaParent = draft.nodes.get(lambdaNode.parent)!;
             (lambdaParent.subexpressions as Record<string, NodeId>)[lambdaNode.parentField!] = mappedBody.id;
+            draft.added.set(mappedBody.id, lambdaNode.id);
           } else {
             mappedBody = withoutParent(mappedBody);
 

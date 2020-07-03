@@ -33,16 +33,16 @@ export interface NodeDef<N extends BaseNode> {
      * expressions. For instance, definition syntax might have a
      * subexpression for the body.
      */
-    subexpressions?: Thunk<[Semantics, DeepReadonly<Flat<N>>], Array<keyof N['subexpressions']>>;
+    subexpressions?: Thunk<[DRF<N>], Array<keyof N['subexpressions']>>;
 
     projection: ProjectionDef<N>;
 
-    type?: N['type'] | Thunk<[Semantics, DeepReadonly<RState>, any, DeepReadonly<Flat<N>>], NodeType>;
+    type?: N['type'] | Thunk<[Semantics, DeepReadonly<RState>, any, DRF<N>], NodeType>;
 
     targetable?: (
         semantics: Semantics,
         state: DeepReadonly<RState>,
-        expr: DeepReadonly<Flat<N>>
+        expr: DRF<N>
     ) => boolean;
 
     alwaysTargetable?: boolean;

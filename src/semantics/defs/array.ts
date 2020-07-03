@@ -8,7 +8,7 @@ import { getKindForNode } from '../util';
 // Requires: arr is a hydrated array node or an immutable map for an array node
 function arraySubexprs(arr: DeepReadonly<ArrayNode> | DRF<ArrayNode>) {
   const result = [];
-  for (let i = 0; i < arr.length; i++) {
+  for (let i = 0; i < arr.fields.length; i++) {
     result.push(`elem${i}`);
   }
   return result;

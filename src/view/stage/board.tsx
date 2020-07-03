@@ -84,6 +84,9 @@ const BoardImpl: FunctionComponent<BoardProps> =
         if (!props.board.has(newNode))
           continue;
 
+        if (newPositions.has(newNode))
+          continue;
+
         if (!sourceNode) {
           newPositions.set(newNode, { x: 0, y: 0, source: null });
           continue;
@@ -95,7 +98,18 @@ const BoardImpl: FunctionComponent<BoardProps> =
           continue;
         }
 
-        newPositions.set(newNode, sourceNodePosition);
+        // add random jitter so that new nodes don't appear in exact same location
+        // this will also make it less likely that vtuple nodes will appear directly
+        // on top of each other
+
+        const jitterX = Math.random() * 40 - 20;
+        const jitterY = Math.random() * 40 - 20;
+
+        newPositions.set(newNode, {
+          x: sourceNodePosition.x + jitterX,
+          y: sourceNodePosition.y + jitterY,
+          source: sourceNodePosition.source
+        });
       }
 
       for (const deadNode of props.removed) {
@@ -130,13 +144,9 @@ const BoardImpl: FunctionComponent<BoardProps> =
       if (childRects.size === 0)
         return;
 
-      console.log('re-layouting 3 nodes', childRects);
-
       const newPositions = new Map(positions);
 
       const placedRects = placeRects({ w: boundingRect.width, h: boundingRect.height }, [...childRects.keys()]);
-
-      console.log('re-layouted 3 nodes', placedRects);
 
       for (const [originalRect, placedRect] of placedRects) {
         const { x, y } = placedRect;

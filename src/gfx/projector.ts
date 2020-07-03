@@ -79,7 +79,7 @@ function defaultProjector<N extends ReductNode>(
       options.color = dethunk(projection.color, expr);
     }
 
-    const subExpressionsThunked = dethunk(rootConfig.subExpressions, null, expr);
+    const subExpressionsThunked = dethunk(rootConfig.subExpressions, expr);
     let childrenFunc = (id, state) => {
       const childId = subExpressionsThunked.map((field) => state.nodes.get(id).subexpressions[field]);
       return childId;
