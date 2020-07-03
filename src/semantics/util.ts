@@ -91,6 +91,7 @@ export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKin
   case 'string': return dethunk(string.kind, node, nodes);
   case 'symbol': return dethunk(symbol.kind, node, nodes);
   case 'unsol': return dethunk(unsol.kind, node, nodes);
+  case 'vtuple': return 'expression';
   default: throw new Error(`unknown node of type ${node.type}`);
   }
 }

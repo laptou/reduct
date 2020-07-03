@@ -350,6 +350,28 @@ export function createEvalReference(
   };
 }
 
+export interface EvalInvocationAction {
+  type: ActionKind.EvalReference;
+  referenceNodeId: NodeId;
+  paramNodeId: NodeId;
+}
+
+/**
+ * Returns an action which will evaluate an application node.
+ *
+ * @param referenceNodeId The ID of the node that represents the application.
+ */
+export function createEvalInvocation(
+  referenceNodeId: NodeId, 
+  paramNodeId: NodeId
+): EvalInvocationAction {
+  return {
+    type: ActionKind.EvalReference,
+    referenceNodeId,
+    paramNodeId
+  };
+}
+
 export interface StepAction {
   type: ActionKind.Step;
   targetNodeId: NodeId;

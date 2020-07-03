@@ -1,6 +1,6 @@
 import type { NodeId, NodeMap } from '@/semantics';
 import {
-  BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NumberNode, OpNode, StrNode, NotNode, ApplyNode, InvocationNode as ReferenceNode 
+  BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NumberNode, OpNode, StrNode, NotNode, ApplyNode, ReferenceNode as ReferenceNode 
 } from '@/semantics/defs';
 import type { Semantics } from '@/semantics/transform';
 import {
@@ -148,6 +148,8 @@ export function reduct(semantics: Semantics, views, restorePos) {
           nodes: mappedNodeMap
         }, 
         draft => {
+          draft.added.clear();
+          
           if (lambdaNode.parent) {
             mappedBody = withParent(
               mappedBody, 
@@ -166,9 +168,11 @@ export function reduct(semantics: Semantics, views, restorePos) {
                 subExpr.parent = null;
                 subExpr.parentField = null;
                 draft.board.add(subExprId as NodeId);
+                draft.added.set(subExprId as NodeId, lambdaNode.id);
               }
             } else {
               draft.board.add(mappedBody.id);
+              draft.added.set(mappedBody.id, lambdaNode.id);
             }
           }
 
@@ -179,8 +183,6 @@ export function reduct(semantics: Semantics, views, restorePos) {
           draft.board.delete(paramNode.id);
           draft.toolbox.delete(paramNode.id);
 
-          draft.added.clear();
-          draft.added.set(mappedBody.id, lambdaNode.id);
 
           // lambda node is no longer needed, eliminate it
           draft.board.delete(lambdaNode.id);
@@ -313,6 +315,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
         draft.board.delete(leftNode.id);
         draft.board.delete(rightNode.id);
 
+        draft.added.clear();
         draft.added.set(resultNode.id, binOpNode.id);
 
         if (binOpNode.parent) {
@@ -447,6 +450,14 @@ export function reduct(semantics: Semantics, views, restorePos) {
 
       return produce(state, draft => {
         draft.board.delete(applyNode.id);
+
+        // set the source of the nodes to the application node instead of the
+        // lambda node
+        for (const [addedNode, sourceNode] of draft.added) {
+          if (sourceNode === calleeNode.id) {
+            draft.added.set(addedNode, applyNode.id);
+          }
+        }
         
         const resultNode = draft.nodes.get(resultNodeId)!;
 

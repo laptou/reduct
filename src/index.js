@@ -193,7 +193,10 @@ function initialize() {
     return stg.findSafePosition(x, y, w, h);
   });
 
-  const extCompose = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ serialize: true }) ?? compose;
+  const extCompose = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ 
+    serialize: true,
+    actionsBlacklist: [action.ActionKind.Cleanup]
+  }) ?? compose;
     
   store = createStore(
     reduct.reducer,

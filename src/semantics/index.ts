@@ -18,8 +18,8 @@ import {
   UnsolNode,
   DynVarNode,
   SymbolNode,
-  InvocationNode,
-  InvocationNode2
+  ReferenceNode,
+  InvocationNode
 } from './defs';
 import { VTupleNode } from './transform';
 import { DeepReadonly } from '@/util/helper';
@@ -109,8 +109,8 @@ export type ReductNode =
     UnsolNode |
     SymbolNode |
     DynVarNode |
+    ReferenceNode |
     InvocationNode |
-    InvocationNode2 |
     VTupleNode |
     MissingNode;
 
@@ -134,7 +134,7 @@ export type FlatReductNode =
   Flat<UnsolNode> |
   Flat<SymbolNode> |
   Flat<DynVarNode> |
+  Flat<ReferenceNode> |
   Flat<InvocationNode> |
-  Flat<InvocationNode2> |
   Flat<VTupleNode> |
   Flat<MissingNode>;

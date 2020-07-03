@@ -3,8 +3,10 @@
   margin-left: 0.125rem;
   font-weight: bold;
   font-family: 'IBM Plex Mono', monospace;
+  transform: var(--transform);
   transform-origin: center center;
   user-select: none;
+  --transform: scale(1);
 }
 
 .projection.draggable {
@@ -22,11 +24,12 @@
 }
 
 .projection-enter {
-  transform: scale(0);
+  z-index: 1;
+  --transform: scale(0);
 }
 
 .projection-enter-active {
-  transform: scale(1);
+  --transform: scale(1);
   transition: transform 500ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -61,5 +64,5 @@
 
 #reduct-board > .projection {
   position: absolute;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) var(--transform, scale(1));
 }

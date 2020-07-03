@@ -1,12 +1,12 @@
 import { NodeId } from '@/semantics';
-import { InvocationNode, InvocationNode2 } from '@/semantics/defs';
+import { ReferenceNode, InvocationNode } from '@/semantics/defs';
 import { DRF } from '@/util/helper';
 import '@resources/style/react/projection/reference.scss';
 import React, { FunctionComponent } from 'react';
 import { StageProjection } from './base';
 
 interface ReferenceProjectionOwnProps {
-  node: DRF<InvocationNode | InvocationNode2>;
+  node: DRF<ReferenceNode | InvocationNode>;
 }
 
 /**
