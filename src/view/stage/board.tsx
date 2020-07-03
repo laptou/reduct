@@ -3,11 +3,12 @@ import { GlobalState } from '@/reducer/state';
 import { NodeId } from '@/semantics';
 import { DeepReadonly } from '@/util/helper';
 import React, {
-  FunctionComponent, RefObject, useRef, useState, useEffect 
+  FunctionComponent, RefObject, useRef, useState, useEffect, useLayoutEffect 
 } from 'react';
 import { connect } from 'react-redux';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { StageProjection } from './projection/base';
+import { placeRects } from '../layout';
 
 interface BoardStoreProps {
   board: DeepReadonly<Set<NodeId>>;
@@ -21,7 +22,9 @@ interface BoardDispatchProps {
 
 type BoardProps = BoardStoreProps & BoardDispatchProps;
 
-type NodePos = { x: number; y: number };
+// source prop indicates whether this node was moved by the user
+// if it was, then we shouldn't automatically reposition it
+type NodePos = { x: number; y: number; source: 'user' | 'auto' | null };
 
 function onDragOver(event: React.DragEvent<HTMLDivElement>) {
   if (!event.dataTransfer.types.includes('application/reduct-node')) return;
@@ -63,13 +66,13 @@ function onDrop(
   const y = Math.max(0, Math.min(boardHeight, event.clientY - boardTop + offset.y));
   
   const newPositions = new Map(positions);
-  newPositions.set(nodeId, { x, y });
+  newPositions.set(nodeId, { x, y, source: 'user' });
   setPositions(newPositions);
 }
 
 const BoardImpl: FunctionComponent<BoardProps> = 
   (props) => {
-    const board = useRef(null);
+    const board = useRef<HTMLDivElement>(null);
     const [positions, setPositions] = useState(new Map<NodeId, NodePos>());
 
     // newly added nodes should have same position as their source nodes
@@ -78,9 +81,19 @@ const BoardImpl: FunctionComponent<BoardProps> =
       const newPositions = new Map(positions);
 
       for (const [newNode, sourceNode] of props.added) {
-        if (!sourceNode) continue;
+        if (!props.board.has(newNode))
+          continue;
+
+        if (!sourceNode) {
+          newPositions.set(newNode, { x: 0, y: 0, source: null });
+          continue;
+        }
+        
         const sourceNodePosition = newPositions.get(sourceNode);
-        if (!sourceNodePosition) continue;
+        if (!sourceNodePosition) {
+          newPositions.set(newNode, { x: 0, y: 0, source: null });
+          continue;
+        }
 
         newPositions.set(newNode, sourceNodePosition);
       }
@@ -88,9 +101,51 @@ const BoardImpl: FunctionComponent<BoardProps> =
       for (const deadNode of props.removed) {
         newPositions.delete(deadNode);
       }
-
       setPositions(newPositions);
     }, [props.added, props.removed]);
+
+    useLayoutEffect(() => {
+      const boardEl = board.current!;
+      // auto-reposition any nodes that haven't been moved by the user yet
+      const boundingRect = boardEl.getBoundingClientRect();
+      const childRects = new Map<{ w: number; h: number }, NodeId>();
+
+      const padding = 10;
+
+      for (const childEl of boardEl.children) {
+        const nodeId = parseInt(childEl.getAttribute('data-node-id')!);
+        const nodePosition = positions.get(nodeId)!;
+
+        if (!nodePosition || nodePosition.source !== null)
+          continue;
+
+        childRects.set(
+          {
+            w: childEl.clientWidth + padding + padding,
+            h: childEl.clientHeight + padding + padding
+          }, 
+          nodeId);
+      }
+
+      if (childRects.size === 0)
+        return;
+
+      console.log('re-layouting 3 nodes', childRects);
+
+      const newPositions = new Map(positions);
+
+      const placedRects = placeRects({ w: boundingRect.width, h: boundingRect.height }, [...childRects.keys()]);
+
+      console.log('re-layouted 3 nodes', placedRects);
+
+      for (const [originalRect, placedRect] of placedRects) {
+        const { x, y } = placedRect;
+        const id = childRects.get(originalRect)!;
+        newPositions.set(id, { x: x + padding, y: y + padding, source: 'auto' });
+      }
+
+      setPositions(newPositions);
+    });
 
     // exit transitions don't really work b/c nodes are often removed from the
     // node map and from the board at the same time TODO: separate removing from

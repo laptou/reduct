@@ -1,14 +1,12 @@
+import { createCleanup, createStep } from '@/reducer/action';
 import { GlobalState } from '@/reducer/state';
 import { NodeId } from '@/semantics';
+import { getKindForNode, NodeKind } from '@/semantics/util';
 import { DeepReadonly, DRF } from '@/util/helper';
 import cx from 'classnames';
-import React, {
-  FunctionComponent, useEffect, useState 
-} from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { getProjectionForNode } from '.';
-import { createCleanup, createStep } from '@/reducer/action';
-import { getKindForNode, NodeKind } from '@/semantics/util';
 
 /**
  * Props retrieved from Redux.
@@ -79,13 +77,6 @@ function onDragStart(
   event.stopPropagation();
 }
 
-function onDragEnd(
-  event: React.DragEvent<HTMLDivElement>,
-  offset: { x: number; y: number }
-) {
-  
-}
-
 function onClick(
   event: React.MouseEvent<HTMLDivElement>,
   props: StageProjectionProps,
@@ -98,9 +89,6 @@ function onClick(
 
 const StageProjectionImpl: FunctionComponent<StageProjectionProps> = 
   (props) => {
-    // offset from the center where this node was grabbed at the start of a drag
-    const [offset, setOffset] = useState({ x: 0, y: 0 });
-
     // run when this component is unmounted
     useEffect(() => () => props.cleanup(), []);
 
@@ -126,10 +114,10 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
       <div 
         id={`projection-${props.nodeId}`}
         className={cx('projection wrapper', { locked, draggable, steppable })}
-        draggable={draggable} 
-        style={position ? { left: position.x + offset.x, top: position.y + offset.y } : {}}
-        onDragStart={e => onDragStart(e, props, setOffset)}
-        onDragEnd={e => onDragEnd(e, offset)}
+        draggable={draggable}
+        data-node-id={props.nodeId}
+        style={{ left: position?.x, top: position?.y }}
+        onDragStart={e => onDragStart(e, props)}
         onClick={e => onClick(e, props)}
       >
         {getProjectionForNode(props.node)}
