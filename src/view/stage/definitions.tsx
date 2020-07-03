@@ -4,28 +4,42 @@ import { DeepReadonly } from '@/util/helper';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { StageProjection } from './projection/base';
+import { createMoveNodeToDefs } from '@/reducer/action';
 
 interface DefinitionsStoreProps {
   nodeIds: NodeId[];
 }
 
-type DefinitionsProps = DefinitionsStoreProps;
+interface DefinitionsDispatchProps {
+  moveNodeToDefs(id: NodeId): void;
+}
+
+type DefinitionsProps = 
+  DefinitionsStoreProps & 
+  DefinitionsDispatchProps;
 
 function onDragOver(event: React.DragEvent<HTMLDivElement>) {
   if (!event.dataTransfer.types.includes('application/reduct-node')) return;
   
-  // dropping in the toolbox is not allowed
-  event.dataTransfer.dropEffect = 'none';
+  event.dataTransfer.dropEffect = 'move';
   
   event.preventDefault();
   event.stopPropagation();
 }
 
-function onDrop(event: React.DragEvent<HTMLDivElement>) {
+function onDrop(
+  event: React.DragEvent<HTMLDivElement>,
+  props: DefinitionsProps
+) {
   const nodeId = parseInt(event.dataTransfer.getData('application/reduct-node'));
   if (!nodeId || isNaN(nodeId)) return;
 
-  // do nothing b/c dropping in the toolbox is not allowed
+  try {
+    props.moveNodeToDefs(nodeId);
+  } catch (e) {
+    // TODO: show toast to user
+    console.warn('could not add node to defs', e);
+  }
 
   event.preventDefault();
   event.stopPropagation();
@@ -34,7 +48,7 @@ function onDrop(event: React.DragEvent<HTMLDivElement>) {
 const DefinitionsImpl: FunctionComponent<DefinitionsProps> = 
   (props) => {
     return (
-      <div id='reduct-definitions' onDragOver={onDragOver} onDrop={onDrop}>
+      <div id='reduct-definitions' onDragOver={onDragOver} onDrop={e => onDrop(e, props)}>
         {props.nodeIds.map(nodeId => <StageProjection nodeId={nodeId} key={nodeId} />)}
       </div>
     );
@@ -45,5 +59,10 @@ export const Definitions = connect(
     // TODO: only show globals which are referenced by something on the board
     // or in the toolbox
     nodeIds: Array.from(state.program.$present.globals.values())
+  }),
+  (dispatch) => ({
+    moveNodeToDefs(id: NodeId) {
+      dispatch(createMoveNodeToDefs(id));
+    }
   })
 )(DefinitionsImpl);

@@ -11,5 +11,5 @@ export type { NotNode } from './not';
 export type {
   StrNode, UnsolNode, NumberNode, BoolNode, SymbolNode, DynVarNode
 } from './value';
-export type { InvocationNode, InvocationNode2 } from './reference';
+export type { ReferenceNode as InvocationNode, InvocationNode as InvocationNode2 } from './reference';
 export type { MissingNode } from './missing';

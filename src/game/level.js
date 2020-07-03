@@ -1,5 +1,4 @@
-import * as immutable from 'immutable';
-
+import { produce } from 'immer';
 import * as progression from './progression';
 import * as action from '../reducer/action';
 import * as gfx from '../gfx/core';
@@ -138,9 +137,9 @@ export function startLevel(description, parse, store, stage) {
         const flattened = stage.semantics.flatten(parse(descr, macros));
         const topNode = flattened[0].id;
 
-        const tempNodes = state.nodes.withMutations((n) => {
+        const tempNodes = produce(state.nodes, draft => {
           for (const node of flattened) {
-            n.set(node.id, immutable.Map(node));
+            draft.set(node.id, node);
           }
         });
 
@@ -148,6 +147,7 @@ export function startLevel(description, parse, store, stage) {
           const node = tempNodes.get(e.id);
           stage.views[e.id] = stage.semantics.project(stage, tempNodes, node);
         });
+
         stage.views[topNode].pos = stage.views[nodeId].pos;
 
         stage.views[topNode] = gfx.custom.fadeMe(stage.views[topNode], (tween) => {
@@ -156,13 +156,14 @@ export function startLevel(description, parse, store, stage) {
         });
 
         store.dispatch(action.unfade(
-          source, nodeId, topNode, flattened.map((e) => immutable.Map(e))
+          source, nodeId, topNode, flattened
         ));
       });
     }
   };
-  state.board.forEach(checkFade('board'));
-  state.toolbox.forEach(checkFade('toolbox'));
+
+  [...state.board].forEach(checkFade('board'));
+  [...state.toolbox].forEach(checkFade('toolbox'));
 
   // "Inflate" animation.
   let i = 0;

@@ -636,7 +636,7 @@ export default class Stage extends BaseStage {
     }
 
     const name = nodes.get(selectedNode).name;
-    this.store.dispatch(action.define(name, selectedNode));
+    this.store.dispatch(action.createMoveNodeToDefs(selectedNode));
     this.sidebar.addGlobal(this.getState(), name);
     Audio.play('playcard');
   }

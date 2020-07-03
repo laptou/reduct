@@ -314,8 +314,8 @@ class Logger {
             } else if (act.type === ActionKind.Fade) {
                 this.log('fade', {
                     item: saveNode(act.fadedId),
-                    fromLevel: beforeState.getIn(['nodes', act.unfadedId, 'fadeLevel']),
-                    toLevel: afterState.getIn(['nodes', act.fadedId, 'fadeLevel'])
+                    fromLevel: beforeState.nodes.get(act.unfadedId).fadeLevel,
+                    toLevel: beforeState.nodes.get(act.fadedId).fadeLevel
                 });
             } else if (act.type === ActionKind.Unfold) {
                 this.log('unfold', {
@@ -324,7 +324,7 @@ class Logger {
                     item: saveNode(act.nodeId),
                     replacement: saveNode(act.newNodeId)
                 });
-            } else if (act.type === ActionKind.Define) {
+            } else if (act.type === ActionKind.MoveNodeToDefs) {
                 this.log('define', {
                     name: act.name,
                     body: saveNode(act.id)

@@ -13,7 +13,6 @@ export enum ActionKind {
   Victory = 'victory',
   Fade = 'fade',
   Unfade = 'unfade',
-  Define = 'define',
   AddToolboxItem = 'add-toolbox-item',
   AddBoardItem = 'add-board-item',
   AddGoalItem = 'add-goal-item',
@@ -22,6 +21,7 @@ export enum ActionKind {
 
   MoveNodeToBoard = 'move-node-to-stage',
   MoveNodeToSlot = 'move-node-to-slot',
+  MoveNodeToDefs = 'move-node-to-defs',
 
   Cleanup = 'cleanup',
   Eval = 'eval',
@@ -30,7 +30,8 @@ export enum ActionKind {
   EvalConditional = 'eval-conditional',
   EvalNot = 'eval-not',
   EvalApply = 'eval-apply',
-  
+  EvalReference = 'eval-reference',
+
   Execute = 'exec',
   Step = 'step',
 }
@@ -39,6 +40,7 @@ export type ReductAction =
   StartLevelAction |
   MoveNodeToBoardAction |
   MoveNodeToSlotAction |
+  MoveNodeToDefsAction |
   AddNodeToToolboxAction |
   LegacySmallStepAction |
   EvalLambdaAction |
@@ -46,6 +48,7 @@ export type ReductAction =
   EvalConditionalAction |
   EvalNotAction |
   EvalApplyAction |
+  EvalReferenceAction |
   StepAction |
   ExecuteAction |
   CleanupAction;
@@ -80,6 +83,21 @@ export interface MoveNodeToBoardAction {
  */
 export function createMoveNodeToBoard(nodeId: NodeId): MoveNodeToBoardAction {
   return { type: ActionKind.MoveNodeToBoard, nodeId };
+}
+
+export interface MoveNodeToDefsAction {
+  type: ActionKind.MoveNodeToDefs;
+  nodeId: NodeId;
+}
+
+/**
+ * Create a definition in the global scope based on the given node.
+ */
+export function createMoveNodeToDefs(nodeId: NodeId): MoveNodeToDefsAction {
+  return {
+    type: ActionKind.MoveNodeToDefs,
+    nodeId
+  };
 }
 
 export interface MoveNodeToSlotAction {
@@ -313,6 +331,25 @@ export function createEvalApply(
   };
 }
 
+export interface EvalReferenceAction {
+  type: ActionKind.EvalReference;
+  referenceNodeId: NodeId;
+}
+
+/**
+ * Returns an action which will evaluate an application node.
+ *
+ * @param referenceNodeId The ID of the node that represents the application.
+ */
+export function createEvalReference(
+  referenceNodeId: NodeId, 
+): EvalReferenceAction {
+  return {
+    type: ActionKind.EvalReference,
+    referenceNodeId
+  };
+}
+
 export interface StepAction {
   type: ActionKind.Step;
   targetNodeId: NodeId;
@@ -347,7 +384,7 @@ export interface ExecuteAction {
  */
 export function createExecute(
   targetNodeId: NodeId
-): StepAction {
+): ExecuteAction {
   return {
     type: ActionKind.Execute,
     targetNodeId
@@ -527,16 +564,5 @@ export function fade(source, unfadedId, fadedId) {
     source,
     unfadedId,
     fadedId
-  };
-}
-
-/**
- * Define the given name as the given node ID.
- */
-export function define(name, id) {
-  return {
-    type: ActionKind.Define,
-    name,
-    id
   };
 }

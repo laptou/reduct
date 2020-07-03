@@ -2,12 +2,13 @@ import * as core from '../core';
 import { builtins, genericValidate } from './builtins';
 import { BaseNode, NodeId } from '..';
 import { NodeDef } from './base';
-import { withoutParent } from '@/util/helper';
+import { withoutParent, DRF } from '@/util/helper';
+import { getKindForNode } from '../util';
 
 /**
  * A node which represents a reference to a name.
  */
-export interface InvocationNode extends BaseNode {
+export interface ReferenceNode extends BaseNode {
   type: 'reference';
   fields: { name: string };
 }
@@ -15,13 +16,14 @@ export interface InvocationNode extends BaseNode {
 /**
  * A node which represents a function call.
  */
-export interface InvocationNode2 extends InvocationNode {
+export interface InvocationNode extends BaseNode {
+  type: 'reference';
   // if the invocation has a parameter 'f', the node will have a property 'arg_f'
   // TODO refactor that
   fields: { name: string; params: string[] } & Record<string, NodeId>;
 }
 
-const baseReference: NodeDef<InvocationNode> = {
+const baseReference: NodeDef<ReferenceNode> = {
   kind: 'expression',
   fields: ['name'],
   subexpressions: [],
@@ -114,7 +116,7 @@ const baseReference: NodeDef<InvocationNode> = {
   }
 };
 
-const invocationReference: NodeDef<InvocationNode2> = {
+const invocationReference: NodeDef<InvocationNode> = {
   ...baseReference,
   fields: ['name', 'params'],
   subexpressions: (semant, expr) => {
@@ -128,8 +130,7 @@ const invocationReference: NodeDef<InvocationNode2> = {
    *  f • • • •   : topexpr (that is, treat as value if not at top)
    *  f • a • •   : expr (could be a topexpr)
    */
-  kind: (ref, semant, state) => {
-    const nodes = state.nodes;
+  kind: (ref: DRF<InvocationNode>, nodes) => {
     const params = ref.fields.params;
     const nparams = params ? params.length : 0;
     const builtin = builtins.has(ref.fields.name);
@@ -141,7 +142,7 @@ const invocationReference: NodeDef<InvocationNode2> = {
       const hole = (arg.type == 'missing');
       incomplete |= hole;
       args |= !hole;
-      if (!incomplete && semant.kind(state, arg) === 'expression') {
+      if (!incomplete && getKindForNode(arg, nodes) === 'expression') {
         return 'expression';
       }
       if (incomplete && !hole) return 'expression'; // topexpr?

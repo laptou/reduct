@@ -1,6 +1,6 @@
 import type { NodeId, NodeMap } from '@/semantics';
 import {
-  BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NumberNode, OpNode, StrNode, NotNode, ApplyNode 
+  BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NumberNode, OpNode, StrNode, NotNode, ApplyNode, InvocationNode as ReferenceNode 
 } from '@/semantics/defs';
 import type { Semantics } from '@/semantics/transform';
 import {
@@ -17,7 +17,7 @@ import { combineReducers, compose } from 'redux';
 import * as animate from '../gfx/animate';
 import * as gfx from '../gfx/core';
 import {
-  ActionKind, createDetach, ReductAction, createMoveNodeToBoard, createEvalLambda, createStep, createEvalApply, createEvalOperator, createEvalConditional, createEvalNot 
+  ActionKind, createDetach, ReductAction, createMoveNodeToBoard, createEvalLambda, createStep, createEvalApply, createEvalOperator, createEvalConditional, createEvalNot, createEvalReference 
 } from './action';
 import { MissingNodeError, NotOnBoardError, WrongTypeError } from './errors';
 import { GlobalState, RState } from './state';
@@ -466,6 +466,54 @@ export function reduct(semantics: Semantics, views, restorePos) {
       });
     }
 
+    case ActionKind.EvalReference: {
+      const { referenceNodeId } = act;
+
+      if (!state.board.has(getRootForNode(referenceNodeId, state.nodes).id))
+        throw new NotOnBoardError(referenceNodeId);
+
+      const referenceNode = state.nodes.get(referenceNodeId) as DRF<ReferenceNode>;
+      const targetId = state.globals.get(referenceNode.fields.name);
+
+      if (typeof targetId === 'undefined')
+        throw new Error(`The name ${referenceNode.fields.name} is not defined in this scope`);
+
+      const targetNode = state.nodes.get(targetId)!;
+
+      if (targetNode.type !== 'define')
+        throw new WrongTypeError(targetId, 'define', targetNode.type);
+
+      const [clonedNode, , newNodeMap] = 
+        cloneNodeDeep(targetNode.subexpressions.body, state.nodes);
+
+      state = { ...state, nodes: newNodeMap };
+      
+      return produce(state, draft => {
+        draft.nodes = castDraft(newNodeMap);
+        draft.board.delete(referenceNode.id);
+        
+        // retrieve inside of produce() so we get a mutable draft object
+        const resultNode = draft.nodes.get(clonedNode.id)!;
+
+        if (referenceNode.parent) {
+          const parentNode = draft.nodes.get(referenceNode.parent)!;
+          parentNode.subexpressions[referenceNode.parentField!] = resultNode.id;
+          resultNode.parent = parentNode.id;
+          resultNode.parentField = referenceNode.parentField;
+        } else {
+          resultNode.parent = null;
+          resultNode.parentField = null;
+          draft.board.add(resultNode.id);
+        }
+
+        draft.added.clear();
+        draft.added.set(resultNode.id, referenceNode.id);
+
+        // schedule for cleanup
+        draft.removed.add(referenceNode.id);
+      });
+    }
+
     case ActionKind.Cleanup: {
       const { target } = act;
       if (!state.removed.has(target)) return state;
@@ -560,6 +608,20 @@ export function reduct(semantics: Semantics, views, restorePos) {
       return newState;
     }
 
+    case ActionKind.MoveNodeToDefs: {
+      const { nodeId } = act;
+
+      const defNode = state.nodes.get(nodeId)!;
+
+      if (defNode.type !== 'define')
+        throw new WrongTypeError(nodeId, 'define', defNode.type);
+
+      return produce(state, draft => {
+        draft.globals.set(defNode.fields.name, nodeId);
+        draft.board.delete(nodeId);
+      });
+    }
+
     case ActionKind.Step: {
       const { targetNodeId } = act;
 
@@ -605,6 +667,8 @@ export function reduct(semantics: Semantics, views, restorePos) {
         return program(state, createEvalConditional(targetNode.id));
       case 'not':
         return program(state, createEvalNot(targetNode.id));
+      case 'reference':
+        return program(state, createEvalReference(targetNode.id));
       default:
         throw new Error(`Cannot step a ${targetNode.type}`);
       }
@@ -919,22 +983,20 @@ export function reduct(semantics: Semantics, views, restorePos) {
     }
 
     case ActionKind.Unfade: {
-      return state.withMutations((s) => {
-        s.set('nodes', s.nodes.withMutations((n) => {
-          for (const newNode of act.addedNodes) {
-            n.set(newNode.id, newNode);
-          }
-        }));
-        s.set(
-          act.source,
-          s.get(act.source).map((n) => (n === act.nodeId ? act.newNodeId : n))
-        );
+      return produce(state, (draft) => {
+        for (const newNode of act.addedNodes) {
+          draft.nodes.set(newNode.id, newNode);
+        }
+
+        draft[act.source].delete(act.nodeId);
+        draft[act.source].add(act.newNodeId);
       });
     }
 
     case ActionKind.Fade: {
       return produce(state, draft => {
-        draft[act.source] = act.fadedId;
+        draft[act.source].delete(act.unfadedId);
+        draft[act.source].add(act.fadedId);
       });
 
       // return state.withMutations((s) => {
@@ -943,13 +1005,6 @@ export function reduct(semantics: Semantics, views, restorePos) {
       //     s.get(act.source).map((n) => (n === act.unfadedId ? act.fadedId : n))
       //   );
       // });
-    }
-
-    case ActionKind.Define: {
-      return produce(state, draft => {
-        draft.globals.set(act.name, act.id);
-        draft.board.delete(act.id);
-      });
     }
 
     default: return state;

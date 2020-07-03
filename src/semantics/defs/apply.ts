@@ -3,13 +3,13 @@ import * as animate from '../../gfx/animate';
 import * as gfx from '../../gfx/core';
 import * as fx from '../../gfx/fx';
 import type { NodeDef } from './base';
-import { InvocationNode } from './reference';
+import { ReferenceNode } from './reference';
 
 export interface ApplyNode extends BaseNode {
   type: 'apply';
 
   subexpressions: {
-    callee: InvocationNode;
+    callee: ReferenceNode;
     argument: ReductNode;
   };
 }

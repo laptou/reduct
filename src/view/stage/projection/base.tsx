@@ -23,11 +23,6 @@ interface StageProjectionStoreProps {
    * The kind of node that `node` is.
    */
   kind: NodeKind | null;
-
-  /**
-   * The ID of the node which created this node.
-   */
-  sourceId: NodeId | null;
 }
 
 /**
@@ -54,6 +49,8 @@ interface StageProjectionOwnProps {
    * The ID of the node to display in this projection.
    */
   nodeId: NodeId | null;
+
+  position?: { x: number; y: number };
 }
 
 type StageProjectionProps = 
@@ -63,8 +60,7 @@ type StageProjectionProps =
 
 function onDragStart(
   event: React.DragEvent<HTMLDivElement>,
-  props: StageProjectionProps,
-  setOffset: (off: { x: number; y: number }) => void
+  props: StageProjectionProps
 ) {
   if (!props.nodeId) return;
 
@@ -75,27 +71,19 @@ function onDragStart(
   const {
     top, left, width, height 
   } = event.currentTarget.getBoundingClientRect();
-  setOffset({ x: left - event.clientX + width / 2, y: top  - event.clientY + height / 2 });
+  const offset = { x: left - event.clientX + width / 2, y: top  - event.clientY + height / 2 };
   
+  event.dataTransfer.setData('application/reduct-node-offset', JSON.stringify(offset));
+
   // stop parent projections from hijacking the drag
   event.stopPropagation();
 }
 
 function onDragEnd(
   event: React.DragEvent<HTMLDivElement>,
-  offset: { x: number; y: number },
-  setPosition: (pos: { x: number; y: number }) => void
+  offset: { x: number; y: number }
 ) {
-  const board = document.getElementById('reduct-board')!;
-  const {
-    top: boardTop, left: boardLeft, height: boardHeight, width: boardWidth 
-  } = board.getBoundingClientRect();
-  const { height, width } = event.currentTarget.getBoundingClientRect();
-
-  setPosition({
-    x: Math.max(width / 2, Math.min(boardWidth - width / 2, event.clientX - boardLeft + offset.x)), 
-    y: Math.max(height / 2, Math.min(boardHeight - height / 2, event.clientY - boardTop + offset.y)) 
-  });
+  
 }
 
 function onClick(
@@ -113,63 +101,35 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
     // offset from the center where this node was grabbed at the start of a drag
     const [offset, setOffset] = useState({ x: 0, y: 0 });
 
-    // position of this node on the board; has no effect if the node is not
-    // directly on the board
-    const [position, setPosition] = useState({ x: 0, y: 0 });
-
-    // run when node changes
-    useEffect(() => {
-      if (props.sourceId) {
-        // this node was created by another node, position this node on top of
-        // its source node
-
-        const board = document.getElementById('reduct-board')!;
-        const sourceProjection = document.getElementById(`projection-${props.sourceId}`);
-        const thisProjection = document.getElementById(`projection-${props.nodeId}`);
-
-        if (!sourceProjection || !thisProjection) return;
-
-        const { top: boardTop, left: boardLeft } = board.getBoundingClientRect();
-        const {
-          top: srcTop, left: srcLeft, width: srcWidth, height: srcHeight 
-        } = sourceProjection.getBoundingClientRect();
-
-        setPosition({ 
-          x: srcLeft + srcWidth / 2 - boardLeft, 
-          y: srcTop + srcHeight / 2 - boardTop 
-        });
-      }
-    }, [props.nodeId]);
-
     // run when this component is unmounted
-    useEffect(() => () => {
-      props.cleanup();
-    }, []);
+    useEffect(() => () => props.cleanup(), []);
 
     if (!props.node) {
       return null;
     }
 
+    const { position, node, kind } = props;
+
     // top level nodes (nodes w/o parents) should not be considered locked
     // TODO: don't mark top level nodes as locked
-    const locked = props.node.parent ? props.node.locked : false;
+    const locked = node.parent ? node.locked : false;
 
     const draggable = 
       // can't drag slots
-      props.node.type !== 'missing' 
+      node.type !== 'missing' 
       // can't drag locked nodes
       && !locked;
 
-    const steppable = props.kind === 'expression';
+    const steppable = kind === 'expression';
 
     return (
       <div 
         id={`projection-${props.nodeId}`}
         className={cx('projection wrapper', { locked, draggable, steppable })}
         draggable={draggable} 
-        style={{ left: position.x, top: position.y }}
+        style={position ? { left: position.x + offset.x, top: position.y + offset.y } : {}}
         onDragStart={e => onDragStart(e, props, setOffset)}
-        onDragEnd={e => onDragEnd(e, offset, setPosition)}
+        onDragEnd={e => onDragEnd(e, offset)}
         onClick={e => onClick(e, props)}
       >
         {getProjectionForNode(props.node)}
@@ -195,12 +155,10 @@ export const StageProjection = connect(
 
       const kind = getKindForNode(node, presentState.nodes);
 
-      const sourceId = presentState.added.get(node.id) ?? null;
-
-      return { node, kind, sourceId };
+      return { node, kind };
     }
     
-    return { node: null, kind: null, sourceId: null };
+    return { node: null, kind: null };
   },
   (dispatch, ownProps) => ({ 
     cleanup() { 

@@ -30,6 +30,7 @@ import * as ajax from './util/ajax';
 import { enableMapSet, enablePatches } from 'immer';
 import { initReactApp } from './view';
 import BaseStage from './stage/basestage';
+import { findNodesDeep } from './util/nodes';
 
 enableMapSet();
 enablePatches();
@@ -239,14 +240,17 @@ function initialize() {
   store.subscribe(() => {
     const newState = store.getState();
     const newPresent = newState.program.$present;
-    const newNodesMap = newPresent.added;
+    const addedNodesMap = newPresent.added;
 
     // TODO: remove this when stage renderer is retired
     // project nodes that were created inside of the reducer
-    if (newNodesMap) {
-      for (const newNodeId of newNodesMap.keys()) {
-        if (newNodeId in stg.views) continue;
-        stg.views[newNodeId] = stg.semantics.project(stg, newPresent.nodes, newPresent.nodes.get(newNodeId));
+    if (addedNodesMap) {
+      for (const addedRootNodeId of addedNodesMap.keys()) {
+        const descendants = findNodesDeep(addedRootNodeId, newPresent.nodes, () => true);
+        for (const descendant of descendants) {
+          if (descendant.id in stg.views) continue;
+          stg.views[descendant.id] = stg.semantics.project(stg, newPresent.nodes, descendant);
+        }
       }
     }
 
