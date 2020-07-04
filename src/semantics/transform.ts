@@ -31,12 +31,6 @@ import type { ReductSymbol } from './defs/value';
 import makeInterpreter from './interpreter';
 import * as meta from './meta';
 
-
-
-
-
-
-
 const NotchRecord = immutable.Record({
   side: 'left',
   shape: 'wedge',
@@ -44,18 +38,16 @@ const NotchRecord = immutable.Record({
 });
 
 export interface SemanticParserDefinition {
-    parse(semantics: Semantics): (program: any, macros: any) => any;
-    unparse(semantics: Semantics): (node: ReductNode) => any;
-    templatizeName(semantics: Semantics, name: string): string;
+    parse: (program: any, macros: any) => string;
+    unparse: (node: ReductNode) => string;
     extractDefines(semantics: Semantics, expr: Im<ReductNode>): [string, any];
     extractGlobals(semantics: Semantics, expr: Im<ReductNode>): [string, Im<ReductNode>];
     extractGlobalNames(semantics: Semantics, name: string, expr: Im<ReductNode>): [string, any];
 }
 
 export interface SemanticParser {
-    parse(program: string, macros: any): any;
-    unparse(node: ReductNode): any;
-    templatizeName(name: string): string;
+    parse(program: string, macros: any): string;
+    unparse(node: ReductNode): string;
     extractDefines(semantics: Semantics, expr: Im<ReductNode>): [string, any];
     extractGlobals(semantics: Semantics, expr: Im<ReductNode>): [string, Im<ReductNode>];
     extractGlobalNames(semantics: Semantics, name: string, expr: Im<ReductNode>): [string, any];
@@ -261,9 +253,8 @@ export class Semantics {
       this.clone = genericClone(nextId, this.subexpressions.bind(this));
 
       this.parser = {
-        templatizeName: (name) => definition.parser.templatizeName(this, name),
-        parse: definition.parser.parse(this),
-        unparse: definition.parser.unparse(this),
+        parse: definition.parser.parse,
+        unparse: definition.parser.unparse,
         extractDefines: definition.parser.extractDefines,
         extractGlobals: definition.parser.extractGlobals,
         extractGlobalNames: definition.parser.extractGlobalNames

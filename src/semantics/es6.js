@@ -1,4 +1,4 @@
-import { ES6Parser, makeUnparser } from '../syntax/es6';
+import { parseProgram, serializeNode } from '../syntax/es6';
 import { Semantics } from './transform';
 
 import * as apply from './defs/apply';
@@ -22,25 +22,8 @@ function capitalize(s) {
 export default new Semantics({
   name: 'ECMAScript 6',
   parser: {
-    parse: (semantics) => {
-      // gradually introducing class-based model
-      const parser = new ES6Parser(semantics);
-      return parser.parse.bind(parser);
-    },
-    unparse: makeUnparser,
-
-    templatizeName: (semant, name) => {
-      const defn = semant.definitionOf('symbol');
-      const replacements = defn.nameReplacements || [];
-
-      for (const [key, replacement] of replacements) {
-        const Key = capitalize(key);
-        const Replacement = capitalize(replacement);
-        name = name.replace(new RegExp(key, 'g'), replacement)
-          .replace(new RegExp(Key, 'g'), Replacement);
-      }
-      return name;
-    },
+    parse: parseProgram,
+    unparse: serializeNode,
 
     extractDefines: (semant, expr) => {
       if (expr.type !== 'define') {
