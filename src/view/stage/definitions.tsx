@@ -49,7 +49,7 @@ const DefinitionsImpl: FunctionComponent<DefinitionsProps> =
   (props) => {
     return (
       <div id='reduct-definitions' onDragOver={onDragOver} onDrop={e => onDrop(e, props)}>
-        {props.nodeIds.map(nodeId => <StageProjection nodeId={nodeId} key={nodeId} />)}
+        {props.nodeIds.map(nodeId => <StageProjection nodeId={nodeId} key={nodeId} frozen />)}
       </div>
     );
   };
