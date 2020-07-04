@@ -1,5 +1,5 @@
 import type {
-  Flat, FlatReductNode, NodeId, NodeMap, ReductNode 
+  Flat, FlatReductNode, NodeId, NodeMap, ReductNode, BaseNode 
 } from '@/semantics';
 import { castDraft, produce } from 'immer';
 import { DeepReadonly, DRF } from './helper';
@@ -189,6 +189,36 @@ export function findNodesDeep(
   }
 
   return foundNodes;
+}
+
+/**
+ * Comapares two nodes and all of their descendants for equality.
+ * 
+ * @param left The ID of the first node to compare.
+ * @param right The ID of the second node to compare.
+ * @param nodes A map from IDs to nodes.
+ * @returns true if these nodes are structurally equivalent
+ */
+export function compareNodesDeep(
+  left: NodeId,
+  right: NodeId,
+  nodes: DeepReadonly<NodeMap>
+): boolean {
+  const n1 = nodes.get(left) as DeepReadonly<Flat<BaseNode>>;
+  const n2 = nodes.get(right) as DeepReadonly<Flat<BaseNode>>;
+
+  if (n1.type !== n2.type) return false;
+
+  for (const [field, value] of Object.entries(n1.fields)) {
+    if (n2.fields[field] !== value) return false;
+  }
+
+  for (const [path, child] of Object.entries(n1.subexpressions)) {
+    if (!compareNodesDeep(child as any, (n2.subexpressions as any)[path], nodes)) {
+      return false;
+    }
+  }
+  return true;
 }
 
 /**

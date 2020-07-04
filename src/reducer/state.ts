@@ -1,8 +1,13 @@
 import { NodeId, NodeMap } from '@/semantics';
 import { UndoableState } from './undo';
 
-
 export interface RState {
+  /**
+   * Represents which part of the game we are currently in: title screen,
+   * gameplay, victory, or defeat.
+   */
+  mode: GameMode;
+
   /**
    * Maps all of the IDs of nodes that currently exist to their respective
    * nodes.
@@ -38,17 +43,22 @@ export interface RState {
    * Nodes which were removed by the most recent action.
    */
   removed: Set<NodeId>;
+}
 
-  /**
-   * Each item is a 'call stack' that keeps track of which nodes are being
-   * stepped. Multiple call stacks are needed because execution can split into
-   * parallel 'threads'. For example, imagine stepping a function which
-   * evaluates to a vtuple with two elements that need to be stepped further.
-   * Each of these would then have their own call stack.
-   */
-  stacks: NodeId[][];
+export enum GameMode {
+  Title,
+  Gameplay,
+  Victory,
+  Defeat
+}
+
+export interface LevelState {
+  levelNumber: number;
+  chapterNumber: number;
+  chapterName: string;
 }
 
 export interface GlobalState {
   program: UndoableState<RState>;
+  level: LevelState;
 }

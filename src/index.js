@@ -204,10 +204,10 @@ function initialize() {
     extCompose(
       applyMiddleware(
         Logging.logMiddleware(
-          () => stg.getState(),
-          (...args) => stg.saveState(...args),
-          (...args) => stg.pushState(...args),
-          (...args) => stg.saveNode(...args),
+          () => stg?.getState(),
+          (...args) => stg?.saveState(...args),
+          (...args) => stg?.pushState(...args),
+          (...args) => stg?.saveNode(...args),
           es6
         )
       )
@@ -259,6 +259,7 @@ function initialize() {
 
     stg.draw();
 
+
     if (!stg.alreadyWon) {
       const state = stg.getState();
       const matching = level.checkVictory(state, es6);
@@ -273,10 +274,17 @@ function initialize() {
             // num_of_moves: undefined,
           });
 
+
+          // WARNING: temporary
+          return;
+
           nextLevel();
         });
       } else if (stg.semantics
                      && !stg.semantics.mightBeCompleted(state, (s) => level.checkVictory(s, es6))) {
+
+        // WARNING: temporary
+        return;
         try {
           Logging.log('dead-end', {
             final_state: level.serialize(state, es6)

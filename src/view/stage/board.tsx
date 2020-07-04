@@ -1,4 +1,4 @@
-import { createMoveNodeToBoard } from '@/reducer/action';
+import { createMoveNodeToBoard, createDetectCompetion } from '@/reducer/action';
 import { GlobalState } from '@/reducer/state';
 import { NodeId } from '@/semantics';
 import { DeepReadonly } from '@/util/helper';
@@ -18,6 +18,7 @@ interface BoardStoreProps {
 
 interface BoardDispatchProps {
   moveNodeToBoard(node: NodeId): void;
+  detectCompletion(): void;
 }
 
 type BoardProps = BoardStoreProps & BoardDispatchProps;
@@ -72,8 +73,13 @@ function onDrop(
 
 const BoardImpl: FunctionComponent<BoardProps> = 
   (props) => {
-    const board = useRef<HTMLDivElement>(null);
+    const boardRef = useRef<HTMLDivElement>(null);
     const [positions, setPositions] = useState(new Map<NodeId, NodePos>());
+
+    // when the board changes, check if the level has been completed
+    useEffect(() => {
+      props.detectCompletion();
+    }, [props.board]);
 
     // newly added nodes should have same position as their source nodes
     // and removed nodes should have their positions deleted
@@ -118,8 +124,9 @@ const BoardImpl: FunctionComponent<BoardProps> =
       setPositions(newPositions);
     }, [props.added, props.removed]);
 
+    // lay out all nodes after render has completed
     useLayoutEffect(() => {
-      const boardEl = board.current!;
+      const boardEl = boardRef.current!;
       // auto-reposition any nodes that haven't been moved by the user yet
       const boundingRect = boardEl.getBoundingClientRect();
       const childRects = new Map<{ w: number; h: number }, NodeId>();
@@ -163,8 +170,8 @@ const BoardImpl: FunctionComponent<BoardProps> =
     return (
       <div id='reduct-board' 
         onDragOver={onDragOver}
-        onDrop={e => onDrop(e, props, board, positions, setPositions)} 
-        ref={board}
+        onDrop={e => onDrop(e, props, boardRef, positions, setPositions)} 
+        ref={boardRef}
       >
         <TransitionGroup component={null}>
           {[...props.board].map(nodeId => 
@@ -187,6 +194,7 @@ export const Board = connect(
     added, removed, board
   }),
   (dispatch) => ({
-    moveNodeToBoard(id: NodeId) { dispatch(createMoveNodeToBoard(id)); }
+    moveNodeToBoard(id: NodeId) { dispatch(createMoveNodeToBoard(id)); },
+    detectCompletion() { dispatch(createDetectCompetion()); }
   })
 )(BoardImpl);

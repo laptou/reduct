@@ -34,6 +34,10 @@ export enum ActionKind {
 
   Execute = 'exec',
   Step = 'step',
+
+  DetectCompletion = 'detect-end',
+  Undo = 'undo',
+  Redo = 'redo'
 }
 
 export type ReductAction = 
@@ -51,7 +55,8 @@ export type ReductAction =
   EvalReferenceAction |
   StepAction |
   ExecuteAction |
-  CleanupAction;
+  CleanupAction | 
+  DetectCompletionAction;
 
 
 export interface CleanupAction {
@@ -410,6 +415,23 @@ export function createExecute(
   return {
     type: ActionKind.Execute,
     targetNodeId
+  };
+}
+
+
+
+export interface DetectCompletionAction {
+  type: ActionKind.DetectCompletion;
+}
+
+/**
+ * Returns an action which will check if the level has been completed (which
+ * will send the game into the 'victory' state) or if the level is now
+ * impossible (which will send the game into the 'defeat' state).
+ */
+export function createDetectCompetion(): DetectCompletionAction {
+  return {
+    type: ActionKind.DetectCompletion
   };
 }
 

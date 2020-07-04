@@ -1,39 +1,38 @@
-import type { NodeId, NodeMap, Flat } from '@/semantics';
+import type { Flat, NodeId, NodeMap } from '@/semantics';
 import {
-  BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NumberNode, OpNode, StrNode, NotNode, ApplyNode, ReferenceNode as ReferenceNode 
+  ApplyNode, BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NotNode, NumberNode, OpNode, ReferenceNode as ReferenceNode, StrNode 
 } from '@/semantics/defs';
 import type { Semantics } from '@/semantics/transform';
 import {
-  createBoolNode, createNumberNode, createStrNode, getKindForNode, getDefinitionForName, getValueForName 
+  createBoolNode, createNumberNode, createStrNode, getKindForNode, getValueForName 
 } from '@/semantics/util';
 import {
-  DRF, withoutParent, withParent, mapIterable 
+  DRF, mapIterable, withoutParent, withParent 
 } from '@/util/helper';
-import {
-  cloneNodeDeep, findNodesDeep, getRootForNode, mapNodeDeep 
-} from '@/util/nodes';
+import { cloneNodeDeep, findNodesDeep, getRootForNode } from '@/util/nodes';
 import { castDraft, produce } from 'immer';
 import { combineReducers, compose } from 'redux';
 import * as animate from '../gfx/animate';
 import * as gfx from '../gfx/core';
 import {
-  ActionKind, createDetach, ReductAction, createMoveNodeToBoard, createEvalLambda, createStep, createEvalApply, createEvalOperator, createEvalConditional, createEvalNot, createEvalReference 
+  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStep, ReductAction 
 } from './action';
 import { MissingNodeError, NotOnBoardError, WrongTypeError } from './errors';
-import { GlobalState, RState } from './state';
+import { GlobalState, RState, GameMode } from './state';
 import { undoable } from './undo';
+import { checkVictory, checkDefeat } from './helper';
 
 export { nextId } from '@/util/nodes';
 
 const initialProgram: RState = {
+  mode: GameMode.Gameplay,
   nodes: new Map(),
   goal: new Set(),
   board: new Set(),
   toolbox: new Set(),
   globals: new Map(),
   added: new Map(),
-  removed: new Set(),
-  stacks: []
+  removed: new Set()
 };
 
 
@@ -663,6 +662,16 @@ export function reduct(semantics: Semantics, views, restorePos) {
       }
     }
 
+    case ActionKind.DetectCompletion: {
+      if (checkVictory(state))
+        return { ...state, mode: GameMode.Victory };
+
+      if (checkDefeat(state))
+        return { ...state, mode: GameMode.Defeat };
+
+      return state;
+    }
+
     case ActionKind.Raise: {
       if (state.board.has(act.nodeId)) {
         return produce(state, draft => {
@@ -1063,7 +1072,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
             }
           }
           for (const id of state.toolbox) {
-            if (!oldState.toolbox.contains(id)) {
+            if (!oldState.toolbox.has(id)) {
               views[id].pos = gfx.absolutePos(views[id]);
               views[id].scale.x = 1.0;
               views[id].scale.y = 1.0;
