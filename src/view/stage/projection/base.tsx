@@ -48,6 +48,12 @@ interface StageProjectionOwnProps {
    */
   nodeId: NodeId | null;
 
+  /**
+   * If true, this node will not respond to user input. Use for nodes such as
+   * those in the goal area that should not be interactive.
+   */
+  frozen?: boolean;
+
   position?: { x: number; y: number };
 }
 
@@ -61,6 +67,7 @@ function onDragStart(
   props: StageProjectionProps
 ) {
   if (!props.nodeId) return;
+  if (props.frozen) return;
 
   event.dataTransfer.setData('application/reduct-node', props.nodeId.toString());
   event.dataTransfer.dropEffect = 'move';
@@ -82,6 +89,7 @@ function onClick(
   props: StageProjectionProps,
 ) {
   if (props.kind !== 'expression') return; 
+  if (props.frozen) return;
 
   props.step();
   event.stopPropagation();
@@ -96,7 +104,9 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
       return null;
     }
 
-    const { position, node, kind } = props;
+    const {
+      position, node, kind, frozen 
+    } = props;
 
     // top level nodes (nodes w/o parents) should not be considered locked
     // TODO: don't mark top level nodes as locked
@@ -106,14 +116,17 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
       // can't drag slots
       node.type !== 'missing' 
       // can't drag locked nodes
-      && !locked;
+      && !locked
+      && !frozen;
 
     const steppable = kind === 'expression';
 
     return (
       <div 
         id={`projection-${props.nodeId}`}
-        className={cx('projection wrapper', { locked, draggable, steppable })}
+        className={cx('projection wrapper', {
+          locked, draggable, steppable, frozen 
+        })}
         draggable={draggable}
         data-node-id={props.nodeId}
         style={{ left: position?.x, top: position?.y }}

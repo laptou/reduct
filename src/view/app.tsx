@@ -3,8 +3,9 @@ import React from 'react';
 import { hot } from 'react-hot-loader/root';
 import { Provider } from 'react-redux';
 import { Board } from './stage/board';
-import { Toolbox } from './stage/toolbox';
 import { Definitions } from './stage/definitions';
+import { Goal } from './stage/goal';
+import { Toolbox } from './stage/toolbox';
 
 // TODO: fix type for `store`
 export function App({ store }: { store: any }) {
@@ -13,6 +14,7 @@ export function App({ store }: { store: any }) {
       <Board />
       <Toolbox />
       <Definitions />
+      <Goal />
     </Provider>
   )
 }

@@ -1,8 +1,8 @@
 import { DeepReadonly, DRF } from '@/util/helper';
-import type { BaseNode, NodeId, ReductNode } from '..';
+import type { BaseNode, ReductNode } from '..';
 import type { Semantics } from '../transform';
-import type { NodeDef } from './base';
 import { getKindForNode } from '../util';
+import type { NodeDef } from './base';
 
 // Returns the names of the subexpressions of an array: elem0, elem1, etc.
 // Requires: arr is a hydrated array node or an immutable map for an array node

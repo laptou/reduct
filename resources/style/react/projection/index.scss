@@ -17,6 +17,11 @@
   cursor: pointer;
 }
 
+.projection.frozen {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .projection, .projection .content {
   display: inline-flex;
   align-items: stretch;

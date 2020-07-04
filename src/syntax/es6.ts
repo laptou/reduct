@@ -224,12 +224,12 @@ export class ES6Parser {
 
         // If the thunk can take arguments (i.e. it's a reference-with-holes), use that
 
-        if (macros
-                && node.callee.type === 'Identifier'
-                && macros[node.callee.name]
-                && macros[node.callee.name].takesArgs) {
-          return macros[node.callee.name](...node.arguments.map((n) => this.parseNode(n, macros)));
-        }
+        // if (macros
+        //         && node.callee.type === 'Identifier'
+        //         && macros[node.callee.name]
+        //         && macros[node.callee.name].takesArgs) {
+        //   return macros[node.callee.name](...node.arguments.map((n) => this.parseNode(n, macros)));
+        // }
 
         let result = this.semantics.apply(
           this.parseNode(node.callee, macros),
