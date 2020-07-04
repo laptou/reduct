@@ -4,6 +4,12 @@ import type * as estree from 'estree';
 import * as esprima from 'esprima';
 import { ReductNode } from '@/semantics';
 import * as progression from '../game/progression';
+import {
+  createVtupleNode, createMissingNode, createSymbolNode, createStrNode, createNumberNode, createBoolNode, createLambdaVarNode, createLambdaArgNode, createLambdaNode, createApplyNode, createConditionalNode, createArrayNode, createOpNode, createBinOpNode, createNotNode, createDefineNode, createMemberNode 
+} from '@/semantics/util';
+import {
+  LambdaVarNode, LambdaNode, ReferenceNode, MissingNode 
+} from '@/semantics/defs';
 
 function modifier(ast: esprima.Program) {
   if (ast.body.length !== 2) return null;
@@ -79,43 +85,64 @@ export class ES6Parser {
       return fail('Cannot parse multi-statement programs at the moment.', program);
     }
 
-    public parseNode(node: estree.Statement | estree.Declaration | estree.Expression, macros) {
+    public parseNode(node: estree.Statement | estree.Declaration | estree.Expression, macros): ReductNode {
       switch (node.type) {
       case 'ExpressionStatement':
         return this.parseNode(node.expression, macros);
 
       case 'ReturnStatement':
-        return this.parseNode(node.argument, macros);
+        if (node.argument)
+          return this.parseNode(node.argument, macros);
+        else 
+          throw new Error('Returning void is not supported');
 
-      case 'BlockStatement': {
-        if (node.body.length !== 1) {
-          return fail('Cannot parse multi-statement programs.', node);
-        }
-        return this.parseNode(node.body[0], macros);
-      }
+      case 'BlockStatement': 
+        if (node.body.length === 1) 
+          return this.parseNode(node.body[0], macros);
+        else 
+          throw new Error('Cannot parse multi-statement programs.');
 
       case 'Identifier': {
-        if (node.name === '_') return this.semantics.missing();
+        if (node.name === '_') return createMissingNode();
 
-        if (node.name === '__defineAttach') return this.semantics.defineAttach();
+        if (node.name === '__defineAttach') {
+          // TODO: phase this out, throw an error
+          return this.semantics.defineAttach();
+        }
 
         // Each macro is a thunk
-        const macroName = this.semantics.parser.templatizeName(node.name);
+        const macroName = node.name;
         if (macros && macros[macroName]) return macros[macroName]();
 
+        if (node.name === 'STAR')
+          return createSymbolNode('star');
+
+        if (node.name === 'RECT')
+          return createSymbolNode('rect');
+
+        if (node.name === 'TRIANGLE')
+          return createSymbolNode('triangle');
+
+        if (node.name === 'CIRCLE')
+          return createSymbolNode('circle');
+
+        // TODO: phase out xx and xxx in favour of __tuple(x, x)
         if (node.name === 'xx') {
-          return this.semantics.vtuple([
-            this.semantics.lambdaVar('x'),
-            this.semantics.lambdaVar('x')
-          ]);
+          return createVtupleNode(
+            createLambdaVarNode('x'),
+            createLambdaVarNode('x')
+          );
         }
+
         if (node.name === 'xxx') {
-          return this.semantics.vtuple([
-            this.semantics.lambdaVar('x'),
-            this.semantics.lambdaVar('x'),
-            this.semantics.lambdaVar('x')
-          ]);
+          return createVtupleNode(
+            createLambdaVarNode('x'),
+            createLambdaVarNode('x'),
+            createLambdaVarNode('x')
+          );
         }
+
+        /*
         if (node.name.startsWith('__variant')) {
           const [variant, value] = node.name.slice(10).split('_');
           if (!variant || !value) {
@@ -124,25 +151,29 @@ export class ES6Parser {
 
           return this.semantics.dynamicVariant(variant, value);
         }
+        */
 
-        return this.semantics.lambdaVar(macroName);
+        return createLambdaVarNode(macroName);
       }
 
       case 'Literal': {
-        if (typeof node.value === 'number') return this.semantics.number(node.value);
-        if (typeof node.value === 'boolean') return this.semantics.boolean(node.value);
+        if (typeof node.value === 'number') return createNumberNode(node.value);
+        if (typeof node.value === 'boolean') return createBoolNode(node.value);
 
+        // TODO: phase out string symbols in favour of identifiers
         if (node.value === 'star'
             || node.value === 'circle'
             || node.value === 'triangle'
             || node.value === 'rect') {
-          return this.semantics.symbol(node.value);
+          return createSymbolNode(node.value);
         }
 
         // Interpreting strings after symbols so as to prevent the engine from
         // treating the symbols as strings
-        if (typeof node.value === 'string') return this.semantics.string(node.value);
-        return fail(`parsers.es6: Unrecognized value ${node.value}`, node);
+        if (typeof node.value === 'string') 
+          return createStrNode(node.value);
+
+        throw new Error(`Unknown literal: ${node.value}`);
       }
 
       case 'ArrowFunctionExpression': {
@@ -150,80 +181,123 @@ export class ES6Parser {
           // Implement capture of bindings
           const argName = node.params[0].name;
           const newMacros = {};
-          newMacros[argName] = () => this.semantics.lambdaVar(argName);
+          newMacros[argName] = () => createLambdaVarNode(argName);
           const body = this.parseNode(node.body, Object.assign(macros, newMacros));
-          return this.semantics.lambda(this.semantics.lambdaArg(argName), body);
+          return createLambdaNode(createLambdaArgNode(argName), body);
         }
-        return fail('Lambda expessions with more than one input are currently undefined.', node);
+
+        throw new Error(`Lambdas with ${node.params.length} params are unimplemented`);
       }
 
       case 'AssignmentExpression': {
-        const name = this.semantics.parser.templatizeName(node.left.name);
-
-        const argName = node.left.name;
-        const newMacros = {};
-        newMacros[argName] = () => this.semantics.lambdaVar(argName);
-        const body = this.parseNode(node.right.right, Object.assign(macros, newMacros));
-
-        return this.semantics.letExpr(
-          name,
-          this.parseNode(node.right.left, newMacros),
-          this.semantics.lambda(this.semantics.lambdaArg(argName), body)
-        );
+        throw new Error('Assignment expressions are not implemented');
       }
 
       case 'UnaryExpression': {
-        return this.semantics.not(this.parseNode(node.argument, macros));
+        return createNotNode(this.parseNode(node.argument, macros));
       }
 
       case 'BinaryExpression':
-        // TODO: need ExprManager
-        return this.semantics.binop(this.parseNode(node.left, macros),
-          this.semantics.op(node.operator),
-          this.parseNode(node.right, macros));
+        switch (node.operator) {
+        case '%':
+        case '*':
+        case '/':
+          throw new Error(`Operator ${node.operator} is not implemented`);
+
+        case '!==':
+        case '&':
+        case '**':
+        case '<<':
+        case '<=':
+        case '===':
+        case '>=':
+        case '>>>':
+        case '^':
+        case 'in':
+        case 'instanceof':
+          throw new Error(`Operator ${node.operator} is not supported`);
+
+        case '!=':
+          return createNotNode(
+            createBinOpNode(
+              this.parseNode(node.left, macros),
+              createOpNode('=='),
+              this.parseNode(node.right, macros)
+            )
+          );
+
+        case '+':
+        case '-':
+        case '==':
+        case '>':
+        case '<':
+          return createBinOpNode(
+            this.parseNode(node.left, macros),
+            createOpNode(node.operator),
+            this.parseNode(node.right, macros)
+          );
+        
+        default:
+          throw new Error(`Operator ${node.operator} is unknown`);
+        }
 
       case 'LogicalExpression':
-        // TODO: need ExprManager
-        return this.semantics.binop(this.parseNode(node.left, macros),
-          this.semantics.op(node.operator),
-          this.parseNode(node.right, macros));
+        return createBinOpNode(
+          this.parseNode(node.left, macros),
+          createOpNode(node.operator),
+          this.parseNode(node.right, macros)
+        );
 
       case 'CallExpression': {
-        if (node.callee.type === 'Identifier' && node.callee.name === '__tests') {
-          const testCases = node.arguments.map((arg) => this.parseNode(arg, macros));
-          // TODO: better way to figure out name
-          const name = node.arguments[0].type === 'CallExpression' ? node.arguments[0].callee.name : 'f';
-          return this.semantics.lambda(this.semantics.lambdaArg(name, true), this.semantics.vtuple(testCases));
-        }
+        if (node.callee.type === 'Identifier') {
+          if (node.callee.name === '__tuple') {
+            const children = node.arguments.map((arg) => {
+              if (arg.type === 'SpreadElement')
+                throw new Error('Varargs are not supported');
 
-        if (node.callee.type === 'Identifier' && node.callee.name === '__autograder') {
+              return this.parseNode(arg, macros);
+            });
+
+            return createVtupleNode(...children);
+          }
+
+          if (node.callee.name === '__tests') {
+            const testCases = node.arguments.map((arg) => this.parseNode(arg, macros));
+            // TODO: better way to figure out name
+            const name = node.arguments[0].type === 'CallExpression' ? node.arguments[0].callee.name : 'f';
+            return createLambdaNode(createLambdaArgNode(name), createVtupleNode(...testCases));
+          }
+
+          if (node.callee.name === '__autograder') {
           /* Color for goals
                */
-          const colors = ['#c0392b', '#2980b9', '#2ecc71', '#8e44ad', '#f39c12'];
+            const colors = ['#c0392b', '#2980b9', '#2ecc71', '#8e44ad', '#f39c12'];
 
-          /* Getting the alien index.
+            /* Getting the alien index.
                */
-          const chapter = progression.currentChapter();
-          const alienIndex = Math.floor(((progression.currentLevel() - chapter.startIdx)
+            const chapter = progression.currentChapter();
+            const alienIndex = Math.floor(((progression.currentLevel() - chapter.startIdx)
                                              / ((chapter.endIdx - chapter.startIdx) + 1))
                                             * chapter.resources.aliens.length);
-          const alienName = chapter.resources.aliens[alienIndex];
+            const alienName = chapter.resources.aliens[alienIndex];
 
-          return this.semantics.autograder(alienName, node.arguments[0].value, colors[node.arguments[0].value], this.semantics.missing());
-        }
+            return this.semantics.autograder(alienName, node.arguments[0].value, colors[node.arguments[0].value], this.semantics.missing());
+          }
 
-        if (node.callee.type === 'Identifier' && node.callee.name === 'unsol') {
+          if (node.callee.name === 'unsol') {
           // NOTE - This should never be called externally
           // only called within inside the autograder.
-          return this.semantics.unsol('red', this.parseNode(node.arguments[0], []));
+            return this.semantics.unsol('red', this.parseNode(node.arguments[0], []));
+          }
         }
 
+        // TODO: implement
         if (node.arguments.length === 0) {
-          return fail('Call expressions with zero arguments are currently unsupported', node);
+          throw new Error('Call expressions with 0 arguments are unimplemented');
         }
 
         // If the thunk can take arguments (i.e. it's a reference-with-holes), use that
-
+        // WARNING: disabled
         // if (macros
         //         && node.callee.type === 'Identifier'
         //         && macros[node.callee.name]
@@ -231,20 +305,26 @@ export class ES6Parser {
         //   return macros[node.callee.name](...node.arguments.map((n) => this.parseNode(n, macros)));
         // }
 
-        let result = this.semantics.apply(
+        if (node.arguments[0].type === 'SpreadElement')
+          throw new Error('Varargs are not supported');
+
+        let result = createApplyNode(
           this.parseNode(node.callee, macros),
           this.parseNode(node.arguments[0], macros)
         );
 
         for (const arg of node.arguments.slice(1)) {
-          result = this.semantics.apply(result, this.parseNode(arg, macros));
+          if (arg.type === 'SpreadElement')
+            throw new Error('Varargs are not supported');
+                
+          result = createApplyNode(result, this.parseNode(arg, macros));
         }
 
         return result;
       }
 
       case 'ConditionalExpression': {
-        return this.semantics.conditional(
+        return createConditionalNode(
           this.parseNode(node.test, macros),
           this.parseNode(node.consequent, macros),
           this.parseNode(node.alternate, macros)
@@ -252,57 +332,52 @@ export class ES6Parser {
       }
 
       case 'FunctionDeclaration': {
-        const name = this.semantics.parser.templatizeName(node.id.name);
+        const name = node.id!.name;
         if (node.params.length === 0) {
-          return this.semantics.define(name, [], this.parseNode(node.body, macros));
+          return createDefineNode(name, [], this.parseNode(node.body, macros) as LambdaNode);
         }
 
-        let result = this.parseNode(node.body, macros);
+        let result = this.parseNode(node.body, macros) as LambdaNode;
+
         const args = [];
         for (const arg of node.params.slice().reverse()) {
-          const argName = this.semantics.parser.templatizeName(arg.name);
-          args.push(argName);
-          result = this.semantics.lambda(this.semantics.lambdaArg(argName), result);
+          if (arg.type !== 'Identifier')
+            throw new Error(`${arg.type} is not allowed in function declarations`);
+
+          args.push(arg.name);
+          result = createLambdaNode(createLambdaArgNode(arg.name), result);
         }
         args.reverse();
-        return this.semantics.define(name, args, result);
+
+        return createDefineNode(name, args, result);
       }
 
       case 'VariableDeclaration': {
-        if (node.kind !== 'let') {
-          return fail(`parsers.es6: Unrecognized '${node.kind}' declaration`, node);
-        }
-        if (node.declarations.length !== 1) {
-          return fail('parsers.es6: Only declaring 1 item at a time is supported', node);
-        }
-
-        const name = this.semantics.parser.templatizeName(node.declarations[0].id.name);
-        const body = this.parseNode(node.declarations[0].init, macros);
-
-        return this.semantics.define(name, [], body);
+        throw new Error('Variable declarations are unimplemented');
       }
 
       case 'ArrayExpression': {
-        const a = [];
-        a.push(node.elements.length);
-        for (const e of node.elements) {
-          a.push(this.parseNode(e, macros));
-        }
-        return this.semantics.array(...a);
+        return createArrayNode(...node.elements.map(elem => {
+          if (elem.type === 'SpreadElement')
+            throw new Error('Array spreading is not supported');
+          return this.parseNode(elem, macros)
+        }));
       }
 
       case 'MemberExpression': {
-        return this.semantics.member(this.parseNode(node.object, macros),
-          this.parseNode(node.property, macros));
+        return createMemberNode(
+          this.parseNode(node.object, macros),
+          this.parseNode(node.property, macros)
+        );
       }
 
-      default: return fail(`parsers.es6: Unrecognized ES6 node type ${node.type}`, node);
+      default: throw new Error(`Unknown node type: ${node.type}`);
       }
     }
 }
 
 // Make an unparser for a hydrated AST node
-export function makeUnparser(_: Semantics) {
+export function makeUnparser() {
   const unparseES6 = function unparseES6(node: ReductNode) {
     switch (node.type) {
     case 'missing': {
@@ -312,22 +387,6 @@ export function makeUnparser(_: Semantics) {
       return `"${node.fields.name}"`;
     }
     case 'lambda': {
-      if (node.subexpressions.body.type === 'vtuple') {
-        if (node.subexpressions.body.subexpressions.child0.type === 'lambdaVar') {
-          // Unparse replicator block
-          const replicator = [];
-          for (let i = 0; i < node.subexpressions.body.fields.numChildren; i++) {
-            replicator.push(node.subexpressions.body.subexpressions.child0.name);
-          }
-          return `(${unparseES6(node.subexpressions.arg)}) => ${replicator.join('')}`;
-        }
-
-        const cases = [];
-        for (let i = 0; i < node.subexpressions.body.fields.numChildren; i++) {
-          cases.push(unparseES6(node.subexpressions.body.subexpressions[`child${i}`]));
-        }
-        return `__tests(${cases.join(', ')})`;
-      }
       return `(${unparseES6(node.subexpressions.arg)}) => ${unparseES6(node.subexpressions.body)}`;
     }
     case 'letExpr': {
@@ -394,7 +453,7 @@ export function makeUnparser(_: Semantics) {
         throw `array length is not a number: ${node.fields.length}`;
       }
       for (let i = 0; i < node.fields.length; i++) {
-        const e = node.subexpressions[`elem${i}`];
+        const e = node.subexpressions[i];
         if (!first) result += ',';
         result += unparseES6(e);
       }

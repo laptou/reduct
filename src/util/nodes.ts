@@ -1,8 +1,8 @@
 import type {
-  Flat, NodeId, NodeMap, ReductNode, FlatReductNode 
+  Flat, FlatReductNode, NodeId, NodeMap, ReductNode 
 } from '@/semantics';
 import { castDraft, produce } from 'immer';
-import { DeepReadonly, DRF, withParent } from './helper';
+import { DeepReadonly, DRF } from './helper';
 
 let idCounter = 0;
 

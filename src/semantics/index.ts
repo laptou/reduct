@@ -19,7 +19,8 @@ import {
   DynVarNode,
   SymbolNode,
   ReferenceNode,
-  InvocationNode
+  InvocationNode,
+  MissingNode
 } from './defs';
 import { VTupleNode } from './transform';
 import { DeepReadonly } from '@/util/helper';
@@ -83,11 +84,6 @@ export type NodeType = {
 }
 
 export type NodeMap = Map<NodeId, DeepReadonly<FlatReductNode>>;
-
-export interface MissingNode extends BaseNode {
-  type: 'missing';
-  locked: true;
-}
 
 export type ReductNode =
     ApplyNode |

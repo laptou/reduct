@@ -1,30 +1,18 @@
 import { DeepReadonly, DRF } from '@/util/helper';
 import type { BaseNode, ReductNode } from '..';
-import type { Semantics } from '../transform';
 import { getKindForNode } from '../util';
 import type { NodeDef } from './base';
-
-// Returns the names of the subexpressions of an array: elem0, elem1, etc.
-// Requires: arr is a hydrated array node or an immutable map for an array node
-function arraySubexprs(arr: DeepReadonly<ArrayNode> | DRF<ArrayNode>) {
-  const result = [];
-  for (let i = 0; i < arr.fields.length; i++) {
-    result.push(`elem${i}`);
-  }
-  return result;
-}
 
 // Returns the fields that are supposed to be displayed by
 // the projection of an array
 function arrayDisplayParts(expr: DeepReadonly<ArrayNode> | DRF<ArrayNode>) {
-  const a = arraySubexprs(expr);
   const result = [];
   let first = true;
   result.push('\'[\'');
-  for (const e of a) {
+  for (let i = 0; i < expr.fields.length; i++) {
     if (!first) result.push('\',\'');
     first = false;
-    result.push(e);
+    result.push(expr.subexpressions[i]);
   }
   result.push('\']\'');
   return result;
@@ -33,11 +21,8 @@ function arrayDisplayParts(expr: DeepReadonly<ArrayNode> | DRF<ArrayNode>) {
 export interface ArrayNode extends BaseNode {
   type: 'array';
 
-  subexpressions: Record<string, ReductNode>;
-
-  fields: {
-    length: number;
-  };
+  fields: { length: number };
+  subexpressions: Record<number, ReductNode>;
 };
 
 export const array: NodeDef<ArrayNode> = {
@@ -52,7 +37,12 @@ export const array: NodeDef<ArrayNode> = {
   },
   type: 'array',
   fields: ['length'],
-  subexpressions: arraySubexprs as ((s: Semantics, e: DRF<ArrayNode>) => any),
+  subexpressions: (node) => {
+    const indices = [];
+    for (let i = 0; i < node.fields.length; i++)
+      indices.push(i);
+    return indices;
+  },
   projection: {
     type: 'default',
     fields: arrayDisplayParts,

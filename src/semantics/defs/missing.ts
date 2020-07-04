@@ -2,7 +2,8 @@ import type { BaseNode } from '..';
 import type { NodeDef } from './base';
 
 export interface MissingNode extends BaseNode {
-    type: 'missing';
+  type: 'missing';
+  locked: true;
 }
 
 /**

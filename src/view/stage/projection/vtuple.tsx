@@ -12,8 +12,8 @@ export const VTupleProjection: FunctionComponent<VTupleProjectionOwnProps> =
   (props) => {
     const childIds = [];
 
-    for (let i = 0; i < props.node.fields.numChildren; i++) {
-      childIds.push(props.node.subexpressions[`child${i}`]);
+    for (let i = 0; i < props.node.fields.size; i++) {
+      childIds.push(props.node.subexpressions[i]);
     }
 
     return (

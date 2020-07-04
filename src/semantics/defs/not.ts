@@ -1,11 +1,11 @@
+import type { BaseNode, ReductNode } from '..';
 import type { NodeDef } from './base';
-import type { BaseNode, NodeId } from '..';
 
 export interface NotNode extends BaseNode {
   type: 'not';
 
   subexpressions: {
-    value: NodeId;
+    value: ReductNode;
   };
 }
 

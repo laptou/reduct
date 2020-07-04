@@ -71,15 +71,14 @@ export interface SemanticDefinition {
  * A "virtual tuple" which kind of bleeds presentation into the
  * semantics. Represents a set of values that go together, but spill
  * onto the board when they are the top-level node.
- * 
- * Has properties `child0`, `child1`, ... `child{numChildren - 1}` to
- * represent its children.
  */
-export type VTupleNode = BaseNode & {
+export interface VTupleNode extends BaseNode {
   type: 'vtuple';
   locked: true;
-  numChildren: number;
-} & Record<string, NodeId>;
+
+  fields: { size: number };
+  subexpressions: Record<number, ReductNode>;
+}
 
 
 /**
@@ -138,8 +137,8 @@ export class Semantics {
       this.projections.vtuple = [() => gfx.layout.vbox((id, state) => {
         const node = state.nodes.get(id);
         const result = [];
-        for (let i = 0; i < node.fields.numChildren; i++) {
-          result.push(node.subexpressions[`child${i}`]);
+        for (let i = 0; i < node.fields.size; i++) {
+          result.push(node.subexpressions[i]);
         }
         return result;
       }, {
@@ -168,13 +167,13 @@ export class Semantics {
           kind: 'expression',
           locked: true,
           subexpressions: {},
-          fields: { numChildren: children.length },
+          fields: { size: children.length },
           parent: null,
           parentField: null
         };
         let i = 0;
         for (const child of children) {
-          result.subexpressions[`child${i}`] = child;
+          result.subexpressions[i] = child;
           i += 1;
         }
         return result;
@@ -654,8 +653,8 @@ export class Semantics {
     public subexpressions(expr: DeepReadonly<ReductNode> | DRF) {
       if (expr.type === 'vtuple') {
         const result = [];
-        for (let i = 0; i < expr.fields.numChildren; i++) {
-          result.push(`child${i}`);
+        for (let i = 0; i < expr.fields.size; i++) {
+          result.push(i);
         }
         return result;
       }
@@ -663,7 +662,7 @@ export class Semantics {
       if (expr.type === 'array') {
         const result = [];
         for (let i = 0; i < expr.fields.length; i++) {
-          result.push(`elem${i}`);
+          result.push(i);
         }
         return result;
       }

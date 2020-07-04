@@ -3,6 +3,7 @@ import type { NodeDef } from './base';
 
 export interface OpNode extends BaseNode {
   type: 'op';
+  locked: true;
   fields: { name: '+' | '-' | '<' | '>' | '==' | '&&' | '||' };
 }
 

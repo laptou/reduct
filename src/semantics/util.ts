@@ -1,22 +1,26 @@
-import { dethunk, DRF, DeepReadonly } from '@/util/helper';
+import { DeepReadonly, dethunk, DRF } from '@/util/helper';
 import { nextId } from '@/util/nodes';
-import { NodeMap, BaseNode, ReductNode } from '.';
-import { apply } from './defs/apply';
-import { array } from './defs/array';
+import { NodeMap, ReductNode } from '.';
+import { apply, ApplyNode } from './defs/apply';
+import { array, ArrayNode } from './defs/array';
 import { autograder } from './defs/autograder';
-import { binop, op } from './defs/binop';
-import { conditional } from './defs/conditional';
-import { define } from './defs/define';
-import { lambda, lambdaArg, lambdaVar } from './defs/lambda';
+import {
+  binop, BinOpNode, op, OpNode 
+} from './defs/binop';
+import { conditional, ConditionalNode } from './defs/conditional';
+import { define, DefineNode } from './defs/define';
+import {
+  lambda, lambdaArg, LambdaArgNode, LambdaNode, lambdaVar, LambdaVarNode 
+} from './defs/lambda';
 import { letExpr } from './defs/letExpr';
-import { member } from './defs/member';
-import { missing } from './defs/missing';
-import { not } from './defs/not';
+import { member, MemberNode } from './defs/member';
+import { missing, MissingNode } from './defs/missing';
+import { not, NotNode } from './defs/not';
 import { reference } from './defs/reference';
 import {
-  boolean, BoolNode, dynamicVariant, number, string, symbol, unsol, NumberNode, StrNode 
+  boolean, BoolNode, dynamicVariant, number, NumberNode, ReductSymbol, string, StrNode, symbol, SymbolNode, unsol 
 } from './defs/value';
-import { RState } from '@/reducer/state';
+import { VTupleNode } from './transform';
 
 /**
  * Creates a partial node. Helper for "create node" functions to avoid
@@ -56,6 +60,123 @@ export function createStrNode(value: string): StrNode {
     ...createNodeBase(),
     type: 'string',
     fields: { value }
+  };
+}
+
+export function createVtupleNode(...children: ReductNode[]): VTupleNode {
+  return {
+    ...createNodeBase(),
+    type: 'vtuple',
+    locked: true,
+    fields: { size: children.length },
+    subexpressions: Object.fromEntries(children.map((child, index) => [index, child]))
+  };
+}
+
+export function createMissingNode(): MissingNode {
+  return {
+    ...createNodeBase(),
+    type: 'missing',
+    locked: true
+  };
+}
+
+export function createSymbolNode(kind: ReductSymbol): SymbolNode {
+  return {
+    ...createNodeBase(),
+    type: 'symbol',
+    fields: { name: kind }
+  };
+}
+
+export function createLambdaVarNode(name: string): LambdaVarNode {
+  return {
+    ...createNodeBase(),
+    type: 'lambdaVar',
+    fields: { name }
+  };
+}
+
+export function createLambdaArgNode(name: string): LambdaArgNode {
+  return {
+    ...createNodeBase(),
+    type: 'lambdaArg',
+    fields: { name, functionHole: false }
+  };
+}
+
+export function createBinOpNode(left: ReductNode, op: OpNode, right: ReductNode): BinOpNode {
+  return {
+    ...createNodeBase(),
+    type: 'binop',
+    subexpressions: { left, op, right }
+  };
+}
+
+export function createOpNode(name: OpNode['fields']['name']): OpNode {
+  return {
+    ...createNodeBase(),
+    type: 'op',
+    locked: true,
+    fields: { name }
+  };
+}
+
+export function createLambdaNode(arg: LambdaArgNode, body: ReductNode): LambdaNode {
+  return {
+    ...createNodeBase(),
+    type: 'lambda',
+    subexpressions: { arg, body }
+  };
+}
+
+export function createApplyNode(callee: ReductNode, argument: ReductNode): ApplyNode {
+  return {
+    ...createNodeBase(),
+    type: 'apply',
+    subexpressions: { callee, argument }
+  };
+}
+
+export function createConditionalNode(condition: ReductNode, positive: ReductNode, negative: ReductNode): ConditionalNode {
+  return {
+    ...createNodeBase(),
+    type: 'conditional',
+    subexpressions: { condition, positive, negative }
+  };
+}
+
+export function createArrayNode(...items: ReductNode[]): ArrayNode {
+  return {
+    ...createNodeBase(),
+    type: 'array',
+    fields: { length: items.length },
+    subexpressions: Object.fromEntries(items.map((item, index) => [index, item]))
+  };
+}
+
+export function createNotNode(value: ReductNode): NotNode {
+  return {
+    ...createNodeBase(),
+    type: 'not',
+    subexpressions: { value }
+  };
+}
+
+export function createMemberNode(array: ReductNode, index: ReductNode): MemberNode {
+  return {
+    ...createNodeBase(),
+    type: 'member',
+    subexpressions: { array, index }
+  };
+}
+
+export function createDefineNode(name: string, params: string[], body: LambdaNode): DefineNode {
+  return {
+    ...createNodeBase(),
+    type: 'define',
+    fields: { name, params },
+    subexpressions: { body }
   };
 }
 
