@@ -1034,6 +1034,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
                     // Prevent people from undoing start of level
                     || act.type === ActionKind.StartLevel
                     || act.type === ActionKind.Cleanup
+                    || act.type === ActionKind.DetectCompletion
                     || act.skipUndo,
         extraState: (state, newState) => {
           const result = {};
