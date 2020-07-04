@@ -1,10 +1,10 @@
-import type { NodeId, NodeMap } from '@/semantics';
+import type { NodeId, NodeMap, Flat } from '@/semantics';
 import {
   BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NumberNode, OpNode, StrNode, NotNode, ApplyNode, ReferenceNode as ReferenceNode 
 } from '@/semantics/defs';
 import type { Semantics } from '@/semantics/transform';
 import {
-  createBoolNode, createNumberNode, createStrNode, getKindForNode 
+  createBoolNode, createNumberNode, createStrNode, getKindForNode, getDefinitionForName, getValueForName 
 } from '@/semantics/util';
 import {
   DRF, withoutParent, withParent, mapIterable 
@@ -86,51 +86,36 @@ export function reduct(semantics: Semantics, views, restorePos) {
     }
 
     case ActionKind.EvalLambda: {
+      const { lambdaNodeId, paramNodeId } = act;
+
       // for now, this is the same thing as beta-reduce, except handled entirely
       // in the reducer where it should be - iaa34
 
-      if (!state.board.has(getRootForNode(act.lambdaNodeId, state.nodes).id))
-        throw new NotOnBoardError(act.lambdaNodeId);
+      if (!state.board.has(getRootForNode(lambdaNodeId, state.nodes).id))
+        throw new NotOnBoardError(lambdaNodeId);
 
-      const lambdaNode = state.nodes.get(act.lambdaNodeId) as DRF<LambdaNode>;
+      const lambdaNode = state.nodes.get(lambdaNodeId) as DRF<LambdaNode>;
 
-      // node that represents lambda argument in function signature
-      const argNode = state.nodes.get(lambdaNode.subexpressions.arg) as DRF<LambdaArgNode>;
-      const argName = argNode.fields.name;
+      let argNodeId: NodeId;
+      let argName: string;
 
-      // node that represents parameter that lambda was called with
-      const paramNode = state.nodes.get(act.paramNodeId) as DRF;
+      state = produce(state, draft => {
+        // node that represents lambda argument in function signature
+        const argNode = draft.nodes.get(lambdaNode.subexpressions.arg) as Flat<LambdaArgNode>;
+        argNode.fields.value = paramNodeId;
+        argNodeId = argNode.id;
+        argName = argNode.fields.name;
+      });
 
-      const addedNodes: DRF[] = [];
-      const lambdaVarNodes: DRF[] = [];
+      // find all of the references who point to this arg
 
-      // replace lambda variables in lambda body with parameter
-      let [
-        mappedBody, 
-        , // arg 2 is not needed
-        mappedNodeMap
-      ] = mapNodeDeep(
+      const referenceNodes = findNodesDeep(
         lambdaNode.subexpressions.body, 
-        state.nodes, 
-        (nodeToMap, nodeMap) => {
-          // we only want to replace lambda variables
-          if (nodeToMap.type !== 'lambdaVar') return [nodeToMap, nodeMap];
-          if (nodeToMap.fields.name !== argName) return [nodeToMap, nodeMap];
-          
-          const [
-            clonedParamNode,
-            clonedDescendantNodes,
-            newNodeMap
-          ] = cloneNodeDeep(paramNode.id, nodeMap, nodeToMap.locked);
-
-          lambdaVarNodes.push(nodeToMap);
-          addedNodes.push(clonedParamNode, ...clonedDescendantNodes);
-
-          return [clonedParamNode, newNodeMap];
-        },
+        state.nodes,
+        (nodeToMatch) => nodeToMatch.type === 'reference' && nodeToMatch.fields.name === argName,
         (nodeToFilter, nodeMap) => {
-          // do not go inside of nested lambda functions
-          // that have the same parameter name
+          // don't bother searching inside of nodes that redefine the name in
+          // their own scope, such as lambdas with the same arg name
           if (nodeToFilter.type === 'lambda') {
             const nodeToFilterArg = nodeMap.get(nodeToFilter.subexpressions.arg) as DRF<LambdaArgNode>;
             if (nodeToFilterArg.fields.name === argName) return false;
@@ -139,69 +124,66 @@ export function reduct(semantics: Semantics, views, restorePos) {
           return true;
         });
 
-      // obtain a list of IDs for param node and descendants
-      const paramNodeDescendants = findNodesDeep(paramNode.id, state.nodes, () => true);
+      const added: Array<[NodeId, NodeId | null]> = [];
+
+      // eval all relevant references and keep track of which nodes are created
+      for (const referenceNode of referenceNodes) {
+        state = program(state, createEvalReference(referenceNode.id));
+        added.push(...state.added);
+      }
+
+      // delete param node and move body outwards
+      const paramNodeDescendants = findNodesDeep(paramNodeId, state.nodes, () => true);
 
       return produce(
-        {
-          ...state,
-          nodes: mappedNodeMap
-        }, 
+        state,
         draft => {
-          draft.added.clear();
+          draft.added = new Map(added);
+          
+          const bodyNode = draft.nodes.get(lambdaNode.subexpressions.body)!;
           
           if (lambdaNode.parent) {
-            mappedBody = withParent(
-              mappedBody, 
-              lambdaNode.parent, 
-              lambdaNode.parentField!
-            );
-  
-            const lambdaParent = draft.nodes.get(lambdaNode.parent)!;
-            (lambdaParent.subexpressions as Record<string, NodeId>)[lambdaNode.parentField!] = mappedBody.id;
-            draft.added.set(mappedBody.id, lambdaNode.id);
-          } else {
-            mappedBody = withoutParent(mappedBody);
+            bodyNode.parent = lambdaNode.parent;
+            bodyNode.parentField = lambdaNode.parentField;
 
-            if (mappedBody.type === 'vtuple') {
-              for (const subExprId of Object.values(mappedBody.subexpressions)) {
-                const subExpr = draft.nodes.get(subExprId as NodeId)!;
+            const lambdaParent = draft.nodes.get(lambdaNode.parent)!;
+            (lambdaParent.subexpressions as Record<string, NodeId>)[lambdaNode.parentField!] = bodyNode.id;
+            draft.added.set(bodyNode.id, lambdaNode.id);
+          } else {
+            bodyNode.parent = null;
+            bodyNode.parentField = null;
+
+            if (bodyNode.type === 'vtuple') {
+              for (const subExprId of Object.values(bodyNode.subexpressions)) {
+                const subExpr = draft.nodes.get(subExprId)!;
                 subExpr.parent = null;
                 subExpr.parentField = null;
-                draft.board.add(subExprId as NodeId);
-                draft.added.set(subExprId as NodeId, lambdaNode.id);
+                draft.board.add(subExprId);
+                draft.added.set(subExprId, lambdaNode.id);
               }
             } else {
-              draft.board.add(mappedBody.id);
-              draft.added.set(mappedBody.id, lambdaNode.id);
+              draft.board.add(bodyNode.id);
+              draft.added.set(bodyNode.id, lambdaNode.id);
             }
           }
 
-          // add evaluated lambda body to list of nodes
-          draft.nodes.set(mappedBody.id, castDraft(mappedBody));
-
           // param node should be consumed from board or toolbox
-          draft.board.delete(paramNode.id);
-          draft.toolbox.delete(paramNode.id);
+          draft.board.delete(paramNodeId);
+          draft.toolbox.delete(paramNodeId);
 
 
           // lambda node is no longer needed, eliminate it
           draft.board.delete(lambdaNode.id);
-          draft.board.delete(argNode.id);
+          draft.board.delete(argNodeId);
 
           // mark these nodes for cleanup
           draft.removed.add(lambdaNode.id);
-          draft.removed.add(argNode.id);
-          draft.removed.add(paramNode.id);
+          draft.removed.add(argNodeId);
+          draft.removed.add(paramNodeId);
 
           // descendants are no longer needed, eliminate them
           for (const paramNodeDescendant of paramNodeDescendants) {
             draft.removed.add(paramNodeDescendant.id);
-          }
-
-          // lambda var nodes are no longer needed, eliminate them
-          for (const lambdaVarNode of lambdaVarNodes) {
-            draft.removed.add(lambdaVarNode.id);
           }
         });
     }
@@ -485,18 +467,13 @@ export function reduct(semantics: Semantics, views, restorePos) {
         throw new NotOnBoardError(referenceNodeId);
 
       const referenceNode = state.nodes.get(referenceNodeId) as DRF<ReferenceNode>;
-      const targetId = state.globals.get(referenceNode.fields.name);
+      const targetId = getValueForName(referenceNode.fields.name, referenceNode, state);
 
-      if (typeof targetId === 'undefined')
+      if (targetId === undefined || targetId === null)
         throw new Error(`The name ${referenceNode.fields.name} is not defined in this scope`);
 
-      const targetNode = state.nodes.get(targetId)!;
-
-      if (targetNode.type !== 'define')
-        throw new WrongTypeError(targetId, 'define', targetNode.type);
-
       const [clonedNode, , newNodeMap] = 
-        cloneNodeDeep(targetNode.subexpressions.body, state.nodes);
+        cloneNodeDeep(targetId, state.nodes);
 
       state = { ...state, nodes: newNodeMap };
       

@@ -1,55 +1,44 @@
-import { NodeId } from '@/semantics';
-import { ReferenceNode, InvocationNode } from '@/semantics/defs';
-import { DRF } from '@/util/helper';
+import { ReferenceNode } from '@/semantics/defs';
+import { DRF, DeepReadonly } from '@/util/helper';
 import '@resources/style/react/projection/reference.scss';
 import React, { FunctionComponent } from 'react';
-import { StageProjection } from './base';
+import { getDefinitionForName } from '@/semantics/util';
+import { connect } from 'react-redux';
+import cx from 'classnames';
+import { GlobalState } from '@/reducer/state';
 
 interface ReferenceProjectionOwnProps {
-  node: DRF<ReferenceNode | InvocationNode>;
+  node: DRF<ReferenceNode>;
 }
 
-/**
- * TODO It might be more accurate to call this node/projection 'invocation', since
- * it's just used for invoking functions.
- */
+interface ReferenceProjectionStoreProps {
+  /** Is true when the name of this reference is found in the current scope. */
+  valid: boolean;
+}
 
-export const ReferenceProjection: FunctionComponent<ReferenceProjectionOwnProps> = 
+type ReferenceProjectionProps = 
+  ReferenceProjectionOwnProps &
+  ReferenceProjectionStoreProps;
+
+const ReferenceProjectionImpl: FunctionComponent<ReferenceProjectionProps> = 
   (props) => {
-    let paramIds: Record<string, NodeId> | null = null;
-
-    if ('params' in props.node.fields) {
-      paramIds = {};
-      for (const param of props.node.fields.params) {
-        paramIds[param] = props.node.subexpressions[`arg_${param}`];
-      }
-    }
+    const { valid } = props;
 
     return (
-      <div className='projection invocation'>
-        <div className='invocation-signature'>
-          <div className='invocation-name'>
-            {props.node.fields.name}
-          </div>
-          {
-            paramIds
-              ? (
-                <ul className='invocation-params'>
-                  {
-                    Object
-                      .entries(paramIds)
-                      .map(([param, id]) => 
-                        <li className='invocation-param' key={param}>
-                          <StageProjection nodeId={id}/>
-                        </li>
-                      )
-                  }
-                </ul>
-              )
-              : null
-          }
+      <div className={cx('projection reference', { valid })}>
+        <div className='reference-name'>
+          {props.node.fields.name}
         </div>
       </div>
     )
   };
+
+export const ReferenceProjection = connect(
+  (
+    store: DeepReadonly<GlobalState>, 
+    ownProps: ReferenceProjectionOwnProps
+  ) => ({
+    valid: getDefinitionForName(ownProps.node.fields.name, ownProps.node, store.program.$present) !== null
+  })
+)(ReferenceProjectionImpl);
   

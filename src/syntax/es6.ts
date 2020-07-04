@@ -1,15 +1,13 @@
+import { ReductNode } from '@/semantics';
+import { LambdaNode } from '@/semantics/defs';
 import { Semantics } from '@/semantics/transform';
+import {
+  createApplyNode, createArrayNode, createBinOpNode, createBoolNode, createConditionalNode, createDefineNode, createLambdaArgNode, createLambdaNode, createMemberNode, createMissingNode, createNotNode, createNumberNode, createOpNode, createReferenceNode, createStrNode, createSymbolNode, createVtupleNode 
+} from '@/semantics/util';
+import * as esprima from 'esprima';
 // eslint-disable-next-line import/no-unresolved
 import type * as estree from 'estree';
-import * as esprima from 'esprima';
-import { ReductNode } from '@/semantics';
 import * as progression from '../game/progression';
-import {
-  createVtupleNode, createMissingNode, createSymbolNode, createStrNode, createNumberNode, createBoolNode, createLambdaVarNode, createLambdaArgNode, createLambdaNode, createApplyNode, createConditionalNode, createArrayNode, createOpNode, createBinOpNode, createNotNode, createDefineNode, createMemberNode 
-} from '@/semantics/util';
-import {
-  LambdaVarNode, LambdaNode, ReferenceNode, MissingNode 
-} from '@/semantics/defs';
 
 function modifier(ast: esprima.Program) {
   if (ast.body.length !== 2) return null;
@@ -76,13 +74,13 @@ export class ES6Parser {
         } else if (modName.name === '__argumentAnnotated') {
           result.params = modName.params;
         } else {
-          return fail(`Unrecognized expression modifier ${modName}`, program);
+          throw new Error(`Unrecognized expression modifier ${modName}`);
         }
 
         return result;
       }
 
-      return fail('Cannot parse multi-statement programs at the moment.', program);
+      throw new Error('Cannot parse multi-statement programs at the moment.');
     }
 
     public parseNode(node: estree.Statement | estree.Declaration | estree.Expression, macros): ReductNode {
@@ -103,42 +101,37 @@ export class ES6Parser {
           throw new Error('Cannot parse multi-statement programs.');
 
       case 'Identifier': {
+        const name = node.name;
         if (node.name === '_') return createMissingNode();
 
-        if (node.name === '__defineAttach') {
-          // TODO: phase this out, throw an error
-          return this.semantics.defineAttach();
-        }
-
         // Each macro is a thunk
-        const macroName = node.name;
-        if (macros && macros[macroName]) return macros[macroName]();
+        if (macros && macros[name]) return macros[name]();
 
-        if (node.name === 'STAR')
+        if (name === 'STAR')
           return createSymbolNode('star');
 
-        if (node.name === 'RECT')
+        if (name === 'RECT')
           return createSymbolNode('rect');
 
-        if (node.name === 'TRIANGLE')
+        if (name === 'TRIANGLE')
           return createSymbolNode('triangle');
 
-        if (node.name === 'CIRCLE')
+        if (name === 'CIRCLE')
           return createSymbolNode('circle');
 
         // TODO: phase out xx and xxx in favour of __tuple(x, x)
-        if (node.name === 'xx') {
+        if (name === 'xx') {
           return createVtupleNode(
-            createLambdaVarNode('x'),
-            createLambdaVarNode('x')
+            createReferenceNode('x'),
+            createReferenceNode('x')
           );
         }
 
-        if (node.name === 'xxx') {
+        if (name === 'xxx') {
           return createVtupleNode(
-            createLambdaVarNode('x'),
-            createLambdaVarNode('x'),
-            createLambdaVarNode('x')
+            createReferenceNode('x'),
+            createReferenceNode('x'),
+            createReferenceNode('x')
           );
         }
 
@@ -153,7 +146,7 @@ export class ES6Parser {
         }
         */
 
-        return createLambdaVarNode(macroName);
+        return createReferenceNode(name);
       }
 
       case 'Literal': {
@@ -181,7 +174,7 @@ export class ES6Parser {
           // Implement capture of bindings
           const argName = node.params[0].name;
           const newMacros = {};
-          newMacros[argName] = () => createLambdaVarNode(argName);
+          newMacros[argName] = () => createReferenceNode(argName);
           const body = this.parseNode(node.body, Object.assign(macros, newMacros));
           return createLambdaNode(createLambdaArgNode(argName), body);
         }

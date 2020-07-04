@@ -1,4 +1,4 @@
-import type { BaseNode, ReductNode, Flat, FlatReductNode } from '..';
+import type { BaseNode, ReductNode, Flat, FlatReductNode, NodeId } from '..';
 import * as fx from '../../gfx/fx';
 import { genericBetaReduce } from '../core';
 import type { NodeDef } from './base';
@@ -19,6 +19,11 @@ export interface LambdaArgNode extends BaseNode {
   fields: {
     name: string;
     functionHole: any;
+
+    /** Only to be set when the lambda is being evaluated. Allows reference
+     * nodes to obtain the ID of the parameter that the lambda is being called
+     * with. */
+    value: NodeId | null;
   };
 }
 
@@ -71,7 +76,7 @@ export const lambda: NodeDef<LambdaNode> = {
 };
 
 export const lambdaArg: NodeDef<LambdaArgNode> = {
-  fields: ['name', 'functionHole'],
+  fields: ['name', 'functionHole', 'value'],
   subexpressions: [],
   targetable: (semant, state, expr) => {
     const nodes = state.nodes;

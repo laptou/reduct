@@ -277,10 +277,15 @@ function initialize() {
         });
       } else if (stg.semantics
                      && !stg.semantics.mightBeCompleted(state, (s) => level.checkVictory(s, es6))) {
-        Logging.log('dead-end', {
-          final_state: level.serialize(state, es6)
-        });
-        stg.animateStuck();
+        try {
+          Logging.log('dead-end', {
+            final_state: level.serialize(state, es6)
+          });
+          stg.animateStuck();
+        } catch {
+          // TODO: remove this whole block
+          // just need it to stop erroring b/c stg.animateStuck() is not a function
+        }
       }
     }
   });

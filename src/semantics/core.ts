@@ -28,7 +28,7 @@ export const genericFlatten: GenericNodeCreator<(expr: ReductNode) => Array<Flat
 
         expr.subexpressions[field].parent = expr.id;
         expr.subexpressions[field].parentField = field;
-        result = result.concat(flatten(expr.subexpressions[field]));
+        result.push(...flatten(expr.subexpressions[field]));
         expr.subexpressions[field] = expr.subexpressions[field].id;
       }
 

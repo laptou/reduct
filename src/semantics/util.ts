@@ -1,6 +1,6 @@
 import { DeepReadonly, dethunk, DRF } from '@/util/helper';
 import { nextId } from '@/util/nodes';
-import { NodeMap, ReductNode } from '.';
+import { NodeMap, ReductNode, NodeId } from '.';
 import { apply, ApplyNode } from './defs/apply';
 import { array, ArrayNode } from './defs/array';
 import { autograder } from './defs/autograder';
@@ -16,11 +16,12 @@ import { letExpr } from './defs/letExpr';
 import { member, MemberNode } from './defs/member';
 import { missing, MissingNode } from './defs/missing';
 import { not, NotNode } from './defs/not';
-import { reference } from './defs/reference';
+import { reference, ReferenceNode } from './defs/reference';
 import {
   boolean, BoolNode, dynamicVariant, number, NumberNode, ReductSymbol, string, StrNode, symbol, SymbolNode, unsol 
 } from './defs/value';
 import { VTupleNode } from './transform';
+import { RState } from '@/reducer/state';
 
 /**
  * Creates a partial node. Helper for "create node" functions to avoid
@@ -101,7 +102,7 @@ export function createLambdaArgNode(name: string): LambdaArgNode {
   return {
     ...createNodeBase(),
     type: 'lambdaArg',
-    fields: { name, functionHole: false }
+    fields: { name, functionHole: false, value: null }
   };
 }
 
@@ -180,6 +181,15 @@ export function createDefineNode(name: string, params: string[], body: LambdaNod
   };
 }
 
+export function createReferenceNode(name: string): ReferenceNode {
+  return {
+    ...createNodeBase(),
+    type: 'reference',
+    fields: { name }
+  };
+}
+
+
 /**
  * What kind of expression (``value``, ``expression``, ``statement``,
  * ``syntax``, or ``placeholder``). This is important—only an
@@ -215,4 +225,81 @@ export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKin
   case 'vtuple': return 'expression';
   default: throw new Error(`unknown node of type ${node.type}`);
   }
+}
+
+/**
+ * Searches for `name` in the scope of `node`.
+ *
+ * @param name The name to look for in the scope of `node`.
+ * @param node The node where we should begin searching for the definition of
+ * `name`.
+ * @param state The current game state.
+ * @returns The ID of the node which corresponds to `name` in the current scope,
+ * or null if there is no such node.
+ */
+export function getDefinitionForName(
+  name: string, 
+  node: DRF, 
+  state: DeepReadonly<RState>
+): NodeId | null {
+  let current = node;
+
+  while (current) {
+    if ('scope' in current) {
+    // TODO: implement scope
+    }
+
+    // special case for lambda arg nodes until scope is implemented
+    if (current.type === 'lambda') {
+      const arg = state.nodes.get(current.subexpressions.arg) as DRF<LambdaArgNode>;
+
+      // we found something with this name
+      if (arg.fields.name === name) {
+        return arg.id;
+      }
+    }
+
+    if (!current.parent)
+      break;
+
+    current = state.nodes.get(current.parent)!;
+  }
+
+  if (state.globals.has(name)) {
+    return state.globals.get(name)!;
+  }
+
+  return null;
+}
+
+
+/**
+ * Searches for `name` in the scope of `node`. If it is found, returns the
+ * corresponding value. This is different from getDefinitionForName because it
+ * will return the body of a definition node instead of the definition node
+ * itself.
+ *
+ * @param name The name to look for in the scope of `node`.
+ * @param node The node where we should begin searching for the definition of
+ * `name`.
+ * @param state The current game state.
+ * @returns The ID of the node which corresponds to `name` in the current scope,
+ * or null if there is no such node.
+ */
+export function getValueForName(
+  name: string, 
+  node: DRF, 
+  state: DeepReadonly<RState>
+): NodeId | null {
+  const definitionId = getDefinitionForName(name, node, state);
+  if (definitionId === null) return null;
+
+  const definitionNode = state.nodes.get(definitionId)!;
+  if (definitionNode.type === 'define')
+    return definitionNode.subexpressions.body;
+
+  if (definitionNode.type === 'lambdaArg')
+    return definitionNode.fields.value;
+
+  return definitionNode.id;
 }
