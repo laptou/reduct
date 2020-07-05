@@ -1,228 +1,232 @@
+import { BaseNode, ReductNode } from '..';
 import type { NodeDef } from './base';
-import { BaseNode, NodeId } from '..';
 
 export interface OpNode extends BaseNode {
-    type: 'op';
-    name: any;
+  type: 'op';
+  locked: true;
+  fields: { name: '+' | '-' | '<' | '>' | '==' | '&&' | '||' };
 }
 
 export const op: NodeDef<OpNode> = {
-    kind: 'syntax',
-    fields: ['name'],
-    subexpressions: [],
-    projection: {
-        type: 'text',
-        text: '{name}'
-    }
+  kind: 'syntax',
+  fields: ['name'],
+  subexpressions: [],
+  projection: {
+    type: 'text',
+    text: '{name}'
+  }
 };
 
 export interface BinOpNode extends BaseNode {
-    type: 'binop';
-    left: NodeId;
-    op: NodeId;
-    right: NodeId;
+  type: 'binop';
+
+  subexpressions: {
+    left: ReductNode;
+    op: OpNode;
+    right: ReductNode;
+  };
 }
 
 export const binop: NodeDef<BinOpNode> = {
-    kind: 'expression',
-    fields: [],
-    subexpressions: ['left', 'op', 'right'],
-    projection: {
-        type: 'case',
-        key: (nodes, expr) => nodes.get(expr.get('op')).get('name'),
-        cases: {
-            '+': {
-                type: 'default',
-                shape: '()',
-                color: '#ffcc00'
-            },
-            '-': {
-                type: 'default',
-                shape: '()',
-                color: '#ffcc00'
-            },
-            '>': {
-                type: 'default',
-                shape: '()',
-                color: '#ffcc00'
-            },
-            '<': {
-                type: 'default',
-                shape: '()',
-                color: '#ffcc00'
-            },
-            '==': {
-                type: 'default',
-                shape: '<>',
-                color: 'hotpink',
-                padding: {
-                    left: 25,
-                    right: 25,
-                    inner: 10,
-                    top: 0,
-                    bottom: 0
-                }
-            },
-            '&&': {
-                type: 'default',
-                shape: '<>',
-                color: 'hotpink',
-                padding: {
-                    left: 25,
-                    right: 25,
-                    inner: 10,
-                    top: 0,
-                    bottom: 0
-                }
-            },
-            '||': {
-                type: 'default',
-                shape: '<>',
-                color: 'hotpink',
-                padding: {
-                    left: 25,
-                    right: 25,
-                    inner: 10,
-                    top: 0,
-                    bottom: 0
-                }
-            }
+  kind: 'expression',
+  fields: [],
+  subexpressions: ['left', 'op', 'right'],
+  projection: {
+    type: 'case',
+    key: (nodes, expr) => nodes.get(expr.subexpressions.op)!.fields.name,
+    cases: {
+      '+': {
+        type: 'default',
+        shape: '()',
+        color: '#ffcc00'
+      },
+      '-': {
+        type: 'default',
+        shape: '()',
+        color: '#ffcc00'
+      },
+      '>': {
+        type: 'default',
+        shape: '()',
+        color: '#ffcc00'
+      },
+      '<': {
+        type: 'default',
+        shape: '()',
+        color: '#ffcc00'
+      },
+      '==': {
+        type: 'default',
+        shape: '<>',
+        color: 'hotpink',
+        padding: {
+          left: 25,
+          right: 25,
+          inner: 10,
+          top: 0,
+          bottom: 0
         }
-    },
-    stepSound: (semant, state, expr) => {
-        const op = state.get('nodes').get(expr.get('op'));
-        if (op.get('name') === '==') {
-            return ['shatter1', 'heatup'];
+      },
+      '&&': {
+        type: 'default',
+        shape: '<>',
+        color: 'hotpink',
+        padding: {
+          left: 25,
+          right: 25,
+          inner: 10,
+          top: 0,
+          bottom: 0
         }
-        return ['heatup'];
-    },
-    type: (semant, state, types, expr) => {
-        const nodes = state.get('nodes');
-        const opExpr = nodes.get(expr.get('op'));
-        const id = expr.get('id');
-        const result = new Map();
-        if (!opExpr) {
-            result.set(id, 'unknown');
+      },
+      '||': {
+        type: 'default',
+        shape: '<>',
+        color: 'hotpink',
+        padding: {
+          left: 25,
+          right: 25,
+          inner: 10,
+          top: 0,
+          bottom: 0
         }
-
-        const op = opExpr.get('name');
-        if (op === '==' || op === '||' || op === '&&') {
-            result.set(id, 'boolean');
-
-            if (op === '||' || op === '&&') {
-                result.set(expr.get('left'), 'boolean');
-                result.set(expr.get('right'), 'boolean');
-            }
-        } else if (op === '+') {
-            // Not setting a type for '+',
-            // thereby keeping it undefined. This
-            // is necessary for concatenation of strings to work in an if else block.
-            // If we do not keep it undefined, then the types of the first and second slots
-            // in the if block do not match.
-            // TODO: (sameer) perhaps can be resolved by creating a new union type for
-            //  strings and numbers?
-        } else {
-            result.set(id, 'number');
-            result.set(expr.get('left'), 'number');
-            result.set(expr.get('right'), 'number');
-        }
-
-        return {
-            types: result,
-            // TODO: less ad-hoc
-            complete: (types.get(expr.get('left')) === 'number'
-                           || nodes.get(expr.get('left')).get('type') === 'lambdaVar')
-                    && (types.get(expr.get('right')) === 'number'
-                     || nodes.get(expr.get('right')).get('type') === 'lambdaVar')
-        };
-    },
-    // Invariant: all subexpressions are values or syntax;
-    // none are missing. Return the first subexpression, if
-    // any, that is blocking evaluation.
-    validateStep: (semant, state, expr) => {
-        const nodes = state.get('nodes');
-        const left = expr.get('left');
-        const leftExpr = nodes.get(left);
-        const right = expr.get('right');
-        const rightExpr = nodes.get(right);
-        const op = nodes.get(expr.get('op')).get('name');
-
-        if (op === '+') {
-            if (leftExpr.get('ty') !== 'number' && leftExpr.get('type') !== 'string') {
-                return [left, '+ can only add numbers or strings'];
-            }
-            if (rightExpr.get('ty') !== 'number' && rightExpr.get('type') !== 'string') {
-                return [right, '+ can only add numbers or strings'];
-            }
-            if (leftExpr.get('ty') === 'number' && rightExpr.get('type') === 'string') {
-                return [right, 'cannot add a number and a string'];
-            }
-            if (leftExpr.get('type') === 'string' && rightExpr.get('ty') === 'number') {
-                return [right, 'cannot add a number and a string'];
-            }
-        }
-
-        if (op === '-' || op === '>' || op === '<') {
-            if (leftExpr.get('ty') !== 'number') {
-                return [left, `${op} can only ${op === '+' ? 'add' : 'subtract'} numbers!`];
-            }
-            if (rightExpr.get('ty') !== 'number') {
-                return [right, `${op} can only ${op === '+' ? 'add' : 'subtract'} numbers!`];
-            }
-        } else if (op === '==') {
-            if (leftExpr.get('ty') !== rightExpr.get('ty')) {
-                return [right, 'Both sides of == need to be the same kind of thing.'];
-            }
-        } else if (op === '||' || op === '&&') {
-            if (leftExpr.get('ty') !== 'boolean') {
-                return [left, `${op} can only ${op === '||' ? 'OR' : 'AND'} booleans!`];
-            }
-            if (rightExpr.get('ty') !== 'boolean') {
-                return [right, `${op} can only ${op === '||' ? 'OR' : 'AND'} booleans!`];
-            }
-        }
-
-        return null;
-    },
-    // TODO: switch to Immutable.Record to clean this up
-    smallStep: (semant, stage, state, expr) => {
-        const nodes = state.get('nodes');
-        const op = nodes.get(expr.get('op')).get('name');
-        if (op === '+') {
-            if (nodes.get(expr.get('left')).get('type') === 'number') {
-                return semant.number(nodes.get(expr.get('left')).get('value')
-                        + nodes.get(expr.get('right')).get('value'));
-            }
-
-            return semant.string(nodes.get(expr.get('left')).get('value')
-                        + nodes.get(expr.get('right')).get('value'));
-        }
-        if (op === '-') {
-            return semant.number(nodes.get(expr.get('left')).get('value')
-                                     - nodes.get(expr.get('right')).get('value'));
-        }
-        if (op === '>') {
-            return semant.bool(nodes.get(expr.get('left')).get('value')
-                                   > nodes.get(expr.get('right')).get('value'));
-        }
-
-        if (op === '<') {
-            return semant.bool(nodes.get(expr.get('left')).get('value')
-                                   < nodes.get(expr.get('right')).get('value'));
-        }
-        if (op === '==') {
-            return semant.bool(semant.deepEqual(nodes,
-                nodes.get(expr.get('left')),
-                nodes.get(expr.get('right'))));
-        }
-        if (op === '||') {
-            return semant.bool(nodes.get(expr.get('left')).get('value')
-                                   || nodes.get(expr.get('right')).get('value'));
-        }
-        if (op === '&&') {
-            return semant.bool(nodes.get(expr.get('left')).get('value')
-                                   && nodes.get(expr.get('right')).get('value'));
-        }
-        throw `Unrecognized operator ${op}`;
+      }
     }
+  },
+  stepSound: (semant, state, expr) => {
+    const op = state.nodes.get(expr.subexpressions.op);
+    if (op.fields.name === '==') {
+      return ['shatter1', 'heatup'];
+    }
+    return ['heatup'];
+  },
+  type: (semant, state, types, expr) => {
+    const nodes = state.nodes;
+    const opExpr = nodes.get(expr.subexpressions.op);
+    const id = expr.id;
+    const result = new Map();
+    if (!opExpr) {
+      result.set(id, 'unknown');
+    }
+
+    const op = opExpr.fields.name;
+    if (op === '==' || op === '||' || op === '&&') {
+      result.set(id, 'boolean');
+
+      if (op === '||' || op === '&&') {
+        result.set(expr.left, 'boolean');
+        result.set(expr.right, 'boolean');
+      }
+    } else if (op === '+') {
+      // Not setting a type for '+',
+      // thereby keeping it undefined. This
+      // is necessary for concatenation of strings to work in an if else block.
+      // If we do not keep it undefined, then the types of the first and second slots
+      // in the if block do not match.
+      // TODO: (sameer) perhaps can be resolved by creating a new union type for
+      //  strings and numbers?
+    } else {
+      result.set(id, 'number');
+      result.set(expr.subexpressions.left, 'number');
+      result.set(expr.subexpressions.right, 'number');
+    }
+
+    return {
+      types: result,
+      // TODO: less ad-hoc
+      complete: (types.get(expr.subexpressions.left) === 'number'
+                           || nodes.get(expr.subexpressions.left).type === 'lambdaVar')
+                    && (types.get(expr.subexpressions.right) === 'number'
+                     || nodes.get(expr.subexpressions.right).type === 'lambdaVar')
+    };
+  },
+  // Invariant: all subexpressions are values or syntax;
+  // none are missing. Return the first subexpression, if
+  // any, that is blocking evaluation.
+  validateStep: (semant, state, expr) => {
+    const nodes = state.nodes;
+    const left = expr.subexpressions.left;
+    const leftExpr = nodes.get(left);
+    const right = expr.subexpressions.right;
+    const rightExpr = nodes.get(right);
+    const op = nodes.get(expr.subexpressions.op).fields.name;
+
+    if (op === '+') {
+      if (leftExpr.ty !== 'number' && leftExpr.type !== 'string') {
+        return [left, '+ can only add numbers or strings'];
+      }
+      if (rightExpr.ty !== 'number' && rightExpr.type !== 'string') {
+        return [right, '+ can only add numbers or strings'];
+      }
+      if (leftExpr.ty === 'number' && rightExpr.type === 'string') {
+        return [right, 'cannot add a number and a string'];
+      }
+      if (leftExpr.type === 'string' && rightExpr.ty === 'number') {
+        return [right, 'cannot add a number and a string'];
+      }
+    }
+
+    if (op === '-' || op === '>' || op === '<') {
+      if (leftExpr.ty !== 'number') {
+        return [left, `${op} can only ${op === '+' ? 'add' : 'subtract'} numbers!`];
+      }
+      if (rightExpr.ty !== 'number') {
+        return [right, `${op} can only ${op === '+' ? 'add' : 'subtract'} numbers!`];
+      }
+    } else if (op === '==') {
+      if (leftExpr.ty !== rightExpr.ty) {
+        return [right, 'Both sides of == need to be the same kind of thing.'];
+      }
+    } else if (op === '||' || op === '&&') {
+      if (leftExpr.ty !== 'boolean') {
+        return [left, `${op} can only ${op === '||' ? 'OR' : 'AND'} booleans!`];
+      }
+      if (rightExpr.ty !== 'boolean') {
+        return [right, `${op} can only ${op === '||' ? 'OR' : 'AND'} booleans!`];
+      }
+    }
+
+    return null;
+  },
+  // TODO: switch to Immutable.Record to clean this up
+  smallStep: (semant, stage, state, expr) => {
+    const nodes = state.nodes;
+    const op = nodes.get(expr.subexpressions.op).fields.name;
+    if (op === '+') {
+      if (nodes.get(expr.subexpressions.left).type === 'number') {
+        return semant.number(nodes.get(expr.subexpressions.left).fields.value
+                        + nodes.get(expr.subexpressions.right).fields.value);
+      }
+
+      return semant.string(nodes.get(expr.subexpressions.left).fields.value
+                        + nodes.get(expr.subexpressions.right).fields.value);
+    }
+    if (op === '-') {
+      return semant.number(nodes.get(expr.subexpressions.left).fields.value
+                                     - nodes.get(expr.subexpressions.right).fields.value);
+    }
+    if (op === '>') {
+      return semant.boolean(nodes.get(expr.subexpressions.left).fields.value
+                                   > nodes.get(expr.subexpressions.right).fields.value);
+    }
+
+    if (op === '<') {
+      return semant.boolean(nodes.get(expr.subexpressions.left).fields.value
+                                   < nodes.get(expr.subexpressions.right).fields.value);
+    }
+    if (op === '==') {
+      return semant.boolean(semant.deepEqual(nodes,
+        nodes.get(expr.subexpressions.left),
+        nodes.get(expr.subexpressions.right)));
+    }
+    if (op === '||') {
+      return semant.boolean(nodes.get(expr.subexpressions.left).fields.value
+                                   || nodes.get(expr.subexpressions.right).fields.value);
+    }
+    if (op === '&&') {
+      return semant.boolean(nodes.get(expr.subexpressions.left).fields.value
+                                   && nodes.get(expr.subexpressions.right).fields.value);
+    }
+    throw `Unrecognized operator ${op}`;
+  }
 };

@@ -19,7 +19,7 @@
             "syntax": [],
             "textgoal": "Move the def block to the left box to define the word {star}!",
             "toolbox": [
-                "star"
+                "STAR"
             ],
             "tutorial": "defn-intro"
         },

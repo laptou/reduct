@@ -8,12 +8,6 @@
             "board": [
                 "[_, _, _]"
             ],
-            "defines": [
-                "function get(a, i) { return 0;}",
-                "function fold(f, a, init) { return 0;}",
-                "function slice(array, begin, end) { return 0;}",
-                "function set(a, i, value) { return 0;}"
-            ],
             "fade": {},
             "globals": {},
             "goal": [
@@ -37,16 +31,12 @@
             "animationScales": {},
             "board": [
                 "get",
-                "[A, B, _, D]"
-            ],
-            "defines": [
-                "function map(f, a) { return a; }",
-                "function length(a) { return 0; }"
+                "[STAR, RECT, _, CIRCLE]"
             ],
             "fade": {},
             "globals": {},
             "goal": [
-                "C"
+                "TRIANGLE"
             ],
             "hideGlobals": [],
             "input": [],
@@ -59,13 +49,14 @@
                 "2",
                 "3",
                 "4",
-                "C"
+                "TRIANGLE",
+                "(_)(_, _)"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "map(addOne, [1, _, 4])"
+                "map([1, _, 4], addOne)"
             ],
             "fade": {},
             "globals": {},
@@ -88,7 +79,7 @@
         {
             "animationScales": {},
             "board": [
-                "map(_, [1, 2, 4, 8])"
+                "map([1, 2, 4, 8], _)"
             ],
             "fade": {},
             "globals": {},
@@ -127,17 +118,15 @@
                 "[A,B,C]",
                 "[]",
                 "[true]",
-                "__unlimited; length"
+                "__unlimited; length",
+                "(_)(_)"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "map(length, _)",
-                "[[A], _, _]"
-            ],
-            "defines": [
-                "function concat(left,right) { return a; }"
+                "map(_, length)",
+                "[[STAR], _, _]"
             ],
             "fade": {},
             "globals": {},
@@ -151,7 +140,7 @@
             "textgoal": "An array can hold other arrays",
             "toolbox": [
                 "0",
-                "[A, B]",
+                "[STAR, RECT]",
                 "[]"
             ]
         },

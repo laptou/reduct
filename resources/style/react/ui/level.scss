@@ -1,0 +1,11 @@
+@use '../theme';
+@use 'base';
+
+#reduct-level-info {
+  @extend %ui-panel-top;
+  @include base.ui-panel-bordered(theme.$accent-4-inverse-default);
+  z-index: 150;
+  flex-flow: column nowrap;
+  grid-row: 1;
+  grid-column: 4;
+}

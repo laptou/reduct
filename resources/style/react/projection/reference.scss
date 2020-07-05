@@ -1,0 +1,26 @@
+@use '../theme';
+@use 'layout';
+@use 'fx';
+@use 'sass:color';
+
+.projection.reference {
+  @extend %projection-standalone;
+  @include fx.projection-shadow-box();
+  
+  align-items: center;
+  padding: 2px;
+  color: color.change(theme.$projection-foreground-inverse, $alpha: 0.5);
+  line-height: 1;
+  background-color: white;
+  border-radius: 0.5rem;
+
+  &.valid {
+    color: theme.$projection-foreground-inverse;
+  }
+
+  .reference-name {
+    padding: 0.25rem;
+    border: 1px dashed rgba(black, 0.5);
+    border-radius: 0.5rem;
+  }
+}

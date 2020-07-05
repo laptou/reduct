@@ -1,0 +1,14 @@
+@use 'layout';
+@use 'fx';
+
+.projection.vtuple {
+  @extend %projection-standalone;
+  flex-flow: column nowrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vtuple-item {
+  margin: 0.125rem 0;
+}

@@ -1,0 +1,7 @@
+@use 'layout';
+
+.projection.op {
+  @extend %value-container;
+
+  height: 1.5rem;
+}

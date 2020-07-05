@@ -1,0 +1,20 @@
+@use 'layout';
+@use 'fx';
+@use '../theme';
+
+.projection.symbol {
+  @extend %projection-standalone;
+  @extend %value-container;
+  @include fx.projection-shadow-irregular();
+
+  .symbol-view {
+    height: 1.5rem;
+    overflow: visible;
+  }
+
+  .symbol-item {
+    fill: theme.$projection-color-key;
+    stroke: black;
+    stroke-width: 2px;
+  }
+}

@@ -1,0 +1,28 @@
+@use '../theme';
+@use 'layout';
+@use 'fx';
+
+.projection.lambda {
+  @extend %projection-standalone;
+  @include fx.projection-shadow-box();
+
+  padding: 0.25rem 0.5rem;
+  color: theme.$projection-foreground-inverse;
+  background-color: white;
+  border-radius: 0.25rem;
+
+  & > .arg, & > .arrow, & > .body {
+    @extend %value-container;
+  }
+
+  // make the arg bigger so it's easier to drop things on it
+  & > .arg {
+    margin: -1rem;
+    padding: 1rem;
+    background-color: transparent;
+  }
+
+  &.hover {
+    color: theme.$projection-color-function;
+  }
+}

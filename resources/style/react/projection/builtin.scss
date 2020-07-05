@@ -1,0 +1,19 @@
+@use '../theme';
+@use 'layout';
+@use 'fx';
+@use 'sass:color';
+
+.projection.builtin-reference {
+  @extend %projection-standalone;
+  @include fx.projection-shadow-box();
+  
+  align-items: center;
+  padding: 2px;
+  color: theme.$projection-color-builtin;
+  line-height: 1;
+  background-color: white;
+  
+  .builtin-reference-name {
+    padding: 0.25rem;
+  }
+}

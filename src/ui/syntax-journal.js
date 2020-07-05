@@ -3,8 +3,8 @@ import * as gfx from '../gfx/core';
 import * as animate from '../gfx/animate';
 import * as progression from '../game/progression';
 import Loader from '../loader';
-import * as action from '../reducer/action';
-import { nextId } from '../reducer/reducer';
+import * as action from '../store/action';
+import { nextId } from '../store/reducer';
 
 export default class SyntaxJournal {
     constructor(stage) {

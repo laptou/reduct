@@ -138,7 +138,7 @@
         {
             "animationScales": {},
             "board": [
-                "['star', 'triangle', 'rect']",
+                "['STAR', 'TRIANGLE', 'RECT']",
                 "indexOf(_, _)",
                 "function indexOf(list, value) { return _ == _ ? _ : (_ + indexOf(_ , value)); }",
                 "0",
@@ -162,9 +162,9 @@
             "syntax": [],
             "textgoal": "Define a function that returns the index of the item in the list.",
             "toolbox": [
-                "'star'",
-                "'rect'",
-                "'triangle'",
+                "STAR",
+                "RECT",
+                "TRIANGLE",
                 "__unlimited; list"
             ]
         }

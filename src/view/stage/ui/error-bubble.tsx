@@ -1,0 +1,51 @@
+import {
+  MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, NodeError, CircularCallError, BuiltInError, WrongBuiltInParamsCountError, AlreadyFullyBoundError 
+} from '@/store/errors';
+import React from 'react';
+import { Bubble } from './bubble';
+
+interface ErrorBubble {
+  error: NodeError | null;
+}
+
+export const ErrorBubble = ({ error }: ErrorBubble) => {
+  let message = '';
+
+  if (error instanceof WrongTypeError) {
+    message = `We need a ${error.expected}, but we found a ${error.actual}`;
+  }
+
+  if (error instanceof NotOnBoardError) {
+    message = 'You need to put this on the board before doing anything with it.';
+  }
+
+  if (error instanceof MissingNodeError) {
+    message = 'You need to fill in this slot.';
+  }
+
+  if (error instanceof UnknownNameError) {
+    message = `We don't know what '${error.name}' is in this context.`;
+  }
+
+  if (error instanceof CircularCallError) {
+    message = 'You can\'t call a function with itself as a parameter.';
+  }
+
+  if (error instanceof AlreadyFullyBoundError) {
+    message = 'This function doesn\'t need any more parameters.';
+  }
+
+  if (error instanceof WrongBuiltInParamsCountError) {
+    message = `This function needs ${error.expected} parameters, but you only gave it ${error.actual}.`;
+  }
+
+  if (error instanceof BuiltInError) {
+    message = error.message;
+  }
+
+  return (
+    <Bubble className='reduct-error-bubble bottom'>
+      {message}
+    </Bubble>
+  );
+}
