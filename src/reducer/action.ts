@@ -1,7 +1,6 @@
 import { NodeId, NodeMap, ReductNode } from '@/semantics';
 import BaseStage from '@/stage/basestage';
 import Loader from '@/loader';
-import * as progression from '@/game/progression';
 import { parseProgram, MacroMap } from '@/syntax/es6';
 import { createReferenceNode, createBuiltInReferenceNode } from '@/semantics/util';
 import { flatten } from '@/util/nodes';
@@ -32,7 +31,6 @@ export enum ActionKind {
   MoveNodeToDefs = 'move-node-to-defs',
 
   Cleanup = 'cleanup',
-  BindLambda = 'bind-lambda',
   Eval = 'eval',
   EvalLambda = 'eval-lambda',
   EvalOperator = 'eval-operator',
@@ -58,7 +56,7 @@ export type ReductAction =
   MoveNodeToDefsAction |
   AddNodeToToolboxAction |
   LegacySmallStepAction |
-  BindLambdaAction |
+  EvalLambdaAction |
   EvalLambdaAction |
   EvalOperatorAction |
   EvalConditionalAction |
@@ -423,49 +421,28 @@ export function addToolboxItem(
   };
 }
 
-export interface BindLambdaAction {
-  type: ActionKind.BindLambda;
+export interface EvalLambdaAction {
+  type: ActionKind.EvalLambda;
   lambdaNodeId: NodeId;
   paramNodeId: NodeId;
 }
 
 /**
  * Returns an action which will apply the given parameter to the first unbound
- * argument of the lambda. If there aren't any, it will error.
+ * argument of the lambda. If there aren't any, it just be ignored.
  *
  * @param lambdaNodeId The ID of the node that represents the lambda being
  * called.
  * @param paramNodeId The ID of the node that represents the parameter to
  * substitute.
  */
-export function createBindLambda(
-  lambdaNodeId: NodeId,
-  paramNodeId: NodeId, 
-): BindLambdaAction {
-  return {
-    type: ActionKind.BindLambda,
-    paramNodeId,
-    lambdaNodeId
-  };
-}
-
-export interface EvalLambdaAction {
-  type: ActionKind.EvalLambda;
-  lambdaNodeId: NodeId;
-}
-
-/**
- * Returns an action which will evaluate a lambda node. If any of the lambda's
- * arguments are not bound, this will error.
- *
- * @param lambdaNodeId The ID of the node that represents the lambda being
- * called.
- */
 export function createEvalLambda(
   lambdaNodeId: NodeId,
+  paramNodeId: NodeId, 
 ): EvalLambdaAction {
   return {
     type: ActionKind.EvalLambda,
+    paramNodeId,
     lambdaNodeId
   };
 }

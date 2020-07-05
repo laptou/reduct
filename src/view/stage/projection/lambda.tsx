@@ -4,7 +4,7 @@ import React, { FunctionComponent, useState } from 'react';
 import { connect } from 'react-redux';
 import { StageProjection } from './base';
 import { Flat, NodeId } from '@/semantics';
-import { createBindLambda } from '@/reducer/action';
+import { createEvalLambda } from '@/reducer/action';
 import cx from 'classnames';
 
 interface LambdaArgProjectionOwnProps {
@@ -139,7 +139,7 @@ export const LambdaProjection = connect(
   null, 
   (dispatch, ownProps: LambdaProjectionOwnProps) => ({
     evalLambda(paramNodeId: NodeId) {
-      dispatch(createBindLambda(ownProps.node.id, paramNodeId))
+      dispatch(createEvalLambda(ownProps.node.id, paramNodeId))
     }
   })
 )(LambdaProjectionImpl);

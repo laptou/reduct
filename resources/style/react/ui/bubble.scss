@@ -37,22 +37,24 @@
       fill: var(--bubble-color);
     }
   }
+
+
+  .reduct-bubble-enter {
+    transform: var(--bubble-base-transform) scale(0);
+  }
+
+  .reduct-bubble-enter-active {
+    transform: var(--bubble-base-transform) scale(1);
+    transition: transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .reduct-bubble-exit {
+    opacity: 1;
+  }
+
+  .reduct-bubble-exit-active {
+    opacity: 0;
+    transition: opacity 400ms ease-in-out;
+  }
 }
 
-.reduct-bubble-enter {
-  transform: var(--bubble-base-transform) scale(0);
-}
-
-.reduct-bubble-enter-active {
-  transform: var(--bubble-base-transform) scale(1);
-  transition: transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.reduct-bubble-exit {
-  opacity: 1;
-}
-
-.reduct-bubble-exit-active {
-  opacity: 0;
-  transition: opacity 400ms ease-in-out;
-}

@@ -158,7 +158,7 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
           {error?.target === props.nodeId 
             ? (
               <CSSTransition 
-                classNames='reduct-error-bubble' 
+                classNames='reduct-bubble' 
                 timeout={500} 
                 mountOnEnter
                 unmountOnExit
