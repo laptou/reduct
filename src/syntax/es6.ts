@@ -1,427 +1,472 @@
-import { Semantics } from '@/semantics/transform';
+import { ReductNode } from '@/semantics';
+import { LambdaNode } from '@/semantics/defs';
+import {
+  createApplyNode, createArrayNode, createBinOpNode, createBoolNode, createConditionalNode, createDefineNode, createLambdaArgNode, createLambdaNode, createMemberNode, createMissingNode, createNotNode, createNumberNode, createOpNode, createReferenceNode, createStrNode, createSymbolNode, createVtupleNode, createPtupleNode 
+} from '@/semantics/util';
+import * as esprima from 'esprima';
 // eslint-disable-next-line import/no-unresolved
 import type * as estree from 'estree';
-import * as esprima from 'esprima';
-import { ReductNode } from '@/semantics';
 import * as progression from '../game/progression';
 
 function modifier(ast: esprima.Program) {
-    if (ast.body.length !== 2) return null;
-    if (ast.body[0].type !== 'ExpressionStatement') return null;
+  if (ast.body.length !== 2) return null;
+  if (ast.body[0].type !== 'ExpressionStatement') return null;
 
-    if (ast.body[0].expression.type === 'CallExpression'
+  if (ast.body[0].expression.type === 'CallExpression'
         && ast.body[0].expression.callee.type === 'Identifier') {
-        return [
-            {
-                name: ast.body[0].expression.callee.name,
-                params: ast.body[0].expression.arguments.map((x) => x.name)
-            },
-            ast.body[1]
-        ];
-    }
+    return [
+      {
+        name: ast.body[0].expression.callee.name,
+        params: ast.body[0].expression.arguments.map((x) => x.name)
+      },
+      ast.body[1]
+    ];
+  }
 
-    if (ast.body[0].expression.type !== 'Identifier') return null;
-    return [ast.body[0].expression.name, ast.body[1]];
+  if (ast.body[0].expression.type !== 'Identifier') return null;
+  return [ast.body[0].expression.name, ast.body[1]];
 }
 
-export class ES6Parser {
-    public semantics: Semantics;
+/**
+ * A macro is a map from identifier names to values. This is used when parsing
+ * programs to replace specific identifiers with special values (instead of just
+ * parsing them as references).
+ */
+export type MacroMap = Map<string, () => ReductNode>;
 
-    /**
-     * Creates a new ES6 parser with the given semantics
-     */
-    public constructor(semantics: Semantics) {
-        this.semantics = semantics;
+function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
+  switch (node.type) {
+  case 'ExpressionStatement':
+    return parseNode(node.expression, macros);
+
+  case 'ReturnStatement':
+    if (node.argument)
+      return parseNode(node.argument, macros);
+    else 
+      throw new Error('Returning void is not supported');
+
+  case 'BlockStatement': 
+    if (node.body.length === 1) 
+      return parseNode(node.body[0], macros);
+    else 
+      throw new Error('Cannot parse multi-statement programs.');
+
+  case 'Identifier': {
+    const name = node.name;
+    if (node.name === '_') return createMissingNode();
+
+    const macro = macros.get(name);
+    if (macro) return macro();
+
+    if (name === 'STAR')
+      return createSymbolNode('star');
+
+    if (name === 'RECT')
+      return createSymbolNode('rect');
+
+    if (name === 'TRIANGLE')
+      return createSymbolNode('triangle');
+
+    if (name === 'CIRCLE')
+      return createSymbolNode('circle');
+
+    // TODO: phase out xx and xxx in favour of __tuple(x, x)
+    if (name === 'xx') {
+      return createVtupleNode(
+        createReferenceNode('x'),
+        createReferenceNode('x')
+      );
     }
 
-    public parse(program: string, macros: any) {
-        const ast = esprima.parseScript(program);
-        const mod = modifier(ast);
-
-        if (ast.body.length === 1) {
-            const result = this.parseNode(ast.body[0], macros);
-            if (result === null) {
-                return fail('Cannot parse program.', program);
-            }
-
-            return result;
-        }
-        if (mod !== null) {
-            const [modName, node] = mod;
-            const result = this.parseNode(node, macros);
-            if (result === null) {
-                return fail('Cannot parse node.', program);
-            }
-
-            if (modName === '__unlimited') {
-                result.__meta = new this.semantics.meta.Meta({
-                    toolbox: this.semantics.meta.ToolboxMeta({
-                        unlimited: true
-                    })
-                });
-            } else if (modName === '__targetable') {
-                result.__meta = new this.semantics.meta.Meta({
-                    toolbox: this.semantics.meta.ToolboxMeta({
-                        targetable: true
-                    })
-                });
-            } else if (modName === '__argumentAnnotated') {
-                result.body = this.semantics.missing();
-            } else if (modName.name === '__argumentAnnotated') {
-                result.params = modName.params;
-            } else {
-                return fail(`Unrecognized expression modifier ${modName}`, program);
-            }
-
-            return result;
-        }
-
-        return fail('Cannot parse multi-statement programs at the moment.', program);
+    if (name === 'xxx') {
+      return createVtupleNode(
+        createReferenceNode('x'),
+        createReferenceNode('x'),
+        createReferenceNode('x')
+      );
     }
 
-    public parseNode(node: estree.Statement | estree.Declaration | estree.Expression, macros) {
-        switch (node.type) {
-        case 'ExpressionStatement':
-            return this.parseNode(node.expression, macros);
+    /*
+    if (node.name.startsWith('__variant')) {
+      const [variant, value] = node.name.slice(10).split('_');
+      if (!variant || !value) {
+        throw new Error(`Invalid dynamic variant ${node.name}`);
+      }
 
-        case 'ReturnStatement':
-            return this.parseNode(node.argument, macros);
-
-        case 'BlockStatement': {
-            if (node.body.length !== 1) {
-                return fail('Cannot parse multi-statement programs.', node);
-            }
-            return this.parseNode(node.body[0], macros);
-        }
-
-        case 'Identifier': {
-            if (node.name === '_') return this.semantics.missing();
-
-            if (node.name === '__defineAttach') return this.semantics.defineAttach();
-
-            // Each macro is a thunk
-            const macroName = this.semantics.parser.templatizeName(node.name);
-            if (macros && macros[macroName]) return macros[macroName]();
-
-            if (node.name === 'xx') {
-                return this.semantics.vtuple([
-                    this.semantics.lambdaVar('x'),
-                    this.semantics.lambdaVar('x')
-                ]);
-            }
-            if (node.name === 'xxx') {
-                return this.semantics.vtuple([
-                    this.semantics.lambdaVar('x'),
-                    this.semantics.lambdaVar('x'),
-                    this.semantics.lambdaVar('x')
-                ]);
-            }
-            if (node.name.slice(0, 9) === '__variant') {
-                const [variant, value] = node.name.slice(10).split('_');
-                if (!variant || !value) {
-                    throw new Error(`Invalid dynamic variant ${node.name}`);
-                }
-
-                return this.semantics.dynamicVariant(variant, value);
-            }
-
-            return this.semantics.lambdaVar(macroName);
-        }
-
-        case 'Literal': {
-            if (typeof node.value === 'number') return this.semantics.number(node.value);
-            if (typeof node.value === 'boolean') return this.semantics.bool(node.value);
-
-            if (node.value === 'star'
-                || node.value === 'circle'
-                || node.value === 'triangle'
-                || node.value === 'rect') {
-                return this.semantics.symbol(node.value);
-            }
-
-            // Interpreting strings after symbols so as to prevent the engine from
-            // treating the symbols as strings
-            if (typeof node.value === 'string') return this.semantics.string(node.value);
-            return fail(`parsers.es6: Unrecognized value ${node.value}`, node);
-        }
-
-        case 'ArrowFunctionExpression': {
-            if (node.params.length === 1 && node.params[0].type === 'Identifier') {
-                // Implement capture of bindings
-                const argName = node.params[0].name;
-                const newMacros = {};
-                newMacros[argName] = () => this.semantics.lambdaVar(argName);
-                const body = this.parseNode(node.body, Object.assign(macros, newMacros));
-                return this.semantics.lambda(this.semantics.lambdaArg(argName), body);
-            }
-            return fail('Lambda expessions with more than one input are currently undefined.', node);
-        }
-
-        case 'AssignmentExpression': {
-            const name = this.semantics.parser.templatizeName(node.left.name);
-
-            const argName = node.left.name;
-            const newMacros = {};
-            newMacros[argName] = () => this.semantics.lambdaVar(argName);
-            const body = this.parseNode(node.right.right, Object.assign(macros, newMacros));
-
-            return this.semantics.letExpr(
-                name,
-                this.parseNode(node.right.left, newMacros),
-                this.semantics.lambda(this.semantics.lambdaArg(argName), body)
-            );
-        }
-
-        case 'UnaryExpression': {
-            return this.semantics.not(this.parseNode(node.argument, macros));
-        }
-
-        case 'BinaryExpression':
-        // TODO: need ExprManager
-            return this.semantics.binop(this.parseNode(node.left, macros),
-                this.semantics.op(node.operator),
-                this.parseNode(node.right, macros));
-
-        case 'LogicalExpression':
-        // TODO: need ExprManager
-            return this.semantics.binop(this.parseNode(node.left, macros),
-                this.semantics.op(node.operator),
-                this.parseNode(node.right, macros));
-
-        case 'CallExpression': {
-            if (node.callee.type === 'Identifier' && node.callee.name === '__tests') {
-                const testCases = node.arguments.map((arg) => this.parseNode(arg, macros));
-                // TODO: better way to figure out name
-                const name = node.arguments[0].type === 'CallExpression' ? node.arguments[0].callee.name : 'f';
-                return this.semantics.lambda(this.semantics.lambdaArg(name, true), this.semantics.vtuple(testCases));
-            }
-
-            if (node.callee.type === 'Identifier' && node.callee.name === '__autograder') {
-                /* Color for goals
-               */
-                const colors = ['#c0392b', '#2980b9', '#2ecc71', '#8e44ad', '#f39c12'];
-
-                /* Getting the alien index.
-               */
-                const chapter = progression.currentChapter();
-                const alienIndex = Math.floor(((progression.currentLevel() - chapter.startIdx)
-                                             / ((chapter.endIdx - chapter.startIdx) + 1))
-                                            * chapter.resources.aliens.length);
-                const alienName = chapter.resources.aliens[alienIndex];
-
-                return this.semantics.autograder(alienName, node.arguments[0].value, colors[node.arguments[0].value], this.semantics.missing());
-            }
-
-            if (node.callee.type === 'Identifier' && node.callee.name === 'unsol') {
-                // NOTE - This should never be called externally
-                // only called within inside the autograder.
-                return this.semantics.unsol('red', this.parseNode(node.arguments[0], []));
-            }
-
-            if (node.arguments.length === 0) {
-                return fail('Call expressions with zero arguments are currently unsupported', node);
-            }
-
-            // If the thunk can take arguments (i.e. it's a reference-with-holes), use that
-
-            if (macros
-                && node.callee.type === 'Identifier'
-                && macros[node.callee.name]
-                && macros[node.callee.name].takesArgs) {
-                return macros[node.callee.name](...node.arguments.map((n) => this.parseNode(n, macros)));
-            }
-
-            let result = this.semantics.apply(
-                this.parseNode(node.callee, macros),
-                this.parseNode(node.arguments[0], macros)
-            );
-
-            for (const arg of node.arguments.slice(1)) {
-                result = this.semantics.apply(result, this.parseNode(arg, macros));
-            }
-
-            return result;
-        }
-
-        case 'ConditionalExpression': {
-            return this.semantics.conditional(
-                this.parseNode(node.test, macros),
-                this.parseNode(node.consequent, macros),
-                this.parseNode(node.alternate, macros)
-            );
-        }
-
-        case 'FunctionDeclaration': {
-            const name = this.semantics.parser.templatizeName(node.id.name);
-            if (node.params.length === 0) {
-                return this.semantics.define(name, [], this.parseNode(node.body, macros));
-            }
-
-            let result = this.parseNode(node.body, macros);
-            const args = [];
-            for (const arg of node.params.slice().reverse()) {
-                const argName = this.semantics.parser.templatizeName(arg.name);
-                args.push(argName);
-                result = this.semantics.lambda(this.semantics.lambdaArg(argName), result);
-            }
-            args.reverse();
-            return this.semantics.define(name, args, result);
-        }
-
-        case 'VariableDeclaration': {
-            if (node.kind !== 'let') {
-                return fail(`parsers.es6: Unrecognized '${node.kind}' declaration`, node);
-            }
-            if (node.declarations.length !== 1) {
-                return fail('parsers.es6: Only declaring 1 item at a time is supported', node);
-            }
-
-            const name = this.semantics.parser.templatizeName(node.declarations[0].id.name);
-            const body = this.parseNode(node.declarations[0].init, macros);
-
-            return this.semantics.define(name, [], body);
-        }
-
-        case 'ArrayExpression': {
-            const a = [];
-            a.push(node.elements.length);
-            for (const e of node.elements) {
-                a.push(this.parseNode(e, macros));
-            }
-            return this.semantics.array(...a);
-        }
-
-        case 'MemberExpression': {
-            return this.semantics.member(this.parseNode(node.object, macros),
-                this.parseNode(node.property, macros));
-        }
-
-        default: return fail(`parsers.es6: Unrecognized ES6 node type ${node.type}`, node);
-        }
+      return this.semantics.dynamicVariant(variant, value);
     }
+    */
+
+    return createReferenceNode(name);
+  }
+
+  case 'Literal': {
+    if (typeof node.value === 'number') return createNumberNode(node.value);
+    if (typeof node.value === 'boolean') return createBoolNode(node.value);
+
+    // TODO: phase out string symbols in favour of identifiers
+    if (node.value === 'star'
+        || node.value === 'circle'
+        || node.value === 'triangle'
+        || node.value === 'rect') {
+      return createSymbolNode(node.value);
+    }
+
+    // Interpreting strings after symbols so as to prevent the engine from
+    // treating the symbols as strings
+    if (typeof node.value === 'string') 
+      return createStrNode(node.value);
+
+    throw new Error(`Unknown literal: ${node.value}`);
+  }
+
+  case 'ArrowFunctionExpression': {
+    if (node.params.length > 0) {
+      const newMacros: MacroMap = new Map(macros);
+
+      const argNodes = node.params.map(param => {
+        if (param.type !== 'Identifier')
+          throw new Error(`Unsupported param type: ${param.type}`);
+
+        // Implement capture of bindings
+        const argName = param.name;
+        newMacros.set(argName, () => createReferenceNode(argName));
+        return createLambdaArgNode(argName);
+      });
+
+      const body = parseNode(node.body, newMacros);
+
+      return createLambdaNode(createPtupleNode(...argNodes), body);
+    }
+
+    throw new Error(`Lambdas with ${node.params.length} params are unimplemented`);
+  }
+
+  case 'AssignmentExpression': {
+    throw new Error('Assignment expressions are not implemented');
+  }
+
+  case 'UnaryExpression': {
+    return createNotNode(parseNode(node.argument, macros));
+  }
+
+  case 'BinaryExpression':
+    switch (node.operator) {
+    case '%':
+    case '*':
+    case '/':
+      throw new Error(`Operator ${node.operator} is not implemented`);
+
+    case '!==':
+    case '&':
+    case '**':
+    case '<<':
+    case '<=':
+    case '===':
+    case '>=':
+    case '>>>':
+    case '^':
+    case 'in':
+    case 'instanceof':
+      throw new Error(`Operator ${node.operator} is not supported`);
+
+    case '!=':
+      return createNotNode(
+        createBinOpNode(
+          parseNode(node.left, macros),
+          createOpNode('=='),
+          parseNode(node.right, macros)
+        )
+      );
+
+    case '+':
+    case '-':
+    case '==':
+    case '>':
+    case '<':
+      return createBinOpNode(
+        parseNode(node.left, macros),
+        createOpNode(node.operator),
+        parseNode(node.right, macros)
+      );
+    
+    default:
+      throw new Error(`Operator ${node.operator} is unknown`);
+    }
+
+  case 'LogicalExpression':
+    return createBinOpNode(
+      parseNode(node.left, macros),
+      createOpNode(node.operator),
+      parseNode(node.right, macros)
+    );
+
+  case 'CallExpression': {
+    if (node.callee.type === 'Identifier') {
+      if (node.callee.name === '__tuple') {
+        const children = node.arguments.map((arg) => {
+          if (arg.type === 'SpreadElement')
+            throw new Error('Varargs are not supported');
+
+          return parseNode(arg, macros);
+        });
+
+        return createVtupleNode(...children);
+      }
+
+      if (node.callee.name === '__tests') {
+        const testCases = node.arguments.map((arg) => parseNode(arg, macros));
+        // TODO: better way to figure out name
+        const name = node.arguments[0].type === 'CallExpression' ? node.arguments[0].callee.name : 'f';
+        return createLambdaNode(createPtupleNode(createLambdaArgNode(name)), createVtupleNode(...testCases));
+      }
+
+      if (node.callee.name === '__autograder') {
+      /* Color for goals
+           */
+        const colors = ['#c0392b', '#2980b9', '#2ecc71', '#8e44ad', '#f39c12'];
+
+        /* Getting the alien index.
+           */
+        const chapter = progression.currentChapter();
+        const alienIndex = Math.floor(((progression.currentLevel() - chapter.startIdx)
+                                         / ((chapter.endIdx - chapter.startIdx) + 1))
+                                        * chapter.resources.aliens.length);
+        const alienName = chapter.resources.aliens[alienIndex];
+
+        return this.semantics.autograder(alienName, node.arguments[0].value, colors[node.arguments[0].value], this.semantics.missing());
+      }
+
+      if (node.callee.name === 'unsol') {
+      // NOTE - This should never be called externally
+      // only called within inside the autograder.
+        return this.semantics.unsol('red', parseNode(node.arguments[0], []));
+      }
+    }
+
+    // TODO: implement
+    if (node.arguments.length === 0) {
+      throw new Error('Call expressions with 0 arguments are unimplemented');
+    }
+
+    // If the thunk can take arguments (i.e. it's a reference-with-holes), use that
+    // WARNING: disabled
+    // if (macros
+    //         && node.callee.type === 'Identifier'
+    //         && macros[node.callee.name]
+    //         && macros[node.callee.name].takesArgs) {
+    //   return macros[node.callee.name](...node.arguments.map((n) => parseNode(n, macros)));
+    // }
+
+    const argNodes = node.arguments.map(arg => parseNode(arg, macros));
+
+    return createApplyNode(
+      parseNode(node.callee, macros),
+      createPtupleNode(...argNodes)
+    );
+  }
+
+  case 'ConditionalExpression': {
+    return createConditionalNode(
+      parseNode(node.test, macros),
+      parseNode(node.consequent, macros),
+      parseNode(node.alternate, macros)
+    );
+  }
+
+  case 'FunctionDeclaration': {
+    const name = node.id!.name;
+    if (node.params.length === 0) {
+      return createDefineNode(name, [], parseNode(node.body, macros) as LambdaNode);
+    }
+
+    const body = parseNode(node.body, macros) as LambdaNode;
+
+    const args = [];
+    for (const arg of node.params.slice().reverse()) {
+      if (arg.type !== 'Identifier')
+        throw new Error(`${arg.type} is not allowed in function declarations`);
+
+      args.push(arg.name);
+    }
+
+    args.reverse();
+
+    return createDefineNode(name, args, createLambdaNode(
+      createPtupleNode(...args.map(arg => createLambdaArgNode(arg))),
+      body
+    ));
+  }
+
+  case 'VariableDeclaration': {
+    throw new Error('Variable declarations are unimplemented');
+  }
+
+  case 'ArrayExpression': {
+    return createArrayNode(...node.elements.map(elem => {
+      if (elem.type === 'SpreadElement')
+        throw new Error('Array spreading is not supported');
+      return parseNode(elem, macros)
+    }));
+  }
+
+  case 'MemberExpression': {
+    return createMemberNode(
+      parseNode(node.object, macros),
+      parseNode(node.property, macros)
+    );
+  }
+
+  default: throw new Error(`Cannot parse ES6 node: ${node.type}`);
+  }
 }
 
-// Make an unparser for a hydrated AST node
-export function makeUnparser(_: Semantics) {
-    const unparseES6 = function unparseES6(node: ReductNode) {
-        switch (node.type) {
-        case 'missing': {
-            return '_';
-        }
-        case 'symbol': {
-            return `"${node.name}"`;
-        }
-        case 'lambda': {
-            if (node.body.type === 'vtuple') {
-                if (node.body.child0.type === 'lambdaVar') {
-                    // Unparse replicator block
-                    const replicator = [];
-                    for (let i = 0; i < node.body.numChildren; i++) {
-                        replicator.push(node.body.child0.name);
-                    }
-                    return `(${unparseES6(node.arg)}) => ${replicator.join('')}`;
-                }
+export function parseProgram(program: string, macros: MacroMap = new Map()) {
+  const ast = esprima.parseScript(program);
+  const mod = modifier(ast);
 
-                const cases = [];
-                for (let i = 0; i < node.body.numChildren; i++) {
-                    cases.push(unparseES6(node.body[`child${i}`]));
-                }
-                return `__tests(${cases.join(', ')})`;
-            }
-            return `(${unparseES6(node.arg)}) => ${unparseES6(node.body)}`;
+  if (ast.body.length === 1) {
+    const result = parseNode(ast.body[0], macros);
+
+    if (result === null) {
+      throw new Error('Cannot parse program.');
+    }
+
+    return result;
+  }
+
+  if (mod !== null) {
+    const [modName, node] = mod;
+    const result = parseNode(node, macros);
+
+    if (result === null) {
+      throw new Error('Cannot parse node.');
+    }
+
+    if (modName === '__unlimited') {
+      result.__meta = {
+        toolbox: {
+          unlimited: true,
+          targetable: false
         }
-        case 'letExpr': {
-            return `${node.variable} = ${unparseES6(node.e1)} in (${unparseES6(node.e2.body)})`;
+      }
+    } else if (modName === '__targetable') {
+      result.__meta = {
+        toolbox: {
+          targetable: true,
+          unlimited: false
         }
-        case 'reference': {
-            if (node.params && node.params.some((name) => node[`arg_${name}`].type !== 'missing')) {
-                const args = node.params.map((name) => unparseES6(node[`arg_${name}`])).join(', ');
-                return `${node.name}(${args})`;
-            }
-            return `${node.name}`;
-        }
-        case 'lambdaArg':
-        case 'lambdaVar': {
-            return `${node.name}`;
-        }
-        case 'not': {
-            return `!${node.value}`;
-        }
-        case 'binop': {
-            return `(${unparseES6(node.left)}) ${node.op.name} (${unparseES6(node.right)})`;
-        }
-        case 'apply': {
-            return `(${unparseES6(node.callee)})(${unparseES6(node.argument)})`;
-        }
-        case 'number': {
-            return `${node.value}`;
-        }
-        case 'bool': {
-            return `${node.value}`;
-        }
-        case 'string': {
-            return `${node.value}`;
-        }
-        case 'dynamicVariant': {
-            return `__variant_${node.variant}_${node.value}`;
-        }
-        case 'conditional': {
-            return `(${unparseES6(node.condition)}) ? (${unparseES6(node.positive)}) : (${unparseES6(node.negative)})`;
-        }
-        case 'define': {
-            // Make sure we accurately capture what exactly the user
-            // defined, in a way that can be re-parsed. We don't use
-            // the params, even if present. This avoids situations
-            // like the following: the definition is annotated with
-            // the argument name "x", but has no body. The user
-            // instead places (y) => y.
-            const args = '';
-            const { body } = node;
-            return `function ${node.name}(${args}) { return ${unparseES6(body)}; }`;
-        }
-        case 'defineAttach': {
-            // TODO: don't hardcode this
-            if (node.notch0) {
-                return `__defineAttach(${unparseES6(node.notch0)})`;
-            }
-            return '__defineAttach';
-        }
-        case 'arrayvalue':
-        case 'array': {
-            let result = '['; const
-                first = true;
-            if (typeof node.length !== 'number') {
-                throw `array length is not a number: ${node.length}`;
-            }
-            for (let i = 0; i < node.length; i++) {
-                const e = node[`elem${i}`];
-                if (!first) result += ',';
-                result += unparseES6(e);
-            }
-            result += ']';
-            return result;
-        }
-        case 'member': {
-            return `${node.array}[${node.index}]`;
-        }
-        case 'autograder': {
-            return `__autograder(${node.goalId})`;
-        }
-        case 'unsol': {
-            return `${node.value}`;
-        }
-        case 'vtuple': {
-            return;
-        }
-        default:
-            console.error(`unparsers.es6: Unrecognized ES6 node type "${node.type}": `, node);
-            return null;
-        }
-    };
-    return unparseES6;
+      };
+    } else if (modName === '__argumentAnnotated') {
+      result.body = createMissingNode();
+    } else if (modName.name === '__argumentAnnotated') {
+      result.params = modName.params;
+    } else {
+      throw new Error(`Unrecognized expression modifier ${modName}`);
+    }
+
+    return result;
+  }
+
+  throw new Error('Cannot parse multi-statement programs at the moment.');
 }
 
-function fail(message, node) {
-    console.warn(message, node);
-    throw { message, node };
+export function serializeNode(node: ReductNode): string {
+  switch (node.type) {
+  case 'missing': {
+    return '_';
+  }
+  case 'symbol': {
+    return `"${node.fields.name}"`;
+  }
+  case 'lambda': {
+    return `(${serializeNode(node.subexpressions.arg)}) => ${serializeNode(node.subexpressions.body)}`;
+  }
+  case 'letExpr': {
+    return `${node.variable} = ${serializeNode(node.e1)} in (${serializeNode(node.e2.body)})`;
+  }
+  case 'reference': {
+    if (node.fields.params?.some((name) => node.subexpressions[`arg_${name}`].type !== 'missing')) {
+      const args = node.fields.params.map((name) => serializeNode(node.subexpressions[`arg_${name}`])).join(', ');
+      return `${node.fields.name}(${args})`;
+    }
+    return `${node.fields.name}`;
+  }
+  case 'lambdaArg':
+  case 'lambdaVar': {
+    return `${node.fields.name}`;
+  }
+  case 'not': {
+    return `!${node.subexpressions.value}`;
+  }
+  case 'binop': {
+    return `(${serializeNode(node.subexpressions.left)}) ${node.subexpressions.op.fields.name} (${serializeNode(node.subexpressions.right)})`;
+  }
+  case 'apply': {
+    return `(${serializeNode(node.subexpressions.callee)})(${serializeNode(node.subexpressions.argument)})`;
+  }
+  case 'number': {
+    return `${node.fields.value}`;
+  }
+  case 'boolean': {
+    return `${node.fields.value}`;
+  }
+  case 'string': {
+    return `${node.fields.value}`;
+  }
+  case 'dynamicVariant': {
+    return `__variant_${node.variant}_${node.value}`;
+  }
+  case 'conditional': {
+    return `(${serializeNode(node.subexpressions.condition)}) ? (${serializeNode(node.subexpressions.positive)}) : (${serializeNode(node.subexpressions.negative)})`;
+  }
+  case 'define': {
+    // Make sure we accurately capture what exactly the user
+    // defined, in a way that can be re-parsed. We don't use
+    // the params, even if present. This avoids situations
+    // like the following: the definition is annotated with
+    // the argument name "x", but has no body. The user
+    // instead places (y) => y.
+    const args = '';
+    const { body } = node.subexpressions;
+    return `function ${node.fields.name}(${args}) { return ${serializeNode(body)}; }`;
+  }
+  case 'defineAttach': {
+    // TODO: don't hardcode this
+    if (node.notch0) {
+      return `__defineAttach(${serializeNode(node.notch0)})`;
+    }
+    return '__defineAttach';
+  }
+  case 'arrayvalue':
+  case 'array': {
+    let result = '['; const
+      first = true;
+    if (typeof node.fields.length !== 'number') {
+      throw `array length is not a number: ${node.fields.length}`;
+    }
+    for (let i = 0; i < node.fields.length; i++) {
+      const e = node.subexpressions[i];
+      if (!first) result += ',';
+      result += serializeNode(e);
+    }
+    result += ']';
+    return result;
+  }
+  case 'member': {
+    return `${node.subexpressions.array}[${node.fields.index}]`;
+  }
+  case 'autograder': {
+    return `__autograder(${node.fields.goalId})`;
+  }
+  case 'unsol': {
+    return `${node.fields.value}`;
+  }
+  case 'vtuple': {
+    return;
+  }
+  default:
+    console.error(`unparsers.es6: Unrecognized ES6 node type "${node.type}": `, node);
+    return null;
+  }
 }

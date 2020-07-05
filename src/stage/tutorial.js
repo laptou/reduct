@@ -59,8 +59,8 @@ export default class TutorialStage extends Stage {
     _mousedown(e) {
         if (!this.tutorialState.next() && this.tutorialState.allowEvents) {
             super._mousedown(e);
-        } else if (this._touches.get('mouse').hoverNode) {
-            const hovered = this._touches.get('mouse').hoverNode;
+        } else if (this._touches.mouse.hoverNode) {
+            const hovered = this._touches.mouse.hoverNode;
             if (this.getView(hovered).onclick) {
                 this.getView(hovered).onclick();
             }
@@ -117,7 +117,7 @@ class GoalTutorial {
             if (this.ready && this.state === 'goal') {
                 const state = this.stage.getState();
 
-                for (const id of state.get('goal')) {
+                for (const id of state.goal) {
                     this.stage.getView(id).stroke = {
                         color: '#0FF',
                         lineWidth: 2 - Math.cos(time / 600)
@@ -160,7 +160,7 @@ class GoalTutorial {
             let bbw = 0;
             let bbh = 0;
 
-            for (const id of this.stage.getState().get('board')) {
+            for (const id of this.stage.getState().board) {
                 const view = this.stage.getView(id);
                 const pos = gfx.absolutePos(view);
                 bbx = Math.min(bbx, pos.x);
@@ -184,7 +184,7 @@ class GoalTutorial {
 
             const state = this.stage.getState();
 
-            for (const id of state.get('goal')) {
+            for (const id of state.goal) {
                 this.stage.getView(id).stroke = null;
             }
 
@@ -282,7 +282,7 @@ class GoalTutorial {
         if (this.state === 'goal') {
             this.stage.drawProjection(state, this.goalText);
 
-            for (const id of state.get('goal')) {
+            for (const id of state.goal) {
                 const goalText = this.stage.getView(this.goalText);
                 this.stage.getView(id).pos.x = 0;
                 this.stage.drawProjection(state, id, this.stage.makeBaseOffset({

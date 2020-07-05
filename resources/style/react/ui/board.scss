@@ -1,0 +1,12 @@
+@use 'base';
+
+#reduct-board {
+  position: relative;
+  grid-row: 2;
+  grid-column: 2 / 5;
+  margin: 0.5rem;
+  overflow: auto;
+  background: var(--reduct-ui-bg);
+  border-radius: 0.25rem;
+  box-shadow: 0 0 0.5rem rgba(black, 0.25);
+}

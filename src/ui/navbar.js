@@ -1,6 +1,6 @@
 import * as gfx from '../gfx/core';
 import * as progression from '../game/progression';
-import * as undo from '../reducer/undo';
+import * as undo from '../store/undo';
 import Loader from '../loader';
 
 /**
@@ -150,9 +150,9 @@ export default class Navbar {
     }
 
     drawImpl(state) {
-        const rawState = this.stage.store.getState().get('program');
-        this.stage.getView(this.undo).enabled = rawState.get('$past').size > 0;
-        this.stage.getView(this.redo).enabled = rawState.get('$future').size > 0;
+        const rawState = this.stage.store.getState().program;
+        this.stage.getView(this.undo).enabled = rawState.$past.length > 0;
+        this.stage.getView(this.redo).enabled = rawState.$future.length > 0;
 
         const levelDisplay = this.stage.getView(this.levelDisplay);
         levelDisplay.pos.x = this.stage.width - 25;

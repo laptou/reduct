@@ -1,11 +1,12 @@
-import { Im, Thunk } from '@/util/im';
-import { RState } from '@/reducer/state';
-import type Stage from '@/stage/stage';
 import type { ProjectionDef } from '@/gfx/projection';
-import type { BaseNode, NodeId, NodeType } from '..';
+import { RState } from '@/store/state';
+import type Stage from '@/stage/stage';
+import type { DeepReadonly, Thunk, DRF } from '@/util/helper';
+import type {
+  BaseNode, Flat, NodeId, NodeType, NodeMap 
+} from '..';
 import type { Semantics } from '../transform';
-
-export type NodeKind = 'expression' | 'placeholder' | 'value' | 'statement' | 'syntax';
+import type { NodeKind } from '../util';
 
 export interface NodeDef<N extends BaseNode> {
     /**
@@ -14,7 +15,7 @@ export interface NodeDef<N extends BaseNode> {
      * ``expression`` can be clicked on, for instance, and reaching a
      * ``value`` will stop evaluation!
      */
-    kind?: NodeKind | ((expr: Im<N>, semantics: Semantics, state: Im<RState>) => NodeKind);
+    kind: Thunk<[DRF, DeepReadonly<NodeMap>], NodeKind>;
 
 
     // TODO: strong type for notches
@@ -25,23 +26,23 @@ export interface NodeDef<N extends BaseNode> {
      * instance, a number expression would have a value field, or
      * definition syntax might have a name field.
      */
-    fields?: Exclude<keyof N, keyof BaseNode>[];
+    fields: Array<keyof N['fields']>;
 
     /**
      * A (possibly empty) list of additional fields that contain child
      * expressions. For instance, definition syntax might have a
      * subexpression for the body.
      */
-    subexpressions?: Thunk<[Semantics, Im<N>], Exclude<keyof N, keyof BaseNode>[]>;
+    subexpressions?: Thunk<[DRF<N>], Array<keyof N['subexpressions']>>;
 
     projection: ProjectionDef<N>;
 
-    type?: N['type'] | Thunk<[Semantics, Im<RState>, any, Im<this>], NodeType>;
+    type?: N['type'] | Thunk<[Semantics, DeepReadonly<RState>, any, DRF<N>], NodeType>;
 
     targetable?: (
         semantics: Semantics,
-        state: Im<RState>,
-        expr: Im<N>
+        state: DeepReadonly<RState>,
+        expr: DRF<N>
     ) => boolean;
 
     alwaysTargetable?: boolean;
@@ -91,9 +92,9 @@ export interface NodeDef<N extends BaseNode> {
     smallStep?: (
         semantics: Semantics,
         stage: Stage,
-        state: Im<RState>,
-        expr: Im<N>
-    ) => [NodeId, NodeId[], BaseNode[]] | NodeDef<any> | Im<NodeDef<any>>;
+        state: DeepReadonly<RState>,
+        expr: DeepReadonly<Flat<N>>
+    ) => [NodeId, NodeId[], BaseNode[]] | NodeDef<any>;
 
     /**
      * This is similar to ``smallStep``, except you now have an array of
@@ -108,23 +109,23 @@ export interface NodeDef<N extends BaseNode> {
     betaReduce?: (
         semantics: Semantics,
         stage: Stage,
-        state: Im<RState>,
-        expr: Im<N>,
+        state: DeepReadonly<RState>,
+        expr: DeepReadonly<Flat<N>>,
         argIds: NodeId[]
     ) => [NodeId, NodeId[], BaseNode[]];
 
     stepAnimation?: (
         semantics: Semantics,
         stage: Stage,
-        state: Im<RState>,
-        expr: Im<N>
+        state: DeepReadonly<RState>,
+        expr: DeepReadonly<Flat<N>>
     ) => Promise<void>;
 
     stepSound?: string | string[] | ((
         semantics: Semantics,
         stage: Stage,
-        state: Im<RState>,
-        expr: Im<N>
+        state: DeepReadonly<RState>,
+        expr: DeepReadonly<Flat<N>>
     ) => string | string[]);
 
     /**
@@ -134,8 +135,8 @@ export interface NodeDef<N extends BaseNode> {
      */
     validateStep?: string | ((
         semantics: Semantics,
-        state: Im<RState>,
-        expr: Im<N>
+        state: DeepReadonly<RState>,
+        expr: DeepReadonly<Flat<N>>
     ) => [NodeId, string] | null);
 
     /**
@@ -153,14 +154,13 @@ export interface NodeDef<N extends BaseNode> {
      * things like evaluation if an expression hole isn't filled, but some
      * expressions, like references-with-holes, don't require that they are
      * filled.
-   *
+     *
      * The function is given the name of a subexpression field and should
      * return true or false.
      */
     substepFilter?: (
-        semantics: Semantics,
-        state: Im<RState>,
-        expr: Im<N>,
-        field: string
+      state: DeepReadonly<RState>,
+      expr: DRF<N>,
+      field: string
     ) => boolean;
 }

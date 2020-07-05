@@ -31,7 +31,7 @@ export default class ReductToolbar {
     update(id, prevId = null) {
         const state = this.stage.getState();
         if (id !== null && (prevId === null || !this.ids.has(prevId))) {
-            if (this.stage.semantics.kind(state, state.getIn(['nodes', id])) !== 'expression') {
+            if (this.stage.semantics.kind(state, state.nodes.get(id)) !== 'expression') {
                 return;
             }
 
@@ -64,7 +64,7 @@ export default class ReductToolbar {
             const idRecord = this.ids.get(prevId);
             this.ids.delete(prevId);
             if (id !== null
-                && this.stage.semantics.kind(state, state.getIn(['nodes', id])) === 'expression') {
+                && this.stage.semantics.kind(state, state.nodes.get(id)) === 'expression') {
                 this.ids.set(id, idRecord);
                 idRecord.el.dataset.id = id;
             } else {
@@ -77,11 +77,11 @@ export default class ReductToolbar {
         const offsetX = this.stage.sidebarWidth;
         const offsetY = this.stage.canvas.offsetTop;
 
-        const board = state.get('board');
+        const board = state.board;
         const toDelete = [];
 
         for (const [id, { el: toolbar }] of this.ids.entries()) {
-            if (!board.includes(id)) {
+            if (!board.has(id)) {
                 toDelete.push(id);
                 continue;
             }

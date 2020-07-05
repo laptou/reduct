@@ -11,12 +11,12 @@ export default function decal(projection) {
     projection.draw = function(id, exprId, state, stage, offset) {
         origDraw.call(this, id, exprId, state, stage, offset);
 
-        const nodes = state.get('nodes');
+        const nodes = state.nodes;
         let parent = nodes.get(exprId);
         let nestedCount = 1;
-        while (parent && parent.get('parent')) {
-            parent = nodes.get(parent.get('parent'));
-            if (parent.get('type') === 'apply') {
+        while (parent && parent.parent) {
+            parent = nodes.get(parent.parent);
+            if (parent.type === 'apply') {
                 nestedCount += 1;
             }
         }
@@ -37,10 +37,10 @@ export default function decal(projection) {
             const subexpr = nodes.get(subexprId);
             if (first) {
                 first = false;
-                firstFilled = subexpr.get('type') !== 'missing';
+                firstFilled = subexpr.type !== 'missing';
                 firstChild.x = view.pos.x;
                 firstChild.y = view.pos.y;
-                if (subexpr.get('type') === 'lambda') {
+                if (subexpr.type === 'lambda') {
                     const [argChildId] = stage.views[childId]
                         .children(subexprId, state)
                         .next().value;
@@ -52,8 +52,8 @@ export default function decal(projection) {
                 }
             }
 
-            if (subexpr && subexpr.get('parentField') === 'argument') {
-                lastFilled = subexpr.get('type') !== 'missing';
+            if (subexpr && subexpr.parentField === 'argument') {
+                lastFilled = subexpr.type !== 'missing';
                 lastChild.x = view.pos.x + (view.size.w / 2);
                 lastChild.y = view.pos.y;
             }
@@ -78,7 +78,7 @@ export default function decal(projection) {
 
         if (typeof this.arrowOpacity !== 'undefined') ctx.globalAlpha = this.arrowOpacity * offset.opacity;
         else if (typeof this.opacity !== 'undefined') ctx.globalAlpha = this.opacity * 0.7 * offset.opacity;
-        else if (state.get('nodes').get(exprId).has('parent')) ctx.globalAlpha = 0.5 * offset.opacity;
+        else if (state.nodes.get(exprId).has('parent')) ctx.globalAlpha = 0.5 * offset.opacity;
         ctx.globalAlpha /= this.nestedCount;
 
         const cx = x + (sx * ((lastChild.x - firstChild.x) / 2));

@@ -1,0 +1,65 @@
+@use 'theme';
+@use 'projection/layout';
+
+.shape {
+  display: inline-flex;
+  align-items: stretch;
+  justify-items: stretch;
+  min-width: 2rem;
+  min-height: 2rem;
+  color: theme.$projection-foreground;
+
+  & > .decoration {
+    flex-grow: 0;
+  }
+
+  & > .content {
+    @extend %value-container;
+    flex-grow: 1;
+  }
+}
+
+.shape.boolean {
+  & > .decoration {
+    width: 20px;
+
+    polygon {
+      fill: theme.$projection-color-boolean;
+    }
+  }
+
+  & > .content {
+    margin: 0 -1px;
+    background-color: theme.$projection-color-boolean;
+  }
+}
+
+.shape.string {
+  & > .decoration {
+    width: 12px;
+
+    polygon {
+      fill: theme.$projection-color-string;
+    }
+  }
+
+  & > .content {
+    margin: 0 -1px;
+    background-color: theme.$projection-color-string;
+  }
+}
+
+.shape.number {
+  & > .decoration {
+    width: 4px;
+
+    path {
+      fill: theme.$projection-color-number;
+    }
+  }
+
+  & > .content {
+    margin: 0 -1px;
+    background-color: theme.$projection-color-number;
+  }
+}

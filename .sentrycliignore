@@ -1,0 +1,9 @@
+design/
+dist/
+docs/
+resources/audio/
+resources/graphics/
+resources/levels-progression/
+resources/video/
+simplelog/
+*.csv

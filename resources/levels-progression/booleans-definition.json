@@ -6,11 +6,11 @@
         {
             "animationScales": {},
             "board": [
-                "function isTriangle(x) { return x == 'triangle'; }",
-                "__tests(testMe('triangle'), testMe('rect'))"
+                "function isTriangle(x) { return x == TRIANGLE; }",
+                "__tests(testMe(TRIANGLE), testMe(RECT))"
             ],
             "defines": [
-                "function isTriangle(x) { return x == 'triangle'; }"
+                "function isTriangle(x) { return x == TRIANGLE }"
             ],
             "fade": {},
             "globals": {},
@@ -30,10 +30,10 @@
             "animationScales": {},
             "board": [
                 "function isStar(x) { return _; }",
-                "__tests(testMe('star'), testMe('rect'), testMe('star'))"
+                "__tests(testMe(STAR), testMe(RECT), testMe(STAR))"
             ],
             "defines": [
-                "function isStar(x) { return x == 'star'; }"
+                "function isStar(x) { return x == 'STAR'; }"
             ],
             "fade": {},
             "globals": {},
@@ -50,9 +50,9 @@
             "toolbox": [
                 "__unlimited; isStar;",
                 "x == _",
-                "'triangle'",
-                "'rect'",
-                "'star'"
+                "TRIANGLE",
+                "RECT",
+                "STAR"
             ]
         },
         {
@@ -180,7 +180,7 @@
             "board": [
                 "function starIs1(x) { return _ ? 1 : 0; }",
                 "x == _",
-                "__tests(testMe('rect'), testMe('star'), testMe('triangle'))"
+                "__tests(testMe(RECT), testMe(STAR), testMe(TRIANGLE))"
             ],
             "fade": {},
             "globals": {},
@@ -196,9 +196,9 @@
             "textgoal": "Define a function that outputs 1 if x is {a star}",
             "toolbox": [
                 "__unlimited; starIs1;",
-                "'star'",
-                "'rect'",
-                "'triangle'"
+                "STAR",
+                "RECT",
+                "TRIANGLE"
             ]
         },
         {

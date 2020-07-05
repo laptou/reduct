@@ -1,25 +1,31 @@
-import type { ImMap, Im } from '@/util/im';
 import {
-    ApplyNode,
-    ArrayNode,
-    AutograderNode,
-    BinOpNode,
-    OpNode,
-    ConditionalNode,
-    DefineNode,
-    LambdaNode,
-    LambdaVarNode,
-    LambdaArgNode,
-    LetNode,
-    MemberNode,
-    NotNode,
-    NumberNode,
-    StrNode,
-    BoolNode,
-    UnsolNode,
-    DynVarNode,
-    SymbolNode
+  ApplyNode,
+  ArrayNode,
+  AutograderNode,
+  BinOpNode,
+  OpNode,
+  ConditionalNode,
+  DefineNode,
+  LambdaNode,
+  LambdaVarNode,
+  LambdaArgNode,
+  LetNode,
+  MemberNode,
+  NotNode,
+  NumberNode,
+  StrNode,
+  BoolNode,
+  UnsolNode,
+  DynVarNode,
+  SymbolNode,
+  ReferenceNode,
+  InvocationNode,
+  MissingNode,
+  PTupleNode,
+  VTupleNode
 } from './defs';
+import { DeepReadonly } from '@/util/helper';
+import { BuiltInReferenceNode } from './defs/builtins';
 
 export type NodeId = number;
 
@@ -33,21 +39,46 @@ export interface BaseNode {
     id: NodeId;
 
     /** The ID of this node's parent. */
-    parent: NodeId;
+    parent?: NodeId | null;
 
     /**
      * The field in the parent node which this node
      * occupies.
      */
-    parentField: string;
+    parentField?: string | null;
 
     type: string;
 
     fadeLevel: number;
 
-    lockeed: boolean;
+    locked: boolean;
 
-    complete: boolean;
+    complete?: boolean;
+
+    fields: Record<string | number, any>;
+    
+    subexpressions: {};
+
+    __meta?: NodeMetadata;
+}
+
+export type Flat<N extends BaseNode> = { 
+  [K in keyof N]: K extends 'subexpressions' ? Record<keyof N['subexpressions'], NodeId> : N[K];
+};
+
+export interface NodeMetadata {
+  toolbox?: { 
+    /** 
+     * True if this node does not deplete when it is picked from the toolbox
+     * (i.e., the user can use it an unlimited number of times.) 
+     * */
+    unlimited: boolean;
+    targetable: boolean;
+  };
+
+  /** Holds the IDs any slots that were children of this node but have been
+   * replaced by another node. */
+  slots?: Record<string, NodeId>;
 }
 
 export type NodeType = {
@@ -55,7 +86,7 @@ export type NodeType = {
     complete: boolean;
 }
 
-export type NodeMap = ImMap<NodeId, Im<ReductNode>>;
+export type NodeMap = Map<NodeId, DeepReadonly<FlatReductNode>>;
 
 export type ReductNode =
     ApplyNode |
@@ -76,4 +107,37 @@ export type ReductNode =
     BoolNode |
     UnsolNode |
     SymbolNode |
-    DynVarNode;
+    DynVarNode |
+    ReferenceNode |
+    InvocationNode |
+    VTupleNode |
+    PTupleNode |
+    MissingNode |
+    BuiltInReferenceNode;
+
+export type FlatReductNode =
+  Flat<ApplyNode> |
+  Flat<ArrayNode> |
+  Flat<AutograderNode> |
+  Flat<BinOpNode> |
+  Flat<OpNode> |
+  Flat<ConditionalNode> |
+  Flat<DefineNode> |
+  Flat<LambdaNode> |
+  Flat<LambdaVarNode> |
+  Flat<LambdaArgNode> |
+  Flat<LetNode> |
+  Flat<MemberNode> |
+  Flat<NotNode> |
+  Flat<NumberNode> |
+  Flat<StrNode> |
+  Flat<BoolNode> |
+  Flat<UnsolNode> |
+  Flat<SymbolNode> |
+  Flat<DynVarNode> |
+  Flat<ReferenceNode> |
+  Flat<InvocationNode> |
+  Flat<VTupleNode> |
+  Flat<PTupleNode> |
+  Flat<MissingNode> |
+  Flat<BuiltInReferenceNode>;

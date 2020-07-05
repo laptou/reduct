@@ -1,0 +1,9 @@
+@use '../theme';
+@use 'base';
+
+#reduct-history {
+  @extend %ui-panel-top;
+  @include base.ui-panel-bordered(theme.$accent-5-inverse-default);
+  grid-row: 1;
+  grid-column: 3;
+}

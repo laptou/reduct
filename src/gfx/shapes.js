@@ -4,8 +4,8 @@ import * as util from './util';
 
 // TODO: use these helpers everywhere
 function shadow(ctx, exprId, projection, state, f) {
-    const node = state.getIn(['nodes', exprId]);
-    if (projection.shadow || (node && (!node.get('parent') || !node.get('locked')))) {
+    const node = state.nodes.get(exprId);
+    if (projection.shadow || (node && (!node.parent || !node.locked))) {
         ctx.fillStyle = projection.shadowColor;
         f(projection.shadowOffset);
         ctx.fill();
@@ -17,9 +17,9 @@ function drawPrimitive(exprId, projection, state, stage, offset,
     const { ctx } = stage;
     ctx.save();
 
-    const node = state.getIn(['nodes', exprId]);
-    const hasParent = node && Number.isInteger(node.get('parent'));
-    const locked = !node || node.get('locked');
+    const node = state.nodes.get(exprId);
+    const hasParent = node && Number.isInteger(node.parent);
+    const locked = !node || node.locked;
     let stroke = false;
 
     util.setOpacity(ctx, projection.opacity, offset);
