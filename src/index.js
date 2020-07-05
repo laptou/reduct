@@ -245,18 +245,6 @@ function initialize() {
     const newPresent = newState.program.$present;
     const addedNodesMap = newPresent.added;
 
-    // TODO: remove this when stage renderer is retired
-    // project nodes that were created inside of the reducer
-    if (addedNodesMap) {
-      for (const addedRootNodeId of addedNodesMap.keys()) {
-        const descendants = findNodesDeep(addedRootNodeId, newPresent.nodes, () => true);
-        for (const descendant of descendants) {
-          if (descendant.id in stg.views) continue;
-          stg.views[descendant.id] = stg.semantics.project(stg, newPresent.nodes, descendant);
-        }
-      }
-    }
-
     stg.draw();
 
     return;

@@ -1,4 +1,4 @@
-import * as immutable from 'immutable';
+import { BaseNode } from '..';
 
 const VALID = null;
 
@@ -238,7 +238,7 @@ function validateSlice(expr, semant, state) {
   return VALID;
 }
 
-export const builtins = immutable.Map({
+export const builtins = {
   // repeat: {params: [{n: 'number'}, {f: 'function'}], impl: builtinRepeat},
   length: { params: [{ a: 'any' }], impl: builtinLength },
   get: { params: [{ a: 'any' }, { i: 'number' }], impl: builtinGet, validate: validateGet },
@@ -247,7 +247,16 @@ export const builtins = immutable.Map({
   fold: { params: [{ f: 'function' }, { a: 'array' }, { init: 'any' }], impl: builtinFold },
   concat: { params: [{ left: 'array' }, { right: 'array' }], impl: builtinConcat },
   slice: { params: [{ array: 'any' }, { begin: 'number' }, { end: 'number' }], impl: builtinSlice, validate: validateSlice }
-});
+} as const;
+
+/**
+ * Represents a reference to a function that is built into the game (not defined
+ * using nodes.) Used to implement functions like set().
+ */
+export interface BuiltInReferenceNode extends BaseNode {
+  type: 'builtin-reference';
+  fields: { name: string };
+}
 
 function nth(i) {
   switch (i) {

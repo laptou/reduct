@@ -39,6 +39,11 @@ export function cloneNodeDeep(id: NodeId, nodeMap: NodeMap, locked?: boolean): C
 
   const clonedRoot = produce(root, (draft) => {
     draft.id = newId;
+    
+    // delete cached holes
+    if (draft.__meta?.slots) {
+      delete draft.__meta.slots;
+    }
 
     for (const [childPath, childId] of Object.entries(draft.subexpressions)) {
       const [clonedChild, clonedGrandChildren, descendantNodeMap] = cloneNodeDeep(childId, nodeMap, locked);
@@ -265,4 +270,21 @@ export function getRootForNode(id: NodeId, nodes: NodeMap): DRF {
   }
 
   return current;
+}
+
+/**
+ * Returns true if `ancestor` is an ancestor of `node.`
+ * @param node The node to check.
+ * @param ancestor The ancestor to check for.
+ * @param nodes A map from IDs to nodes.
+ */
+export function isAncestorOf(node: NodeId, ancestor: NodeId, nodes: NodeMap): boolean {
+  let current = nodes.get(node)!;
+  
+  while (current.parent) {
+    if (current.parent === ancestor) return true;
+    current = nodes.get(current.parent)!;
+  }
+
+  return false;
 }

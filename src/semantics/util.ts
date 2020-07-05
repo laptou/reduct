@@ -22,6 +22,7 @@ import {
 } from './defs/value';
 import { VTupleNode } from './transform';
 import { RState } from '@/reducer/state';
+import { BuiltInReferenceNode } from './defs/builtins';
 
 /**
  * Creates a partial node. Helper for "create node" functions to avoid
@@ -189,6 +190,14 @@ export function createReferenceNode(name: string): ReferenceNode {
   };
 }
 
+export function createBuiltInReferenceNode(name: string): BuiltInReferenceNode {
+  return {
+    ...createNodeBase(),
+    type: 'builtin-reference',
+    fields: { name }
+  };
+}
+
 
 /**
  * What kind of expression (``value``, ``expression``, ``statement``,
@@ -223,6 +232,7 @@ export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKin
   case 'symbol': return dethunk(symbol.kind, node, nodes);
   case 'unsol': return dethunk(unsol.kind, node, nodes);
   case 'vtuple': return 'expression';
+  case 'builtin-reference': return 'value';
   default: throw new Error(`unknown node of type ${node.type}`);
   }
 }

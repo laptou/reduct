@@ -3,8 +3,9 @@ import BaseStage from '@/stage/basestage';
 import Loader from '@/loader';
 import * as progression from '@/game/progression';
 import { parseProgram, MacroMap } from '@/syntax/es6';
-import { createReferenceNode } from '@/semantics/util';
+import { createReferenceNode, createBuiltInReferenceNode } from '@/semantics/util';
 import { flatten } from '@/util/nodes';
+import { builtins } from '@/semantics/defs/builtins';
 
 export enum ActionKind {
   UseToolbox = 'use-toolbox',
@@ -252,9 +253,16 @@ export function createStartLevel(index: number): StartLevelAction {
   const levelDefinition = Loader.progressions.Elementary.levels[index];
 
   const macros: MacroMap = new Map();
+
+  for (const name of Object.keys(builtins)) {
+    macros.set(name, () => createBuiltInReferenceNode(name));
+  }
   
   if (levelDefinition.macros) {
     for (const [name, script] of Object.entries(levelDefinition.macros)) {
+      // TODO: remove override for builtins, remove defs for builtin methods in levels
+      if (name in builtins) continue;
+
       // Needs to be a thunk in order to allocate new ID each time
       macros.set(name, () => parseProgram(script, macros));
     }
@@ -302,6 +310,9 @@ export function createStartLevel(index: number): StartLevelAction {
   // Turn these defines into "macros", so that the name resolution
   // system can handle lookup.
   for (const [name, expr] of [...prevDefinedNames, ...newDefinedNames, ...globalDefinedNames]) {
+    // TODO: remove override for builtins, remove defs for builtin methods in levels
+    if (name in builtins) continue;
+    
     macros.set(name, expr);
   }
 
@@ -316,7 +327,7 @@ export function createStartLevel(index: number): StartLevelAction {
     .map((script) => parseProgram(script, macros))
     .forEach((node) => {
       if (node.type !== 'define') {
-        return null;
+        return;
       }
 
       globals.set(node.fields.name, node);
@@ -361,7 +372,7 @@ export function createStartLevel(index: number): StartLevelAction {
     toolbox.add(toolboxNode.id);
   }
 
-  for (const [name, globalNode] of Object.entries(globals)) {
+  for (const [name, globalNode] of globals) {
     for (const flatGlobalNode of flatten(globalNode)) {
       flatNodes.set(flatGlobalNode.id, flatGlobalNode);
     }

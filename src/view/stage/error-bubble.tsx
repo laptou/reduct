@@ -1,5 +1,5 @@
 import {
-  MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, NodeError 
+  MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, NodeError, CircularCallError 
 } from '@/reducer/errors';
 import React from 'react';
 
@@ -24,6 +24,10 @@ export const ErrorBubble = ({ error }: ErrorBubble) => {
 
   if (error instanceof UnknownNameError) {
     message = `We don't know what '${error.name}' is in this context.`;
+  }
+
+  if (error instanceof CircularCallError) {
+    message = 'You can\'t call a function with itself as a parameter.';
   }
 
   return (

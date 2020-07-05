@@ -8,7 +8,7 @@ import { NodeId, ReductNode } from '@/semantics';
  * and not when something unexpected happens. They will be caught by the undo
  * reducer and stored so that they can be displayed in the interface.
  */
-export class NodeError extends Error {
+export abstract class NodeError extends Error {
   /**
    * The node that is the source of this error.
    */
@@ -25,9 +25,6 @@ export class NodeError extends Error {
  * missing information.
  */
 export class MissingNodeError extends NodeError {
-  public constructor(slotId: NodeId) {
-    super(slotId);
-  }
 }
 
 type NodeType = ReductNode['type'];
@@ -59,9 +56,13 @@ export class WrongTypeError extends NodeError {
  * not on the board.
  */
 export class NotOnBoardError extends NodeError {
-  public constructor(nodeId: NodeId) {
-    super(nodeId);
-  }
+}
+
+/**
+ * This error is thrown when the user tries to call a lambda using itself as a
+ * parameter.
+ */
+export class CircularCallError extends NodeError {
 }
 
 /**

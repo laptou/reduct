@@ -1,5 +1,5 @@
 number,board,goal,textgoal,toolbox,defines,globals,syntax,animationScales,tutorial
-71,"['[_, _, _]']","['[A, B, C]']",Make an array with three elements,"['A', 'B', 'C', 'D', '9']","['function get(a, i) { return 0;}','function fold(f, a, init) { return 0;}','function slice(array, begin, end) { return 0;}','function set(a, i, value) { return 0;}']",{},[],{},array-intro
+71,"['[_, _, _]']","['[A, B, C]']",Make an array with three elements,"['A', 'B', 'C', 'D', '9']","['function get(a, i) { return a[i];}','function fold(f, a, init) { return 0;}','function slice(array, begin, end) { if begin == 0 { if end == length(array) { return array; } } } }','function set(a, i, value) { return 0;}']",{},[],{},array-intro
 72,"['get', '[A, B, _, D]']",['C'],"""get"" can get an element from an array","['0', '1', '2', '3', '4', 'C']","['function map(f, a) { return a; }', 'function length(a) { return 0; }']",{},[],{},
 73,"['map(addOne, [1, _, 4])']","['[2, 4, 5]']","""map"" applies a function to every element","['1', '2', '3', '4', 'B']",,{},[],{},
 74,"['map(_, [1, 2, 4, 8])']","['[2, 4, 8, 16]']",,"['x => x + _', 'y => y', '1', '2', 'x', '16']",,{},[],{},

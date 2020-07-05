@@ -24,6 +24,7 @@ import {
 } from './defs';
 import { VTupleNode } from './transform';
 import { DeepReadonly } from '@/util/helper';
+import { BuiltInReferenceNode } from './defs/builtins';
 
 export type NodeId = number;
 
@@ -109,7 +110,8 @@ export type ReductNode =
     ReferenceNode |
     InvocationNode |
     VTupleNode |
-    MissingNode;
+    MissingNode |
+    BuiltInReferenceNode;
 
 export type FlatReductNode =
   Flat<ApplyNode> |

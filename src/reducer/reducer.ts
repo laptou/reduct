@@ -4,12 +4,12 @@ import {
 } from '@/semantics/defs';
 import type { Semantics } from '@/semantics/transform';
 import {
-  createBoolNode, createNumberNode, createStrNode, getKindForNode, getValueForName 
+  createBoolNode, createNumberNode, createStrNode, getKindForNode, getValueForName, createMissingNode 
 } from '@/semantics/util';
 import {
   DRF, mapIterable, withoutParent, withParent 
 } from '@/util/helper';
-import { cloneNodeDeep, findNodesDeep, getRootForNode } from '@/util/nodes';
+import { cloneNodeDeep, findNodesDeep, getRootForNode, isAncestorOf } from '@/util/nodes';
 import { castDraft, produce } from 'immer';
 import { combineReducers, compose } from 'redux';
 import * as animate from '../gfx/animate';
@@ -17,10 +17,11 @@ import * as gfx from '../gfx/core';
 import {
   ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStep, ReductAction 
 } from './action';
-import { MissingNodeError, NotOnBoardError, WrongTypeError, UnknownNameError } from './errors';
+import { MissingNodeError, NotOnBoardError, WrongTypeError, UnknownNameError, CircularCallError } from './errors';
 import { GlobalState, RState, GameMode } from './state';
 import { undoable } from './undo';
 import { checkVictory, checkDefeat } from './helper';
+import { lambda } from '@/semantics/defs/lambda';
 
 export { nextId } from '@/util/nodes';
 
@@ -99,8 +100,11 @@ export function reduct(semantics: Semantics, views, restorePos) {
       };
     }
 
-    case ActionKind.EvalLambda: {
+    case ActionKind.EvalLambda: { 
       let { lambdaNodeId, paramNodeId } = act;
+
+      if (lambdaNodeId === paramNodeId || isAncestorOf(paramNodeId, lambdaNodeId, state.nodes))
+        throw new CircularCallError(lambdaNodeId);
 
       // for now, this is the same thing as beta-reduce, except handled entirely
       // in the reducer where it should be - iaa34
@@ -122,7 +126,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
       if (paramNode.type === 'reference') {
         state = program(state, createMoveNodeToBoard(paramNodeId));
         state = program(state, createEvalReference(paramNodeId));
-        paramNodeId = state.added.get(paramNodeId)!;
+        paramNodeId = [...state.added].find(([, source]) => source === paramNodeId)![0];
       }
 
       state = produce(state, draft => {
@@ -971,20 +975,23 @@ export function reduct(semantics: Semantics, views, restorePos) {
       const node = state.nodes.get(act.nodeId)!;
 
       const parentId = node.parent;
-      if (parentId === undefined) throw `Can't detach node ${act.nodeId} with no parent!`;
+      if (!parentId) throw new Error(`Can't detach node ${act.nodeId} with no parent!`);
 
       return produce(state, (draft) => {
         draft.board.add(act.nodeId);
         const node = draft.nodes.get(act.nodeId)!;
         const parent = draft.nodes.get(parentId)!;
-        const oldHole = parent.__meta?.slots[node.parentField!];
+        const oldHole = parent.__meta?.slots?.[node.parentField!];
+        
         if (oldHole) {
           parent.subexpressions[node.parentField] = oldHole;
           delete parent.__meta!.slots![`${node.parentField}:hole`];
-        } else if (node.parentField.startsWith('notch')) {
-          parent.subexpressions[node.parentField] = null;
         } else {
-          throw 'Unimplemented: creating new hole';
+          const newSlot = createMissingNode();
+          draft.nodes.set(newSlot.id, newSlot);
+          newSlot.parent = parentId;
+          newSlot.parentField = node.parentField;
+          parent.subexpressions[node.parentField] = newSlot.id;
         }
 
         // TODO: refactor
@@ -1049,7 +1056,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
   function annotateTypes(state = initialProgram) {
     return produce(state, draft => {
       for (const id of dirty.values()) {
-        const { types, completeness } = semantics.collectTypes(draft, draft.nodes.get(id));
+        const { types, completeness } = semantics.collectTypes(state, state.nodes.get(id));
         for (const [exprId, expr] of draft.nodes.entries()) {
           if (types.has(exprId)) {
             expr.ty = types.get(exprId);
@@ -1065,60 +1072,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
 
   return {
     reducer: combineReducers<GlobalState>({
-      program: undoable(compose(annotateTypes, program), {
-        actionFilter: (act) => act.type === ActionKind.Raise
-                    || act.type === ActionKind.Hover
-                    // Prevent people from undoing start of level
-                    || act.type === ActionKind.StartLevelLegacy
-                    || act.type === ActionKind.StartLevel
-                    || act.type === ActionKind.Cleanup
-                    || act.type === ActionKind.DetectCompletion
-                    || act.skipUndo,
-        extraState: (state, newState) => {
-          const result = {};
-          for (const id of state.board) {
-            if (views[id]) {
-              const pos = { ...gfx.absolutePos(views[id]) };
-              if (pos.x === 0 && pos.y === 0) continue;
-              result[id] = pos;
-            }
-          }
-          for (const id of newState.board) {
-            if (views[id]) {
-              const pos = { ...gfx.absolutePos(views[id]) };
-              if (pos.x === 0 && pos.y === 0) continue;
-              result[id] = pos;
-            }
-          }
-          return result;
-        },
-        restoreExtraState: (state, oldState, extraState) => {
-          if (!extraState) return;
-
-          for (const id of state.board) {
-            if (!oldState.board.has(id)) {
-              if (extraState[id]) {
-                Object.assign(views[id].pos, gfx.absolutePos(views[id]));
-                views[id].anchor.x = 0;
-                views[id].anchor.y = 0;
-                views[id].scale.x = 1.0;
-                views[id].scale.y = 1.0;
-                animate.tween(views[id].pos, restorePos(id, extraState[id]), {
-                  duration: 250,
-                  easing: animate.Easing.Cubic.Out
-                });
-              }
-            }
-          }
-          for (const id of state.toolbox) {
-            if (!oldState.toolbox.has(id)) {
-              views[id].pos = gfx.absolutePos(views[id]);
-              views[id].scale.x = 1.0;
-              views[id].scale.y = 1.0;
-            }
-          }
-        }
-      })
+      program: undoable(compose(annotateTypes, program))
     })
   };
 }
