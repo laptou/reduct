@@ -1,27 +1,32 @@
 import type { Flat, NodeId, NodeMap } from '@/semantics';
 import {
-  ApplyNode, BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NotNode, NumberNode, OpNode, ReferenceNode as ReferenceNode, StrNode 
+  ApplyNode, BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NotNode, NumberNode, OpNode, ReferenceNode as ReferenceNode, StrNode, PTupleNode 
 } from '@/semantics/defs';
 import type { Semantics } from '@/semantics/transform';
 import {
-  createBoolNode, createNumberNode, createStrNode, getKindForNode, getValueForName, createMissingNode 
+  createBoolNode, createNumberNode, createStrNode, getKindForNode, getValueForName, createMissingNode, iterateTuple 
 } from '@/semantics/util';
 import {
   DRF, mapIterable, withoutParent, withParent 
 } from '@/util/helper';
-import { cloneNodeDeep, findNodesDeep, getRootForNode, isAncestorOf } from '@/util/nodes';
+import {
+  cloneNodeDeep, findNodesDeep, getRootForNode, isAncestorOf 
+} from '@/util/nodes';
 import { castDraft, produce } from 'immer';
 import { combineReducers, compose } from 'redux';
 import * as animate from '../gfx/animate';
 import * as gfx from '../gfx/core';
 import {
-  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStep, ReductAction 
+  ActionKind, createDetach, createEvalApply, createEvalConditional, createBindLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStep, ReductAction, createEvalLambda 
 } from './action';
-import { MissingNodeError, NotOnBoardError, WrongTypeError, UnknownNameError, CircularCallError } from './errors';
+import {
+  MissingNodeError, NotOnBoardError, WrongTypeError, UnknownNameError, CircularCallError, AlreadyFullyBoundError 
+} from './errors';
 import { GlobalState, RState, GameMode } from './state';
 import { undoable } from './undo';
 import { checkVictory, checkDefeat } from './helper';
 import { lambda } from '@/semantics/defs/lambda';
+import { builtins } from '@/semantics/defs/builtins';
 
 export { nextId } from '@/util/nodes';
 
@@ -100,27 +105,34 @@ export function reduct(semantics: Semantics, views, restorePos) {
       };
     }
 
-    case ActionKind.EvalLambda: { 
+    case ActionKind.BindLambda: { 
       let { lambdaNodeId, paramNodeId } = act;
-
-      if (lambdaNodeId === paramNodeId || isAncestorOf(paramNodeId, lambdaNodeId, state.nodes))
-        throw new CircularCallError(lambdaNodeId);
-
-      // for now, this is the same thing as beta-reduce, except handled entirely
-      // in the reducer where it should be - iaa34
 
       if (!state.board.has(getRootForNode(lambdaNodeId, state.nodes).id))
         throw new NotOnBoardError(lambdaNodeId);
 
+      if (lambdaNodeId === paramNodeId || isAncestorOf(paramNodeId, lambdaNodeId, state.nodes))
+        throw new CircularCallError(lambdaNodeId);
+
       const lambdaNode = state.nodes.get(lambdaNodeId) as DRF<LambdaNode>;
       const paramNode = state.nodes.get(paramNodeId) as DRF;
-      const bodyNode = state.nodes.get(lambdaNode.subexpressions.body) as DRF;
-
-      if (bodyNode.type === 'missing')
-        throw new MissingNodeError(bodyNode.id);
 
       let argNodeId: NodeId;
-      let argName: string;
+      let foundUnbound = false;
+
+      // use the first unbound argument
+      const argTuple = state.nodes.get(lambdaNode.subexpressions.arg) as DRF<PTupleNode>;
+      for (let i = 0; i < argTuple.fields.size; i++) {
+        const argNode =  state.nodes.get(argTuple.subexpressions[i]) as DRF<LambdaArgNode>;
+        if (argNode.fields.value === null) {
+          argNodeId = argNode.id;
+          foundUnbound = true;
+          break;
+        }
+      }
+
+      if (!foundUnbound) 
+        throw new AlreadyFullyBoundError(lambdaNodeId);
 
       // force references to be reduced before being used as params
       if (paramNode.type === 'reference') {
@@ -129,45 +141,68 @@ export function reduct(semantics: Semantics, views, restorePos) {
         paramNodeId = [...state.added].find(([, source]) => source === paramNodeId)![0];
       }
 
-      state = produce(state, draft => {
-        // node that represents lambda argument in function signature
-        const argNode = draft.nodes.get(lambdaNode.subexpressions.arg) as Flat<LambdaArgNode>;
+      // delete param node
+      const paramNodeDescendants = findNodesDeep(paramNodeId, state.nodes, () => true);
+
+      return produce(state, draft => {
+        // get node that represents lambda argument in function signature
+        const argNode = draft.nodes.get(argNodeId) as Flat<LambdaArgNode>;
+        // bind the argument
         argNode.fields.value = paramNodeId;
         argNodeId = argNode.id;
-        argName = argNode.fields.name;
+
+        // param node should be consumed from board or toolbox
+        draft.board.delete(paramNodeId);
+        draft.toolbox.delete(paramNodeId);
+
+        // param node and descendants are no longer needed, eliminate them
+        for (const paramNodeDescendant of paramNodeDescendants) {
+          draft.removed.add(paramNodeDescendant.id);
+        }
       });
+    }
 
-      // find all of the references who point to this arg
+    case ActionKind.EvalLambda: {
+      const { lambdaNodeId } = act;
 
-      const referenceNodes = findNodesDeep(
-        lambdaNode.subexpressions.body, 
-        state.nodes,
-        (nodeToMatch) => nodeToMatch.type === 'reference' && nodeToMatch.fields.name === argName,
-        (nodeToFilter, nodeMap) => {
-          // don't bother searching inside of nodes that redefine the name in
-          // their own scope, such as lambdas with the same arg name
-          if (nodeToFilter.type === 'lambda') {
-            const nodeToFilterArg = nodeMap.get(nodeToFilter.subexpressions.arg) as DRF<LambdaArgNode>;
-            if (nodeToFilterArg.fields.name === argName) return false;
-          }
+      const lambdaNode = state.nodes.get(lambdaNodeId) as DRF<LambdaNode>;
+      const argTupleNode = state.nodes.get(lambdaNode.subexpressions.arg) as DRF<PTupleNode>;
+      const bodyNodeId = lambdaNode.subexpressions.body;
 
-          return true;
-        });
-
+      if (state.nodes.get(bodyNodeId)!.type === 'missing')
+        throw new MissingNodeError(bodyNodeId);
+    
       const removed: Array<NodeId> = [];
+      for (let argIdx = 0; argIdx < argTupleNode.fields.size; argIdx++) {
+        const argNode = state.nodes.get(argTupleNode.subexpressions[argIdx]) as DRF<LambdaArgNode>;
+        const argName = argNode.fields.name;
 
-      // eval all relevant references and keep track of which nodes are created
-      for (const referenceNode of referenceNodes) {
-        state = program(state, createEvalReference(referenceNode.id));
-        removed.push(...state.removed);
+        // find all of the references who point to this arg
+        const referenceNodes = findNodesDeep(
+          bodyNodeId, 
+          state.nodes,
+          (nodeToMatch) => nodeToMatch.type === 'reference' && nodeToMatch.fields.name === argName,
+          (nodeToFilter, nodeMap) => {
+            // don't bother searching inside of nodes that redefine the name in
+            // their own scope, such as lambdas with the same arg name
+            if (nodeToFilter.type === 'lambda') {
+              const nodeToFilterArg = nodeMap.get(nodeToFilter.subexpressions.arg) as DRF<LambdaArgNode>;
+              if (nodeToFilterArg.fields.name === argName) return false;
+            }
+
+            return true;
+          });
+
+        // eval all relevant references and keep track of which nodes are created
+        for (const referenceNode of referenceNodes) {
+          state = program(state, createEvalReference(referenceNode.id));
+          removed.push(...state.removed);
+        }
       }
 
       // everything is immutable, we have a new state which means lambdaNode is
       // no longer valid
       const newLambdaNode = state.nodes.get(lambdaNodeId) as DRF<LambdaNode>;
-
-      // delete param node and move body outwards
-      const paramNodeDescendants = findNodesDeep(paramNodeId, state.nodes, () => true);
 
       return produce(
         state,
@@ -175,7 +210,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
           draft.added = new Map();
           draft.removed = new Set(removed);
           
-          const bodyNode = draft.nodes.get(newLambdaNode.subexpressions.body)!;
+          const bodyNode = draft.nodes.get(bodyNodeId)!;
           
           if (newLambdaNode.parent) {
             bodyNode.parent = lambdaNode.parent;
@@ -202,22 +237,14 @@ export function reduct(semantics: Semantics, views, restorePos) {
             }
           }
 
-          // param node should be consumed from board or toolbox
-          draft.board.delete(paramNodeId);
-          draft.toolbox.delete(paramNodeId);
-
           // lambda node is no longer needed, eliminate it
           draft.board.delete(lambdaNode.id);
-          draft.board.delete(argNodeId);
 
           // mark these nodes for cleanup
           draft.removed.add(lambdaNode.id);
-          draft.removed.add(argNodeId);
-          draft.removed.add(paramNodeId);
-
-          // descendants are no longer needed, eliminate them
-          for (const paramNodeDescendant of paramNodeDescendants) {
-            draft.removed.add(paramNodeDescendant.id);
+          draft.removed.add(argTupleNode.id);
+          for (const argNodeId of Object.values(argTupleNode.subexpressions)) {
+            draft.removed.add(argNodeId);
           }
         });
     }
@@ -447,23 +474,51 @@ export function reduct(semantics: Semantics, views, restorePos) {
         throw new NotOnBoardError(applyNodeId);
 
       const applyNode = state.nodes.get(applyNodeId) as DRF<ApplyNode>;
-      const argNode = state.nodes.get(applyNode.subexpressions.argument)!;
-      const calleeNode = state.nodes.get(applyNode.subexpressions.callee)!;
+      const paramTupleNode = state.nodes.get(applyNode.subexpressions.argument)! as DRF<PTupleNode>;
+      const paramNodes: DRF[] = [];
+      
+      for (let i = 0; i < paramTupleNode.fields.size; i++) {
+        const argNode = state.nodes.get(paramTupleNode.subexpressions[i])!;
 
-      if (argNode.type === 'missing')
-        throw new MissingNodeError(argNode.id);
+        if (argNode.type === 'missing')
+          throw new MissingNodeError(argNode.id);
+
+        paramNodes.push(argNode);
+      }
+
+      const calleeNode = state.nodes.get(applyNode.subexpressions.callee)!;
 
       if (calleeNode.type === 'missing')
         throw new MissingNodeError(calleeNode.id);
 
-      if (calleeNode.type !== 'lambda')
-        throw new WrongTypeError(calleeNode.id, 'lambda', calleeNode.type);
-      
-      state = program(state, createEvalLambda(argNode.id, calleeNode.id));
+      let resultNodeId: NodeId;
+        
+      if (calleeNode.type === 'builtin-reference') {
+        const builtin = builtins[calleeNode.fields.name as keyof typeof builtins];
+        const [newNode, newNodeMap] = builtin.impl(calleeNode, paramNodes, state.nodes);
+        state = {
+          ...state,
+          nodes: newNodeMap
+        };
 
-      // there should only be one added node after evaluating the lambda, and it
-      // should be the result of evaluating the lambda
-      const resultNodeId = [...state.added.keys()][0];
+        resultNodeId = newNode.id;
+      } else if (calleeNode.type === 'lambda') {
+        let paramIdx = 0;
+
+        while (paramIdx < paramNodes.length) {
+          const paramNode = paramNodes[paramIdx];
+          state = program(state, createBindLambda(calleeNode.id, paramNode.id));
+          paramIdx++;
+        }
+
+        state = program(state, createEvalLambda(calleeNode.id));
+
+        // there should only be one added node after evaluating the lambda, and it
+        // should be the result of evaluating the lambda
+        resultNodeId = [...state.added.keys()][0];
+      } else {
+        throw new WrongTypeError(calleeNode.id, ['lambda', 'builtin-reference'], calleeNode.type);
+      }
 
       return produce(state, draft => {
         draft.board.delete(applyNode.id);
@@ -661,6 +716,17 @@ export function reduct(semantics: Semantics, views, restorePos) {
         throw new Error('This node is not an expression');
       }
 
+      // fully bound lambdas are treated as expressions, but we should just step
+      // them right away instead of stepping their contents
+      if (targetNode.type === 'lambda') {
+        return program(state, createEvalLambda(targetNode.id));
+      }
+
+      // for most nodes, we should evaluate children one at a time
+      // but for tuples, we should evaluate children in parallel
+      let stepped = false;
+      const parallel = targetNode.type === 'vtuple' || targetNode.type === 'ptuple';
+
       for (const [name, childId] of Object.entries(targetNode.subexpressions)) {
         const childNode = state.nodes.get(childId)!;
         const childNodeKind = getKindForNode(childNode, state.nodes);
@@ -679,10 +745,17 @@ export function reduct(semantics: Semantics, views, restorePos) {
 
         // this is a child node that needs further evaluation, return the result
         // of stepping it once
-        if (childNodeKind !== 'value' && childNodeKind !== 'syntax') {
-          return program(state, createStep(childId));
+        if (childNodeKind === 'expression') {
+          state = program(state, createStep(childId));
+          stepped = true;
+
+          if (!parallel)
+            return state;
         }
       }
+
+      if (stepped)
+        return state;
 
       // if we are here, all of the child nodes are fully stepped so we should
       // just step this node
@@ -1072,7 +1145,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
 
   return {
     reducer: combineReducers<GlobalState>({
-      program: undoable(compose(annotateTypes, program))
+      program: undoable(program)
     })
   };
 }

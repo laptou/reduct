@@ -20,9 +20,9 @@ import { reference, ReferenceNode } from './defs/reference';
 import {
   boolean, BoolNode, dynamicVariant, number, NumberNode, ReductSymbol, string, StrNode, symbol, SymbolNode, unsol 
 } from './defs/value';
-import { VTupleNode } from './transform';
 import { RState } from '@/reducer/state';
 import { BuiltInReferenceNode } from './defs/builtins';
+import { PTupleNode, VTupleNode } from './defs';
 
 /**
  * Creates a partial node. Helper for "create node" functions to avoid
@@ -69,6 +69,16 @@ export function createVtupleNode(...children: ReductNode[]): VTupleNode {
   return {
     ...createNodeBase(),
     type: 'vtuple',
+    locked: true,
+    fields: { size: children.length },
+    subexpressions: Object.fromEntries(children.map((child, index) => [index, child]))
+  };
+}
+
+export function createPtupleNode(...children: ReductNode[]): PTupleNode {
+  return {
+    ...createNodeBase(),
+    type: 'ptuple',
     locked: true,
     fields: { size: children.length },
     subexpressions: Object.fromEntries(children.map((child, index) => [index, child]))
@@ -124,7 +134,7 @@ export function createOpNode(name: OpNode['fields']['name']): OpNode {
   };
 }
 
-export function createLambdaNode(arg: LambdaArgNode, body: ReductNode): LambdaNode {
+export function createLambdaNode(arg: PTupleNode, body: ReductNode): LambdaNode {
   return {
     ...createNodeBase(),
     type: 'lambda',
@@ -132,7 +142,7 @@ export function createLambdaNode(arg: LambdaArgNode, body: ReductNode): LambdaNo
   };
 }
 
-export function createApplyNode(callee: ReductNode, argument: ReductNode): ApplyNode {
+export function createApplyNode(callee: ReductNode, argument: PTupleNode): ApplyNode {
   return {
     ...createNodeBase(),
     type: 'apply',
@@ -198,6 +208,18 @@ export function createBuiltInReferenceNode(name: string): BuiltInReferenceNode {
   };
 }
 
+export function* iterateTuple<N extends ReductNode>(
+  tupleNode: NodeId | DRF<VTupleNode | PTupleNode>, 
+  nodes: DeepReadonly<NodeMap>
+): Generator<DRF<N>> {
+  if (typeof tupleNode === 'number')
+    tupleNode = nodes.get(tupleNode) as DRF<VTupleNode | PTupleNode>;
+
+  for (let i = 0; i < tupleNode.fields.size; i++) {
+    yield nodes.get(tupleNode.subexpressions[i]) as DRF<N>;
+  }
+}
+
 
 /**
  * What kind of expression (``value``, ``expression``, ``statement``,
@@ -217,10 +239,24 @@ export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKin
   case 'conditional': return dethunk(conditional.kind, node, nodes);
   case 'define': return dethunk(define.kind, node, nodes);
   case 'dynamicVariant': return dethunk(dynamicVariant.kind, node, nodes);
-  case 'lambda': return dethunk(lambda.kind, node, nodes);
-  case 'lambdaArg': return dethunk(lambdaArg.kind, node, nodes);
-  case 'lambdaVar': return dethunk(lambdaVar.kind, node, nodes);
-  case 'lambdaVar': return dethunk(lambdaVar.kind, node, nodes);
+  case 'lambda': {
+    // lambda nodes with unbound arguments should be treated as values
+    // because you can't step them; lambda nodes that are fully bound
+    // should be treated as expressions
+
+    let foundUnbound = false;
+    for (const argNode of iterateTuple<LambdaArgNode>(node.subexpressions.arg, nodes)) {
+      if (argNode.fields.value === null) {
+        foundUnbound = true;
+        break;
+      }
+    }
+
+    if (!foundUnbound) return 'expression';
+
+    return 'value';
+  }
+  case 'lambdaArg': return 'syntax';
   case 'letExpr': return dethunk(letExpr.kind, node, nodes);
   case 'member': return dethunk(member.kind, node, nodes);
   case 'missing': return dethunk(missing.kind, node, nodes);
@@ -231,7 +267,15 @@ export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKin
   case 'string': return dethunk(string.kind, node, nodes);
   case 'symbol': return dethunk(symbol.kind, node, nodes);
   case 'unsol': return dethunk(unsol.kind, node, nodes);
-  case 'vtuple': return 'expression';
+  case 'ptuple':
+  case 'vtuple': {
+    for (const child of iterateTuple(node, nodes)) {
+      if (getKindForNode(child, nodes) === 'expression')
+        return 'expression';
+    }
+
+    return 'value';
+  }
   case 'builtin-reference': return 'value';
   default: throw new Error(`unknown node of type ${node.type}`);
   }
@@ -261,11 +305,11 @@ export function getDefinitionForName(
 
     // special case for lambda arg nodes until scope is implemented
     if (current.type === 'lambda') {
-      const arg = state.nodes.get(current.subexpressions.arg) as DRF<LambdaArgNode>;
-
-      // we found something with this name
-      if (arg.fields.name === name) {
-        return arg.id;
+      for (const argNode of iterateTuple<LambdaArgNode>(current.subexpressions.arg, state.nodes)) {
+        // we found something with this name
+        if (argNode.fields.name === name) {
+          return argNode.id;
+        }
       }
     }
 

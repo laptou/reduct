@@ -13,3 +13,5 @@ export type {
 } from './value';
 export type { ReferenceNode, InvocationNode } from './reference';
 export type { MissingNode } from './missing';
+export type { BuiltInReferenceNode } from './builtins';
+export type { VTupleNode, PTupleNode } from './tuple';

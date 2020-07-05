@@ -80,3 +80,10 @@ export class UnknownNameError extends NodeError {
     this.name = name;
   }
 }
+
+/**
+ * This error is thrown when the user tries to apply a lambda that already has
+ * all of its parameters bound.
+ */
+export class AlreadyFullyBoundError extends NodeError {
+}

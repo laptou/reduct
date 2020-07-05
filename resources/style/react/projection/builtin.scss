@@ -1,0 +1,23 @@
+@use '../theme';
+@use 'layout';
+@use 'fx';
+@use 'sass:color';
+
+.projection.builtin-reference {
+  @extend %projection-standalone;
+  @include fx.projection-shadow-box();
+  
+  align-items: center;
+  padding: 2px;
+  color: color.change(theme.$projection-foreground-inverse, $alpha: 0.5);
+  line-height: 1;
+  background-color: white;
+
+  &.valid {
+    color: theme.$projection-foreground-inverse;
+  }
+
+  .builtin-reference-name {
+    padding: 0.25rem;
+  }
+}

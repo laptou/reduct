@@ -3,12 +3,14 @@ import * as fx from '../../gfx/fx';
 import { genericBetaReduce } from '../core';
 import type { NodeDef } from './base';
 import { DeepReadonly } from '@/util/helper';
+import { VTupleNode } from '../transform';
 
 export interface LambdaNode extends BaseNode {
   type: 'lambda';
 
   subexpressions: {
-    arg: LambdaArgNode;
+    /** Is a tuple containing all of the lambda's arguments. */
+    arg: VTupleNode;
     body: ReductNode;
   };
 }

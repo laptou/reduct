@@ -20,9 +20,10 @@ import {
   SymbolNode,
   ReferenceNode,
   InvocationNode,
-  MissingNode
+  MissingNode,
+  PTupleNode,
+  VTupleNode
 } from './defs';
-import { VTupleNode } from './transform';
 import { DeepReadonly } from '@/util/helper';
 import { BuiltInReferenceNode } from './defs/builtins';
 
@@ -110,6 +111,7 @@ export type ReductNode =
     ReferenceNode |
     InvocationNode |
     VTupleNode |
+    PTupleNode |
     MissingNode |
     BuiltInReferenceNode;
 
@@ -136,4 +138,6 @@ export type FlatReductNode =
   Flat<ReferenceNode> |
   Flat<InvocationNode> |
   Flat<VTupleNode> |
-  Flat<MissingNode>;
+  Flat<PTupleNode> |
+  Flat<MissingNode> |
+  Flat<BuiltInReferenceNode>;

@@ -32,6 +32,7 @@ export enum ActionKind {
   MoveNodeToDefs = 'move-node-to-defs',
 
   Cleanup = 'cleanup',
+  BindLambda = 'bind-lambda',
   Eval = 'eval',
   EvalLambda = 'eval-lambda',
   EvalOperator = 'eval-operator',
@@ -57,6 +58,7 @@ export type ReductAction =
   MoveNodeToDefsAction |
   AddNodeToToolboxAction |
   LegacySmallStepAction |
+  BindLambdaAction |
   EvalLambdaAction |
   EvalOperatorAction |
   EvalConditionalAction |
@@ -312,7 +314,7 @@ export function createStartLevel(index: number): StartLevelAction {
   for (const [name, expr] of [...prevDefinedNames, ...newDefinedNames, ...globalDefinedNames]) {
     // TODO: remove override for builtins, remove defs for builtin methods in levels
     if (name in builtins) continue;
-    
+
     macros.set(name, expr);
   }
 
@@ -330,10 +332,15 @@ export function createStartLevel(index: number): StartLevelAction {
         return;
       }
 
+      if (node.fields.name in builtins) return;
+
       globals.set(node.fields.name, node);
     });
 
   for (const [name, script] of Object.entries(levelDefinition.globals)) {
+    // TODO: remove override for builtins, remove defs for builtin methods in levels
+    if (name in builtins) continue;
+    
     const node = parseProgram(script, macros);
 
     if (node.type !== 'define')
@@ -416,27 +423,49 @@ export function addToolboxItem(
   };
 }
 
+export interface BindLambdaAction {
+  type: ActionKind.BindLambda;
+  lambdaNodeId: NodeId;
+  paramNodeId: NodeId;
+}
+
+/**
+ * Returns an action which will apply the given parameter to the first unbound
+ * argument of the lambda. If there aren't any, it will error.
+ *
+ * @param lambdaNodeId The ID of the node that represents the lambda being
+ * called.
+ * @param paramNodeId The ID of the node that represents the parameter to
+ * substitute.
+ */
+export function createBindLambda(
+  lambdaNodeId: NodeId,
+  paramNodeId: NodeId, 
+): BindLambdaAction {
+  return {
+    type: ActionKind.BindLambda,
+    paramNodeId,
+    lambdaNodeId
+  };
+}
+
 export interface EvalLambdaAction {
   type: ActionKind.EvalLambda;
-  paramNodeId: NodeId;
   lambdaNodeId: NodeId;
 }
 
 /**
- * Returns an action which will evaluate a lambda using a given parameter.
+ * Returns an action which will evaluate a lambda node. If any of the lambda's
+ * arguments are not bound, this will error.
  *
- * @param paramNodeId The ID of the node that represents the parameter that is
- * given to this lambda.
  * @param lambdaNodeId The ID of the node that represents the lambda being
  * called.
  */
 export function createEvalLambda(
-  paramNodeId: NodeId, 
-  lambdaNodeId: NodeId
+  lambdaNodeId: NodeId,
 ): EvalLambdaAction {
   return {
     type: ActionKind.EvalLambda,
-    paramNodeId,
     lambdaNodeId
   };
 }

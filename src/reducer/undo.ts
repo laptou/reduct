@@ -82,10 +82,10 @@ export function undoable<S>(reducer: Reducer<S>) {
     }
     
     default: {
-      return produce(state, draft => {
-        try {
+      try {
+        const newPresent = reducer(state.$present, action);
+        return produce(state, draft => {
         // use state.$present, do not allow draft objects to escape from this function
-          const newPresent = reducer(state.$present, action);
 
           if (newPresent === state.$present) {
             return;
@@ -102,14 +102,15 @@ export function undoable<S>(reducer: Reducer<S>) {
           draft.$past.unshift(draft.$present);
           draft.$present = castDraft(newPresent);
           draft.$future = [];
-        } catch (error) {
-          if (error instanceof GameError) {
-            draft.$error = error;
-          } else {
-            throw error;
-          }
+        
+        });
+      } catch (error) {
+        if (error instanceof GameError) {
+          return { ...state, $error: error };
+        } else {
+          throw error;
         }
-      });
+      }
     }
     }
   };

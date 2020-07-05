@@ -4,7 +4,7 @@ import React, { FunctionComponent, useState } from 'react';
 import { connect } from 'react-redux';
 import { StageProjection } from './base';
 import { Flat, NodeId } from '@/semantics';
-import { createEvalLambda } from '@/reducer/action';
+import { createBindLambda } from '@/reducer/action';
 import cx from 'classnames';
 
 interface LambdaArgProjectionOwnProps {
@@ -13,9 +13,21 @@ interface LambdaArgProjectionOwnProps {
 
 export const LambdaArgProjection: FunctionComponent<LambdaArgProjectionOwnProps> = 
   (props) => {
+    const { name, value } = props.node.fields;
+
     return (
       <div className='projection lambda-arg'>
-        {props.node.fields.name}
+        {name}
+
+        {
+          value 
+            ? (
+              <div className='lambda-arg-binding'>
+                : <StageProjection nodeId={value} />
+              </div>
+            )
+            : null
+        }
       </div>
     );
   };
@@ -35,7 +47,6 @@ export const LambdaVarProjection: FunctionComponent<LambdaVarProjectionOwnProps>
 
 interface LambdaProjectionOwnProps {
   node: Flat<LambdaNode>;
-  setError: (err: Error) => void;
 }
 
 interface LambdaProjectionDispatchProps {
@@ -128,7 +139,7 @@ export const LambdaProjection = connect(
   null, 
   (dispatch, ownProps: LambdaProjectionOwnProps) => ({
     evalLambda(paramNodeId: NodeId) {
-      dispatch(createEvalLambda(paramNodeId, ownProps.node.id))
+      dispatch(createBindLambda(ownProps.node.id, paramNodeId))
     }
   })
 )(LambdaProjectionImpl);

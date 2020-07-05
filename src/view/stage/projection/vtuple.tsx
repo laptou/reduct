@@ -1,4 +1,4 @@
-import { VTupleNode } from '@/semantics/transform';
+import { VTupleNode } from '@/semantics/defs';
 import '@resources/style/react/projection/vtuple.scss';
 import React, { FunctionComponent } from 'react';
 import { StageProjection } from './base';

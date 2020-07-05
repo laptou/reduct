@@ -108,6 +108,7 @@ function onClick(
   props.clearErrorAndRaise();
 
   if (props.kind !== 'expression') return; 
+  if (props.node && props.node.parent && props.node.locked) return; 
   if (props.frozen) return;
 
   props.step();

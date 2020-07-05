@@ -13,6 +13,8 @@ import { ReferenceProjection } from './reference';
 import { SymbolProjection } from './symbol';
 import { ValueProjection } from './value';
 import { VTupleProjection } from './vtuple';
+import { BuiltInReferenceProjection } from './builtin';
+import { PTupleProjection } from './ptuple';
 
 /**
  * Definitions:
@@ -33,6 +35,7 @@ export function getProjectionForNode(node: DRF | null) {
   case 'apply': return <ApplyProjection node={node} key={node.id} />;
   case 'array': return <ArrayProjection node={node} key={node.id} />;
   case 'binop': return <BinOpProjection node={node} key={node.id} />;
+  case 'builtin-reference': return <BuiltInReferenceProjection node={node} key={node.id} />;
   case 'op': return <OpProjection node={node} key={node.id} />;
   case 'conditional': return <ConditionalProjection node={node} key={node.id} />;
   case 'define': return <DefineProjection node={node} key={node.id} />;
@@ -45,6 +48,7 @@ export function getProjectionForNode(node: DRF | null) {
   case 'lambda': return <LambdaProjection node={node} key={node.id} />;
   case 'lambdaArg': return <LambdaArgProjection node={node} key={node.id} />;
   case 'lambdaVar': return <LambdaVarProjection node={node} key={node.id} />;
+  case 'ptuple': return <PTupleProjection node={node} key={node.id} />;
   case 'symbol': return <SymbolProjection node={node} key={node.id} />;
   case 'reference': return <ReferenceProjection node={node} key={node.id} />;
   case 'vtuple': return <VTupleProjection node={node} key={node.id} />;

@@ -1,7 +1,7 @@
 import { ReductNode } from '@/semantics';
 import { LambdaNode } from '@/semantics/defs';
 import {
-  createApplyNode, createArrayNode, createBinOpNode, createBoolNode, createConditionalNode, createDefineNode, createLambdaArgNode, createLambdaNode, createMemberNode, createMissingNode, createNotNode, createNumberNode, createOpNode, createReferenceNode, createStrNode, createSymbolNode, createVtupleNode 
+  createApplyNode, createArrayNode, createBinOpNode, createBoolNode, createConditionalNode, createDefineNode, createLambdaArgNode, createLambdaNode, createMemberNode, createMissingNode, createNotNode, createNumberNode, createOpNode, createReferenceNode, createStrNode, createSymbolNode, createVtupleNode, createPtupleNode 
 } from '@/semantics/util';
 import * as esprima from 'esprima';
 // eslint-disable-next-line import/no-unresolved
@@ -121,13 +121,22 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
   }
 
   case 'ArrowFunctionExpression': {
-    if (node.params.length === 1 && node.params[0].type === 'Identifier') {
-      // Implement capture of bindings
-      const argName = node.params[0].name;
+    if (node.params.length > 0) {
       const newMacros: MacroMap = new Map(macros);
-      newMacros.set(argName, () => createReferenceNode(argName));
+
+      const argNodes = node.params.map(param => {
+        if (param.type !== 'Identifier')
+          throw new Error(`Unsupported param type: ${param.type}`);
+
+        // Implement capture of bindings
+        const argName = param.name;
+        newMacros.set(argName, () => createReferenceNode(argName));
+        return createLambdaArgNode(argName);
+      });
+
       const body = parseNode(node.body, newMacros);
-      return createLambdaNode(createLambdaArgNode(argName), body);
+
+      return createLambdaNode(createPtupleNode(...argNodes), body);
     }
 
     throw new Error(`Lambdas with ${node.params.length} params are unimplemented`);
@@ -209,7 +218,7 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
         const testCases = node.arguments.map((arg) => parseNode(arg, macros));
         // TODO: better way to figure out name
         const name = node.arguments[0].type === 'CallExpression' ? node.arguments[0].callee.name : 'f';
-        return createLambdaNode(createLambdaArgNode(name), createVtupleNode(...testCases));
+        return createLambdaNode(createPtupleNode(createLambdaArgNode(name)), createVtupleNode(...testCases));
       }
 
       if (node.callee.name === '__autograder') {
@@ -249,22 +258,12 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
     //   return macros[node.callee.name](...node.arguments.map((n) => parseNode(n, macros)));
     // }
 
-    if (node.arguments[0].type === 'SpreadElement')
-      throw new Error('Varargs are not supported');
+    const argNodes = node.arguments.map(arg => parseNode(arg, macros));
 
-    let result = createApplyNode(
+    return createApplyNode(
       parseNode(node.callee, macros),
-      parseNode(node.arguments[0], macros)
+      createPtupleNode(...argNodes)
     );
-
-    for (const arg of node.arguments.slice(1)) {
-      if (arg.type === 'SpreadElement')
-        throw new Error('Varargs are not supported');
-            
-      result = createApplyNode(result, parseNode(arg, macros));
-    }
-
-    return result;
   }
 
   case 'ConditionalExpression': {
@@ -281,7 +280,7 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
       return createDefineNode(name, [], parseNode(node.body, macros) as LambdaNode);
     }
 
-    let result = parseNode(node.body, macros) as LambdaNode;
+    const body = parseNode(node.body, macros) as LambdaNode;
 
     const args = [];
     for (const arg of node.params.slice().reverse()) {
@@ -289,11 +288,14 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
         throw new Error(`${arg.type} is not allowed in function declarations`);
 
       args.push(arg.name);
-      result = createLambdaNode(createLambdaArgNode(arg.name), result);
     }
+
     args.reverse();
 
-    return createDefineNode(name, args, result);
+    return createDefineNode(name, args, createLambdaNode(
+      createPtupleNode(...args.map(arg => createLambdaArgNode(arg))),
+      body
+    ));
   }
 
   case 'VariableDeclaration': {

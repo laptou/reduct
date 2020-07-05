@@ -178,24 +178,21 @@ function initialize() {
 
   bindSpecialKeys();
 
-  canvas = document.createElement('canvas');
-  document.body.appendChild(canvas);
+  // canvas = document.createElement('canvas');
+  // document.body.appendChild(canvas);
 
-  if (gfx.viewport.IS_PHONE) {
-    document.body.classList.add('mobile-phone');
-    canvas.style.width = '100%';
-  }
+  // if (gfx.viewport.IS_PHONE) {
+  //   document.body.classList.add('mobile-phone');
+  //   canvas.style.width = '100%';
+  // }
 
   // Reducer needs access to the views in order to save their state
   // for undo/redo.
-  const reduct = reducer.reduct(es6, views, (id, { x, y }) => {
-    const { w, h } = gfx.absoluteSize(stg.getView(id));
-    return stg.findSafePosition(x, y, w, h);
-  });
+  const reduct = reducer.reduct();
 
   const extCompose = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ 
     serialize: true,
-    actionsBlacklist: [action.ActionKind.Cleanup]
+    actionsBlacklist: [action.ActionKind.Cleanup, action.ActionKind.Raise, action.ActionKind.DetectCompletion]
   }) ?? compose;
     
   store = createStore(
@@ -216,113 +213,113 @@ function initialize() {
 
   initReactApp(store);
 
-  stg = new TitleStage(startGame, canvas, 800, 600, store, views, es6);
-  window.stage = stg;
+  // stg = new TitleStage(startGame, canvas, 800, 600, store, views, es6);
+  // window.stage = stg;
 
-  // window.Logging = Logging;
+  // // window.Logging = Logging;
 
-  animate.addUpdateListener(() => {
-    stg.draw();
-  });
+  // animate.addUpdateListener(() => {
+  //   stg.draw();
+  // });
 
-  // TODO: resize scene as whole, then resize stage
-  window.addEventListener('resize', () => {
-    stg.resize();
-  });
+  // // TODO: resize scene as whole, then resize stage
+  // window.addEventListener('resize', () => {
+  //   stg.resize();
+  // });
 
-  // TODO: dispatch events to scene, then to stage
-  canvas.addEventListener('mousedown', (e) => stg._mousedown(e));
-  canvas.addEventListener('mousemove', (e) => stg._mousemove(e));
-  canvas.addEventListener('mouseup', (e) => stg._mouseup(e));
+  // // TODO: dispatch events to scene, then to stage
+  // canvas.addEventListener('mousedown', (e) => stg._mousedown(e));
+  // canvas.addEventListener('mousemove', (e) => stg._mousemove(e));
+  // canvas.addEventListener('mouseup', (e) => stg._mouseup(e));
 
-  canvas.addEventListener('touchstart', (e) => stg._touchstart(e));
-  canvas.addEventListener('touchmove', (e) => stg._touchmove(e));
-  canvas.addEventListener('touchend', (e) => stg._touchend(e));
+  // canvas.addEventListener('touchstart', (e) => stg._touchstart(e));
+  // canvas.addEventListener('touchmove', (e) => stg._touchmove(e));
+  // canvas.addEventListener('touchend', (e) => stg._touchend(e));
 
-  // When the state changes, redraw the state.
-  store.subscribe(() => {
-    const newState = store.getState();
-    const newPresent = newState.program.$present;
-    const addedNodesMap = newPresent.added;
+  // // When the state changes, redraw the state.
+  // store.subscribe(() => {
+  //   const newState = store.getState();
+  //   const newPresent = newState.program.$present;
+  //   const addedNodesMap = newPresent.added;
 
-    stg.draw();
+  //   stg.draw();
 
-    return;
+  //   return;
 
-    if (!stg.alreadyWon) {
-      const state = stg.getState();
-      const matching = level.checkVictory(state, es6);
-      if (Object.keys(matching).length > 0) {
-        const finalState = level.serialize(state, es6);
-        stg.animateVictory(matching).then(() => {
-          persistGraph();
+  //   if (!stg.alreadyWon) {
+  //     const state = stg.getState();
+  //     const matching = level.checkVictory(state, es6);
+  //     if (Object.keys(matching).length > 0) {
+  //       const finalState = level.serialize(state, es6);
+  //       stg.animateVictory(matching).then(() => {
+  //         persistGraph();
 
-          Logging.log('victory', {
-            final_state: finalState
-            // TODO: track num of moves via undo stack?
-            // num_of_moves: undefined,
-          });
+  //         Logging.log('victory', {
+  //           final_state: finalState
+  //           // TODO: track num of moves via undo stack?
+  //           // num_of_moves: undefined,
+  //         });
 
 
-          // WARNING: temporary
-          return;
+  //         // WARNING: temporary
+  //         return;
 
-          nextLevel();
-        });
-      } else if (stg.semantics
-                     && !stg.semantics.mightBeCompleted(state, (s) => level.checkVictory(s, es6))) {
+  //         nextLevel();
+  //       });
+  //     } else if (stg.semantics
+  //                    && !stg.semantics.mightBeCompleted(state, (s) => level.checkVictory(s, es6))) {
 
-        // WARNING: temporary
-        return;
-        try {
-          Logging.log('dead-end', {
-            final_state: level.serialize(state, es6)
-          });
-          stg.animateStuck();
-        } catch {
-          // TODO: remove this whole block
-          // just need it to stop erroring b/c stg.animateStuck() is not a function
-        }
-      }
-    }
-  });
+  //       // WARNING: temporary
+  //       return;
+  //       try {
+  //         Logging.log('dead-end', {
+  //           final_state: level.serialize(state, es6)
+  //         });
+  //         stg.animateStuck();
+  //       } catch {
+  //         // TODO: remove this whole block
+  //         // just need it to stop erroring b/c stg.animateStuck() is not a function
+  //       }
+  //     }
+  //   }
+  // });
 
   progression.restore();
 
-  window.stage = stg;
+  // window.stage = stg;
 
-  document.querySelector('#download-log').addEventListener('click', () => {
-    Logging.downloadStaticLog();
-  });
-  document.querySelector('#toggle-graph').addEventListener('click', () => {
-    Logging.toggleStateGraph();
-    window.updateStateGraph();
-  });
-  document.querySelector('#capture-graph').addEventListener('click', () => {
-    captureState();
-  });
+  // document.querySelector('#download-log').addEventListener('click', () => {
+  //   Logging.downloadStaticLog();
+  // });
+  // document.querySelector('#toggle-graph').addEventListener('click', () => {
+  //   Logging.toggleStateGraph();
+  //   window.updateStateGraph();
+  // });
+  // document.querySelector('#capture-graph').addEventListener('click', () => {
+  //   captureState();
+  // });
 
 
-  window.toggleStateGraph = function() {
-    Logging.toggleStateGraph();
-    window.updateStateGraph();
-  };
+  // window.toggleStateGraph = function() {
+  //   Logging.toggleStateGraph();
+  //   window.updateStateGraph();
+  // };
 
-  for (const chapterName of Loader.progressions.Elementary.linearChapters) {
-    const option = document.createElement('option');
-    option.setAttribute('value', Loader.progressions.Elementary.chapters[chapterName].startIdx);
-    option.innerText = `Chapter: ${chapterName}`;
-    document.querySelector('#chapter').appendChild(option);
-  }
-  document.querySelector('#chapter').addEventListener('change', () => {
-    passwordPrompt('Ask the teacher to skip this level!', 'cornell').then(() => {
-      if (stg.pushState) stg.pushState('change-chapter');
-      const lvl = window.parseInt(document.querySelector('#chapter').value, 10);
-      start(() => progression.jumpToLevel(lvl));
-    }, () => {});
-  });
+  // for (const chapterName of Loader.progressions.Elementary.linearChapters) {
+  //   const option = document.createElement('option');
+  //   option.setAttribute('value', Loader.progressions.Elementary.chapters[chapterName].startIdx);
+  //   option.innerText = `Chapter: ${chapterName}`;
+  //   document.querySelector('#chapter').appendChild(option);
+  // }
+  // document.querySelector('#chapter').addEventListener('change', () => {
+  //   passwordPrompt('Ask the teacher to skip this level!', 'cornell').then(() => {
+  //     if (stg.pushState) stg.pushState('change-chapter');
+  //     const lvl = window.parseInt(document.querySelector('#chapter').value, 10);
+  //     start(() => progression.jumpToLevel(lvl));
+  //   }, () => {});
+  // });
 
-  Logging.transitionToTask(TITLE_LEVEL_ID);
+  // Logging.transitionToTask(TITLE_LEVEL_ID);
 }
 
 function startGame() {

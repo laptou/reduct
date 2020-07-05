@@ -60,20 +60,6 @@ export interface SemanticDefinition {
 }
 
 /**
- * A "virtual tuple" which kind of bleeds presentation into the
- * semantics. Represents a set of values that go together, but spill
- * onto the board when they are the top-level node.
- */
-export interface VTupleNode extends BaseNode {
-  type: 'vtuple';
-  locked: true;
-
-  fields: { size: number };
-  subexpressions: Record<number, ReductNode>;
-}
-
-
-/**
  * This module turns a JSON-plus-functions specification of language
  * semantics and builds a module for the rest of Reduct to interact
  * with the semantics.
