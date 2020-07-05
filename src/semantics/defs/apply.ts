@@ -4,6 +4,11 @@ import * as gfx from '../../gfx/core';
 import * as fx from '../../gfx/fx';
 import type { NodeDef } from './base';
 
+
+/**
+ * ApplyNode is a Reduct node that represents function application
+ * the node 'argument' is passed to the node 'callee'
+ */
 export interface ApplyNode extends BaseNode {
   type: 'apply';
 

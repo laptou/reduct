@@ -1,11 +1,15 @@
 import { BaseNode, ReductNode } from '..';
 import type { NodeDef } from './base';
 
+/**
+ * OpNode is a Reduct node that represents a mathematical operation
+ */
 export interface OpNode extends BaseNode {
   type: 'op';
   locked: true;
   fields: { name: '+' | '-' | '<' | '>' | '==' | '&&' | '||' };
 }
+
 
 export const op: NodeDef<OpNode> = {
   kind: 'syntax',
@@ -17,6 +21,9 @@ export const op: NodeDef<OpNode> = {
   }
 };
 
+/**
+ * BinOpNode is a Reduct node that represents a binary operation
+ */
 export interface BinOpNode extends BaseNode {
   type: 'binop';
 

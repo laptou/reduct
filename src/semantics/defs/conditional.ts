@@ -3,6 +3,10 @@ import * as animate from '../../gfx/animate';
 import * as gfx from '../../gfx/core';
 import type { NodeDef } from './base';
 
+
+/**
+ * ConditionalNode is a reduct node representing an conditional expression
+ */
 export interface ConditionalNode extends BaseNode {
   type: 'conditional';
   subexpressions: {

@@ -18,6 +18,9 @@ function arrayDisplayParts(expr: DeepReadonly<ArrayNode> | DRF<ArrayNode>) {
   return result;
 }
 
+/**
+ * ArrayNode is a Reduct node that represents an array of nodes with length 'length'
+ */
 export interface ArrayNode extends BaseNode {
   type: 'array';
 
