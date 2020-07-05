@@ -44,7 +44,7 @@ export const ErrorBubble = ({ error }: ErrorBubble) => {
   }
 
   return (
-    <Bubble className='reduct-error-bubble'>
+    <Bubble className='reduct-error-bubble bottom'>
       {message}
     </Bubble>
   );

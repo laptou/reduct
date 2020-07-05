@@ -8,9 +8,7 @@ import {
 } from '@/semantics/core';
 import BaseStage from '@/stage/basestage';
 import { DeepReadonly, dethunk, DRF } from '@/util/helper';
-import { Im } from '@/util/im';
 import { produce } from 'immer';
-import * as immutable from 'immutable';
 import {
   BaseNode, NodeId, NodeMap, ReductNode 
 } from '.';
@@ -29,28 +27,22 @@ import type {
 import { NodeDef } from './defs/base';
 import type { ReductSymbol } from './defs/value';
 import makeInterpreter from './interpreter';
-import * as meta from './meta';
 
-const NotchRecord = immutable.Record({
-  side: 'left',
-  shape: 'wedge',
-  type: 'inset'
-});
 
 export interface SemanticParserDefinition {
     parse: (program: any, macros: any) => string;
     unparse: (node: ReductNode) => string;
-    extractDefines(semantics: Semantics, expr: Im<ReductNode>): [string, any];
-    extractGlobals(semantics: Semantics, expr: Im<ReductNode>): [string, Im<ReductNode>];
-    extractGlobalNames(semantics: Semantics, name: string, expr: Im<ReductNode>): [string, any];
+    extractDefines(semantics: Semantics, expr: DRF): [string, any];
+    extractGlobals(semantics: Semantics, expr: DRF): [string, DRF];
+    extractGlobalNames(semantics: Semantics, name: string, expr: DRF): [string, any];
 }
 
 export interface SemanticParser {
     parse(program: string, macros: any): string;
     unparse(node: ReductNode): string;
-    extractDefines(semantics: Semantics, expr: Im<ReductNode>): [string, any];
-    extractGlobals(semantics: Semantics, expr: Im<ReductNode>): [string, Im<ReductNode>];
-    extractGlobalNames(semantics: Semantics, name: string, expr: Im<ReductNode>): [string, any];
+    extractDefines(semantics: Semantics, expr: DRF): [string, any];
+    extractGlobals(semantics: Semantics, expr: DRF): [string, DRF];
+    extractGlobalNames(semantics: Semantics, name: string, expr: DRF): [string, any];
 }
 
 export interface SemanticDefinition {

@@ -1,4 +1,4 @@
-import * as numeric from 'numeric';
+import { uncmin } from 'numeric';
 
 import * as gfx from '../gfx/core';
 import * as progression from '../game/progression';
@@ -463,7 +463,7 @@ export function optimizationPacking(stage, bounds, nodeIds) {
   console.log(f(initCoords));
   console.log(JSON.stringify(initCoords));
 
-  const result = numeric.uncmin(f, initCoords, undefined, undefined, window.iterations || 5);
+  const result = uncmin(f, initCoords, undefined, undefined, window.iterations || 5);
   const { solution } = result;
 
   console.log(f(solution), result);

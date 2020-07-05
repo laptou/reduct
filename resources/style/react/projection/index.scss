@@ -23,55 +23,8 @@
   }
 
   .reduct-error-bubble {
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    display: flex;
-    flex-flow: column nowrap;
-    align-items: center;
-    min-width: 10rem;
-    margin: auto;
-    padding-top: 0.5rem;
-    color: white;
-    font-size: 0.8em;
-    font-family: 'Fira Sans', sans-serif;
-    transform: translate(-50%, 0);
-    transform-origin: center top;
+    --bubble-color: rgb(200, 0, 0);
     pointer-events: none;
-
-    .reduct-error-bubble-inner {
-      padding: 0.5rem;
-      background: rgb(200, 0, 0);
-      border-radius: 0.25rem;
-      box-shadow: 0 0 4pt rgba(black, 0.25);
-    }
-
-    .reduct-error-bubble-pointer {
-      z-index: 10;
-      width: 1.5rem;
-
-      polygon {
-        fill: rgb(200, 0, 0);
-      }
-    }
-  }
-
-  .reduct-error-bubble-enter {
-    transform: translate(-50%, 0) scale(0);
-  }
-
-  .reduct-error-bubble-enter-active {
-    transform: translate(-50%, 0) scale(1);
-    transition: transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
-  .reduct-error-bubble-exit {
-    opacity: 1;
-  }
-
-  .reduct-error-bubble-exit-active {
-    opacity: 0;
-    transition: opacity 400ms ease-in-out;
   }
 }
 

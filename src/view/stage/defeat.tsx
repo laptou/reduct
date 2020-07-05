@@ -27,7 +27,7 @@ const DefeatImpl = (props: DefeatStoreProps & DefeatDispatchProps) => {
   );
 }
 
-export const Defeat = connect(
+export const DefeatOverlay = connect(
   (store: DeepReadonly<GlobalState>) => ({
     isDefeat: store.program.$present.mode === GameMode.Defeat
   }),

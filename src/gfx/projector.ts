@@ -3,7 +3,6 @@
  * Projectors transform a JSON-ish view specification into a gfx view.
  */
 
-import { Im } from '@/util/im';
 import type { ReductNode, NodeMap } from '@/semantics';
 import type BaseStage from '@/stage/basestage';
 

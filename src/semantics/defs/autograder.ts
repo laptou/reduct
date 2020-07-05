@@ -1,4 +1,3 @@
-import * as immutable from 'immutable';
 import * as fx from '../../gfx/fx';
 import * as core from '../core';
 import * as action from '../../reducer/action';

@@ -1127,7 +1127,7 @@ export function createReducer() {
     }
   }
 
-  return combineReducers<GlobalState | undefined>({
+  return combineReducers<GlobalState>({
     program: undoable(program)
   });
 }

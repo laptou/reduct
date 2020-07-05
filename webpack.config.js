@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 
+const SentryCliPlugin = require('@sentry/webpack-plugin');
 const HtmlPlugin = require('html-webpack-plugin');
 const TsCheckerPlugin = require('fork-ts-checker-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
@@ -20,7 +21,7 @@ const { DefinePlugin } = require('webpack');
  *  @returns {webpack.Configuration} */
 exports.default = (env) => ({
   context: __dirname,
-  entry: ['react-hot-loader/patch', './src/index.js'],
+  entry: ['react-hot-loader/patch', './src/index.ts'],
   devtool: env.development ? 'eval-source-map' : false,
   devServer: {
     port: 1234,
@@ -106,7 +107,7 @@ exports.default = (env) => ({
     new DefinePlugin({
       PKG_ENV: JSON.stringify(env.production ? 'production' : 'development'),
       PKG_VERSION: require('./package.json').version
-    })
+    }),
     // new TsCheckerPlugin({
     //     workers: TsCheckerPlugin.TWO_CPUS_FREE,
 
@@ -140,7 +141,13 @@ exports.default = (env) => ({
                  *  write spaghetti code */
         // new EslintPlugin(),
       ]
-      : [])
+      : []),
+    new SentryCliPlugin({
+      include: '.',
+      ignoreFile: '.sentrycliignore',
+      ignore: ['node_modules', 'webpack.config.js'],
+      configFile: 'sentry.properties'
+    })
   ],
   resolve: {
     extensions: ['.ts', '.js', '.tsx', '.json'],

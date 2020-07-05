@@ -1,17 +1,20 @@
+import { RState } from '@/reducer/state';
 import { DeepReadonly, dethunk, DRF } from '@/util/helper';
 import { nextId } from '@/util/nodes';
-import { NodeMap, ReductNode, NodeId, Flat } from '.';
+import {
+  Flat, NodeId, NodeMap, ReductNode 
+} from '.';
+import { PTupleNode, VTupleNode } from './defs';
 import { apply, ApplyNode } from './defs/apply';
 import { array, ArrayNode } from './defs/array';
 import { autograder } from './defs/autograder';
 import {
   binop, BinOpNode, op, OpNode 
 } from './defs/binop';
+import { BuiltInReferenceNode } from './defs/builtins';
 import { conditional, ConditionalNode } from './defs/conditional';
 import { define, DefineNode } from './defs/define';
-import {
-  lambda, lambdaArg, LambdaArgNode, LambdaNode, lambdaVar, LambdaVarNode 
-} from './defs/lambda';
+import { LambdaArgNode, LambdaNode, LambdaVarNode } from './defs/lambda';
 import { letExpr } from './defs/letExpr';
 import { member, MemberNode } from './defs/member';
 import { missing, MissingNode } from './defs/missing';
@@ -20,9 +23,6 @@ import { reference, ReferenceNode } from './defs/reference';
 import {
   boolean, BoolNode, dynamicVariant, number, NumberNode, ReductSymbol, string, StrNode, symbol, SymbolNode, unsol 
 } from './defs/value';
-import { RState } from '@/reducer/state';
-import { BuiltInReferenceNode } from './defs/builtins';
-import { PTupleNode, VTupleNode } from './defs';
 
 /**
  * Creates a partial node. Helper for "create node" functions to avoid
