@@ -32,6 +32,6 @@ export const Title = connect(
     isTitle: store.program.$present.mode === GameMode.Title
   }),
   (dispatch) => ({
-    startLevel() { dispatch(createStartLevel(51)); }
+    startLevel() { dispatch(createStartLevel(55)); }
   })
 )(TitleImpl);

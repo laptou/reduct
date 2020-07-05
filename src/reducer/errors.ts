@@ -87,3 +87,30 @@ export class UnknownNameError extends NodeError {
  */
 export class AlreadyFullyBoundError extends NodeError {
 }
+
+/**
+ * This error is thrown when a user tries to call a built-in function with the
+ * wrong number of parameters. 
+ */
+export class WrongBuiltInParamsCountError extends NodeError {
+  public expected: number;
+
+  public actual: number;
+
+  public constructor(nodeId: NodeId, expected: number, actual: number) {
+    super(nodeId);
+    this.expected = expected;
+    this.actual = actual;
+  }
+}
+
+/**
+ * Thrown when an internal error happens while executing a built-in function
+ * (such as a bounds error on an array).
+ */
+export class BuiltInError extends NodeError {
+  public constructor(nodeId: NodeId, message: string) {
+    super(nodeId);
+    this.message = message;
+  }
+}

@@ -53,10 +53,11 @@ export type DRF<T extends BaseNode = ReductNode> = DeepReadonly<Flat<T>>;
  * @param node 
  */
 export function withoutParent<N extends DeepReadonly<ReductNode> | DRF>(node: N): N {
-  return produce(node, draft => {
-    draft.parent = null;
-    draft.parentField = null;
-  });
+  return {
+    ...node,
+    parent: null,
+    parentField: null
+  };
 }
 
 export function withParent<N extends DeepReadonly<ReductNode> | DRF>(
@@ -64,10 +65,11 @@ export function withParent<N extends DeepReadonly<ReductNode> | DRF>(
   parent: NodeId, 
   field: string
 ): N {
-  return produce(node, (draft: ReductNode) => {
-    draft.parent = parent;
-    draft.parentField = field;
-  });
+  return {
+    ...node,
+    parent,
+    parentField: field
+  };
 }
 
 export function withChild<N extends DRF>(node: N, childId: NodeId, field: keyof N['subexpressions']): N {

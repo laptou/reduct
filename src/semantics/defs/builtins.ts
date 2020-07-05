@@ -1,4 +1,11 @@
-import { BaseNode } from '..';
+import { BaseNode, NodeMap, NodeId } from '..';
+import { DRF, DeepReadonly, withParent } from '@/util/helper';
+import {
+  WrongBuiltInParamsCountError, WrongTypeError, BuiltInError, AlreadyFullyBoundError 
+} from '@/reducer/errors';
+import { cloneNodeDeep, CloneResult, mapNodeDeep } from '@/util/nodes';
+import { LambdaArgNode, PTupleNode, LambdaNode } from '.';
+import { createArrayNode, iterateTuple } from '../util';
 
 const VALID = null;
 
@@ -53,40 +60,26 @@ function builtinLength(expr, semant, nodes) {
   console.error('Bad call to length');
 }
 
-// Evaluate the "get" function. Return null if failure.
-// Requires call has already been validated.
-function builtinGet(expr, semant, nodes) {
-  const arr = nodes.get(expr.subexpressions.arg_a);
-  const i = nodes.get(expr.subexpressions.arg_i);
-  const iv = i.value;
-  const n = arr.length;
-  if (arr.type === 'string') {
-    return semant.string(arr.fields.value[iv]);
-  }
-  if (arr.type === 'array') {
-    return hydrateLocked(nodes.get(arr.subexpressions[`elem${iv}`]), semant, nodes);
-  }
+function builtinGet(node: DRF<BuiltInReferenceNode>, args: DRF[], nodes: DeepReadonly<NodeMap>): CloneResult {
+  if (args.length !== 2)
+    throw new WrongBuiltInParamsCountError(node.id, 2, args.length);
+  
+  const arr = args[0];
+  const index = args[1];
+
+  if (arr.type !== 'array')
+    throw new WrongTypeError(arr.id, 'array', arr.type);
+
+  if (index.type !== 'number')
+    throw new WrongTypeError(index.id, 'number', index.type);
+
+  const indexValue = index.fields.value;
+
+  if (indexValue >= arr.fields.length)
+    throw new BuiltInError(node.id, `You tried to get item ${indexValue} of an array with only ${arr.fields.length} items`);
+
+  return cloneNodeDeep(arr.subexpressions[indexValue], nodes);
 }
-
-function validateGet(expr, semant, state) {
-  const gval = genericValidate(expr, semant, state);
-  if (gval) return gval;
-
-  const nodes = state.nodes;
-  const arr = nodes.get(expr.subexpressions.arg_a);
-  const i = nodes.get(expr.subexpressions.arg_i);
-  const n = arr.length;
-  const iv = i.value;
-
-  if (iv < 0 || iv >= n) {
-    return {
-      subexpr: 'arg_i',
-      msg: `This array index must be between 0 and ${n - 1}, because the array only has ${n} elements!`
-    };
-  }
-  return VALID;
-}
-
 
 // Evaluate the "set" function, which nondestructively
 // updates an array element. Return null if failure.
@@ -146,22 +139,60 @@ function builtinConcat(expr, semant, nodes) {
   return semant.array(nl + nr, ...elems);
 }
 
-function builtinMap(expr, semant, nodes) {
-  const a = hydrateLocked(nodes.get(expr.subexpressions.arg_a), semant, nodes);
-  const n = a.length;
+function builtinMap(node: DRF<BuiltInReferenceNode>, args: DRF[], nodes: DeepReadonly<NodeMap>): CloneResult {
+  if (args.length !== 2)
+    throw new WrongBuiltInParamsCountError(node.id, 2, args.length);
+  
+  const arr = args[0];
+  const fn = args[1];
 
-  const elems = [];
-  for (let j = 0; j < n; j++) {
-    const f = hydrateInput(nodes.get(expr.subexpressions.arg_f), semant, nodes); // need copy per call
+  if (arr.type !== 'array')
+    throw new WrongTypeError(arr.id, 'array', arr.type);
 
-    if (f.type == 'reference' && f.fields.params?.length == 1 && f.subexpressions[`arg_${f.params[0]}`].type == 'missing') {
-      f.subexpressions[`arg_${f.params[0]}`] = a.subexpressions[`elem${j}`];
-      elems.push(f);
-    } else {
-      elems.push(semant.apply(f, a.subexpressions[`elem${j}`]));
+  if (fn.type !== 'lambda')
+    throw new WrongTypeError(fn.id, 'number', fn.type);
+
+  const boundLambdas: DRF[] = [];
+  const newNodes: DRF[] = [];
+  const newArr = createArrayNode();
+
+  for (const [index, itemId] of Object.entries(arr.subexpressions)) {
+    const [clonedLambda, clonedNodes, newNodeMap1] = cloneNodeDeep<LambdaNode>(fn.id, nodes);
+    const newNodeMap2 = new Map(newNodeMap1);
+
+    let argNodeId: NodeId;
+    let foundUnbound = false;
+
+    // use the first unbound argument
+    for (const argNode of iterateTuple<LambdaArgNode>(clonedLambda.subexpressions.arg, newNodeMap1)) {
+      if (argNode.fields.value === null) {
+        argNodeId = argNode.id;
+        foundUnbound = true;
+
+        newNodeMap2.set(argNodeId, { ...argNode, fields: { ...argNode.fields, value: itemId } });
+        break;
+      }
     }
+
+    const boundLambda = withParent(clonedLambda, newArr.id, index);
+    newNodeMap2.set(boundLambda.id, boundLambda);
+    
+    newArr.subexpressions[index] = boundLambda.id;
+
+    if (!foundUnbound) 
+      throw new AlreadyFullyBoundError(fn.id);
+
+    nodes = newNodeMap2;
+    boundLambdas.push(boundLambda);
+    newNodes.push(boundLambda, ...clonedNodes);
   }
-  return semant.array(n, ...elems);
+
+  newArr.fields.length = arr.fields.length;
+
+  const newNodeMap = new Map(nodes);
+  newNodeMap.set(newArr.id, newArr);
+
+  return [newArr, newNodes, newNodeMap];
 }
 
 // fold a f init = f(a[n-1], ..., f(a[2], f(a[1], f(a[0], init))))
@@ -241,7 +272,7 @@ function validateSlice(expr, semant, state) {
 export const builtins = {
   // repeat: {params: [{n: 'number'}, {f: 'function'}], impl: builtinRepeat},
   length: { params: [{ a: 'any' }], impl: builtinLength },
-  get: { params: [{ a: 'any' }, { i: 'number' }], impl: builtinGet, validate: validateGet },
+  get: { params: [{ a: 'any' }, { i: 'number' }], impl: builtinGet },
   set: { params: [{ a: 'array' }, { i: 'number' }, { v: 'any' }], impl: builtinSet, validate: validateSet },
   map: { params: [{ f: 'function' }, { a: 'array' }], impl: builtinMap },
   fold: { params: [{ f: 'function' }, { a: 'array' }, { init: 'any' }], impl: builtinFold },

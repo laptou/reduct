@@ -186,8 +186,9 @@ export function reduct(semantics: Semantics, views, restorePos) {
             // don't bother searching inside of nodes that redefine the name in
             // their own scope, such as lambdas with the same arg name
             if (nodeToFilter.type === 'lambda') {
-              const nodeToFilterArg = nodeMap.get(nodeToFilter.subexpressions.arg) as DRF<LambdaArgNode>;
-              if (nodeToFilterArg.fields.name === argName) return false;
+              const argTuple = nodeMap.get(nodeToFilter.subexpressions.arg) as DRF<PTupleNode>;
+              for (const nodeToFilterArg of iterateTuple<LambdaArgNode>(argTuple, nodeMap)) 
+                if (nodeToFilterArg.fields.name === argName) return false;
             }
 
             return true;
@@ -495,9 +496,10 @@ export function reduct(semantics: Semantics, views, restorePos) {
         
       if (calleeNode.type === 'builtin-reference') {
         const builtin = builtins[calleeNode.fields.name as keyof typeof builtins];
-        const [newNode, newNodeMap] = builtin.impl(calleeNode, paramNodes, state.nodes);
+        const [newNode, addedNodes, newNodeMap] = builtin.impl(calleeNode, paramNodes, state.nodes);
         state = {
           ...state,
+          added: new Map([newNode, ...addedNodes].map(({ id }) => [id, calleeNode.id])),
           nodes: newNodeMap
         };
 
@@ -738,8 +740,8 @@ export function reduct(semantics: Semantics, views, restorePos) {
           continue;
         }
 
-        // don't evaluate references unless they are being applied
-        if (targetNode.type !== 'apply' && childNode.type === 'reference') {
+        // don't evaluate references unless they are being used as parameters
+        if (targetNode.type !== 'ptuple' && childNode.type === 'reference') {
           continue;
         }
 
@@ -752,6 +754,9 @@ export function reduct(semantics: Semantics, views, restorePos) {
           if (!parallel)
             return state;
         }
+
+        if (childNodeKind === 'placeholder')
+          throw new MissingNodeError(childNode.id);
       }
 
       if (stepped)

@@ -1,6 +1,6 @@
 import { DeepReadonly, dethunk, DRF } from '@/util/helper';
 import { nextId } from '@/util/nodes';
-import { NodeMap, ReductNode, NodeId } from '.';
+import { NodeMap, ReductNode, NodeId, Flat } from '.';
 import { apply, ApplyNode } from './defs/apply';
 import { array, ArrayNode } from './defs/array';
 import { autograder } from './defs/autograder';
@@ -158,12 +158,14 @@ export function createConditionalNode(condition: ReductNode, positive: ReductNod
   };
 }
 
-export function createArrayNode(...items: ReductNode[]): ArrayNode {
+export function createArrayNode(...items: Array<NodeId>): Flat<ArrayNode>;
+export function createArrayNode(...items: Array<DeepReadonly<ReductNode>>): Flat<ArrayNode>;
+export function createArrayNode(...items: Array<NodeId | DeepReadonly<ReductNode>>): ArrayNode | Flat<ArrayNode> {
   return {
     ...createNodeBase(),
     type: 'array',
     fields: { length: items.length },
-    subexpressions: Object.fromEntries(items.map((item, index) => [index, item]))
+    subexpressions: Object.fromEntries(items.map((item, index) => [index, item])) as any
   };
 }
 

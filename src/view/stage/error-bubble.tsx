@@ -1,5 +1,5 @@
 import {
-  MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, NodeError, CircularCallError 
+  MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, NodeError, CircularCallError, BuiltInError, WrongBuiltInParamsCountError, AlreadyFullyBoundError 
 } from '@/reducer/errors';
 import React from 'react';
 
@@ -28,6 +28,18 @@ export const ErrorBubble = ({ error }: ErrorBubble) => {
 
   if (error instanceof CircularCallError) {
     message = 'You can\'t call a function with itself as a parameter.';
+  }
+
+  if (error instanceof AlreadyFullyBoundError) {
+    message = 'This function doesn\'t need any more parameters.';
+  }
+
+  if (error instanceof WrongBuiltInParamsCountError) {
+    message = `This function needs ${error.expected} parameters, but you only gave it ${error.actual}.`;
+  }
+
+  if (error instanceof BuiltInError) {
+    message = error.message;
   }
 
   return (

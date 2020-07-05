@@ -9,14 +9,10 @@
   
   align-items: center;
   padding: 2px;
-  color: color.change(theme.$projection-foreground-inverse, $alpha: 0.5);
+  color: theme.$projection-color-builtin;
   line-height: 1;
   background-color: white;
-
-  &.valid {
-    color: theme.$projection-foreground-inverse;
-  }
-
+  
   .builtin-reference-name {
     padding: 0.25rem;
   }

@@ -1,5 +1,5 @@
 import type {
-  Flat, FlatReductNode, NodeId, NodeMap, ReductNode, BaseNode 
+  BaseNode, Flat, FlatReductNode, NodeId, NodeMap, ReductNode 
 } from '@/semantics';
 import { castDraft, produce } from 'immer';
 import { DeepReadonly, DRF } from './helper';
@@ -13,13 +13,13 @@ export function nextId(): NodeId {
   return idCounter++;
 }
 
-type CloneResult = [
+export type CloneResult<N extends ReductNode = ReductNode> = [
   /** cloned root node */
-  DeepReadonly<Flat<ReductNode>>, 
+  DRF<N>, 
   /** cloned descendant nodes */
   Array<DeepReadonly<Flat<ReductNode>>>, 
   /** modified node map containing both cloned nodes and originals */
-  NodeMap
+  DeepReadonly<NodeMap>
 ];
 
 /**
@@ -31,13 +31,13 @@ type CloneResult = [
  * @returns A tuple: [cloned root node, cloned descendant nodes,
  * modified node map containing cloned nodes and originals].
  */
-export function cloneNodeDeep(id: NodeId, nodeMap: NodeMap, locked?: boolean): CloneResult {
-  const root = nodeMap.get(id)!;
+export function cloneNodeDeep<N extends ReductNode = ReductNode>(id: NodeId, nodeMap: DeepReadonly<NodeMap>, locked?: boolean): CloneResult<N> {
+  const root = nodeMap.get(id) as DRF;
   const clonedDescendants: DRF[] = [];
   const clonedChildren: DRF[] = [];
   const newId = nextId();
 
-  const clonedRoot = produce(root, (draft) => {
+  const clonedRoot: DRF = produce(root, (draft) => {
     draft.id = newId;
     
     // delete cached holes
@@ -75,7 +75,7 @@ export function cloneNodeDeep(id: NodeId, nodeMap: NodeMap, locked?: boolean): C
     }
   });
 
-  return [clonedRoot, clonedChildren.concat(clonedDescendants), nodeMap];
+  return [clonedRoot as DRF<N>, clonedChildren.concat(clonedDescendants), nodeMap];
 }
 
 type MapResult = [
@@ -84,7 +84,7 @@ type MapResult = [
   /** mapped descendant nodes */
   DRF[],
   /** modified node map containing mapped nodes, but not originals */
-  NodeMap
+  DeepReadonly<NodeMap>
 ];
 
 /**
@@ -102,14 +102,14 @@ type MapResult = [
  */
 export function mapNodeDeep(
   id: NodeId,
-  nodeMap: NodeMap, 
+  nodeMap: DeepReadonly<NodeMap>, 
   mapper: (
     node: DRF, 
-    nodeMap: NodeMap
-  ) => [DRF, NodeMap],
+    nodeMap: DeepReadonly<NodeMap>
+  ) => [DRF, DeepReadonly<NodeMap>],
   filter: (
     node: DRF, 
-    nodeMap: NodeMap
+    nodeMap: DeepReadonly<NodeMap>
   ) => boolean = () => true
 ): MapResult {
   const root = nodeMap.get(id)!;
