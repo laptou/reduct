@@ -118,14 +118,15 @@
                 "[A,B,C]",
                 "[]",
                 "[true]",
-                "__unlimited; length"
+                "__unlimited; length",
+                "(_)(_)"
             ]
         },
         {
             "animationScales": {},
             "board": [
                 "map(_, length)",
-                "[[A], _, _]"
+                "[[STAR], _, _]"
             ],
             "fade": {},
             "globals": {},
@@ -139,7 +140,7 @@
             "textgoal": "An array can hold other arrays",
             "toolbox": [
                 "0",
-                "[A, B]",
+                "[STAR, RECT]",
                 "[]"
             ]
         },

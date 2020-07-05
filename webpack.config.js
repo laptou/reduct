@@ -7,6 +7,7 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const SriPlugin = require('webpack-subresource-integrity');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { DefinePlugin } = require('webpack');
 
 /**
  * @typedef {Object} Env
@@ -102,6 +103,10 @@ exports.default = (env) => ({
       template: 'index.html'
     }),
     new MiniCssExtractPlugin(),
+    new DefinePlugin({
+      PKG_ENV: JSON.stringify(env.production ? 'production' : 'development'),
+      PKG_VERSION: require('./package.json').version
+    })
     // new TsCheckerPlugin({
     //     workers: TsCheckerPlugin.TWO_CPUS_FREE,
 

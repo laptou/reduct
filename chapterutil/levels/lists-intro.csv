@@ -3,6 +3,6 @@ number,board,goal,textgoal,toolbox,defines,globals,syntax,animationScales,tutori
 72,"['get', '[STAR, RECT, _, CIRCLE]']",['TRIANGLE'],"""get"" can get an element from an array","['0', '1', '2', '3', '4', 'TRIANGLE', '(_)(_, _)']","[]",{},[],{},
 73,"['map([1, _, 4], addOne)']","['[2, 4, 5]']","""map"" applies a function to every element","['1', '2', '3', '4', 'B']",,{},[],{},
 74,"['map([1, 2, 4, 8], _)']","['[2, 4, 8, 16]']",,"['x => x + _', 'y => y', '1', '2', 'x', '16']",,{},[],{},
-75,[],"['3', '0']","""length"" gives the number of elements","['[1,2,3,4]', '[A,B,C]', '[]', '[true]', '__unlimited; length']",,{},[],{},
-76,"['map(_, length)', '[[A], _, _]']","['[1, 0, 2]']",An array can hold other arrays,"['0', '[A, B]', '[]']","[]",{},[],{},
+75,[],"['3', '0']","""length"" gives the number of elements","['[1,2,3,4]', '[A,B,C]', '[]', '[true]', '__unlimited; length', '(_)(_)']",,{},[],{},
+76,"['map(_, length)', '[[STAR], _, _]']","['[1, 0, 2]']",An array can hold other arrays,"['0', '[STAR, RECT]', '[]']","[]",{},[],{},
 77,['[1]'],"['[4,3,2,1]']","""concat"" glues arrays together","['__unlimited; concat', '[4]', '[_,2]', '[4,3]', 'A', '3']",,{},[],{},

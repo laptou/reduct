@@ -1,5 +1,5 @@
 board,goal,textgoal,tutorial,toolbox,defines,globals,syntax,animationScales,fade,
-['function star() { return A; }'],['A'],Move the def block to the left box to define the word {star}!,defn-intro,['star'],,{},[],{},{},
+['function star() { return A; }'],['A'],Move the def block to the left box to define the word {star}!,defn-intro,['STAR'],,{},[],{},{},
 "['function star() { return A; }', 'function rect() { return B; }']","['B', 'B', 'A']",Reach the goal by creating new definitions!,,"['__unlimited;star', '__unlimited;rect']",,{},[],{},{},
 "['function trianglify(object) { return _; }', 'A', 'D', 'C']","['C', 'C']",Define a function that takes an input and outputs {a triangle},,['__unlimited;trianglify'],,{},[],{},{},
 "['function addOne(number) { return _; }', '2', '4']","['3', '6']",Define a function that computes x plus 1,,"['__unlimited;addOne', 'number', '_ + 1']",['function addOne(x) { return x + 1; }'],{},[],{},{},

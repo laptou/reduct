@@ -6,8 +6,8 @@
         {
             "animationScales": {},
             "board": [
-                "'triangle' == 'star'",
-                "_ == 'star'"
+                "'TRIANGLE' == 'STAR'",
+                "_ == 'STAR'"
             ],
             "fade": {},
             "globals": {},
@@ -20,9 +20,9 @@
             "output": [],
             "syntax": [],
             "toolbox": [
-                "'star'",
-                "'triangle'",
-                "'rect'"
+                "STAR",
+                "TRIANGLE",
+                "RECT"
             ]
         },
         {
@@ -94,12 +94,12 @@
         {
             "animationScales": {},
             "board": [
-                "_ ? 'rect' : _"
+                "_ ? 'RECT' : _"
             ],
             "fade": {},
             "globals": {},
             "goal": [
-                "'star'"
+                "STAR"
             ],
             "hideGlobals": [],
             "input": [],
@@ -108,22 +108,22 @@
             "toolbox": [
                 "false",
                 "true",
-                "'triangle'",
-                "'star'",
-                "'rect'"
+                "TRIANGLE",
+                "STAR",
+                "RECT"
             ]
         },
         {
             "animationScales": {},
             "board": [
-                "(truth) => truth ? 'triangle' : 'rect'",
-                "(trueOrFalse) => trueOrFalse ? 'rect' : 'star'"
+                "(truth) => truth ? 'TRIANGLE' : 'RECT'",
+                "(trueOrFalse) => trueOrFalse ? 'RECT' : 'STAR'"
             ],
             "fade": {},
             "globals": {},
             "goal": [
-                "'triangle'",
-                "'star'"
+                "TRIANGLE",
+                "STAR"
             ],
             "hideGlobals": [],
             "input": [],
@@ -182,7 +182,7 @@
         {
             "animationScales": {},
             "board": [
-                "(x) => _ == 'star' ? true : _",
+                "(x) => _ == 'STAR' ? true : _",
                 "x"
             ],
             "fade": {},
@@ -195,9 +195,9 @@
             "output": [],
             "syntax": [],
             "toolbox": [
-                "'rect'",
-                "'rect'",
-                "'triangle'",
+                "RECT",
+                "RECT",
+                "TRIANGLE",
                 "_ == _"
             ]
         },
@@ -217,8 +217,8 @@
             "output": [],
             "syntax": [],
             "toolbox": [
-                "__unlimited;'star'",
-                "__unlimited;'triangle'"
+                "__unlimited;'STAR'",
+                "__unlimited;'TRIANGLE'"
             ]
         },
         {

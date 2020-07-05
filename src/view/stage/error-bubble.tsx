@@ -2,13 +2,14 @@ import {
   MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, NodeError, CircularCallError, BuiltInError, WrongBuiltInParamsCountError, AlreadyFullyBoundError 
 } from '@/reducer/errors';
 import React from 'react';
+import { Bubble } from './bubble';
 
 interface ErrorBubble {
   error: NodeError | null;
 }
 
 export const ErrorBubble = ({ error }: ErrorBubble) => {
-  let message = null;
+  let message = '';
 
   if (error instanceof WrongTypeError) {
     message = `We need a ${error.expected}, but we found a ${error.actual}`;
@@ -43,13 +44,8 @@ export const ErrorBubble = ({ error }: ErrorBubble) => {
   }
 
   return (
-    <div className='reduct-error-bubble'>
-      <svg className='reduct-error-bubble-pointer' viewBox='0 0 32 16'>
-        <polygon points='16 0 0 16 32 16' />
-      </svg>
-      <div className='reduct-error-bubble-inner'>
-        {message}
-      </div>
-    </div>
+    <Bubble className='reduct-error-bubble'>
+      {message}
+    </Bubble>
   );
 }

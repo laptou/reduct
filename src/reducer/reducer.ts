@@ -1,10 +1,10 @@
 import type { Flat, NodeId, NodeMap } from '@/semantics';
 import {
-  ApplyNode, BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NotNode, NumberNode, OpNode, ReferenceNode as ReferenceNode, StrNode, PTupleNode 
+  ApplyNode, BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NotNode, NumberNode, OpNode, PTupleNode, ReferenceNode as ReferenceNode, StrNode 
 } from '@/semantics/defs';
-import type { Semantics } from '@/semantics/transform';
+import { builtins } from '@/semantics/defs/builtins';
 import {
-  createBoolNode, createNumberNode, createStrNode, getKindForNode, getValueForName, createMissingNode, iterateTuple 
+  createBoolNode, createMissingNode, createNumberNode, createStrNode, getKindForNode, getValueForName, iterateTuple 
 } from '@/semantics/util';
 import {
   DRF, mapIterable, withoutParent, withParent 
@@ -13,20 +13,16 @@ import {
   cloneNodeDeep, findNodesDeep, getRootForNode, isAncestorOf 
 } from '@/util/nodes';
 import { castDraft, produce } from 'immer';
-import { combineReducers, compose } from 'redux';
-import * as animate from '../gfx/animate';
-import * as gfx from '../gfx/core';
+import { combineReducers } from 'redux';
 import {
-  ActionKind, createDetach, createEvalApply, createEvalConditional, createBindLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStep, ReductAction, createEvalLambda 
+  ActionKind, createBindLambda, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStep, ReductAction 
 } from './action';
 import {
-  MissingNodeError, NotOnBoardError, WrongTypeError, UnknownNameError, CircularCallError, AlreadyFullyBoundError 
+  AlreadyFullyBoundError, CircularCallError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError 
 } from './errors';
-import { GlobalState, RState, GameMode } from './state';
+import { checkDefeat, checkVictory } from './helper';
+import { GameMode, GlobalState, RState } from './state';
 import { undoable } from './undo';
-import { checkVictory, checkDefeat } from './helper';
-import { lambda } from '@/semantics/defs/lambda';
-import { builtins } from '@/semantics/defs/builtins';
 
 export { nextId } from '@/util/nodes';
 
@@ -45,7 +41,7 @@ const initialProgram: RState = {
 
 // To speed up type checking, we only type check nodes that have
 // changed.
-let dirty = new Set<NodeId>();
+const dirty = new Set<NodeId>();
 function markDirty(nodes: NodeMap, id: NodeId) {
   let node = nodes.get(id)!; // warning: assuming node w/ given ID exists
   let parentId = node.parent;
@@ -70,7 +66,7 @@ function markDirty(nodes: NodeMap, id: NodeId) {
  * that things stay within bounds (e.g. if the game has resized since
  * the view's position was recorded).
  */
-export function reduct(semantics: Semantics, views, restorePos) {
+export function createReducer() {
   function program(state = initialProgram, act?: ReductAction): RState {
     if (!act) return state;
     
@@ -1131,26 +1127,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
     }
   }
 
-  function annotateTypes(state = initialProgram) {
-    return produce(state, draft => {
-      for (const id of dirty.values()) {
-        const { types, completeness } = semantics.collectTypes(state, state.nodes.get(id));
-        for (const [exprId, expr] of draft.nodes.entries()) {
-          if (types.has(exprId)) {
-            expr.ty = types.get(exprId);
-          }
-          if (completeness.has(exprId)) {
-            expr.complete = completeness.get(exprId);
-          }
-        }
-      }
-      dirty = new Set();
-    });
-  }
-
-  return {
-    reducer: combineReducers<GlobalState>({
-      program: undoable(program)
-    })
-  };
+  return combineReducers<GlobalState | undefined>({
+    program: undoable(program)
+  });
 }
