@@ -15,6 +15,13 @@
     @extend %value-container;
   }
 
+  // make the arg bigger so it's easier to drop things on it
+  & > .arg {
+    margin: -1rem;
+    padding: 1rem;
+    background-color: transparent;
+  }
+
   &.hover {
     color: theme.$projection-color-function;
   }

@@ -1,4 +1,7 @@
-import { createCleanup, createStep } from '@/reducer/action';
+import {
+  createCleanup, createStep, createClearError, createRaise 
+} from '@/reducer/action';
+import { NodeError } from '@/reducer/errors';
 import { GlobalState } from '@/reducer/state';
 import { NodeId } from '@/semantics';
 import { getKindForNode, NodeKind } from '@/semantics/util';
@@ -6,7 +9,9 @@ import { DeepReadonly, DRF } from '@/util/helper';
 import cx from 'classnames';
 import React, { FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { getProjectionForNode } from '.';
+import { ErrorBubble } from '../error-bubble';
 
 /**
  * Props retrieved from Redux.
@@ -16,6 +21,11 @@ interface StageProjectionStoreProps {
    * The node to display here.
    */
   node: DRF | null;
+
+  /**
+   * The current error state.
+   */
+  error: NodeError | null;
 
   /**
    * The kind of node that `node` is.
@@ -31,6 +41,11 @@ interface StageProjectionDispatchProps {
    * Steps this node forward. See StepAction for more info.
    */
   step(): void;
+
+  /**
+   * Clears any errors currently held by the store.
+   */
+  clearErrorAndRaise(): void;
 
   /**
    * If this node was scheduled for deletion by a previous action,
@@ -66,6 +81,8 @@ function onDragStart(
   event: React.DragEvent<HTMLDivElement>,
   props: StageProjectionProps
 ) {
+  props.clearErrorAndRaise();
+  
   if (!props.nodeId) return;
   if (props.frozen) return;
 
@@ -88,6 +105,8 @@ function onClick(
   event: React.MouseEvent<HTMLDivElement>,
   props: StageProjectionProps,
 ) {
+  props.clearErrorAndRaise();
+
   if (props.kind !== 'expression') return; 
   if (props.frozen) return;
 
@@ -105,7 +124,7 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
     }
 
     const {
-      position, node, kind, frozen 
+      position, node, kind, frozen, error
     } = props;
 
     // top level nodes (nodes w/o parents) should not be considered locked
@@ -134,6 +153,21 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
         onClick={e => onClick(e, props)}
       >
         {getProjectionForNode(props.node)}
+        <TransitionGroup childFactory={el => React.cloneElement(el)} component={null}>
+          {error?.target === props.nodeId 
+            ? (
+              <CSSTransition 
+                classNames='reduct-error-bubble' 
+                timeout={500} 
+                mountOnEnter
+                unmountOnExit
+              >
+                <ErrorBubble error={error} />
+              </CSSTransition>
+            ) 
+            : null
+          }
+        </TransitionGroup>
       </div>
     );
   };
@@ -146,25 +180,34 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
  */
 export const StageProjection = connect(
   (state: DeepReadonly<GlobalState>, ownProps: StageProjectionOwnProps) => {
+    const error = state.program.$error;
     const presentState = state.program.$present;
 
     if (ownProps.nodeId) {
       const node = presentState.nodes.get(ownProps.nodeId) ?? null;
 
       if (!node)
-        return { node: null, kind: null, sourceId: null };
+        return {
+          node: null, kind: null, sourceId: null, error 
+        };
 
       const kind = getKindForNode(node, presentState.nodes);
 
-      return { node, kind };
+      return { node, kind, error };
     }
     
-    return { node: null, kind: null };
+    return { node: null, kind: null, error };
   },
   (dispatch, ownProps) => ({ 
     cleanup() { 
       if (ownProps.nodeId) {
         dispatch(createCleanup(ownProps.nodeId)); 
+      }
+    },
+    clearErrorAndRaise() { 
+      dispatch(createClearError()); 
+      if (ownProps.nodeId) {
+        dispatch(createRaise(ownProps.nodeId)); 
       }
     },
     step() { 

@@ -205,9 +205,9 @@ function initialize() {
       applyMiddleware(
         Logging.logMiddleware(
           () => stg?.getState(),
-          (...args) => stg?.saveState(...args),
-          (...args) => stg?.pushState(...args),
-          (...args) => stg?.saveNode(...args),
+          (...args) => stg?.saveState?.(...args),
+          (...args) => stg?.pushState?.(...args),
+          (...args) => stg?.saveNode?.(...args),
           es6
         )
       )
@@ -259,6 +259,7 @@ function initialize() {
 
     stg.draw();
 
+    return;
 
     if (!stg.alreadyWon) {
       const state = stg.getState();
@@ -414,7 +415,7 @@ async function start(updateLevel, options = {}) {
       await diag.wait();
     }
 
-    level.startLevel(levelDefinition, es6.parser.parse, store, stg);
+    level.startLevel(progression.currentLevel(), levelDefinition, es6.parser.parse, store, stg);
     stg.drawImpl();
 
     // Sync chapter dropdown with current level

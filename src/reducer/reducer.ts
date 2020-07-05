@@ -17,7 +17,7 @@ import * as gfx from '../gfx/core';
 import {
   ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStep, ReductAction 
 } from './action';
-import { MissingNodeError, NotOnBoardError, WrongTypeError } from './errors';
+import { MissingNodeError, NotOnBoardError, WrongTypeError, UnknownNameError } from './errors';
 import { GlobalState, RState, GameMode } from './state';
 import { undoable } from './undo';
 import { checkVictory, checkDefeat } from './helper';
@@ -25,7 +25,8 @@ import { checkVictory, checkDefeat } from './helper';
 export { nextId } from '@/util/nodes';
 
 const initialProgram: RState = {
-  mode: GameMode.Gameplay,
+  mode: GameMode.Title,
+  level: -1,
   nodes: new Map(),
   goal: new Set(),
   board: new Set(),
@@ -68,7 +69,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
     if (!act) return state;
     
     switch (act.type) {
-    case ActionKind.StartLevel: {
+    case ActionKind.StartLevelLegacy: {
       act.nodes.forEach((n) => markDirty(act.nodes, n.id));
       act.toolbox.forEach((n) => markDirty(act.nodes, n));
 
@@ -84,8 +85,22 @@ export function reduct(semantics: Semantics, views, restorePos) {
       };
     }
 
+    case ActionKind.StartLevel: {
+      return {
+        mode: GameMode.Gameplay,
+        level: act.level,
+        nodes: act.nodes,
+        goal: act.goal,
+        board: act.board,
+        toolbox: act.toolbox,
+        globals: act.globals,
+        added: new Map(mapIterable(act.nodes.keys(), id => [id, null] as const)),
+        removed: new Set()
+      };
+    }
+
     case ActionKind.EvalLambda: {
-      const { lambdaNodeId, paramNodeId } = act;
+      let { lambdaNodeId, paramNodeId } = act;
 
       // for now, this is the same thing as beta-reduce, except handled entirely
       // in the reducer where it should be - iaa34
@@ -94,9 +109,21 @@ export function reduct(semantics: Semantics, views, restorePos) {
         throw new NotOnBoardError(lambdaNodeId);
 
       const lambdaNode = state.nodes.get(lambdaNodeId) as DRF<LambdaNode>;
+      const paramNode = state.nodes.get(paramNodeId) as DRF;
+      const bodyNode = state.nodes.get(lambdaNode.subexpressions.body) as DRF;
+
+      if (bodyNode.type === 'missing')
+        throw new MissingNodeError(bodyNode.id);
 
       let argNodeId: NodeId;
       let argName: string;
+
+      // force references to be reduced before being used as params
+      if (paramNode.type === 'reference') {
+        state = program(state, createMoveNodeToBoard(paramNodeId));
+        state = program(state, createEvalReference(paramNodeId));
+        paramNodeId = state.added.get(paramNodeId)!;
+      }
 
       state = produce(state, draft => {
         // node that represents lambda argument in function signature
@@ -123,13 +150,17 @@ export function reduct(semantics: Semantics, views, restorePos) {
           return true;
         });
 
-      const added: Array<[NodeId, NodeId | null]> = [];
+      const removed: Array<NodeId> = [];
 
       // eval all relevant references and keep track of which nodes are created
       for (const referenceNode of referenceNodes) {
         state = program(state, createEvalReference(referenceNode.id));
-        added.push(...state.added);
+        removed.push(...state.removed);
       }
+
+      // everything is immutable, we have a new state which means lambdaNode is
+      // no longer valid
+      const newLambdaNode = state.nodes.get(lambdaNodeId) as DRF<LambdaNode>;
 
       // delete param node and move body outwards
       const paramNodeDescendants = findNodesDeep(paramNodeId, state.nodes, () => true);
@@ -137,16 +168,17 @@ export function reduct(semantics: Semantics, views, restorePos) {
       return produce(
         state,
         draft => {
-          draft.added = new Map(added);
+          draft.added = new Map();
+          draft.removed = new Set(removed);
           
-          const bodyNode = draft.nodes.get(lambdaNode.subexpressions.body)!;
+          const bodyNode = draft.nodes.get(newLambdaNode.subexpressions.body)!;
           
-          if (lambdaNode.parent) {
+          if (newLambdaNode.parent) {
             bodyNode.parent = lambdaNode.parent;
             bodyNode.parentField = lambdaNode.parentField;
 
-            const lambdaParent = draft.nodes.get(lambdaNode.parent)!;
-            (lambdaParent.subexpressions as Record<string, NodeId>)[lambdaNode.parentField!] = bodyNode.id;
+            const lambdaParent = draft.nodes.get(newLambdaNode.parent)!;
+            (lambdaParent.subexpressions as Record<string, NodeId>)[newLambdaNode.parentField!] = bodyNode.id;
             draft.added.set(bodyNode.id, lambdaNode.id);
           } else {
             bodyNode.parent = null;
@@ -169,7 +201,6 @@ export function reduct(semantics: Semantics, views, restorePos) {
           // param node should be consumed from board or toolbox
           draft.board.delete(paramNodeId);
           draft.toolbox.delete(paramNodeId);
-
 
           // lambda node is no longer needed, eliminate it
           draft.board.delete(lambdaNode.id);
@@ -469,7 +500,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
       const targetId = getValueForName(referenceNode.fields.name, referenceNode, state);
 
       if (targetId === undefined || targetId === null)
-        throw new Error(`The name ${referenceNode.fields.name} is not defined in this scope`);
+        throw new UnknownNameError(referenceNode.id, referenceNode.fields.name);
 
       const [clonedNode, , newNodeMap] = 
         cloneNodeDeep(targetId, state.nodes);
@@ -616,8 +647,13 @@ export function reduct(semantics: Semantics, views, restorePos) {
       const targetNode = state.nodes.get(targetNodeId)!;
       const targetNodeKind = getKindForNode(targetNode, state.nodes);
 
+      if (targetNodeKind === 'placeholder') {
+        throw new MissingNodeError(targetNodeId);
+      }
+
       if (targetNodeKind !== 'expression') {
-        // TODO: more specific error type
+        // this should be impossible, the user can't step nodes that aren't
+        // expressions but just in case
         throw new Error('This node is not an expression');
       }
 
@@ -673,10 +709,11 @@ export function reduct(semantics: Semantics, views, restorePos) {
     }
 
     case ActionKind.Raise: {
-      if (state.board.has(act.nodeId)) {
+      const root = getRootForNode(act.nodeId, state.nodes);
+      if (state.board.has(root.id)) {
         return produce(state, draft => {
-          draft.board.delete(act.nodeId);
-          draft.board.add(act.nodeId);
+          draft.board.delete(root.id);
+          draft.board.add(root.id);
         });
       }
 
@@ -1032,6 +1069,7 @@ export function reduct(semantics: Semantics, views, restorePos) {
         actionFilter: (act) => act.type === ActionKind.Raise
                     || act.type === ActionKind.Hover
                     // Prevent people from undoing start of level
+                    || act.type === ActionKind.StartLevelLegacy
                     || act.type === ActionKind.StartLevel
                     || act.type === ActionKind.Cleanup
                     || act.type === ActionKind.DetectCompletion

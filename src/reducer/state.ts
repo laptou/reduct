@@ -9,6 +9,11 @@ export interface RState {
   mode: GameMode;
 
   /**
+   * The index of the current level.
+   */
+  level: number;
+
+  /**
    * Maps all of the IDs of nodes that currently exist to their respective
    * nodes.
    */

@@ -222,6 +222,36 @@ export function compareNodesDeep(
 }
 
 /**
+ * Flattens a node. This replaces all of its references to its children with
+ * their IDs.
+ *
+ * @param node The node to flatten.
+ * @returns An iterator that iterates over flattened versions of this node and
+ * all of its descendants.
+ */
+export function flatten(
+  node: ReductNode
+): Array<Flat<ReductNode>> {
+  const nodes = [];
+  const children: Record<string | number, NodeId> = {};
+
+  for (const [path, child] of Object.entries(node.subexpressions)) {
+    const [flatChild, ...flatGrandChildren] = flatten(child);
+    flatChild.parent = node.id;
+    flatChild.parentField = path;
+    children[path] = flatChild.id;
+    nodes.push(flatChild, ...flatGrandChildren);
+  }
+
+  const flatNode = {
+    ...node,
+    subexpressions: children
+  };
+
+  return [flatNode, ...nodes];
+}
+
+/**
  * Traverses up the node graph until this node's parent is found.
  * 
  * @param id The node whose root should be found.

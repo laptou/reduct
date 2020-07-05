@@ -35,6 +35,7 @@ export const LambdaVarProjection: FunctionComponent<LambdaVarProjectionOwnProps>
 
 interface LambdaProjectionOwnProps {
   node: Flat<LambdaNode>;
+  setError: (err: Error) => void;
 }
 
 interface LambdaProjectionDispatchProps {

@@ -1,6 +1,7 @@
-import { produce } from 'immer';
-import { ActionKind } from './action';
+import { castDraft, produce } from 'immer';
 import type { Reducer } from 'redux';
+import { ActionKind, ReductAction } from './action';
+import { NodeError } from './errors';
 
 /** Undo the last action. */
 export function undo() {
@@ -21,6 +22,7 @@ export interface UndoableState<S>
   $present: S;
   $past: S[];
   $future: S[];
+  $error: NodeError | null;
 
   $presentExtra: any;
   $pastExtra: any[];
@@ -41,22 +43,26 @@ export interface UndoableState<S>
  * @param {Function} options.extraState - Given the previous and new
  * state, record any state that lives outside of Redux.
  */
-export function undoable<S >(reducer: Reducer<S>, options = {}) {
+export function undoable<S>(reducer: Reducer<S>, options = {}) {
   const initialState: UndoableState<S> = {
-    $present: reducer(undefined),
+    $present: reducer(),
     $past: [] as S[],
     $future: [] as S[],
+    $error: null,
     // "Extra" state (used to store node positions)
     $presentExtra: {},
     $pastExtra: [],
     $futureExtra: []
   };
 
-  return function(state: UndoableState<S> = initialState, action): UndoableState<S> {
-    switch (action.type) {
+  return function(state: UndoableState<S> = initialState, action?: ReductAction): UndoableState<S> {
+    switch (action?.type) {
+    case ActionKind.StartLevelLegacy:
     case ActionKind.StartLevel: {
       return produce(state, draft => {
-        draft.$present = reducer(state.$present, action);
+        draft.$past = [];
+        draft.$future = [];
+        draft.$present = castDraft(reducer(state.$present, action));
         draft.$presentExtra = {};
       });
     }
@@ -64,58 +70,64 @@ export function undoable<S >(reducer: Reducer<S>, options = {}) {
       if (state.$past.length === 0) return state;
 
       const newState = produce(state, draft => {
-        draft.$future.unshift(state.$present);
-        draft.$present = draft.$past.shift();
+        draft.$future.unshift(castDraft(state.$present));
+        draft.$present = draft.$past.shift()!;
         draft.$futureExtra.unshift(state.$presentExtra);
         draft.$presentExtra = draft.$pastExtra.shift();
       });
 
-      options.restoreExtraState(
-        newState.$past[newState.$past.length - 1], 
-        newState.$present, 
-        newState.$pastExtra[newState.$pastExtra.length - 1]
-      );
       return newState;
     }
     case ActionKind.Redo: {
       if (state.$future.length === 0) return state;
 
-      const newState = state.withMutations((map) => {
-        map
-          .set('$past', $past.unshift($present))
-          .set('$present', $future.peek())
-          .set('$future', $future.shift())
-          .set('$pastExtra', $pastExtra.unshift($presentExtra))
-          .set('$presentExtra', $futureExtra.peek())
-          .set('$futureExtra', $futureExtra.shift());
+      const newState = produce(state, draft => {
+        draft.$past.unshift(castDraft(state.$present));
+        draft.$present = draft.$future.shift()!;
+        draft.$pastExtra.unshift(state.$presentExtra);
+        draft.$presentExtra = draft.$futureExtra.shift();
       });
-      options.restoreExtraState($future.peek(), $present, $futureExtra.peek());
+
       return newState;
+    }
+    case ActionKind.ClearError: {
+      return {
+        ...state,
+        $error: null
+      };
     }
     default: {
       return produce(state, draft => {
+        try {
         // use state.$present, do not allow draft objects to escape from this function
-        const newPresent = reducer(state.$present, action);
+          const newPresent = reducer(state.$present, action);
 
-        if (newPresent === state.$present) {
-          return;
-        }
-
-        if (options.actionFilter && options.actionFilter(action)) {
+          if (newPresent === state.$present) {
+            return;
+          }
+  
+          if (options.actionFilter && options.actionFilter(action)) {
+            draft.$present = newPresent;
+            return;
+          }
+  
+          // use state.$present, do not allow draft objects to escape from this function
+          const extraState = options.extraState(state.$present, newPresent);
+  
+          draft.$past.unshift(draft.$present);
           draft.$present = newPresent;
-          return;
+          draft.$future = [];
+  
+          draft.$pastExtra.unshift(draft.$presentExtra);
+          draft.$presentExtra = extraState;
+          draft.$futureExtra = [];
+        } catch (error) {
+          if (error instanceof NodeError) {
+            draft.$error = error;
+          } else {
+            throw error;
+          }
         }
-
-        // use state.$present, do not allow draft objects to escape from this function
-        const extraState = options.extraState(state.$present, newPresent);
-
-        draft.$past.unshift(draft.$present);
-        draft.$present = newPresent;
-        draft.$future = [];
-
-        draft.$pastExtra.unshift(draft.$presentExtra);
-        draft.$presentExtra = extraState;
-        draft.$futureExtra = [];
       });
     }
     }

@@ -1,4 +1,4 @@
-import { moveNodeToSlot } from '@/reducer/action';
+import { moveNodeToSlot, createClearError } from '@/reducer/action';
 import { Flat, NodeId } from '@/semantics';
 import { MissingNode } from '@/semantics/defs';
 import cx from 'classnames';
@@ -11,6 +11,7 @@ interface MissingProjectionOwnProps {
 
 interface MissingProjectionDispatchProps {
   fill(id: NodeId): void;
+  clearError(): void;
 }
 
 type MissingProjectionProps = 
@@ -46,7 +47,7 @@ function onDrop(
   const nodeId = parseInt(event.dataTransfer.getData('application/reduct-node'));
   if (!nodeId || isNaN(nodeId)) return;
 
-  event.preventDefault();
+  props.clearError();
 
   // stop parent projections from hijacking the drop
   event.stopPropagation();
@@ -74,6 +75,7 @@ export const MissingProjectionImpl: FunctionComponent<MissingProjectionProps> =
 export const MissingProjection = connect(
   null, 
   (dispatch, ownProps: MissingProjectionOwnProps) => ({
-    fill: (id: NodeId) => dispatch(moveNodeToSlot(ownProps.node.id, id))
+    fill: (id: NodeId) => dispatch(moveNodeToSlot(ownProps.node.id, id)),
+    clearError: () => dispatch(createClearError())
   })
 )(MissingProjectionImpl);

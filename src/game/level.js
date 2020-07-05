@@ -6,9 +6,10 @@ import * as animate from '../gfx/animate';
 import * as layout from '../ui/layout';
 
 export let MACROS;
-export function startLevel(description, parse, store, stage) {
+export function startLevel(index, description, parse, store, stage) {
   animate.replaceDurationScales(description.animationScales);
 
+  /** 
   // console.log(description);
   const macros = { ...description.macros };
   for (const macroName of Object.keys(macros)) {
@@ -89,8 +90,12 @@ export function startLevel(description, parse, store, stage) {
 
   // Update the store with the parsed data.
 
+  */
+
+  store.dispatch(action.createStartLevel(index));
+
   stage.getTests(description.input, description.output);
-  store.dispatch(action.startLevel(stage, goal, board, toolbox, globals));
+  // store.dispatch(action.startLevelLegacy(stage, goal, board, toolbox, globals));
   stage.startLevel(description.textgoal, description.showConcreteGoal, description.hideGlobals);
   stage.registerNewDefinedNames(newDefinedNames.map((elem) => elem[0]));
 

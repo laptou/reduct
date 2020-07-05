@@ -1,4 +1,4 @@
-import { createMoveNodeToBoard, createDetectCompetion } from '@/reducer/action';
+import { createMoveNodeToBoard, createDetectCompetion, createClearError } from '@/reducer/action';
 import { GlobalState } from '@/reducer/state';
 import { NodeId } from '@/semantics';
 import { DeepReadonly } from '@/util/helper';
@@ -17,8 +17,21 @@ interface BoardStoreProps {
 }
 
 interface BoardDispatchProps {
+  /**
+   * Moves a node to the board.
+   * @param node The node to move to the board.
+   */
   moveNodeToBoard(node: NodeId): void;
+
+  /**
+   * Detects whether the game is over.
+   */
   detectCompletion(): void;
+
+  /**
+   * Clears any errors currently held by the store.
+   */
+  clearError(): void;
 }
 
 type BoardProps = BoardStoreProps & BoardDispatchProps;
@@ -171,6 +184,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
       <div id='reduct-board' 
         onDragOver={onDragOver}
         onDrop={e => onDrop(e, props, boardRef, positions, setPositions)} 
+        onClick={() => props.clearError()}
         ref={boardRef}
       >
         <TransitionGroup component={null}>
@@ -195,6 +209,7 @@ export const Board = connect(
   }),
   (dispatch) => ({
     moveNodeToBoard(id: NodeId) { dispatch(createMoveNodeToBoard(id)); },
-    detectCompletion() { dispatch(createDetectCompetion()); }
+    detectCompletion() { dispatch(createDetectCompetion()); },
+    clearError() { dispatch(createClearError()); }
   })
 )(BoardImpl);

@@ -10,11 +10,11 @@
   top: 0;
   right: 0;
   bottom: 0;
-  left: 30%;
+  left: 0;
   z-index: 1000;
   display: grid;
   grid-template-rows: 10fr 80fr 20fr;
-  grid-template-columns: 30% 1fr auto 20%;
+  grid-template-columns: 20% 1fr auto 20%;
   // pointer-events: none;
 }
 
@@ -22,7 +22,7 @@
   position: relative;
   grid-row: 1;
   grid-column: 2;
-  background: rgba(palegoldenrod, 50%);
+  background: rgba(palegoldenrod, 70%);
 }
 
 #reduct-board {
@@ -30,14 +30,14 @@
   grid-row: 2;
   grid-column: 2 / 5;
   overflow: auto;
-  background: rgba(lightcoral, 50%);
+  background: rgba(lightcoral, 70%);
 }
 
 #reduct-toolbox {
   position: relative;
   grid-row: 3;
   grid-column: 2 / 5;
-  background: rgba(lightgreen, 50%);
+  background: rgba(lightgreen, 70%);
 }
 
 #reduct-definitions {
@@ -47,7 +47,7 @@
   grid-row: 1 / 5;
   grid-column: 1;
   overflow: auto;
-  background: rgba(lightblue, 50%);
+  background: rgba(lightblue, 70%);
 }
 
 #reduct-history {
@@ -56,7 +56,7 @@
   grid-column: 3;
   overflow: auto;
   color: white;
-  background: rgba(grey, 50%);
+  background: rgba(grey, 70%);
 }
 
 #reduct-level-info {
@@ -68,10 +68,10 @@
   grid-column: 4;
   overflow: auto;
   color: white;
-  background: rgba(orange, 50%);
+  background: rgba(orange, 70%);
 }
 
-#reduct-victory, #reduct-defeat {
+#reduct-title, #reduct-victory, #reduct-defeat {
   z-index: 100;
   display: flex;
   flex-flow: column nowrap;
@@ -93,6 +93,14 @@
 #reduct-victory .victory-message {
   margin: 4rem;
   color: lightgreen;
+  font-weight: 700;
+  font-size: 4rem;
+  user-select: none;
+}
+
+#reduct-title .title-message {
+  margin: 4rem;
+  color: lightblue;
   font-weight: 700;
   font-size: 4rem;
   user-select: none;

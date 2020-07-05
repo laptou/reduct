@@ -135,7 +135,7 @@ export default class TouchRecord extends BaseTouchRecord {
     super.onstart(mousePos);
     this.isExpr = this.stage.getState().nodes.has(this.topNode);
     if (this.isExpr && this.topNode) {
-      this.stage.store.dispatch(action.raise(this.topNode));
+      this.stage.store.dispatch(action.createRaise(this.topNode));
 
       const state = this.stage.getState();
       const selected = state.nodes.get(this.topNode);

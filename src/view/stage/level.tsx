@@ -5,13 +5,13 @@ import { connect } from 'react-redux';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface LevelInfoStoreProps {
-  // TODO
+  level: number;
 }
 
 const LevelInfoImpl = (props: LevelInfoStoreProps) => {
   return (
     <div id='reduct-level-info'>
-      <span className='level-info-level'>Level X</span>
+      <span className='level-info-level'>Level {props.level + 1}</span>
       <span className='level-info-chapter'>Chapter X</span>
     </div>
   );
@@ -19,6 +19,6 @@ const LevelInfoImpl = (props: LevelInfoStoreProps) => {
 
 export const LevelInfo = connect(
   (store: DeepReadonly<GlobalState>) => ({
-    // TODO
+    level: store.program.$present.level
   })
 )(LevelInfoImpl);

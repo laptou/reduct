@@ -1,4 +1,4 @@
-import { FlatReductNode } from '@/semantics';
+import { DRF } from '@/util/helper';
 import React from 'react';
 import { ApplyProjection } from './apply';
 import { ArrayProjection } from './array';
@@ -13,7 +13,6 @@ import { ReferenceProjection } from './reference';
 import { SymbolProjection } from './symbol';
 import { ValueProjection } from './value';
 import { VTupleProjection } from './vtuple';
-import { DRF } from '@/util/helper';
 
 /**
  * Definitions:

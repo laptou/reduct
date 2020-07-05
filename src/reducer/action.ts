@@ -1,5 +1,10 @@
 import { NodeId, NodeMap, ReductNode } from '@/semantics';
 import BaseStage from '@/stage/basestage';
+import Loader from '@/loader';
+import * as progression from '@/game/progression';
+import { parseProgram, MacroMap } from '@/syntax/es6';
+import { createReferenceNode } from '@/semantics/util';
+import { flatten } from '@/util/nodes';
 
 export enum ActionKind {
   UseToolbox = 'use-toolbox',
@@ -9,7 +14,7 @@ export enum ActionKind {
   SmallStep = 'small-step-legacy',
   Unfold = 'unfold',
   BetaReduce = 'beta-reduce',
-  StartLevel = 'start-level',
+  StartLevelLegacy = 'start-level-legacy',
   Victory = 'victory',
   Fade = 'fade',
   Unfade = 'unfade',
@@ -18,6 +23,8 @@ export enum ActionKind {
   AddGoalItem = 'add-goal-item',
   ChangeGoal = 'change-goal',
   Hover = 'hover',
+
+  StartLevel = 'start-level',
 
   MoveNodeToBoard = 'move-node-to-stage',
   MoveNodeToSlot = 'move-node-to-slot',
@@ -37,10 +44,12 @@ export enum ActionKind {
 
   DetectCompletion = 'detect-end',
   Undo = 'undo',
-  Redo = 'redo'
+  Redo = 'redo',
+  ClearError = 'clear-error'
 }
 
 export type ReductAction = 
+  StartLevelActionLegacy |
   StartLevelAction |
   MoveNodeToBoardAction |
   MoveNodeToSlotAction |
@@ -56,8 +65,22 @@ export type ReductAction =
   StepAction |
   ExecuteAction |
   CleanupAction | 
-  DetectCompletionAction;
+  DetectCompletionAction |
+  ClearErrorAction |
+  RaiseAction | 
+  DetachAction;
 
+
+export interface ClearErrorAction {
+  type: ActionKind.ClearError;
+}
+  
+/**
+   * This action clears any error currently held by the store.
+   */
+export function createClearError(): ClearErrorAction {
+  return { type: ActionKind.ClearError };
+}
 
 export interface CleanupAction {
   type: ActionKind.Cleanup;
@@ -125,8 +148,8 @@ export function moveNodeToSlot(slotId: NodeId, nodeId: NodeId): MoveNodeToSlotAc
   };
 }
 
-export interface StartLevelAction {
-  type: ActionKind.StartLevel;
+export interface StartLevelActionLegacy {
+  type: ActionKind.StartLevelLegacy;
   nodes: NodeMap;
   goal: Set<NodeId>;
   board: Set<NodeId>;
@@ -151,13 +174,13 @@ export interface StartLevelAction {
  * @param toolbox - List of expressions for the toolbox.
  * @param globals - Map of expressions for globals.
  */
-export function startLevel(
+export function startLevelLegacy(
   stage: BaseStage,
   goal: Iterable<ReductNode>, 
   board: Iterable<ReductNode>, 
   toolbox: Iterable<ReductNode>, 
   globals: Record<string, ReductNode>
-): StartLevelAction {
+): StartLevelActionLegacy {
   const { semantics } = stage;
   const _nodes: Map<NodeId, ReductNode> = new Map();
   const _goal: Set<NodeId> = new Set();
@@ -201,12 +224,159 @@ export function startLevel(
     stage.views[nodeId] = semantics.project(stage, _nodes, node);
 
   return {
-    type: ActionKind.StartLevel,
+    type: ActionKind.StartLevelLegacy,
     nodes: _nodes,
     goal: _goal,
     board: _board,
     toolbox: _toolbox,
     globals: _globals
+  };
+}
+
+export interface StartLevelAction {
+  type: ActionKind.StartLevel;
+  level: number;
+  nodes: NodeMap;
+  goal: Set<NodeId>;
+  board: Set<NodeId>;
+  toolbox: Set<NodeId>;
+  globals: Map<string, NodeId>;
+}
+
+/**
+ * Redux action to start a new level.
+ * 
+ * @param index The index of the level to start.
+ */
+export function createStartLevel(index: number): StartLevelAction {
+  const levelDefinition = Loader.progressions.Elementary.levels[index];
+
+  const macros: MacroMap = new Map();
+  
+  if (levelDefinition.macros) {
+    for (const [name, script] of Object.entries(levelDefinition.macros)) {
+      // Needs to be a thunk in order to allocate new ID each time
+      macros.set(name, () => parseProgram(script, macros));
+    }
+  }
+
+  // Parse the defined names carried over from previous levels, the
+  // globals added for this level, and any definitions on the board.
+  const prevDefinedNames = levelDefinition.extraDefines
+    ? levelDefinition.extraDefines
+      .map((script: string) => {
+        const node = parseProgram(script, macros);
+
+        if (node.type !== 'define') {
+          return null;
+        }
+
+        return [node.fields.name, () => createReferenceNode(node.fields.name)];
+      })
+      .filter((define) => define !== null)
+    : [];
+
+  const globalDefinedNames = Object.entries(levelDefinition.globals)
+    .map(([name, script]) => {
+      const node = parseProgram(script, macros);
+
+      if (node.type !== 'define') {
+        return null;
+      }
+
+      return [name, () => createReferenceNode(name)];
+    });
+  
+  const newDefinedNames = levelDefinition.board
+    .map((script: string) => {
+      const node = parseProgram(script, macros);
+
+      if (node.type !== 'define') {
+        return null;
+      }
+
+      return [node.fields.name, () => createReferenceNode(node.fields.name)];
+    })
+    .filter((define) => define !== null);
+
+  // Turn these defines into "macros", so that the name resolution
+  // system can handle lookup.
+  for (const [name, expr] of [...prevDefinedNames, ...newDefinedNames, ...globalDefinedNames]) {
+    macros.set(name, expr);
+  }
+
+  // parse the goal, board, and toolbox
+  const goalNodes = levelDefinition.goal.map((script) => parseProgram(script, macros));
+  const boardNodes = levelDefinition.board.map((script) => parseProgram(script, macros));
+  const toolboxNodes = levelDefinition.toolbox.map((script) => parseProgram(script, macros));
+
+  // Go back and parse the globals as well.
+  const globals = new Map();
+  levelDefinition.extraDefines
+    .map((script) => parseProgram(script, macros))
+    .forEach((node) => {
+      if (node.type !== 'define') {
+        return null;
+      }
+
+      globals.set(node.fields.name, node);
+    });
+
+  for (const [name, script] of Object.entries(levelDefinition.globals)) {
+    const node = parseProgram(script, macros);
+
+    if (node.type !== 'define')
+      continue;
+
+    globals.set(name, node);
+  }
+
+  const flatNodes = new Map();
+  const goal: Set<NodeId> = new Set();
+  const board: Set<NodeId> = new Set();
+  const toolbox: Set<NodeId> = new Set();
+  const flatGlobals: Map<string, NodeId> = new Map();
+
+  for (const goalNode of goalNodes) {
+    for (const flatGoalNode of flatten(goalNode)) {
+      flatNodes.set(flatGoalNode.id, flatGoalNode);
+    }
+
+    goal.add(goalNode.id);
+  }
+
+  for (const boardNode of boardNodes) {
+    for (const flatBoardNode of flatten(boardNode)) {
+      flatNodes.set(flatBoardNode.id, flatBoardNode);
+    }
+
+    board.add(boardNode.id);
+  }
+
+  for (const toolboxNode of toolboxNodes) {
+    for (const flatToolboxNode of flatten(toolboxNode)) {
+      flatNodes.set(flatToolboxNode.id, flatToolboxNode);
+    }
+
+    toolbox.add(toolboxNode.id);
+  }
+
+  for (const [name, globalNode] of Object.entries(globals)) {
+    for (const flatGlobalNode of flatten(globalNode)) {
+      flatNodes.set(flatGlobalNode.id, flatGlobalNode);
+    }
+
+    flatGlobals.set(name, globalNode.id);
+  }
+
+  return {
+    type: ActionKind.StartLevel,
+    level: index,
+    nodes: flatNodes,
+    goal: goal,
+    board: board,
+    toolbox: toolbox,
+    globals: flatGlobals
   };
 }
 
@@ -418,8 +588,6 @@ export function createExecute(
   };
 }
 
-
-
 export interface DetectCompletionAction {
   type: ActionKind.DetectCompletion;
 }
@@ -432,6 +600,39 @@ export interface DetectCompletionAction {
 export function createDetectCompetion(): DetectCompletionAction {
   return {
     type: ActionKind.DetectCompletion
+  };
+}
+
+export interface RaiseAction {
+  type: ActionKind.Raise;
+  nodeId: NodeId;
+}
+
+/**
+ * Raise the given node to the top.
+ *
+ * This is a visual concern, but the stage draws nodes in the order
+ * they are in the store, so this changes the z-index.
+ */
+export function createRaise(nodeId: NodeId): RaiseAction {
+  return {
+    type: ActionKind.Raise,
+    nodeId
+  };
+}
+
+export interface DetachAction {
+  type: ActionKind.Detach;
+  nodeId: NodeId;
+}
+
+/**
+ * Detach the given node from its parent.
+ */
+export function createDetach(nodeId: NodeId): DetachAction {
+  return {
+    type: ActionKind.Detach,
+    nodeId
   };
 }
 
@@ -511,32 +712,6 @@ export function betaReduce(topNodeId, argNodeId, newNodeIds, addedNodes) {
     argNodeId,
     newNodeIds,
     addedNodes
-  };
-}
-
-/**
- * Raise the given node to the top.
- *
- * This is a visual concern, but the stage draws nodes in the order
- * they are in the store, so this changes the z-index. We could make
- * the board an immutable.Set and store the draw-order elsewhere, but
- * we would have to synchronize it with any changes to the store. I
- * figured it was easier to just break separation in this case.
- */
-export function raise(nodeId) {
-  return {
-    type: ActionKind.Raise,
-    nodeId
-  };
-}
-
-/**
- * Detach the given node from its parent.
- */
-export function createDetach(nodeId) {
-  return {
-    type: ActionKind.Detach,
-    nodeId
   };
 }
 

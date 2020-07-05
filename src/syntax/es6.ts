@@ -1,6 +1,5 @@
 import { ReductNode } from '@/semantics';
 import { LambdaNode } from '@/semantics/defs';
-import { Semantics } from '@/semantics/transform';
 import {
   createApplyNode, createArrayNode, createBinOpNode, createBoolNode, createConditionalNode, createDefineNode, createLambdaArgNode, createLambdaNode, createMemberNode, createMissingNode, createNotNode, createNumberNode, createOpNode, createReferenceNode, createStrNode, createSymbolNode, createVtupleNode 
 } from '@/semantics/util';
@@ -28,7 +27,14 @@ function modifier(ast: esprima.Program) {
   return [ast.body[0].expression.name, ast.body[1]];
 }
 
-function parseNode(node: estree.Statement | estree.Declaration | estree.Expression, macros): ReductNode {
+/**
+ * A macro is a map from identifier names to values. This is used when parsing
+ * programs to replace specific identifiers with special values (instead of just
+ * parsing them as references).
+ */
+export type MacroMap = Map<string, () => ReductNode>;
+
+function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
   switch (node.type) {
   case 'ExpressionStatement':
     return parseNode(node.expression, macros);
@@ -49,8 +55,8 @@ function parseNode(node: estree.Statement | estree.Declaration | estree.Expressi
     const name = node.name;
     if (node.name === '_') return createMissingNode();
 
-    // Each macro is a thunk
-    if (macros && macros[name]) return macros[name]();
+    const macro = macros.get(name);
+    if (macro) return macro();
 
     if (name === 'STAR')
       return createSymbolNode('star');
@@ -118,9 +124,9 @@ function parseNode(node: estree.Statement | estree.Declaration | estree.Expressi
     if (node.params.length === 1 && node.params[0].type === 'Identifier') {
       // Implement capture of bindings
       const argName = node.params[0].name;
-      const newMacros = {};
-      newMacros[argName] = () => createReferenceNode(argName);
-      const body = parseNode(node.body, Object.assign(macros, newMacros));
+      const newMacros: MacroMap = new Map(macros);
+      newMacros.set(argName, () => createReferenceNode(argName));
+      const body = parseNode(node.body, newMacros);
       return createLambdaNode(createLambdaArgNode(argName), body);
     }
 
@@ -309,27 +315,30 @@ function parseNode(node: estree.Statement | estree.Declaration | estree.Expressi
     );
   }
 
-  default: throw new Error(`Unknown node type: ${node.type}`);
+  default: throw new Error(`Cannot parse ES6 node: ${node.type}`);
   }
 }
 
-export function parseProgram(program: string, macros: any) {
+export function parseProgram(program: string, macros: MacroMap = new Map()) {
   const ast = esprima.parseScript(program);
   const mod = modifier(ast);
 
   if (ast.body.length === 1) {
     const result = parseNode(ast.body[0], macros);
+
     if (result === null) {
-      return fail('Cannot parse program.', program);
+      throw new Error('Cannot parse program.');
     }
 
     return result;
   }
+
   if (mod !== null) {
     const [modName, node] = mod;
     const result = parseNode(node, macros);
+
     if (result === null) {
-      return fail('Cannot parse node.', program);
+      throw new Error('Cannot parse node.');
     }
 
     if (modName === '__unlimited') {
@@ -458,9 +467,4 @@ export function serializeNode(node: ReductNode): string {
     console.error(`unparsers.es6: Unrecognized ES6 node type "${node.type}": `, node);
     return null;
   }
-};
-
-function fail(message, node): never {
-  console.warn(message, node);
-  throw { message, node };
 }
