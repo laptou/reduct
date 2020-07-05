@@ -5,7 +5,7 @@ import type { Semantics } from '../transform';
 
 // Returns the names of the subexpressions of an array: elem0, elem1, etc.
 // Requires: arr is a hydrated array node or an immutable map for an array node
-function arraySubexprs(module, arr) {
+function arraySubexprs(module: any, arr: any) {
     const n = typeof arr.length === 'number'
         ? arr.length
         : arr.get('length');
@@ -18,7 +18,7 @@ function arraySubexprs(module, arr) {
 
 // Returns the fields that are supposed to be displayed by
 // the projection of an array
-function arrayDisplayParts(expr) {
+function arrayDisplayParts(expr: any) {
     const a = arraySubexprs(null, ImMap(expr));
     const result = [];
     let first = true;
@@ -32,6 +32,9 @@ function arrayDisplayParts(expr) {
     return result;
 }
 
+/**
+ * ArrayNode is a Reduct node that represents an array of nodes with length 'length'
+ */
 export interface ArrayNode extends BaseNode {
     type: 'array';
     length: number;
@@ -44,7 +47,7 @@ export const array: NodeDef<ArrayNode> = {
         for (const field of semant.subexpressions(arr)) {
             const subexp = nodes.get(arr.get(field));
             if (semant.kind(state, subexp) == 'expression'
-                    || subexp.get('type') == 'missing') {
+                || subexp.get('type') == 'missing') {
                 return 'expression';
             }
         }

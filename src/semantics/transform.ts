@@ -50,12 +50,12 @@ export interface SemanticParserDefinition {
         board: ImList<NodeId>,
         toolbox: ImList<NodeId>,
         globals: ImMap<string, NodeId>): {
-        nodes: NodeMap;
-        goal: ImList<NodeId>;
-        board: ImList<NodeId>;
-        toolbox: ImList<NodeId>;
-        globals: ImMap<string, NodeId>;
-    };
+            nodes: NodeMap;
+            goal: ImList<NodeId>;
+            board: ImList<NodeId>;
+            toolbox: ImList<NodeId>;
+            globals: ImMap<string, NodeId>;
+        };
 }
 
 export interface SemanticParser {
@@ -71,12 +71,12 @@ export interface SemanticParser {
         board: ImList<NodeId>,
         toolbox: ImList<NodeId>,
         globals: ImMap<string, NodeId>): {
-        nodes: NodeMap;
-        goal: ImList<NodeId>;
-        board: ImList<NodeId>;
-        toolbox: ImList<NodeId>;
-        globals: ImMap<string, NodeId>;
-    };
+            nodes: NodeMap;
+            goal: ImList<NodeId>;
+            board: ImList<NodeId>;
+            toolbox: ImList<NodeId>;
+            globals: ImMap<string, NodeId>;
+        };
 }
 
 export interface SemanticDefinition {
@@ -303,7 +303,7 @@ export class Semantics {
                         id,
                         complete && this.subexpressions(expr)
                             .map((field) => completeness.get(expr.get(field))
-                             || this.kind(state, nodes.get(expr.get(field))) !== 'expression')
+                                || this.kind(state, nodes.get(expr.get(field))) !== 'expression')
                             .every((x) => x)
                     );
                     for (const entry of types.entries()) {
@@ -316,7 +316,7 @@ export class Semantics {
                         id,
                         this.subexpressions(expr)
                             .map((field) => completeness.get(expr.get(field))
-                             || completeKind(this.kind(state, nodes.get(expr.get(field)))))
+                                || completeKind(this.kind(state, nodes.get(expr.get(field)))))
                             .every((x) => x)
                     );
                 } else {
@@ -400,9 +400,9 @@ export class Semantics {
                 return 'hole';
             }
         } else if (target.get('type') === 'lambdaArg'
-                && !state.getIn(['nodes', target.get('parent'), 'parent'])
-                // Lambda vars can't be dropped into lambda args
-                && item.get('type') !== 'lambdaVar') {
+            && !state.getIn(['nodes', target.get('parent'), 'parent'])
+            // Lambda vars can't be dropped into lambda args
+            && item.get('type') !== 'lambdaVar') {
             return 'arg';
         }
         return false;
@@ -463,9 +463,9 @@ export class Semantics {
             const node = nodes.get(id);
             const kind = this.kind(state, node);
             return kind === 'expression'
-            || kind === 'statement'
-            || node.get('type') === 'lambda'
-            || node.get('type') === 'reference';
+                || kind === 'statement'
+                || node.get('type') === 'lambda'
+                || node.get('type') === 'reference';
         });
 
         if (containsReduceableExpr) {
@@ -573,9 +573,9 @@ export class Semantics {
                     if (notch1.type === 'outset' && notch2.type !== 'inset') continue;
 
                     if ((notch1.side === 'left' && notch2.side === 'right')
-                    || (notch1.side === 'right' && notch2.side === 'left')
-                    || (notch1.side === 'top' && notch2.side === 'bottom')
-                    || (notch1.side === 'bottom' && notch2.side === 'top')) {
+                        || (notch1.side === 'right' && notch2.side === 'left')
+                        || (notch1.side === 'top' && notch2.side === 'bottom')
+                        || (notch1.side === 'bottom' && notch2.side === 'top')) {
                         result.push([i, j]);
                     }
                 }
@@ -613,7 +613,7 @@ export class Semantics {
             return [node, nodes];
         }, (nodes, node) => (
             node.get('type') !== 'lambda'
-                || nodes.get(node.get('arg')).get('name') !== targetName));
+            || nodes.get(node.get('arg')).get('name') !== targetName));
         return result;
     }
 

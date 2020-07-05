@@ -1,10 +1,14 @@
 import type { NodeDef } from './base';
 import { BaseNode, NodeId } from '..';
 
+/**
+ * OpNode is a Reduct node that represents a mathematical operation
+ */
 export interface OpNode extends BaseNode {
     type: 'op';
     name: any;
 }
+
 
 export const op: NodeDef<OpNode> = {
     kind: 'syntax',
@@ -16,6 +20,9 @@ export const op: NodeDef<OpNode> = {
     }
 };
 
+/**
+ * BinOpNode is a Reduct node that represents a binary operation
+ */
 export interface BinOpNode extends BaseNode {
     type: 'binop';
     left: NodeId;
@@ -89,6 +96,7 @@ export const binop: NodeDef<BinOpNode> = {
             }
         }
     },
+
     stepSound: (semant, state, expr) => {
         const op = state.get('nodes').get(expr.get('op'));
         if (op.get('name') === '==') {
@@ -96,6 +104,7 @@ export const binop: NodeDef<BinOpNode> = {
         }
         return ['heatup'];
     },
+
     type: (semant, state, types, expr) => {
         const nodes = state.get('nodes');
         const opExpr = nodes.get(expr.get('op'));
@@ -131,9 +140,9 @@ export const binop: NodeDef<BinOpNode> = {
             types: result,
             // TODO: less ad-hoc
             complete: (types.get(expr.get('left')) === 'number'
-                           || nodes.get(expr.get('left')).get('type') === 'lambdaVar')
-                    && (types.get(expr.get('right')) === 'number'
-                     || nodes.get(expr.get('right')).get('type') === 'lambdaVar')
+                || nodes.get(expr.get('left')).get('type') === 'lambdaVar')
+                && (types.get(expr.get('right')) === 'number'
+                    || nodes.get(expr.get('right')).get('type') === 'lambdaVar')
         };
     },
     // Invariant: all subexpressions are values or syntax;
@@ -191,24 +200,24 @@ export const binop: NodeDef<BinOpNode> = {
         if (op === '+') {
             if (nodes.get(expr.get('left')).get('type') === 'number') {
                 return semant.number(nodes.get(expr.get('left')).get('value')
-                        + nodes.get(expr.get('right')).get('value'));
+                    + nodes.get(expr.get('right')).get('value'));
             }
 
             return semant.string(nodes.get(expr.get('left')).get('value')
-                        + nodes.get(expr.get('right')).get('value'));
+                + nodes.get(expr.get('right')).get('value'));
         }
         if (op === '-') {
             return semant.number(nodes.get(expr.get('left')).get('value')
-                                     - nodes.get(expr.get('right')).get('value'));
+                - nodes.get(expr.get('right')).get('value'));
         }
         if (op === '>') {
             return semant.bool(nodes.get(expr.get('left')).get('value')
-                                   > nodes.get(expr.get('right')).get('value'));
+                > nodes.get(expr.get('right')).get('value'));
         }
 
         if (op === '<') {
             return semant.bool(nodes.get(expr.get('left')).get('value')
-                                   < nodes.get(expr.get('right')).get('value'));
+                < nodes.get(expr.get('right')).get('value'));
         }
         if (op === '==') {
             return semant.bool(semant.deepEqual(nodes,
@@ -217,11 +226,11 @@ export const binop: NodeDef<BinOpNode> = {
         }
         if (op === '||') {
             return semant.bool(nodes.get(expr.get('left')).get('value')
-                                   || nodes.get(expr.get('right')).get('value'));
+                || nodes.get(expr.get('right')).get('value'));
         }
         if (op === '&&') {
             return semant.bool(nodes.get(expr.get('left')).get('value')
-                                   && nodes.get(expr.get('right')).get('value'));
+                && nodes.get(expr.get('right')).get('value'));
         }
         throw `Unrecognized operator ${op}`;
     }

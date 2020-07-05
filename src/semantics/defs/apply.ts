@@ -4,6 +4,11 @@ import * as fx from '../../gfx/fx';
 import type { NodeDef } from './base';
 import type { BaseNode, NodeId } from '..';
 
+
+/**
+ * ApplyNode is a Reduct node that represents function application
+ * the node 'argument' is passed to the node 'callee'
+ */
 export interface ApplyNode extends BaseNode {
     type: 'apply';
     callee: NodeId;
@@ -61,7 +66,7 @@ export const apply: NodeDef<ApplyNode> = {
         let centerX = gfx.centerPos(calleeView).x - gfx.absolutePos(applyView).x;
         if (isCalleeLambda) {
             centerX = gfx.centerPos(stage.views[callee.get('arg')]).x
-                    - gfx.absolutePos(lambdaView).x;
+                - gfx.absolutePos(lambdaView).x;
         }
 
         const jumpTween = animate.tween(argView, {
@@ -194,16 +199,21 @@ export const apply: NodeDef<ApplyNode> = {
             });
     },
     stepSound: 'heatup',
+
+    // validates the application, returns null if step is valid, otherwise,
+    // displays error message
     validateStep: (semant, state, expr) => {
         const callee = state.getIn(['nodes', expr.get('callee')]);
         const kind = semant.kind(state, callee);
+        // here we check to make sure that the callee is a function
         if (kind === 'value'
-                    && callee.get('type') !== 'lambda'
-                    && callee.get('type') !== 'reference') {
+            && callee.get('type') !== 'lambda'
+            && callee.get('type') !== 'reference') {
             return [expr.get('callee'), 'We can only apply functions!'];
         }
         return null;
     },
+
     smallStep: (semant, stage, state, expr) => {
         const [topNodeId, newNodeIds, addedNodes] = semant.interpreter.betaReduce(
             stage,
@@ -214,13 +224,14 @@ export const apply: NodeDef<ApplyNode> = {
 
         return [expr.get('id'), newNodeIds, addedNodes];
     },
+
     substepFilter: (semant, state, expr, field) => {
         // Don't force evaluation of reference-with-holes that
         // has unfilled holes, so that it can be used in
         // argument position. However, force evaluation if it
         // doesn't have holes or has filled holes.
         if (field === 'argument'
-                && state.getIn(['nodes', expr.get(field), 'type']) === 'reference') {
+            && state.getIn(['nodes', expr.get(field), 'type']) === 'reference') {
             const ref = state.getIn(['nodes', expr.get(field)]);
 
             if (!ref.has('params') || ref.get('params').length === 0) return true;

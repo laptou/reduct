@@ -3,6 +3,10 @@ import * as animate from '../../gfx/animate';
 import type { NodeDef } from './base';
 import type { BaseNode, NodeId } from '..';
 
+
+/**
+ * ConditionalNode is a reduct node representing an conditional expression
+ */
 export interface ConditionalNode extends BaseNode {
     type: 'conditional';
     condition: NodeId;
@@ -47,12 +51,13 @@ export const conditional: NodeDef<ConditionalNode> = {
             }
         ]
     },
+
     type: (semant, state, types, expr) => {
         const result = new Map();
         const positiveTy = types.get(expr.get('positive'));
         const branchesMatch = positiveTy === types.get(expr.get('negative'))
-                  && positiveTy !== null
-                  && typeof positiveTy !== 'undefined';
+            && positiveTy !== null
+            && typeof positiveTy !== 'undefined';
         if (branchesMatch) {
             result.set(expr.get('id'), types.get(expr.get('positive')));
         }
