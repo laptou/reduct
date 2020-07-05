@@ -1,6 +1,6 @@
 import { produce } from 'immer';
 import * as progression from './progression';
-import * as action from '../reducer/action';
+import * as action from '../store/action';
 import * as gfx from '../gfx/core';
 import * as animate from '../gfx/animate';
 import * as layout from '../ui/layout';

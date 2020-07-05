@@ -1,6 +1,6 @@
 import {
   MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, NodeError, CircularCallError, BuiltInError, WrongBuiltInParamsCountError, AlreadyFullyBoundError 
-} from '@/reducer/errors';
+} from '@/store/errors';
 import React from 'react';
 import { Bubble } from './bubble';
 

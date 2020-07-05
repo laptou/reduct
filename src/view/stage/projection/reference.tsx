@@ -5,7 +5,7 @@ import React, { FunctionComponent } from 'react';
 import { getDefinitionForName } from '@/semantics/util';
 import { connect } from 'react-redux';
 import cx from 'classnames';
-import { GlobalState } from '@/reducer/state';
+import { GlobalState } from '@/store/state';
 
 interface ReferenceProjectionOwnProps {
   node: DRF<ReferenceNode>;

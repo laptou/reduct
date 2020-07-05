@@ -1,4 +1,4 @@
-import { GlobalState } from '@/reducer/state';
+import { GlobalState } from '@/store/state';
 import { Flat, NodeId } from '@/semantics';
 import { BinOpNode, OpNode } from '@/semantics/defs';
 import { DeepReadonly } from '@/util/helper';
@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { BooleanShape } from '../shape/boolean';
 import { NumberShape } from '../shape/number';
 import { StageProjection } from './base';
-import { createEvalOperator } from '@/reducer/action';
+import { createEvalOperator } from '@/store/action';
 
 interface BinOpProjectionOwnProps {
   node: Flat<BinOpNode>;

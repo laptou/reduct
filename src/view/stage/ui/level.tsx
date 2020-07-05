@@ -1,4 +1,4 @@
-import { GlobalState } from '@/reducer/state';
+import { GlobalState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
 import '@resources/style/react/ui/level.scss';
 import React from 'react';

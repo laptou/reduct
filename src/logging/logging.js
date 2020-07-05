@@ -1,8 +1,8 @@
 import fileSaver from 'file-saver';
 
 import * as level from '../game/level';
-import { ActionKind } from '../reducer/action';
-import * as undoAction from '../reducer/undo';
+import { ActionKind } from '../store/action';
+import * as undoAction from '../store/undo';
 import * as ajax from '../util/ajax';
 import * as random from '../util/random';
 import VERSION_ID from '../version';
@@ -61,18 +61,6 @@ class Logger {
 
     this.staticLog = [];
 
-    if (this.config('static')) {
-      // Before closing page, save the static log
-      window.onbeforeunload = () => {
-        window.localStorage.static_log = JSON.stringify(this.staticLog);
-      };
-
-      // Deserialize static log
-      if (window.localStorage.static_log) {
-        this.staticLog = JSON.parse(window.localStorage.static_log);
-        this.info('Loaded prior play data from localStorage.');
-      }
-    }
 
     this.VICTORY_LEVEL_ID = VICTORY_LEVEL_ID;
   }
@@ -86,7 +74,6 @@ class Logger {
   }
 
   clearStaticLog() {
-    delete window.localStorage.static_log;
     this.staticLog = [];
     console.log('Cleared prior play data from localStorage.');
   }

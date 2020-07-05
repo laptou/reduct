@@ -1,5 +1,5 @@
 import type { ProjectionDef } from '@/gfx/projection';
-import { RState } from '@/reducer/state';
+import { RState } from '@/store/state';
 import type Stage from '@/stage/stage';
 import type { DeepReadonly, Thunk, DRF } from '@/util/helper';
 import type {

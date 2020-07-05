@@ -1,4 +1,4 @@
-import { GameMode, GlobalState } from '@/reducer/state';
+import { GameMode, GlobalState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
 import React from 'react';
 import { connect } from 'react-redux';

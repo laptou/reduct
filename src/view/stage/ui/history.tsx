@@ -2,9 +2,9 @@
  * @file This file contains the component for the undo and redo buttons.
  */
 
-import { GlobalState } from '@/reducer/state';
+import { GlobalState } from '@/store/state';
 import '@resources/style/react/ui/history.scss';
-import { redo as createRedo, undo as createUndo } from '@/reducer/undo';
+import { redo as createRedo, undo as createUndo } from '@/store/undo';
 import { DeepReadonly } from '@/util/helper';
 import React from 'react';
 import { connect } from 'react-redux';

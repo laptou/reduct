@@ -1,4 +1,4 @@
-import { RState } from '@/reducer/state';
+import { RState } from '@/store/state';
 import { DeepReadonly, dethunk, DRF } from '@/util/helper';
 import { nextId } from '@/util/nodes';
 import {

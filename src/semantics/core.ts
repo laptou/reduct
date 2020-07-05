@@ -1,4 +1,4 @@
-import type { RState } from '@/reducer/state';
+import type { RState } from '@/store/state';
 import { DeepReadonly, withoutParent } from '@/util/helper';
 import { produce } from 'immer';
 import type {

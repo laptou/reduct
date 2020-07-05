@@ -1,6 +1,6 @@
 import * as fx from '../../gfx/fx';
 import * as core from '../core';
-import * as action from '../../reducer/action';
+import * as action from '../../store/action';
 import * as gfxCore from '../../gfx/core';
 import * as level from '../../game/level';
 import type { NodeDef } from './base';

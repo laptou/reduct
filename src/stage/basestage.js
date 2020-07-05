@@ -3,7 +3,7 @@
  * @module BaseStage
  */
 import * as gfxCore from '../gfx/core';
-import { nextId } from '../reducer/reducer';
+import { nextId } from '../store/reducer';
 
 import TouchRecord from './touchrecord';
 

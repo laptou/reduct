@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { DeepReadonly } from '@/util/helper';
-import { GlobalState, GameMode } from '@/reducer/state';
-import { createStartLevel } from '@/reducer/action';
+import { GlobalState, GameMode } from '@/store/state';
+import { createStartLevel } from '@/store/action';
 
 interface VictoryStoreProps {
   isVictory: boolean;

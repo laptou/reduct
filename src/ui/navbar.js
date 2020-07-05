@@ -1,6 +1,6 @@
 import * as gfx from '../gfx/core';
 import * as progression from '../game/progression';
-import * as undo from '../reducer/undo';
+import * as undo from '../store/undo';
 import Loader from '../loader';
 
 /**

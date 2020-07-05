@@ -1,4 +1,4 @@
-import { createEvalNot } from '@/reducer/action';
+import { createEvalNot } from '@/store/action';
 import { NotNode } from '@/semantics/defs';
 import { DRF } from '@/util/helper';
 import '@resources/style/react/projection/not.scss';

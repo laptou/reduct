@@ -2,7 +2,7 @@ import { BaseNode, NodeMap, NodeId } from '..';
 import { DRF, DeepReadonly, withParent } from '@/util/helper';
 import {
   WrongBuiltInParamsCountError, WrongTypeError, BuiltInError, AlreadyFullyBoundError 
-} from '@/reducer/errors';
+} from '@/store/errors';
 import { cloneNodeDeep, CloneResult, mapNodeDeep } from '@/util/nodes';
 import { LambdaArgNode, PTupleNode, LambdaNode } from '.';
 import { createArrayNode, iterateTuple } from '../util';

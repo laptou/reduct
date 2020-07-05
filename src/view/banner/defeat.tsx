@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { DeepReadonly } from '@/util/helper';
-import { GlobalState, GameMode } from '@/reducer/state';
-import { undo as createUndo } from '@/reducer/undo';
+import { GlobalState, GameMode } from '@/store/state';
+import { undo as createUndo } from '@/store/undo';
 
 interface DefeatStoreProps {
   isDefeat: boolean;

@@ -1,5 +1,5 @@
-import { createMoveNodeToBoard, createDetectCompetion, createClearError } from '@/reducer/action';
-import { GlobalState } from '@/reducer/state';
+import { createMoveNodeToBoard, createDetectCompetion, createClearError } from '@/store/action';
+import { GlobalState } from '@/store/state';
 import '@resources/style/react/ui/board.scss';
 import { NodeId } from '@/semantics';
 import { DeepReadonly } from '@/util/helper';

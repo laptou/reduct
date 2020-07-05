@@ -1,8 +1,8 @@
 import {
   createCleanup, createStep, createClearError, createRaise 
-} from '@/reducer/action';
-import { NodeError } from '@/reducer/errors';
-import { GlobalState } from '@/reducer/state';
+} from '@/store/action';
+import { NodeError } from '@/store/errors';
+import { GlobalState } from '@/store/state';
 import { NodeId } from '@/semantics';
 import { getKindForNode, NodeKind } from '@/semantics/util';
 import { DeepReadonly, DRF } from '@/util/helper';

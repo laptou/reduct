@@ -1,4 +1,4 @@
-import type { RState } from '@/reducer/state';
+import type { RState } from '@/store/state';
 import type {
   BaseNode, Flat, NodeId, NodeMap 
 } from '@/semantics';

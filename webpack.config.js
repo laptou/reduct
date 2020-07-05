@@ -106,7 +106,7 @@ exports.default = (env) => ({
     new MiniCssExtractPlugin(),
     new DefinePlugin({
       'PKG_ENV': JSON.stringify(env.production ? 'production' : 'development'),
-      'PKG_VERSION': require('./package.json').version,
+      'PKG_VERSION': JSON.stringify(require('./package.json').version),
       'process.env.NODE_ENV': JSON.stringify(env.production ? 'production' : 'development')
     }),
     // new TsCheckerPlugin({

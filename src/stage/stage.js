@@ -1,7 +1,7 @@
 import * as chroma from 'chroma-js';
 import { produce } from 'immer';
 
-import * as action from '../reducer/action';
+import * as action from '../store/action';
 import * as level from '../game/level';
 import * as fx from '../gfx/fx';
 import * as animate from '../gfx/animate';

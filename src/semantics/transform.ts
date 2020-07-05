@@ -2,7 +2,7 @@
 /**
  * @module transform
  */
-import { RState } from '@/reducer/state';
+import { RState } from '@/store/state';
 import {
   genericClone, genericEqual, genericFlatten, genericMap, genericSearch 
 } from '@/semantics/core';
@@ -17,7 +17,7 @@ import * as gfx from '../gfx/core';
 import * as fx from '../gfx/fx';
 import { getProjector, ViewFn } from '../gfx/projector';
 import Logging from '../logging/logging';
-import { nextId } from '../reducer/reducer';
+import { nextId } from '../store/reducer';
 import type {
   BoolNode,
   DefineNode, DynVarNode, LambdaArgNode, LambdaVarNode,

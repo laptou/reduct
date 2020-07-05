@@ -7,7 +7,15 @@ import { DeepReadonly, DRF } from './helper';
 let idCounter = 0;
 
 /**
- * Returns the next unique ID. Used to assign IDs to nodes and views.
+ * Restores an ID counter that was saved to storage. This is necessary to avoid
+ * collisions when the state is restored.
+ */
+export function restoreId(counter: NodeId) {
+  idCounter = Math.max(idCounter, counter);
+}
+
+/**
+ * Returns the next unique ID. Used to assign IDs to nodes.
  */
 export function nextId(): NodeId {
   return idCounter++;
