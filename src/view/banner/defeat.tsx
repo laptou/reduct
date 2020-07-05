@@ -17,12 +17,14 @@ const DefeatImpl = (props: DefeatStoreProps & DefeatDispatchProps) => {
     return null;
 
   return (
-    <div id='reduct-defeat'>
-      <span className='defeat-message'>You&apos;re stuck.</span>
+    <div className='reduct-banner-page'>
+      <h1 id='defeat-message'>You&apos;re stuck.</h1>
 
-      <button type='button' onClick={() => props.undo()}>
-        Undo
-      </button>
+      <div className='reduct-banner-actions'>
+        <button type='button' onClick={() => props.undo()}>
+          Undo
+        </button>
+      </div>
     </div>
   );
 }

@@ -18,12 +18,14 @@ const VictoryImpl = (props: VictoryStoreProps & VictoryDispatchProps) => {
     return null;
 
   return (
-    <div id='reduct-victory'>
-      <span className='victory-message'>You win!</span>
-
-      <button type='button' onClick={() => props.startLevel(props.nextLevel)}>
-        Next level
-      </button>
+    <div className='reduct-banner-page'>
+      <h1 id='victory-message'>You win!</h1>
+      
+      <div className='reduct-banner-actions'>
+        <button type='button' onClick={() => props.startLevel(props.nextLevel)}>
+          Next level
+        </button>
+      </div>
     </div>
   );
 }

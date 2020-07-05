@@ -22,7 +22,7 @@ const { DefinePlugin } = require('webpack');
 exports.default = (env) => ({
   context: __dirname,
   entry: ['react-hot-loader/patch', './src/index.ts'],
-  devtool: env.development ? 'eval-source-map' : false,
+  devtool: env.development ? 'eval-source-map' : 'source-map',
   devServer: {
     port: 1234,
     hot: true
@@ -105,8 +105,9 @@ exports.default = (env) => ({
     }),
     new MiniCssExtractPlugin(),
     new DefinePlugin({
-      PKG_ENV: JSON.stringify(env.production ? 'production' : 'development'),
-      PKG_VERSION: require('./package.json').version
+      'PKG_ENV': JSON.stringify(env.production ? 'production' : 'development'),
+      'PKG_VERSION': require('./package.json').version,
+      'process.env.NODE_ENV': JSON.stringify(env.production ? 'production' : 'development')
     }),
     // new TsCheckerPlugin({
     //     workers: TsCheckerPlugin.TWO_CPUS_FREE,
@@ -145,8 +146,7 @@ exports.default = (env) => ({
     new SentryCliPlugin({
       include: '.',
       ignoreFile: '.sentrycliignore',
-      ignore: ['node_modules', 'webpack.config.js'],
-      configFile: 'sentry.properties'
+      ignore: ['node_modules', 'webpack.config.js']
     })
   ],
   resolve: {

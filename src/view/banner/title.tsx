@@ -17,12 +17,14 @@ const TitleImpl = (props: TitleStoreProps & TitleDispatchProps) => {
     return null;
 
   return (
-    <div id='reduct-title'>
-      <span className='title-message'>Reduct</span>
+    <div className='reduct-banner-page'>
+      <h1 id='title-message'>Reduct</h1>
 
-      <button type='button' onClick={() => props.startLevel()}>
-        Start
-      </button>
+      <div className='reduct-banner-actions'>
+        <button type='button' onClick={() => props.startLevel()}>
+          Start
+        </button>
+      </div>
     </div>
   );
 }
@@ -32,6 +34,6 @@ export const Title = connect(
     isTitle: store.program.$present.mode === GameMode.Title
   }),
   (dispatch) => ({
-    startLevel() { dispatch(createStartLevel(55)); }
+    startLevel() { dispatch(createStartLevel(0)); }
   })
 )(TitleImpl);
