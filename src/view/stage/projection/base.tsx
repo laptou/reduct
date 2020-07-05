@@ -11,7 +11,7 @@ import React, { FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { getProjectionForNode } from '.';
-import { ErrorBubble } from '../error-bubble';
+import { ErrorBubble } from '../ui/error-bubble';
 
 /**
  * Props retrieved from Redux.

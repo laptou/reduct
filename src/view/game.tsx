@@ -2,14 +2,14 @@ import { GameMode, GlobalState } from '@/reducer/state';
 import { DeepReadonly } from '@/util/helper';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Board } from './stage/board';
+import { Board } from './stage/ui/board';
 import { DefeatOverlay } from './banner/defeat';
-import { Definitions } from './stage/definitions';
-import { Goal } from './stage/goal';
-import { History } from './stage/history';
-import { LevelInfo } from './stage/level';
+import { Definitions } from './stage/ui/definitions';
+import { Goal } from './stage/ui/goal';
+import { History } from './stage/ui/history';
+import { LevelInfo } from './stage/ui/level';
 import { Title } from './banner/title';
-import { Toolbox } from './stage/toolbox';
+import { Toolbox } from './stage/ui/toolbox';
 import { VictoryOverlay } from './banner/victory';
 
 interface GameStoreProps

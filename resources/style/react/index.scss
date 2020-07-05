@@ -3,67 +3,15 @@
 
 :root {
   font-size: 16px;
+  --reduct-ui-bg: white;
 }
 
 #reduct-react {
   display: grid;
   grid-template-rows: 10fr 80fr 20fr;
-  grid-template-columns: 20% 1fr auto 20%;
+  grid-template-columns: auto 1fr auto 20%;
   width: 100%;
   height: 100vh;
-}
-
-#reduct-goal {
-  position: relative;
-  grid-row: 1;
-  grid-column: 2;
-  background: rgba(palegoldenrod, 70%);
-}
-
-#reduct-board {
-  position: relative;
-  grid-row: 2;
-  grid-column: 2 / 5;
-  overflow: auto;
-  background: rgba(lightcoral, 70%);
-}
-
-#reduct-toolbox {
-  position: relative;
-  grid-row: 3;
-  grid-column: 2 / 5;
-  background: rgba(lightgreen, 70%);
-}
-
-#reduct-definitions {
-  position: relative;
-  display: flex;
-  flex-flow: column nowrap;
-  grid-row: 1 / 5;
-  grid-column: 1;
-  overflow: auto;
-  background: rgba(lightblue, 70%);
-}
-
-#reduct-history {
-  position: relative;
-  grid-row: 1;
-  grid-column: 3;
-  overflow: auto;
-  color: white;
-  background: rgba(grey, 70%);
-}
-
-#reduct-level-info {
-  position: relative;
-  z-index: 150;
-  display: flex;
-  flex-flow: column nowrap;
-  grid-row: 1;
-  grid-column: 4;
-  overflow: auto;
-  color: white;
-  background: rgba(orange, 70%);
 }
 
 .reduct-banner-page {

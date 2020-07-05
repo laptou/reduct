@@ -1,9 +1,10 @@
 import { GlobalState } from '@/reducer/state';
 import { NodeId } from '@/semantics';
+import '@resources/style/react/ui/toolbox.scss';
 import { DeepReadonly } from '@/util/helper';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
-import { StageProjection } from './projection/base';
+import { StageProjection } from '../projection/base';
 
 interface ToolboxStoreProps {
   nodeIds: DeepReadonly<Set<NodeId>>;

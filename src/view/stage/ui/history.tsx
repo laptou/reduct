@@ -3,6 +3,7 @@
  */
 
 import { GlobalState } from '@/reducer/state';
+import '@resources/style/react/ui/history.scss';
 import { redo as createRedo, undo as createUndo } from '@/reducer/undo';
 import { DeepReadonly } from '@/util/helper';
 import React from 'react';

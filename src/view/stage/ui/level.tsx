@@ -1,5 +1,6 @@
 import { GlobalState } from '@/reducer/state';
 import { DeepReadonly } from '@/util/helper';
+import '@resources/style/react/ui/level.scss';
 import React from 'react';
 import { connect } from 'react-redux';
 

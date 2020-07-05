@@ -1,6 +1,7 @@
-import { moveNodeToSlot, createClearError } from '@/reducer/action';
+import { createClearError, moveNodeToSlot } from '@/reducer/action';
 import { Flat, NodeId } from '@/semantics';
 import { MissingNode } from '@/semantics/defs';
+import '@resources/style/react/projection/missing.scss';
 import cx from 'classnames';
 import React, { FunctionComponent, useState } from 'react';
 import { connect } from 'react-redux';

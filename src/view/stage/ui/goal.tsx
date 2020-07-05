@@ -1,9 +1,10 @@
 import { GlobalState } from '@/reducer/state';
 import { NodeId } from '@/semantics';
 import { DeepReadonly } from '@/util/helper';
+import '@resources/style/react/ui/goal.scss';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
-import { StageProjection } from './projection/base';
+import { StageProjection } from '../projection/base';
 
 interface GoalStoreProps {
   nodeIds: DeepReadonly<Set<NodeId>>;
@@ -15,7 +16,12 @@ const GoalImpl: FunctionComponent<GoalProps> =
   (props) => {
     return (
       <div id='reduct-goal'>
-        {[...props.nodeIds].map(nodeId => <StageProjection nodeId={nodeId} key={nodeId} frozen />)}
+        <div id='reduct-goal-text'>
+          GOAL:
+        </div>
+        <div id='reduct-goal-items'>
+          {[...props.nodeIds].map(nodeId => <StageProjection nodeId={nodeId} key={nodeId} frozen />)}
+        </div>
       </div>
     );
   };

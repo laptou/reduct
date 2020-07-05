@@ -1,0 +1,19 @@
+@use '../theme';
+@use 'base';
+
+#reduct-goal {
+  @extend %ui-panel-top;
+  @include base.ui-panel-bordered(theme.$accent-2-inverse-default);
+  grid-row: 1;
+  grid-column: 2;
+}
+
+#reduct-goal-text {
+  margin-right: 1rem;
+  font-weight: 700;
+}
+
+#reduct-goal-items {
+  display: flex;
+  flex-flow: row wrap;
+}

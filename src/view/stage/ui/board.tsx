@@ -1,5 +1,6 @@
 import { createMoveNodeToBoard, createDetectCompetion, createClearError } from '@/reducer/action';
 import { GlobalState } from '@/reducer/state';
+import '@resources/style/react/ui/board.scss';
 import { NodeId } from '@/semantics';
 import { DeepReadonly } from '@/util/helper';
 import React, {
@@ -7,8 +8,8 @@ import React, {
 } from 'react';
 import { connect } from 'react-redux';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { StageProjection } from './projection/base';
-import { placeRects } from '../layout';
+import { StageProjection } from '../projection/base';
+import { placeRects } from '../../layout';
 
 interface BoardStoreProps {
   board: DeepReadonly<Set<NodeId>>;
