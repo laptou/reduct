@@ -79,8 +79,8 @@ function onDrop(
   const boardCenterX = boardLeft + boardWidth / 2;
   const boardCenterY = boardTop + boardHeight / 2;
 
-  const x = Math.max(-boardWidth / 2, Math.min(boardWidth / 2, event.clientX - boardCenterX + offset.x));
-  const y = Math.max(-boardHeight / 2, Math.min(boardHeight / 2, event.clientY - boardCenterY + offset.y));
+  const x = Math.max(-boardWidth / 2, Math.min(boardWidth / 2, event.clientX - boardCenterX - offset.x));
+  const y = Math.max(-boardHeight / 2, Math.min(boardHeight / 2, event.clientY - boardCenterY - offset.y));
   
   const newPositions = new Map(positions);
   newPositions.set(nodeId, { x, y, source: 'user' });
