@@ -8,7 +8,10 @@ import { initReactApp } from './view';
 import { store, persistor } from './store';
 
 // initialize Sentry (logging + error tracking)
-Sentry.init({ dsn: 'https://4960b765fb5d4f269fe7abc68734abfd@o190059.ingest.sentry.io/5310258' });
+Sentry.init({ 
+  dsn: 'https://4960b765fb5d4f269fe7abc68734abfd@o190059.ingest.sentry.io/5310258',
+  environment: PKG_ENV
+});
 
 // initialize Immer (immutable state creation)
 enableMapSet();

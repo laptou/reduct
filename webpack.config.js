@@ -34,7 +34,8 @@ exports.default = (env) => ({
     }
   },
   output: {
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, 'dist'),
+    crossOriginLoading: 'anonymous'
   },
   module: {
     rules: [
