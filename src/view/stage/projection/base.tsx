@@ -9,9 +9,9 @@ import { DeepReadonly, DRF } from '@/util/helper';
 import cx from 'classnames';
 import React, { FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { getProjectionForNode } from '.';
 import { ErrorBubble } from '../ui/error-bubble';
+import { useTransition, animated } from 'react-spring';
 
 /**
  * Props retrieved from Redux.
@@ -68,8 +68,6 @@ interface StageProjectionOwnProps {
    * those in the goal area that should not be interactive.
    */
   frozen?: boolean;
-
-  position?: { x: number; y: number };
 }
 
 type StageProjectionProps = 
@@ -117,16 +115,22 @@ function onClick(
 
 const StageProjectionImpl: FunctionComponent<StageProjectionProps> = 
   (props) => {
+    const {
+      node, kind, frozen, error
+    } = props;
+
     // run when this component is unmounted
     useEffect(() => () => props.cleanup(), []);
 
-    if (!props.node) {
+    const errorTransition = useTransition(error, null, {
+      from: { opacity: 0 },
+      enter: { opacity: 1 },
+      leave: { opacity: 0 }
+    });
+
+    if (!node) {
       return null;
     }
-
-    const {
-      position, node, kind, frozen, error
-    } = props;
 
     // top level nodes (nodes w/o parents) should not be considered locked
     // TODO: don't mark top level nodes as locked
@@ -149,26 +153,13 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
         })}
         draggable={draggable}
         data-node-id={props.nodeId}
-        style={{ left: position?.x, top: position?.y }}
         onDragStart={e => onDragStart(e, props)}
         onClick={e => onClick(e, props)}
       >
         {getProjectionForNode(props.node)}
-        <TransitionGroup childFactory={el => React.cloneElement(el)} component={null}>
-          {error?.target === props.nodeId 
-            ? (
-              <CSSTransition 
-                classNames='reduct-bubble' 
-                timeout={500} 
-                mountOnEnter
-                unmountOnExit
-              >
-                <ErrorBubble error={error} />
-              </CSSTransition>
-            ) 
-            : null
-          }
-        </TransitionGroup>
+        {errorTransition.map(({ item, key, props }) => 
+          item && <animated.div key={key} style={props}><ErrorBubble error={item} /></animated.div>
+        )}
       </div>
     );
   };
@@ -181,12 +172,12 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
  */
 export const StageProjection = connect(
   (state: DeepReadonly<GlobalState>, ownProps: StageProjectionOwnProps) => {
-    const error = state.program.$error;
     const presentState = state.program.$present;
 
     if (ownProps.nodeId) {
       const node = presentState.nodes.get(ownProps.nodeId) ?? null;
-
+      const error = state.program.$error?.target === ownProps.nodeId ? state.program.$error : null;
+      
       if (!node)
         return {
           node: null, kind: null, sourceId: null, error 
@@ -197,7 +188,7 @@ export const StageProjection = connect(
       return { node, kind, error };
     }
     
-    return { node: null, kind: null, error };
+    return { node: null, kind: null, error: null };
   },
   (dispatch, ownProps) => ({ 
     cleanup() { 
