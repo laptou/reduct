@@ -1,15 +1,14 @@
-import { createMoveNodeToBoard, createDetectCompetion, createClearError } from '@/store/action';
-import { GlobalState } from '@/store/state';
-import '@resources/style/react/ui/board.scss';
 import { NodeId } from '@/semantics';
+import { createClearError, createDetectCompetion, createMoveNodeToBoard } from '@/store/action';
+import { GlobalState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
+import '@resources/style/react/ui/board.scss';
 import React, {
-  FunctionComponent, RefObject, useRef, useState, useEffect, useLayoutEffect 
+  FunctionComponent, RefObject, useEffect, useRef, useState 
 } from 'react';
 import { connect } from 'react-redux';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { animated, useTransition } from 'react-spring';
 import { StageProjection } from '../projection/base';
-import { placeRects } from '../../layout';
 
 interface BoardStoreProps {
   board: DeepReadonly<Set<NodeId>>;
@@ -77,8 +76,11 @@ function onDrop(
     top: boardTop, left: boardLeft, height: boardHeight, width: boardWidth 
   } = boardEl.getBoundingClientRect();
 
-  const x = Math.max(0, Math.min(boardWidth, event.clientX - boardLeft + offset.x));
-  const y = Math.max(0, Math.min(boardHeight, event.clientY - boardTop + offset.y));
+  const boardCenterX = boardLeft + boardWidth / 2;
+  const boardCenterY = boardTop + boardHeight / 2;
+
+  const x = Math.max(-boardWidth / 2, Math.min(boardWidth / 2, event.clientX - boardCenterX + offset.x));
+  const y = Math.max(-boardHeight / 2, Math.min(boardHeight / 2, event.clientY - boardCenterY + offset.y));
   
   const newPositions = new Map(positions);
   newPositions.set(nodeId, { x, y, source: 'user' });
@@ -108,13 +110,17 @@ const BoardImpl: FunctionComponent<BoardProps> =
           continue;
 
         if (!sourceNode) {
-          newPositions.set(newNode, { x: 0, y: 0, source: null });
+          const x = (Math.random() - 0.5) * 400;
+          const y = (Math.random() - 0.5) * 400;
+          newPositions.set(newNode, { x, y, source: null });
           continue;
         }
         
         const sourceNodePosition = newPositions.get(sourceNode);
         if (!sourceNodePosition) {
-          newPositions.set(newNode, { x: 0, y: 0, source: null });
+          const x = (Math.random() - 0.5) * 400;
+          const y = (Math.random() - 0.5) * 400;
+          newPositions.set(newNode, { x, y, source: null });
           continue;
         }
 
@@ -138,49 +144,49 @@ const BoardImpl: FunctionComponent<BoardProps> =
       setPositions(newPositions);
     }, [props.added, props.removed]);
 
-    // lay out all nodes after render has completed
-    useLayoutEffect(() => {
-      const boardEl = boardRef.current!;
-      // auto-reposition any nodes that haven't been moved by the user yet
-      const boundingRect = boardEl.getBoundingClientRect();
-      const childRects = new Map<{ w: number; h: number }, NodeId>();
 
-      const padding = 10;
+    const transitions = useTransition(
+      [...props.board],
+      id => id,
+      {
+        from: (id) => {
+          let position;
 
-      for (const childEl of boardEl.children) {
-        const nodeId = parseInt(childEl.getAttribute('data-node-id')!);
-        const nodePosition = positions.get(nodeId)!;
+          if (positions.has(id)) {
+            position = positions.get(id)!;
+          }
 
-        if (!nodePosition || nodePosition.source !== null)
-          continue;
+          if (!position && props.added.has(id)) {
+            const source = props.added.get(id)!;
+            if (positions.has(source))
+              position = positions.get(source);
+          }
+          
+          if (!position) {
+            position = { x: 0, y: 0, source: null };
+            const newPositions = new Map(positions);
+            newPositions.set(id, position);
+            setPositions(newPositions);
+          }
 
-        childRects.set(
-          {
-            w: childEl.clientWidth + padding + padding,
-            h: childEl.clientHeight + padding + padding
-          }, 
-          nodeId);
+          const { x, y } = position;
+          return { opacity: 0, transform: `translate(${x}px, ${y}px) scale(0)` };
+        },
+        enter: (id) => {
+          const { x, y } = positions.get(id) ?? { x: 0, y: 0 };
+          return { opacity: 1, transform: `translate(${x}px, ${y}px) scale(1)` };
+        },
+        update: (id) => {
+          const { x, y } = positions.get(id) ?? { x: 0, y: 0 };
+          return { opacity: 1, transform: `translate(${x}px, ${y}px) scale(1)` };
+        },
+        leave: (id) => {
+          const { x, y } = positions.get(id) ?? { x: 0, y: 0 };
+          return { opacity: 0, transform: `translate(${x}px, ${y}px) scale(0)` };
+        }
       }
+    );
 
-      if (childRects.size === 0)
-        return;
-
-      const newPositions = new Map(positions);
-
-      const placedRects = placeRects({ w: boundingRect.width, h: boundingRect.height }, [...childRects.keys()]);
-
-      for (const [originalRect, placedRect] of placedRects) {
-        const { x, y } = placedRect;
-        const id = childRects.get(originalRect)!;
-        newPositions.set(id, { x: x + padding, y: y + padding, source: 'auto' });
-      }
-
-      setPositions(newPositions);
-    });
-
-    // exit transitions don't really work b/c nodes are often removed from the
-    // node map and from the board at the same time TODO: separate removing from
-    // board and removing from node map into 2 actions
     return (
       <div id='reduct-board' 
         onDragOver={onDragOver}
@@ -188,18 +194,13 @@ const BoardImpl: FunctionComponent<BoardProps> =
         onClick={() => props.clearError()}
         ref={boardRef}
       >
-        <TransitionGroup component={null}>
-          {[...props.board].map(nodeId => 
-            <CSSTransition 
-              classNames='projection' 
-              timeout={5000}
-              unmountOnExit
-              key={nodeId}
-            >
-              <StageProjection nodeId={nodeId} position={positions.get(nodeId)} />
-            </CSSTransition>
-          )}
-        </TransitionGroup>
+        {
+          transitions.map(({ item: id, key, props }) => 
+            <animated.div className='projection-board-wrapper' style={props} key={key}>
+              <StageProjection nodeId={id} />
+            </animated.div>
+          )
+        }
       </div>
     );
   };
