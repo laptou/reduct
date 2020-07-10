@@ -125,6 +125,11 @@ exports.default = (env) => ({
         }),
         new SriPlugin({
           hashFuncNames: ['sha384', 'sha512']
+        }),
+        new SentryCliPlugin({
+          include: '.',
+          ignoreFile: '.sentrycliignore',
+          ignore: ['node_modules', 'webpack.config.js']
         })
       ]
       : []),
@@ -143,12 +148,7 @@ exports.default = (env) => ({
                  *  write spaghetti code */
         // new EslintPlugin(),
       ]
-      : []),
-    new SentryCliPlugin({
-      include: '.',
-      ignoreFile: '.sentrycliignore',
-      ignore: ['node_modules', 'webpack.config.js']
-    })
+      : [])
   ],
   resolve: {
     extensions: ['.ts', '.js', '.tsx', '.json'],
