@@ -46,7 +46,9 @@ exports.default = (env) => ({
           {
             loader: 'babel-loader',
             options: {
-              cacheDirectory: true
+              cacheDirectory: true,
+              // JSX line numbers should not be included in production mode
+              plugins: env.development ? ['@babel/plugin-transform-react-jsx-source'] : []
             }
           }
         ]
