@@ -116,11 +116,11 @@ function onClick(
 const StageProjectionImpl: FunctionComponent<StageProjectionProps> = 
   (props) => {
     const {
-      node, kind, frozen, error
+      node, kind, frozen, error, cleanup
     } = props;
 
     // run when this component is unmounted
-    useEffect(() => () => props.cleanup(), []);
+    useEffect(() => () => cleanup(), [cleanup]);
 
     const errorTransition = useTransition(error, null, {
       from: { opacity: 0 },
