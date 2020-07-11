@@ -45,9 +45,10 @@ export interface RState {
   added: Map<NodeId, NodeId | null>;
 
   /**
-   * Nodes which were removed by the most recent action.
+   * Nodes which were removed by the most recent action. The value represents
+   * whether a given node is ready for cleanup.
    */
-  removed: Set<NodeId>;
+  removed: Map<NodeId, boolean>;
 }
 
 export enum GameMode {

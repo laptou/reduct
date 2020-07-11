@@ -38,7 +38,7 @@ const initialProgram: RState = {
   toolbox: new Set(),
   globals: new Map(),
   added: new Map(),
-  removed: new Set()
+  removed: new Map()
 };
 
 // To speed up type checking, we only type check nodes that have
@@ -72,7 +72,7 @@ function program(state = initialProgram, act?: ReductAction): RState {
       toolbox: act.toolbox,
       globals: act.globals,
       added: new Map(mapIterable(act.nodes.keys(), id => [id, null] as const)),
-      removed: new Set()
+      removed: new Map()
     };
   }
 
@@ -150,7 +150,7 @@ function program(state = initialProgram, act?: ReductAction): RState {
       const newLambdaNode = draft.nodes.get(lambdaNodeId) as Flat<LambdaNode>;
     
       draft.added = new Map();
-      draft.removed = new Set(removed);
+      draft.removed = new Map(removed.map(id => [id, false]));
 
       const newArgTuple = draft.nodes.get(newLambdaNode.subexpressions.arg) as Flat<PTupleNode>;
 
@@ -169,7 +169,7 @@ function program(state = initialProgram, act?: ReductAction): RState {
 
       // param node and descendants are no longer needed, eliminate them
       for (const paramNodeDescendant of paramNodeDescendants) {
-        draft.removed.add(paramNodeDescendant.id);
+        draft.removed.set(paramNodeDescendant.id, false);
       }
 
       // move the body outwards if no more params
@@ -206,10 +206,10 @@ function program(state = initialProgram, act?: ReductAction): RState {
         draft.board.delete(lambdaNode.id);
 
         // mark these nodes for cleanup
-        draft.removed.add(lambdaNode.id);
+        draft.removed.set(lambdaNode.id, false);
 
         if (oldArgNodeId !== null)
-          draft.removed.add(oldArgNodeId);
+          draft.removed.set(oldArgNodeId, false);
       }
     });
   }
@@ -339,10 +339,10 @@ function program(state = initialProgram, act?: ReductAction): RState {
       draft.nodes.set(resultNode.id, resultNode);
 
       // schedule for cleanup
-      draft.removed.add(binOpNode.id);
-      draft.removed.add(opNode.id);
-      draft.removed.add(leftNode.id);
-      draft.removed.add(rightNode.id);
+      draft.removed.set(binOpNode.id, false);
+      draft.removed.set(opNode.id, false);
+      draft.removed.set(leftNode.id, false);
+      draft.removed.set(rightNode.id, false);
     });
   }
   
@@ -389,9 +389,9 @@ function program(state = initialProgram, act?: ReductAction): RState {
       draft.nodes.set(resultNode.id, resultNode);
 
       // schedule for cleanup
-      draft.removed.add(blockNode.id);
-      draft.removed.add(condNode.id);
-      draft.removed.add(removedNode.id);
+      draft.removed.set(blockNode.id, false);
+      draft.removed.set(condNode.id, false);
+      draft.removed.set(removedNode.id, false);
     });
   }
 
@@ -428,7 +428,7 @@ function program(state = initialProgram, act?: ReductAction): RState {
       draft.nodes.set(resultNode.id, resultNode);
 
       // schedule for cleanup
-      draft.removed.add(notNode.id);
+      draft.removed.set(notNode.id, false);
     });
   }
 
@@ -510,7 +510,7 @@ function program(state = initialProgram, act?: ReductAction): RState {
       }
 
       // schedule for cleanup
-      draft.removed.add(applyNode.id);
+      draft.removed.set(applyNode.id, false);
     });
   }
 
@@ -553,7 +553,7 @@ function program(state = initialProgram, act?: ReductAction): RState {
       draft.added.set(resultNode.id, referenceNode.id);
 
       // schedule for cleanup
-      draft.removed.add(referenceNode.id);
+      draft.removed.set(referenceNode.id, false);
     });
   }
 
@@ -561,10 +561,21 @@ function program(state = initialProgram, act?: ReductAction): RState {
     const { target } = act;
     if (!state.removed.has(target)) return state;
 
-    return produce(state, draft => {
-      draft.nodes.delete(target);
-      draft.removed.delete(target);
-    });
+    // if all of the nodes in the removed set have been marked as ready for
+    // cleanup, delete them
+    if ([...state.removed.values()].every(i => i)) {
+      return produce(state, draft => {
+        for (const removed of state.removed.keys()) {
+          draft.nodes.delete(removed);
+          draft.removed.delete(removed);
+        }
+      });
+    } else {
+      // otherwise, just mark as ready for cleanup
+      return produce(state, draft => {
+        draft.removed.set(target, true);
+      })
+    }
   }
 
   case ActionKind.MoveNodeToBoard: {
@@ -1122,7 +1133,7 @@ export function createReducer() {
         storage,
         whitelist: ['$present'], // do not save undo history
         version: parseInt(PKG_VERSION.replace(/\D/, '')), // 7.0.0-alpha = 700
-        transforms: [gameStateTransform],
+        transforms: [gameStateTransform]
         
       },
       reducer
