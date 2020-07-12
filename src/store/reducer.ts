@@ -7,24 +7,24 @@ import {
   createBoolNode, createMissingNode, createNumberNode, createStrNode, getKindForNode, getValueForName, iterateTuple 
 } from '@/semantics/util';
 import {
-  DRF, mapIterable, withoutParent, withParent 
+  DRF, mapIterable, withoutParent, withParent, DeepReadonly 
 } from '@/util/helper';
 import {
-  cloneNodeDeep, findNodesDeep, getRootForNode, isAncestorOf, restoreId 
+  cloneNodeDeep, findNodesDeep, getRootForNode, isAncestorOf 
 } from '@/util/nodes';
 import { castDraft, produce } from 'immer';
 import { combineReducers } from 'redux';
+import { createTransform, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 import {
-  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStep, ReductAction, createStartLevel 
+  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStartLevel, createStep, ReductAction 
 } from './action';
 import {
   CircularCallError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError 
 } from './errors';
 import { checkDefeat, checkVictory } from './helper';
 import { GameMode, GlobalState, RState } from './state';
-import { undoable, UndoableState } from './undo';
-import { persistReducer, createTransform } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import { undoable } from './undo';
 
 export { nextId } from '@/util/nodes';
 
@@ -38,7 +38,8 @@ const initialProgram: RState = {
   toolbox: new Set(),
   globals: new Map(),
   added: new Map(),
-  removed: new Map()
+  removed: new Map(),
+  executing: new Set()
 };
 
 // To speed up type checking, we only type check nodes that have
@@ -58,7 +59,7 @@ function markDirty(nodes: NodeMap, id: NodeId) {
   dirty.add(node.id);
 }
 
-function program(state = initialProgram, act?: ReductAction): RState {
+function program(state: DeepReadonly<RState> = initialProgram, act?: ReductAction): DeepReadonly<RState> {
   if (!act) return state;
   
   switch (act.type) {
@@ -72,7 +73,8 @@ function program(state = initialProgram, act?: ReductAction): RState {
       toolbox: act.toolbox,
       globals: act.globals,
       added: new Map(mapIterable(act.nodes.keys(), id => [id, null] as const)),
-      removed: new Map()
+      removed: new Map(),
+      executing: new Set()
     };
   }
 
@@ -746,6 +748,34 @@ function program(state = initialProgram, act?: ReductAction): RState {
     default:
       throw new Error(`Cannot step a ${targetNode.type}`);
     }
+  }
+
+  case ActionKind.Execute: {
+    const { targetNodeId } = act;
+
+    const executing = new Set(state.executing);
+    executing.add(targetNodeId);
+
+    // step the node
+    state = program(state, createStep(targetNodeId));
+
+    // if it was replaced by other nodes, add those
+    // to the execution list
+
+    if (state.removed.has(targetNodeId))
+      executing.delete(targetNodeId);
+
+    for (const [nodeId, sourceId] of state.added) {
+      if (sourceId !== targetNodeId) continue;
+
+      const node = state.nodes.get(nodeId)!;
+
+      if (getKindForNode(node, state.nodes) !== 'expression') continue;
+      
+      executing.add(nodeId);
+    }
+
+    return { ...state, executing };
   }
 
   case ActionKind.DetectCompletion: {

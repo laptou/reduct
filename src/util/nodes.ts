@@ -175,23 +175,23 @@ export function mapNodeDeep(
  */
 export function findNodesDeep(
   id: NodeId,
-  nodeMap: NodeMap,
+  nodeMap: DeepReadonly<NodeMap>,
   predicate: (
-    node: DeepReadonly<Flat<ReductNode>>,
-    nodeMap: NodeMap
+    node: DRF,
+    nodeMap: DeepReadonly<NodeMap>
   ) => boolean,
   filter: (
-    node: DeepReadonly<Flat<ReductNode>>, 
-    nodeMap: NodeMap
+    node: DRF, 
+    nodeMap: DeepReadonly<NodeMap>
   ) => boolean = () => true
-): Array<DeepReadonly<Flat<ReductNode>>> {
+): DRF[] {
   const root = nodeMap.get(id)!;
 
   if (!filter(root, nodeMap)) {
     return [];
   }
 
-  const foundNodes: Array<DeepReadonly<Flat<ReductNode>>> = [];
+  const foundNodes: DRF[] = [];
 
   for (const childId of Object.values(root.subexpressions)) {
     foundNodes.push(...findNodesDeep(childId, nodeMap, predicate));
@@ -270,7 +270,7 @@ export function flatten(
  * @param id The node whose root should be found.
  * @param nodes A map from IDs to nodes.
  */
-export function getRootForNode(id: NodeId, nodes: NodeMap): DRF {
+export function getRootForNode(id: NodeId, nodes: DeepReadonly<NodeMap>): DRF {
   let current = nodes.get(id)!;
   
   while (current.parent) {
@@ -286,7 +286,7 @@ export function getRootForNode(id: NodeId, nodes: NodeMap): DRF {
  * @param ancestor The ancestor to check for.
  * @param nodes A map from IDs to nodes.
  */
-export function isAncestorOf(node: NodeId, ancestor: NodeId, nodes: NodeMap): boolean {
+export function isAncestorOf(node: NodeId, ancestor: NodeId, nodes: DeepReadonly<NodeMap>): boolean {
   let current = nodes.get(node)!;
   
   while (current.parent) {

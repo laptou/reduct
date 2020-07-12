@@ -49,6 +49,12 @@ export interface RState {
    * whether a given node is ready for cleanup.
    */
   removed: Map<NodeId, boolean>;
+
+  /**
+   * Nodes which are currently executing (i.e., stepping themselves without the
+   * user having to click them).
+   */
+  executing: Set<NodeId>;
 }
 
 export enum GameMode {
