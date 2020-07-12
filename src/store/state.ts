@@ -1,5 +1,6 @@
 import { NodeId, NodeMap } from '@/semantics';
 import { UndoableState } from './undo';
+import { GameError } from './errors';
 
 export interface RState {
   /**
@@ -55,6 +56,12 @@ export interface RState {
    * user having to click them).
    */
   executing: Set<NodeId>;
+
+  /**
+   * Used to set the error if the reducer needs to throw an error and return a
+   * new state at the same time.
+   */
+  error?: GameError;
 }
 
 export enum GameMode {

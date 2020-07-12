@@ -1,7 +1,8 @@
 import { castDraft, produce } from 'immer';
 import type { Reducer } from 'redux';
 import { ActionKind, ReductAction } from './action';
-import { NodeError as GameError } from './errors';
+import { GameError } from './errors';
+import { RState } from './state';
 
 /** Undo the last action. */
 export function undo() {
@@ -29,15 +30,15 @@ export interface UndoableState<S>
  * Given a reducer, return a reducer that supports undo/redo and handles game
  * errors.
  */
-export function undoable<S>(reducer: Reducer<S>) {
-  const initialState: UndoableState<S> = {
+export function undoable(reducer: Reducer<RState>) {
+  const initialState: UndoableState<RState> = {
     $present: reducer(),
-    $past: [] as S[],
-    $future: [] as S[],
+    $past: [] as RState[],
+    $future: [] as RState[],
     $error: null
   };
 
-  return function(state: UndoableState<S> = initialState, action?: ReductAction): UndoableState<S> {
+  return function(state: UndoableState<RState> = initialState, action?: ReductAction): UndoableState<S> {
     if (!action) return state;
 
     switch (action.type) {
@@ -83,12 +84,17 @@ export function undoable<S>(reducer: Reducer<S>) {
     
     default: {
       try {
-        const newPresent = reducer(state.$present, action);
+        let newPresent = reducer(state.$present, action);
         return produce(state, draft => {
-        // use state.$present, do not allow draft objects to escape from this function
-
           if (newPresent === state.$present) {
             return;
+          }
+
+          // if an error was set (but not thrown), move it up into $error
+          if (newPresent.error) {
+            const { error, ...newPresentWithoutError } = newPresent;
+            draft.$error = error;
+            newPresent = newPresentWithoutError;
           }
   
           // don't store these actions in the undo history
@@ -102,7 +108,6 @@ export function undoable<S>(reducer: Reducer<S>) {
           draft.$past.unshift(draft.$present);
           draft.$present = castDraft(newPresent);
           draft.$future = [];
-        
         });
       } catch (error) {
         if (error instanceof GameError) {

@@ -1,14 +1,14 @@
 import {
-  MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, NodeError, CircularCallError, BuiltInError, WrongBuiltInParamsCountError, AlreadyFullyBoundError 
+  MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, GameError, CircularCallError, BuiltInError, WrongBuiltInParamsCountError, AlreadyFullyBoundError 
 } from '@/store/errors';
 import React from 'react';
 import { Bubble } from './bubble';
 
-interface ErrorBubble {
-  error: NodeError | null;
+interface ErrorBubbleProps {
+  error: GameError | null;
 }
 
-export const ErrorBubble = ({ error }: ErrorBubble) => {
+export const ErrorBubble: React.FC<ErrorBubbleProps> = ({ error }) => {
   let message = '';
 
   if (error instanceof WrongTypeError) {
@@ -44,7 +44,7 @@ export const ErrorBubble = ({ error }: ErrorBubble) => {
   }
 
   return (
-    <Bubble className='reduct-error-bubble bottom'>
+    <Bubble type='error' show={!!error}>
       {message}
     </Bubble>
   );
