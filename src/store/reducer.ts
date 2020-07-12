@@ -386,7 +386,7 @@ function program(state = initialProgram, act?: ReductAction): RState {
         draft.board.add(resultNode.id);
       }
 
-      draft.nodes.set(resultNode.id, resultNode);
+      draft.nodes.set(resultNode.id, castDraft(resultNode));
 
       // schedule for cleanup
       draft.removed.set(blockNode.id, false);
