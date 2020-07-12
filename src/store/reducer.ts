@@ -137,7 +137,7 @@ function program(state = initialProgram, act?: ReductAction): RState {
       // eval all relevant references and keep track of which nodes are destroyed
       for (const referenceNode of referenceNodes) {
         state = program(state, createEvalReference(referenceNode.id));
-        removed.push(...state.removed);
+        removed.push(...state.removed.keys());
       }
     }
 
