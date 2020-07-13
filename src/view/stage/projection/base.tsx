@@ -1,14 +1,14 @@
 import { NodeId } from '@/semantics';
 import { getKindForNode, NodeKind } from '@/semantics/util';
 import {
-  createCleanup, createClearError, createExecute, createRaise 
+  createCleanup, createClearError, createExecute, createRaise, createStop 
 } from '@/store/action';
 import { GameError } from '@/store/errors';
 import { GlobalState } from '@/store/state';
 import { DeepReadonly, DRF } from '@/util/helper';
 import { isAncestorOf } from '@/util/nodes';
 import cx from 'classnames';
-import React, { FunctionComponent, useEffect } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { getProjectionForNode } from '.';
 import { ErrorBubble } from '../ui/error-bubble';
@@ -56,6 +56,11 @@ interface StageProjectionDispatchProps {
    * Executes this node. See ExecuteAction for more info.
    */
   exec(): void;
+
+  /**
+   * Stops executing this node. See StopAction for more info.
+   */
+  stopExec(): void;
 
   /**
    * Clears any errors currently held by the store.
@@ -145,13 +150,19 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
       settled, 
       executing, 
       cleanup, 
-      exec
+      exec,
+      stopExec
     } = props;
 
+    // whether execution is being fast-forwarded or not
+    const [isFast, setFast] = useState(false);
+
     useEffect(() => {
-      if (settled && executing)
-        setTimeout(exec, 500);
-    }, [settled, executing, exec]);
+      if (settled && executing) {
+        const timer = setTimeout(exec, isFast ? 500 : 1000);
+        return () => clearTimeout(timer);
+      }
+    }, [settled, executing, exec, isFast]);
 
     // run when this component is unmounted
     useEffect(() => () => cleanup(), [cleanup]);
@@ -186,7 +197,7 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
       >
         {getProjectionForNode(props.node)}
         <ErrorBubble error={error} />
-        <ExecBubble executing={executing} />
+        <ExecBubble executing={executing} onStop={stopExec} onSkip={() => setFast(true)} />
       </div>
     );
   };
@@ -254,6 +265,8 @@ export const StageProjection = connect(
     cleanup() { 
       if (ownProps.nodeId) {
         dispatch(createCleanup(ownProps.nodeId)); 
+      } else {
+        console.log('hmm')
       }
     },
     clearErrorAndRaise() { 
@@ -265,6 +278,11 @@ export const StageProjection = connect(
     exec() { 
       if (ownProps.nodeId) {
         dispatch(createExecute(ownProps.nodeId)); 
+      }
+    },
+    stopExec() { 
+      if (ownProps.nodeId) {
+        dispatch(createStop(ownProps.nodeId)); 
       }
     } 
   })

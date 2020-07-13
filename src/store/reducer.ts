@@ -152,7 +152,9 @@ function program(state: DeepReadonly<RState> = initialProgram, act?: ReductActio
       const newLambdaNode = draft.nodes.get(lambdaNodeId) as Flat<LambdaNode>;
     
       draft.added = new Map();
-      draft.removed = new Map(removed.map(id => [id, false]));
+
+      for (const id of removed)
+        draft.removed.set(id, false);
 
       const newArgTuple = draft.nodes.get(newLambdaNode.subexpressions.arg) as Flat<PTupleNode>;
 
@@ -672,6 +674,12 @@ function program(state: DeepReadonly<RState> = initialProgram, act?: ReductActio
     if (defNode.type !== 'define')
       throw new WrongTypeError(nodeId, 'define', defNode.type);
 
+    // search for any unfilled slots
+    const [slot] = findNodesDeep(nodeId, state.nodes, (node) => node.type === 'missing');
+
+    if (slot)
+      throw new MissingNodeError(slot.id);
+
     return produce(state, draft => {
       draft.globals.set(defNode.fields.name, nodeId);
       draft.board.delete(nodeId);
@@ -711,8 +719,11 @@ function program(state: DeepReadonly<RState> = initialProgram, act?: ReductActio
       }
 
       // don't evaluate references unless they are being used as parameters
-      if (targetNode.type !== 'ptuple' && childNode.type === 'reference') {
-        continue;
+      // or callees
+      if (childNode.type === 'reference') {
+        if (!(targetNode.type === 'apply' && childNode.parentField === 'callee')
+            && !(targetNode.type === 'ptuple'))
+          continue;
       }
 
       // this is a child node that needs further evaluation, return the result
@@ -784,6 +795,15 @@ function program(state: DeepReadonly<RState> = initialProgram, act?: ReductActio
       
       executing.add(nodeId);
     }
+
+    return { ...state, executing };
+  }
+
+  case ActionKind.Stop: {
+    const { targetNodeId } = act;
+
+    const executing = new Set(state.executing);
+    executing.delete(targetNodeId);
 
     return { ...state, executing };
   }

@@ -57,6 +57,7 @@ export function undoable(reducer: Reducer<RState>) {
       const newState = produce(state, draft => {
         draft.$future.unshift(castDraft(state.$present));
         draft.$present = draft.$past.shift()!;
+        draft.$present.executing.clear();
         draft.$error = null;
       });
 
@@ -69,6 +70,7 @@ export function undoable(reducer: Reducer<RState>) {
       const newState = produce(state, draft => {
         draft.$past.unshift(castDraft(state.$present));
         draft.$present = draft.$future.shift()!;
+        draft.$present.executing.clear();
         draft.$error = null;
       });
 
