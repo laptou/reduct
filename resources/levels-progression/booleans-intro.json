@@ -6,8 +6,8 @@
         {
             "animationScales": {},
             "board": [
-                "'TRIANGLE' == 'STAR'",
-                "_ == 'STAR'"
+                "TRIANGLE == STAR",
+                "_ == STAR"
             ],
             "fade": {},
             "globals": {},
@@ -94,7 +94,7 @@
         {
             "animationScales": {},
             "board": [
-                "_ ? 'RECT' : _"
+                "_ ? RECT : _"
             ],
             "fade": {},
             "globals": {},
@@ -116,8 +116,8 @@
         {
             "animationScales": {},
             "board": [
-                "(truth) => truth ? 'TRIANGLE' : 'RECT'",
-                "(trueOrFalse) => trueOrFalse ? 'RECT' : 'STAR'"
+                "(truth) => truth ? TRIANGLE : RECT",
+                "(trueOrFalse) => trueOrFalse ? RECT : STAR"
             ],
             "fade": {},
             "globals": {},
@@ -160,7 +160,7 @@
             "animationScales": {},
             "board": [
                 "(thing1) => (thing2) => thing1 == thing2 ? 1 : 2",
-                "x => xx"
+                "x => __tuple(x, x)"
             ],
             "fade": {},
             "globals": {},
@@ -182,7 +182,7 @@
         {
             "animationScales": {},
             "board": [
-                "(x) => _ == 'STAR' ? true : _",
+                "(x) => _ == STAR ? true : _",
                 "x"
             ],
             "fade": {},
