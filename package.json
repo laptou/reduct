@@ -1,6 +1,6 @@
 {
   "name": "reduct-redux",
-  "version": "7.0.0-alpha",
+  "version": "7.0.1-alpha",
   "main": "src/index.js",
   "repository": "https://github.coecis.cornell.edu/Reduct/reduct-redux.git",
   "author": "David Li <li.davidm96@gmail.com>, Ibiyemi Abiodun <iaa34@cornell.edu>",
