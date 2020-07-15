@@ -5,7 +5,7 @@ import { DeepReadonly } from '@/util/helper';
 import '@resources/style/react/ui/level.scss';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { animated, useSpring } from 'react-spring';
+import { animated, useSpring, useTransition, config as springConfig } from 'react-spring';
 
 interface LevelMenuStoreProps {
   level: number;
@@ -26,32 +26,60 @@ const LevelMenuImpl: React.FC<LevelMenuProps> = (props) => {
 
   const [isOpen, setOpen] = useState(false);
 
-  const style = useSpring({ 
-    transform: isOpen ? 'translateY(0rem)' : 'translateY(20rem)'
+  const innerStyle = useSpring({
+    transform: isOpen ? 'translateY(20rem)' : 'translateY(0rem)',
+    config: { mass: 1, tension: 180, friction: 14 }
+  });
+
+  const dismissTransition = useTransition(isOpen, null, {
+    from: { opacity: 0 },
+    enter: { opacity: 1 },
+    leave: { opacity: 0 }
   });
 
   return (
-    <animated.div id='reduct-level-menu' style={style}>
-      <div id='reduct-level-select'>
-        {
-          levels.map(index => 
-            <button type='button' key={index} onClick={() => props.startLevel(index)}>
-              {index + 1}
-            </button>
-          )
-        }
-      </div>
-      <div id='reduct-level-info'>
-        <span id='reduct-level-info-level'>Level {props.level + 1}</span>
-        <span id='reduct-level-info-chapter'>Chapter X</span>
-        <button id='reduct-level-info-expander' 
-          type='button' 
-          onClick={() => setOpen(!isOpen)}
-        >
-          Levels
-        </button>
-      </div>
-    </animated.div>
+    <div id='reduct-level-menu'>
+      {
+        /* this element detects if the user clicks outside the dialog */
+        dismissTransition.map(({ item, key, props: style }) => 
+          item && <animated.div 
+            id='reduct-level-dismiss'
+            key={key}
+            style={style}
+            onClick={() => setOpen(false)}
+          />
+        )
+      }
+      {
+        /* inner element needed b/c using transform css property causes
+          position: absolute to not work as intended */
+      }
+      <animated.div id='reduct-level-menu-inner' style={innerStyle}>
+        <div id='reduct-level-select'>
+          {
+            levels.map(index => 
+              <button 
+                type='button' 
+                key={index} 
+                onClick={() => props.startLevel(index)}
+              >
+                {index + 1}
+              </button>
+            )
+          }
+        </div>
+        <div id='reduct-level-info'>
+          <span id='reduct-level-info-level'>Level {props.level + 1}</span>
+          <span id='reduct-level-info-chapter'>Chapter X</span>
+          <button id='reduct-level-info-expander' 
+            type='button' 
+            onClick={() => setOpen(!isOpen)}
+          >
+            Levels
+          </button>
+        </div>
+      </animated.div>
+    </div>
   );
 }
 

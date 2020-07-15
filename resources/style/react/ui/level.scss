@@ -2,16 +2,27 @@
 @use 'base';
 
 #reduct-level-menu {
-  @extend %ui-panel-top;
-  @include base.ui-panel-bordered(theme.$accent-4-inverse-default);
-  position: relative;
-  z-index: 150;
-  flex-flow: column nowrap;
   grid-row: 1;
   grid-column: 4;
+}
+
+#reduct-level-menu-inner {
+  @extend %ui-panel-top;
+  @include base.ui-panel-bordered(theme.$accent-4-inverse-default);
+  z-index: 150;
+  flex-flow: column nowrap;
   align-items: stretch;
-  margin-top: -20rem;
+  margin-top: -25rem;
   padding: 0;
+}
+
+#reduct-level-dismiss {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0 0 0 / 0.25);
 }
 
 #reduct-level-select {
@@ -19,6 +30,7 @@
   grid-template-columns: 1fr 1fr 1fr 1fr;
   width: 100%;
   height: 20rem;
+  margin-top: 5rem;
   padding: 1rem 1rem;
   overflow: auto;
   column-gap: 0.5rem;
