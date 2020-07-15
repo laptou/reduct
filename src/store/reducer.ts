@@ -20,7 +20,7 @@ import {
   ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStartLevel, createStep, ReductAction 
 } from './action';
 import {
-  CircularCallError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError 
+  CircularCallError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, GameError 
 } from './errors';
 import { checkDefeat, checkVictory } from './helper';
 import { GameMode, GlobalState, RState } from './state';
@@ -756,8 +756,18 @@ function program(state: DeepReadonly<RState> = initialProgram, act?: ReductActio
     const executing = new Set(state.executing);
     executing.add(targetNodeId);
 
-    // step the node
-    state = program(state, createStep(targetNodeId));
+    try {
+      // step the node
+      state = program(state, createStep(targetNodeId));
+    } catch (error) {
+      // trap errors and stop execution
+      if (error instanceof GameError) {
+        executing.delete(targetNodeId);
+        return { ...state, executing, error };
+      } else {
+        throw error;
+      }
+    }
 
     // if it was replaced by other nodes, add those
     // to the execution list

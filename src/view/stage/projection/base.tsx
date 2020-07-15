@@ -3,16 +3,16 @@ import { getKindForNode, NodeKind } from '@/semantics/util';
 import {
   createCleanup, createClearError, createExecute, createRaise 
 } from '@/store/action';
-import { NodeError } from '@/store/errors';
+import { GameError } from '@/store/errors';
 import { GlobalState } from '@/store/state';
 import { DeepReadonly, DRF } from '@/util/helper';
 import { isAncestorOf } from '@/util/nodes';
 import cx from 'classnames';
 import React, { FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { animated, useTransition } from 'react-spring';
 import { getProjectionForNode } from '.';
 import { ErrorBubble } from '../ui/error-bubble';
+import { ExecBubble } from '../ui/exec-bubble';
 
 /**
  * Props retrieved from Redux.
@@ -26,7 +26,7 @@ interface StageProjectionStoreProps {
   /**
    * The current error state.
    */
-  error: NodeError | null;
+  error: GameError | null;
 
   /**
    * The kind of node that `node` is.
@@ -156,12 +156,6 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
     // run when this component is unmounted
     useEffect(() => () => cleanup(), [cleanup]);
 
-    const errorTransition = useTransition(error, null, {
-      from: { opacity: 0, transform: 'scale(0)' },
-      enter: { opacity: 1, transform: 'scale(1)' },
-      leave: { opacity: 0, transform: 'scale(0)' }
-    });
-
     if (!node) {
       return null;
     }
@@ -191,9 +185,8 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
         onClick={e => onClick(e, props)}
       >
         {getProjectionForNode(props.node)}
-        {errorTransition.map(({ item, key, props }) => 
-          item && <animated.div key={key} style={props}><ErrorBubble error={item} /></animated.div>
-        )}
+        <ErrorBubble error={error} />
+        <ExecBubble executing={executing} />
       </div>
     );
   };
