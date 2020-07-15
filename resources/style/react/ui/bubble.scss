@@ -11,6 +11,7 @@
   font-family: 'Fira Sans', sans-serif;
   transform: var(--bubble-base-transform);
   --bubble-color: black;
+  --foreground: white;
 
   &.bottom {
     top: 100%;
@@ -40,3 +41,8 @@
 .reduct-bubble-error {
   --bubble-color: red;
 }
+
+.reduct-bubble-info {
+  --bubble-color: dodgerblue;
+}
+

@@ -46,8 +46,7 @@ export interface RState {
   added: Map<NodeId, NodeId | null>;
 
   /**
-   * Nodes which were removed by the most recent action. The value represents
-   * whether a given node is ready for cleanup.
+   * Nodes which were removed by the most recent action.
    */
   removed: Map<NodeId, boolean>;
 
