@@ -5,7 +5,7 @@ import { DeepReadonly } from '@/util/helper';
 import '@resources/style/react/ui/level.scss';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { animated, useSpring, useTransition } from 'react-spring';
+import { animated, useSpring, useTransition, config as springConfig } from 'react-spring';
 
 interface LevelMenuStoreProps {
   level: number;
@@ -27,7 +27,8 @@ const LevelMenuImpl: React.FC<LevelMenuProps> = (props) => {
   const [isOpen, setOpen] = useState(false);
 
   const innerStyle = useSpring({
-    transform: isOpen ? 'translateY(20rem)' : 'translateY(0rem)'
+    transform: isOpen ? 'translateY(20rem)' : 'translateY(0rem)',
+    config: { mass: 1, tension: 180, friction: 14 }
   });
 
   const dismissTransition = useTransition(isOpen, null, {
