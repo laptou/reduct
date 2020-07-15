@@ -19,7 +19,7 @@ type Primitive =
  * to obtain the actual object. Type parameter T should not be a function.
  */
 export type Thunk<A extends Array<unknown>, T extends Primitive | object> =
-    ((...args: A) => T) | T;
+  ((...args: A) => T) | T;
 
 /**
  * Unwraps a @see Thunk.
@@ -32,8 +32,8 @@ export function dethunk<A extends Array<unknown>, T extends Primitive | object>(
  * Represents a version of type T which is completely immutable: neither it nor
  * any of its fields can be modified.
  */
-export type DeepReadonly<T> = 
-  T extends Primitive | Function ? T : 
+export type DeepReadonly<T> =
+  T extends Primitive | Function ? T :
   T extends Array<infer U> ? ReadonlyArray<DeepReadonly<U>> :
   T extends Set<infer U> ? ReadonlySet<DeepReadonly<U>> :
   T extends Map<infer U, infer V> ? ReadonlyMap<U, DeepReadonly<V>> :
@@ -48,6 +48,7 @@ export type DeepReadonly<T> =
  */
 export type DRF<T extends BaseNode = ReductNode> = DeepReadonly<Flat<T>>;
 
+
 /**
  * Returns a version of the node that has no reference to its parent (parent and parentField are set to null).
  * @param node 
@@ -61,8 +62,8 @@ export function withoutParent<N extends DeepReadonly<ReductNode> | DRF>(node: N)
 }
 
 export function withParent<N extends DeepReadonly<ReductNode> | DRF>(
-  node: N, 
-  parent: NodeId, 
+  node: N,
+  parent: NodeId,
   field: string
 ): N {
   return {

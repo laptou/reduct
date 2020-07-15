@@ -2,14 +2,14 @@ import { RState } from '@/store/state';
 import { DeepReadonly, dethunk, DRF } from '@/util/helper';
 import { nextId } from '@/util/nodes';
 import {
-  Flat, NodeId, NodeMap, ReductNode 
+  Flat, NodeId, NodeMap, ReductNode, ScopedNode
 } from '.';
 import { PTupleNode, VTupleNode } from './defs';
 import { apply, ApplyNode } from './defs/apply';
 import { array, ArrayNode } from './defs/array';
 import { autograder } from './defs/autograder';
 import {
-  binop, BinOpNode, op, OpNode 
+  binop, BinOpNode, op, OpNode
 } from './defs/binop';
 import { BuiltInReferenceNode } from './defs/builtins';
 import { conditional, ConditionalNode } from './defs/conditional';
@@ -21,8 +21,9 @@ import { missing, MissingNode } from './defs/missing';
 import { not, NotNode } from './defs/not';
 import { reference, ReferenceNode } from './defs/reference';
 import {
-  boolean, BoolNode, dynamicVariant, number, NumberNode, ReductSymbol, string, StrNode, symbol, SymbolNode, unsol 
+  boolean, BoolNode, dynamicVariant, number, NumberNode, ReductSymbol, string, StrNode, symbol, SymbolNode, unsol
 } from './defs/value';
+import { DRAFTABLE } from 'immer/dist/internal';
 
 /**
  * Creates a partial node. Helper for "create node" functions to avoid
@@ -30,14 +31,33 @@ import {
  * @param type The type of node being created.
  */
 function createNodeBase() {
-  return { 
+  return {
     id: nextId(),
-    locked: true, 
-    fields: {}, 
+    locked: true,
+    fields: {},
     subexpressions: {},
     parent: null,
     parentField: null,
     fadeLevel: 0
+  }
+}
+
+/**
+ * Creates a partial node for nodes which require scoping.
+ * Helper for "create node" functions to avoid
+ * repetition. 
+ * @param type The type of the node being created
+ */
+function createNodeScoped() {
+  return {
+    id: nextId(),
+    locked: true,
+    fields: {},
+    subexpressions: {},
+    parent: null,
+    parentField: null,
+    fadeLevel: 0,
+    scope: {}
   }
 }
 
@@ -136,7 +156,7 @@ export function createOpNode(name: OpNode['fields']['name']): OpNode {
 
 export function createLambdaNode(arg: PTupleNode, body: ReductNode): LambdaNode {
   return {
-    ...createNodeBase(),
+    ...createNodeScoped(),
     type: 'lambda',
     subexpressions: { arg, body }
   };
@@ -144,7 +164,7 @@ export function createLambdaNode(arg: PTupleNode, body: ReductNode): LambdaNode 
 
 export function createApplyNode(callee: ReductNode, argument: PTupleNode): ApplyNode {
   return {
-    ...createNodeBase(),
+    ...createNodeScoped(),
     type: 'apply',
     subexpressions: { callee, argument }
   };
@@ -152,7 +172,7 @@ export function createApplyNode(callee: ReductNode, argument: PTupleNode): Apply
 
 export function createConditionalNode(condition: ReductNode, positive: ReductNode, negative: ReductNode): ConditionalNode {
   return {
-    ...createNodeBase(),
+    ...createNodeScoped(),
     type: 'conditional',
     subexpressions: { condition, positive, negative }
   };
@@ -211,7 +231,7 @@ export function createBuiltInReferenceNode(name: string): BuiltInReferenceNode {
 }
 
 export function* iterateTuple<N extends ReductNode>(
-  tupleNode: NodeId | DRF<VTupleNode | PTupleNode>, 
+  tupleNode: NodeId | DRF<VTupleNode | PTupleNode>,
   nodes: DeepReadonly<NodeMap>
 ): Generator<DRF<N>> {
   if (typeof tupleNode === 'number')
@@ -233,53 +253,53 @@ export type NodeKind = 'expression' | 'placeholder' | 'value' | 'statement' | 's
 
 export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKind {
   switch (node.type) {
-  case 'apply': return dethunk(apply.kind, node, nodes);
-  case 'autograder': return dethunk(autograder.kind, node, nodes);
-  case 'array': return dethunk(array.kind, node, nodes);
-  case 'binop': return dethunk(binop.kind, node, nodes);
-  case 'boolean': return dethunk(boolean.kind, node, nodes);
-  case 'conditional': return dethunk(conditional.kind, node, nodes);
-  case 'define': return dethunk(define.kind, node, nodes);
-  case 'dynamicVariant': return dethunk(dynamicVariant.kind, node, nodes);
-  case 'lambda': {
-    // lambda nodes with unbound arguments should be treated as values
-    // because you can't step them; lambda nodes that are fully bound
-    // should be treated as expressions
+    case 'apply': return dethunk(apply.kind, node, nodes);
+    case 'autograder': return dethunk(autograder.kind, node, nodes);
+    case 'array': return dethunk(array.kind, node, nodes);
+    case 'binop': return dethunk(binop.kind, node, nodes);
+    case 'boolean': return dethunk(boolean.kind, node, nodes);
+    case 'conditional': return dethunk(conditional.kind, node, nodes);
+    case 'define': return dethunk(define.kind, node, nodes);
+    case 'dynamicVariant': return dethunk(dynamicVariant.kind, node, nodes);
+    case 'lambda': {
+      // lambda nodes with unbound arguments should be treated as values
+      // because you can't step them; lambda nodes that are fully bound
+      // should be treated as expressions
 
-    let foundUnbound = false;
-    for (const argNode of iterateTuple<LambdaArgNode>(node.subexpressions.arg, nodes)) {
-      if (argNode.fields.value === null) {
-        foundUnbound = true;
-        break;
+      let foundUnbound = false;
+      for (const argNode of iterateTuple<LambdaArgNode>(node.subexpressions.arg, nodes)) {
+        if (argNode.fields.value === null) {
+          foundUnbound = true;
+          break;
+        }
       }
+
+      if (!foundUnbound) return 'expression';
+
+      return 'value';
     }
+    case 'lambdaArg': return 'syntax';
+    case 'letExpr': return dethunk(letExpr.kind, node, nodes);
+    case 'member': return dethunk(member.kind, node, nodes);
+    case 'missing': return dethunk(missing.kind, node, nodes);
+    case 'not': return dethunk(not.kind, node, nodes);
+    case 'number': return dethunk(number.kind, node, nodes);
+    case 'op': return dethunk(op.kind, node, nodes);
+    case 'reference': return dethunk(reference[0].kind, node, nodes);
+    case 'string': return dethunk(string.kind, node, nodes);
+    case 'symbol': return dethunk(symbol.kind, node, nodes);
+    case 'unsol': return dethunk(unsol.kind, node, nodes);
+    case 'ptuple':
+    case 'vtuple': {
+      for (const child of iterateTuple(node, nodes)) {
+        if (getKindForNode(child, nodes) === 'expression')
+          return 'expression';
+      }
 
-    if (!foundUnbound) return 'expression';
-
-    return 'value';
-  }
-  case 'lambdaArg': return 'syntax';
-  case 'letExpr': return dethunk(letExpr.kind, node, nodes);
-  case 'member': return dethunk(member.kind, node, nodes);
-  case 'missing': return dethunk(missing.kind, node, nodes);
-  case 'not': return dethunk(not.kind, node, nodes);
-  case 'number': return dethunk(number.kind, node, nodes);
-  case 'op': return dethunk(op.kind, node, nodes);
-  case 'reference': return dethunk(reference[0].kind, node, nodes);
-  case 'string': return dethunk(string.kind, node, nodes);
-  case 'symbol': return dethunk(symbol.kind, node, nodes);
-  case 'unsol': return dethunk(unsol.kind, node, nodes);
-  case 'ptuple':
-  case 'vtuple': {
-    for (const child of iterateTuple(node, nodes)) {
-      if (getKindForNode(child, nodes) === 'expression')
-        return 'expression';
+      return 'value';
     }
-
-    return 'value';
-  }
-  case 'builtin-reference': return 'value';
-  default: throw new Error(`unknown node of type ${node.type}`);
+    case 'builtin-reference': return 'value';
+    default: throw new Error(`unknown node of type ${node.type}`);
   }
 }
 
@@ -294,15 +314,16 @@ export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKin
  * or null if there is no such node.
  */
 export function getDefinitionForName(
-  name: string, 
-  node: DRF, 
+  name: string,
+  node: DRF,
   state: DeepReadonly<RState>
 ): NodeId | null {
-  let current = node;
+  let current: DRF = node;
 
+  // traverse the tree of nodes to find if 'name' is in the scope
   while (current) {
-    if ('scope' in current) {
-    // TODO: implement scope
+    if ('scope' in current && name in current.scope) {
+      return current.scope[name];
     }
 
     // special case for lambda arg nodes until scope is implemented
@@ -327,8 +348,6 @@ export function getDefinitionForName(
 
   return null;
 }
-
-
 /**
  * Searches for `name` in the scope of `node`. If it is found, returns the
  * corresponding value. This is different from getDefinitionForName because it
@@ -343,8 +362,8 @@ export function getDefinitionForName(
  * or null if there is no such node.
  */
 export function getValueForName(
-  name: string, 
-  node: DRF, 
+  name: string,
+  node: DRF,
   state: DeepReadonly<RState>
 ): NodeId | null {
   const definitionId = getDefinitionForName(name, node, state);

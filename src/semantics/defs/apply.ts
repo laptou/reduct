@@ -1,4 +1,4 @@
-import type { BaseNode, ReductNode } from '..';
+import type { ScopedNode, ReductNode } from '..';
 import * as animate from '../../gfx/animate';
 import * as gfx from '../../gfx/core';
 import * as fx from '../../gfx/fx';
@@ -9,7 +9,7 @@ import type { NodeDef } from './base';
  * ApplyNode is a Reduct node that represents function application
  * the node 'argument' is passed to the node 'callee'
  */
-export interface ApplyNode extends BaseNode {
+export interface ApplyNode extends ScopedNode {
   type: 'apply';
 
   subexpressions: {
@@ -68,7 +68,7 @@ export const apply: NodeDef<ApplyNode> = {
     let centerX = gfx.centerPos(calleeView).x - gfx.absolutePos(applyView).x;
     if (callee.type === 'lambda') {
       centerX = gfx.centerPos(stage.views[callee.subexpressions.arg]).x
-                    - gfx.absolutePos(lambdaView).x;
+        - gfx.absolutePos(lambdaView).x;
     }
 
     const jumpTween = animate.tween(argView, {
@@ -205,8 +205,8 @@ export const apply: NodeDef<ApplyNode> = {
     const callee = state.nodes.get(expr.subexpressions.callee);
     const kind = semant.kind(state, callee);
     if (kind === 'value'
-                    && callee.type !== 'lambda'
-                    && callee.type !== 'reference') {
+      && callee.type !== 'lambda'
+      && callee.type !== 'reference') {
       return [expr.subexpressions.callee, 'We can only apply functions!'];
     }
     return null;
