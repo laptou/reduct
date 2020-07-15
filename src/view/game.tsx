@@ -7,7 +7,7 @@ import { DefeatOverlay } from './banner/defeat';
 import { Definitions } from './stage/ui/definitions';
 import { Goal } from './stage/ui/goal';
 import { History } from './stage/ui/history';
-import { LevelInfo } from './stage/ui/level';
+import { LevelMenu } from './stage/ui/level';
 import { Title } from './banner/title';
 import { Toolbox } from './stage/ui/toolbox';
 import { VictoryOverlay } from './banner/victory';
@@ -35,7 +35,7 @@ function GameImpl(props: GameStoreProps) {
         <Toolbox />
         <Definitions />
         <Goal />
-        <LevelInfo />
+        <LevelMenu />
         <History />
       </>
     )
@@ -48,7 +48,7 @@ function GameImpl(props: GameStoreProps) {
         <Toolbox />
         <Definitions />
         <Goal />
-        <LevelInfo />
+        <LevelMenu />
         <History />
         <VictoryOverlay/>
       </>
@@ -62,7 +62,7 @@ function GameImpl(props: GameStoreProps) {
         <Toolbox />
         <Definitions />
         <Goal />
-        <LevelInfo />
+        <LevelMenu />
         <History />
         <DefeatOverlay />
       </>
