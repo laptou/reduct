@@ -267,7 +267,11 @@
             "animation-fill-mode"
           ]
         }
-      ]
+      ],
+      {
+				"unspecified": "bottom",
+				"severity": "warning"
+			}
     ],
     "alpha-value-notation": "number",
     "hue-degree-notation": "number",
