@@ -1,8 +1,8 @@
 import { castDraft, produce } from 'immer';
 import type { Reducer } from 'redux';
-import { ActionKind, ReductAction } from './action';
-import { GameError } from './errors';
-import { RState } from './state';
+import { ActionKind, ReductAction } from '../action';
+import { GameError } from '../errors';
+import { RState } from '../state';
 
 /** Undo the last action. */
 export function undo() {

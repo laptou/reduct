@@ -2,7 +2,7 @@ import fileSaver from 'file-saver';
 
 import * as level from '../game/level';
 import { ActionKind } from '../store/action';
-import * as undoAction from '../store/undo';
+import * as undoAction from '../store/reducer/undo';
 import * as ajax from '../util/ajax';
 import * as random from '../util/random';
 import VERSION_ID from '../version';

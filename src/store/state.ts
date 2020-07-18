@@ -1,5 +1,5 @@
 import { NodeId, NodeMap } from '@/semantics';
-import { UndoableState } from './undo';
+import { UndoableState } from './reducer/undo';
 import { GameError } from './errors';
 
 export interface RState {
@@ -70,13 +70,11 @@ export enum GameMode {
   Defeat
 }
 
-export interface LevelState {
-  levelNumber: number;
-  chapterNumber: number;
-  chapterName: string;
+export interface PreferenceState {
+  enableSounds: boolean;
 }
 
 export interface GlobalState {
   program: UndoableState<RState>;
-  level: LevelState;
+  preferences: PreferenceState;
 }

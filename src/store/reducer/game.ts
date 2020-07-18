@@ -7,27 +7,20 @@ import {
   createBoolNode, createMissingNode, createNumberNode, createStrNode, getKindForNode, getValueForName, iterateTuple 
 } from '@/semantics/util';
 import {
-  DRF, mapIterable, withoutParent, withParent, DeepReadonly 
+  DeepReadonly, DRF, mapIterable, withoutParent, withParent 
 } from '@/util/helper';
 import {
   cloneNodeDeep, findNodesDeep, getRootForNode, isAncestorOf 
 } from '@/util/nodes';
 import { castDraft, produce } from 'immer';
-import { combineReducers } from 'redux';
-import { createTransform, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
 import {
-  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStartLevel, createStep, ReductAction 
-} from './action';
+  CircularCallError, GameError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError 
+} from '../errors';
+import { checkDefeat, checkVictory } from '../helper';
+import { GameMode, RState } from '../state';
 import {
-  CircularCallError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, GameError 
-} from './errors';
-import { checkDefeat, checkVictory } from './helper';
-import { GameMode, GlobalState, RState } from './state';
-import { undoable } from './undo';
-
-export { nextId } from '@/util/nodes';
-
+  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStep, ReductAction 
+} from '../action';
 
 const initialProgram: RState = {
   mode: GameMode.Title,
@@ -59,7 +52,7 @@ function markDirty(nodes: NodeMap, id: NodeId) {
   dirty.add(node.id);
 }
 
-function program(state: DeepReadonly<RState> = initialProgram, act?: ReductAction): DeepReadonly<RState> {
+export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductAction): DeepReadonly<RState> {
   if (!act) return state;
   
   switch (act.type) {
@@ -1157,46 +1150,4 @@ function program(state: DeepReadonly<RState> = initialProgram, act?: ReductActio
 
   default: return state;
   }
-}
-
-interface SerializedState {
-  level: number;
-}
-
-const gameStateTransform = createTransform(
-  // transform state on its way to being serialized and persisted.
-  ($present: RState) => {
-    if (!$present) return $present;
-
-    return { 
-      level: $present.level
-    } as SerializedState;
-  },
-  // transform state being rehydrated
-  ($present: SerializedState) => {
-    if ($present.level >= 0) {
-      return program(undefined, createStartLevel($present.level));
-    }
-
-    return program();
-  },
-  { whitelist: ['$present'] }
-);
-
-export function createReducer() {
-  const reducer = undoable(program);
-
-  return combineReducers<GlobalState>({
-    program: persistReducer(
-      { 
-        key: 'reduct', 
-        storage,
-        whitelist: ['$present'], // do not save undo history
-        version: parseInt(PKG_VERSION.replace(/\D/, '')), // 7.0.0-alpha = 700
-        transforms: [gameStateTransform]
-        
-      },
-      reducer
-    )
-  });
 }
