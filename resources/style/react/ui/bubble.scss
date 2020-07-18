@@ -5,30 +5,38 @@
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
+
   min-width: 10rem;
   margin: auto;
+
   color: white;
+
   font-size: 0.9em;
   font-family: 'Fira Sans', sans-serif;
+
   transform: var(--bubble-base-transform);
 
   &.bottom {
     --bubble-base-transform: translate(-50%, 0);
     top: 100%;
     left: 50%;
+
     padding-top: 0.5rem;
+
     transform-origin: center top;
   }
 
   .reduct-bubble-inner {
     padding: 0.5rem;
     border-radius: 0.25rem;
+
     background: var(--bubble-color);
     box-shadow: 0 0 4pt rgb(black 0.25);
   }
 
   .reduct-bubble-pointer {
     z-index: 10;
+
     width: 1.5rem;
 
     polygon {

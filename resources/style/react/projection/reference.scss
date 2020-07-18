@@ -8,10 +8,13 @@
   @include fx.projection-shadow-box();
   
   align-items: center;
+
   padding: 2px;
   border-radius: 0.5rem;
+
   background-color: white;
   color: color.change(theme.$projection-foreground-inverse, $alpha: 0.5);
+
   line-height: 1;
 
   &.valid {

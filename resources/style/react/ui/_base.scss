@@ -3,7 +3,9 @@
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
+
   padding: 1rem;
+
   background: var(--reduct-ui-bg);
   box-shadow: 0 0 0.5rem rgb(black 0.25);
 }
@@ -26,5 +28,6 @@
   @extend %ui-panel;
   border-style: solid;
   border-color: $color;
+
   color: $color;
 }

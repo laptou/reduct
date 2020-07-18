@@ -8,9 +8,12 @@
   @include fx.projection-shadow-box();
   
   align-items: center;
+
   padding: 2px;
+
   background-color: white;
   color: theme.$projection-color-builtin;
+
   line-height: 1;
   
   .builtin-reference-name {
