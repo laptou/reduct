@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 import { getProjectionForNode } from '.';
 import { ErrorBubble } from '../ui/error-bubble';
 import { ExecBubble } from '../ui/exec-bubble';
+import Audio from '@/resource/audio';
 
 /**
  * Props retrieved from Redux.
@@ -137,6 +138,8 @@ function onClick(
   if (props.frozen) return;
 
   props.exec();
+  Audio.play('371270__mafon2__water-drip-2');
+
   event.stopPropagation();
 }
 

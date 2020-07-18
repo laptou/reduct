@@ -5,7 +5,7 @@ import { DeepReadonly } from '@/util/helper';
 import '@resources/style/react/ui/level.scss';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { animated, useSpring, useTransition, config as springConfig } from 'react-spring';
+import { animated, useSpring, useTransition } from 'react-spring';
 
 interface LevelMenuStoreProps {
   level: number;
