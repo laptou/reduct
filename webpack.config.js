@@ -25,17 +25,17 @@ exports.default = (env) => ({
   devtool: env.development ? 'eval-source-map' : 'source-map',
   devServer: {
     port: 1234,
-    hot: true
+    hot: true,
   },
   optimization: {
     runtimeChunk: false,
     splitChunks: {
-      chunks: 'all'
-    }
+      chunks: 'all',
+    },
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    crossOriginLoading: 'anonymous'
+    crossOriginLoading: 'anonymous',
   },
   module: {
     rules: [
@@ -48,10 +48,10 @@ exports.default = (env) => ({
             options: {
               cacheDirectory: true,
               // JSX line numbers should not be included in production mode
-              plugins: env.development ? ['@babel/plugin-transform-react-jsx-source'] : []
-            }
-          }
-        ]
+              plugins: env.development ? ['@babel/plugin-transform-react-jsx-source'] : [],
+            },
+          },
+        ],
       },
       {
         test: /\.css$/i,
@@ -60,12 +60,12 @@ exports.default = (env) => ({
             loader: MiniCssExtractPlugin.loader,
             options: {
               esModule: true,
-              hmr: env.development
-            }
+              hmr: env.development,
+            },
           }, {
-            loader: 'css-loader'
-          }
-        ]
+            loader: 'css-loader',
+          },
+        ],
       },
       {
         test: /\.scss$/i,
@@ -74,75 +74,69 @@ exports.default = (env) => ({
             loader: MiniCssExtractPlugin.loader,
             options: {
               esModule: true,
-              hmr: env.development
-            }
+              hmr: env.development,
+            },
           }, 
           {
             loader: 'css-loader',
             options: {
               modules: false,
               localsConvention: 'camelCase',
-              esModule: true
-            }
+              esModule: true,
+            },
           },
           {
-            loader: 'resolve-url-loader'
+            loader: 'resolve-url-loader',
           },
           {
             loader: 'sass-loader',
             options: {
-              sourceMap: true
-            }
-          }
-        ]
+              sourceMap: true,
+            },
+          },
+        ],
       },
       {
         test: /\.(mp3|mp4|ogg|opus|wav|png)$/i,
-        use: ['file-loader']
-      }
-    ]
+        use: ['file-loader'],
+      },
+    ],
   },
   plugins: [
     new HtmlPlugin({
-      template: 'index.html'
+      template: 'index.html',
     }),
     new MiniCssExtractPlugin(),
     new DefinePlugin({
       'PKG_ENV': JSON.stringify(env.production ? 'production' : 'development'),
       'PKG_VERSION': JSON.stringify(require('./package.json').version),
-      'process.env.NODE_ENV': JSON.stringify(env.production ? 'production' : 'development')
+      'process.env.NODE_ENV': JSON.stringify(env.production ? 'production' : 'development'),
     }),
-    // new TsCheckerPlugin({
-    //     workers: TsCheckerPlugin.TWO_CPUS_FREE,
-
-    //     // I don't have time to fix ESLint errors right now.
-    //     // Who the fuck wrote so much unlintable code?!
-    //     // - Ibiyemi Abiodun (iaa34)
-    //     // eslint: true,
-    // }),
+    new TsCheckerPlugin({
+      workers: TsCheckerPlugin.TWO_CPUS_FREE,
+      eslint: true,
+    }),
     ...(env.production
       ? [
         new CompressionPlugin({
-          threshold: 8192
+          threshold: 8192,
         }),
         new SriPlugin({
-          hashFuncNames: ['sha384', 'sha512']
+          hashFuncNames: ['sha384', 'sha512'],
         }),
         new SentryCliPlugin({
           include: '.',
           ignoreFile: '.sentrycliignore',
-          ignore: ['node_modules', 'webpack.config.js']
-        })
+          ignore: ['node_modules', 'webpack.config.js'],
+        }),
       ]
       : []),
     ...(env.analyze
-      ? [
-        new BundleAnalyzerPlugin()
-      ]
+      ? [new BundleAnalyzerPlugin()]
       : []),
     ...(env.development
       ? [
-        new webpack.HotModuleReplacementPlugin()
+        new webpack.HotModuleReplacementPlugin(),
         /** eslint errors are currently so many that you can't
                  *  even see the more important errors
                  *  makes you wonder why they even included ESLint in this
@@ -150,14 +144,16 @@ exports.default = (env) => ({
                  *  write spaghetti code */
         // new EslintPlugin(),
       ]
-      : [])
+      : []),
   ],
   resolve: {
-    extensions: ['.ts', '.js', '.tsx', '.json'],
+    extensions: [
+      '.ts', '.js', '.tsx', '.json',
+    ],
     alias: {
       '@resources': path.resolve(__dirname, 'resources/'),
       '@': path.resolve(__dirname, 'src/'),
-      'react-dom$': '@hot-loader/react-dom'
-    }
-  }
+      'react-dom$': '@hot-loader/react-dom',
+    },
+  },
 });
