@@ -7,24 +7,24 @@ import {
   createBoolNode, createMissingNode, createNumberNode, createStrNode, getKindForNode, getValueForName, iterateTuple 
 } from '@/semantics/util';
 import {
-  DRF, mapIterable, withoutParent, withParent 
+  DRF, mapIterable, withoutParent, withParent, DeepReadonly 
 } from '@/util/helper';
 import {
-  cloneNodeDeep, findNodesDeep, getRootForNode, isAncestorOf, restoreId 
+  cloneNodeDeep, findNodesDeep, getRootForNode, isAncestorOf 
 } from '@/util/nodes';
 import { castDraft, produce } from 'immer';
 import { combineReducers } from 'redux';
+import { createTransform, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 import {
-  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStep, ReductAction, createStartLevel 
+  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStartLevel, createStep, ReductAction 
 } from './action';
 import {
-  CircularCallError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError 
+  CircularCallError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, GameError 
 } from './errors';
 import { checkDefeat, checkVictory } from './helper';
 import { GameMode, GlobalState, RState } from './state';
-import { undoable, UndoableState } from './undo';
-import { persistReducer, createTransform } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import { undoable } from './undo';
 
 export { nextId } from '@/util/nodes';
 
@@ -38,7 +38,8 @@ const initialProgram: RState = {
   toolbox: new Set(),
   globals: new Map(),
   added: new Map(),
-  removed: new Map()
+  removed: new Map(),
+  executing: new Set()
 };
 
 // To speed up type checking, we only type check nodes that have
@@ -58,7 +59,7 @@ function markDirty(nodes: NodeMap, id: NodeId) {
   dirty.add(node.id);
 }
 
-function program(state = initialProgram, act?: ReductAction): RState {
+function program(state: DeepReadonly<RState> = initialProgram, act?: ReductAction): DeepReadonly<RState> {
   if (!act) return state;
   
   switch (act.type) {
@@ -72,7 +73,8 @@ function program(state = initialProgram, act?: ReductAction): RState {
       toolbox: act.toolbox,
       globals: act.globals,
       added: new Map(mapIterable(act.nodes.keys(), id => [id, null] as const)),
-      removed: new Map()
+      removed: new Map(),
+      executing: new Set()
     };
   }
 
@@ -137,7 +139,7 @@ function program(state = initialProgram, act?: ReductAction): RState {
       // eval all relevant references and keep track of which nodes are destroyed
       for (const referenceNode of referenceNodes) {
         state = program(state, createEvalReference(referenceNode.id));
-        removed.push(...state.removed);
+        removed.push(...state.removed.keys());
       }
     }
 
@@ -150,7 +152,9 @@ function program(state = initialProgram, act?: ReductAction): RState {
       const newLambdaNode = draft.nodes.get(lambdaNodeId) as Flat<LambdaNode>;
     
       draft.added = new Map();
-      draft.removed = new Map(removed.map(id => [id, false]));
+
+      for (const id of removed)
+        draft.removed.set(id, false);
 
       const newArgTuple = draft.nodes.get(newLambdaNode.subexpressions.arg) as Flat<PTupleNode>;
 
@@ -386,7 +390,7 @@ function program(state = initialProgram, act?: ReductAction): RState {
         draft.board.add(resultNode.id);
       }
 
-      draft.nodes.set(resultNode.id, resultNode);
+      draft.nodes.set(resultNode.id, castDraft(resultNode));
 
       // schedule for cleanup
       draft.removed.set(blockNode.id, false);
@@ -670,6 +674,12 @@ function program(state = initialProgram, act?: ReductAction): RState {
     if (defNode.type !== 'define')
       throw new WrongTypeError(nodeId, 'define', defNode.type);
 
+    // search for any unfilled slots
+    const [slot] = findNodesDeep(nodeId, state.nodes, (node) => node.type === 'missing');
+
+    if (slot)
+      throw new MissingNodeError(slot.id);
+
     return produce(state, draft => {
       draft.globals.set(defNode.fields.name, nodeId);
       draft.board.delete(nodeId);
@@ -709,8 +719,11 @@ function program(state = initialProgram, act?: ReductAction): RState {
       }
 
       // don't evaluate references unless they are being used as parameters
-      if (targetNode.type !== 'ptuple' && childNode.type === 'reference') {
-        continue;
+      // or callees
+      if (childNode.type === 'reference') {
+        if (!(targetNode.type === 'apply' && childNode.parentField === 'callee')
+            && !(targetNode.type === 'ptuple'))
+          continue;
       }
 
       // this is a child node that needs further evaluation, return the result
@@ -746,6 +759,53 @@ function program(state = initialProgram, act?: ReductAction): RState {
     default:
       throw new Error(`Cannot step a ${targetNode.type}`);
     }
+  }
+
+  case ActionKind.Execute: {
+    const { targetNodeId } = act;
+
+    const executing = new Set(state.executing);
+    executing.add(targetNodeId);
+
+    try {
+      // step the node
+      state = program(state, createStep(targetNodeId));
+    } catch (error) {
+      // trap errors and stop execution
+      if (error instanceof GameError) {
+        executing.delete(targetNodeId);
+        return { ...state, executing, error };
+      } else {
+        throw error;
+      }
+    }
+
+    // if it was replaced by other nodes, add those
+    // to the execution list
+
+    if (state.removed.has(targetNodeId))
+      executing.delete(targetNodeId);
+
+    for (const [nodeId, sourceId] of state.added) {
+      if (sourceId !== targetNodeId) continue;
+
+      const node = state.nodes.get(nodeId)!;
+
+      if (getKindForNode(node, state.nodes) !== 'expression') continue;
+      
+      executing.add(nodeId);
+    }
+
+    return { ...state, executing };
+  }
+
+  case ActionKind.Stop: {
+    const { targetNodeId } = act;
+
+    const executing = new Set(state.executing);
+    executing.delete(targetNodeId);
+
+    return { ...state, executing };
   }
 
   case ActionKind.DetectCompletion: {

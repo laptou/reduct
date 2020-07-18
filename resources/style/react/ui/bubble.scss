@@ -11,6 +11,7 @@
   font-family: 'Fira Sans', sans-serif;
   transform: var(--bubble-base-transform);
   --bubble-color: black;
+  --foreground: white;
 
   &.bottom {
     top: 100%;
@@ -19,8 +20,6 @@
     transform-origin: center top;
     --bubble-base-transform: translate(-50%, 0);
   }
-
-  // TODO: implement bubbles on other sides
 
   .reduct-bubble-inner {
     padding: 0.5rem;
@@ -37,23 +36,13 @@
       fill: var(--bubble-color);
     }
   }
+}
 
-  &.reduct-bubble-enter {
-    transform: var(--bubble-base-transform) scale(0);
-  }
+.reduct-bubble-error {
+  --bubble-color: red;
+}
 
-  &.reduct-bubble-enter-active {
-    transform: var(--bubble-base-transform) scale(1);
-    transition: transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
-  &.reduct-bubble-exit {
-    opacity: 1;
-  }
-
-  &.reduct-bubble-exit-active {
-    opacity: 0;
-    transition: opacity 400ms ease-in-out;
-  }
+.reduct-bubble-info {
+  --bubble-color: dodgerblue;
 }
 

@@ -1,5 +1,6 @@
 import { NodeId, NodeMap } from '@/semantics';
 import { UndoableState } from './undo';
+import { GameError } from './errors';
 
 export interface RState {
   /**
@@ -45,10 +46,21 @@ export interface RState {
   added: Map<NodeId, NodeId | null>;
 
   /**
-   * Nodes which were removed by the most recent action. The value represents
-   * whether a given node is ready for cleanup.
+   * Nodes which were removed by the most recent action.
    */
   removed: Map<NodeId, boolean>;
+
+  /**
+   * Nodes which are currently executing (i.e., stepping themselves without the
+   * user having to click them).
+   */
+  executing: Set<NodeId>;
+
+  /**
+   * Used to set the error if the reducer needs to throw an error and return a
+   * new state at the same time.
+   */
+  error?: GameError;
 }
 
 export enum GameMode {

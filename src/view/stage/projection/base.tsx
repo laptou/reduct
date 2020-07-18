@@ -1,17 +1,18 @@
-import {
-  createCleanup, createStep, createClearError, createRaise 
-} from '@/store/action';
-import { NodeError } from '@/store/errors';
-import { GlobalState } from '@/store/state';
 import { NodeId } from '@/semantics';
 import { getKindForNode, NodeKind } from '@/semantics/util';
+import {
+  createCleanup, createClearError, createExecute, createRaise, createStop 
+} from '@/store/action';
+import { GameError } from '@/store/errors';
+import { GlobalState } from '@/store/state';
 import { DeepReadonly, DRF } from '@/util/helper';
+import { isAncestorOf } from '@/util/nodes';
 import cx from 'classnames';
-import React, { FunctionComponent, useEffect } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { getProjectionForNode } from '.';
 import { ErrorBubble } from '../ui/error-bubble';
-import { useTransition, animated } from 'react-spring';
+import { ExecBubble } from '../ui/exec-bubble';
 
 /**
  * Props retrieved from Redux.
@@ -25,12 +26,26 @@ interface StageProjectionStoreProps {
   /**
    * The current error state.
    */
-  error: NodeError | null;
+  error: GameError | null;
 
   /**
    * The kind of node that `node` is.
    */
   kind: NodeKind | null;
+
+  /**
+   * True if this node is currently executing (stepping without user
+   * intervention).
+   */
+  executing: boolean;
+
+  /**
+   * True if this node is executing and all deleted children of this node have
+   * been cleaned up (i.e., their animations have finished, they have been
+   * eliminated from the node tree, and their React components have been
+   * unmounted).
+   */
+  settled: boolean;
 }
 
 /**
@@ -38,9 +53,14 @@ interface StageProjectionStoreProps {
  */
 interface StageProjectionDispatchProps { 
   /**
-   * Steps this node forward. See StepAction for more info.
+   * Executes this node. See ExecuteAction for more info.
    */
-  step(): void;
+  exec(): void;
+
+  /**
+   * Stops executing this node. See StopAction for more info.
+   */
+  stopExec(): void;
 
   /**
    * Clears any errors currently held by the store.
@@ -116,24 +136,36 @@ function onClick(
   if (props.node && props.node.parent && props.node.locked) return; 
   if (props.frozen) return;
 
-  props.step();
+  props.exec();
   event.stopPropagation();
 }
 
 const StageProjectionImpl: FunctionComponent<StageProjectionProps> = 
   (props) => {
     const {
-      node, kind, frozen, error, cleanup
+      node, 
+      kind, 
+      frozen, 
+      error, 
+      settled, 
+      executing, 
+      cleanup, 
+      exec,
+      stopExec
     } = props;
+
+    // whether execution is being fast-forwarded or not
+    const [isFast, setFast] = useState(false);
+
+    useEffect(() => {
+      if (settled && executing) {
+        const timer = setTimeout(exec, isFast ? 500 : 1000);
+        return () => clearTimeout(timer);
+      }
+    }, [settled, executing, exec, isFast]);
 
     // run when this component is unmounted
     useEffect(() => () => cleanup(), [cleanup]);
-
-    const errorTransition = useTransition(error, null, {
-      from: { opacity: 0 },
-      enter: { opacity: 1 },
-      leave: { opacity: 0 }
-    });
 
     if (!node) {
       return null;
@@ -164,9 +196,8 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
         onClick={e => onClick(e, props)}
       >
         {getProjectionForNode(props.node)}
-        {errorTransition.map(({ item, key, props }) => 
-          item && <animated.div key={key} style={props}><ErrorBubble error={item} /></animated.div>
-        )}
+        <ErrorBubble error={error} />
+        <ExecBubble executing={executing} onStop={stopExec} onSkip={() => setFast(true)} />
       </div>
     );
   };
@@ -184,23 +215,58 @@ export const StageProjection = connect(
     if (ownProps.nodeId) {
       const node = presentState.nodes.get(ownProps.nodeId) ?? null;
       const error = state.program.$error?.target === ownProps.nodeId ? state.program.$error : null;
-      
+      const executing = presentState.executing.has(ownProps.nodeId);
+      let settled;
+
+      // if we are executing, settled is true iff there are no descendant nodes
+      // that are waiting to be cleaned up
+      if (executing) {
+        settled = true;
+
+        for (const [id, isCleanedUp] of presentState.removed) {
+          if (!isAncestorOf(id, ownProps.nodeId, presentState.nodes))
+            continue;
+
+          if (isCleanedUp)
+            continue;
+
+          settled = false;
+          break;
+        }
+      } else {
+        settled = false;
+      }
+
       if (!node)
         return {
-          node: null, kind: null, sourceId: null, error 
+          node: null, 
+          kind: null, 
+          error, 
+          executing, 
+          settled
         };
 
       const kind = getKindForNode(node, presentState.nodes);
 
-      return { node, kind, error };
+      return {
+        node, kind, error, executing, settled 
+      };
     }
     
-    return { node: null, kind: null, error: null };
+    return {
+      node: null, 
+      kind: null, 
+      error: null, 
+      executing: false, 
+      settled: false 
+    };
   },
   (dispatch, ownProps) => ({ 
     cleanup() { 
       if (ownProps.nodeId) {
         dispatch(createCleanup(ownProps.nodeId)); 
+      } else {
+        console.log('hmm')
       }
     },
     clearErrorAndRaise() { 
@@ -209,9 +275,14 @@ export const StageProjection = connect(
         dispatch(createRaise(ownProps.nodeId)); 
       }
     },
-    step() { 
+    exec() { 
       if (ownProps.nodeId) {
-        dispatch(createStep(ownProps.nodeId)); 
+        dispatch(createExecute(ownProps.nodeId)); 
+      }
+    },
+    stopExec() { 
+      if (ownProps.nodeId) {
+        dispatch(createStop(ownProps.nodeId)); 
       }
     } 
   })

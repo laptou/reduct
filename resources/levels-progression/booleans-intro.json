@@ -6,11 +6,11 @@
         {
             "animationScales": {}, 
             "board": [
-                "'TRIANGLE' == 'STAR'", 
-                "_ == 'STAR'"
-            ], 
-            "fade": {}, 
-            "globals": {}, 
+                "TRIANGLE == STAR",
+                "_ == STAR"
+            ],
+            "fade": {},
+            "globals": {},
             "goal": [
                 "true", 
                 "false"
@@ -94,10 +94,10 @@
         {
             "animationScales": {}, 
             "board": [
-                "_ ? 'RECT' : _"
-            ], 
-            "fade": {}, 
-            "globals": {}, 
+                "_ ? RECT : _"
+            ],
+            "fade": {},
+            "globals": {},
             "goal": [
                 "STAR"
             ], 
@@ -116,11 +116,11 @@
         {
             "animationScales": {}, 
             "board": [
-                "(truth) => truth ? 'TRIANGLE' : 'RECT'", 
-                "(trueOrFalse) => trueOrFalse ? 'RECT' : 'STAR'"
-            ], 
-            "fade": {}, 
-            "globals": {}, 
+                "(truth) => truth ? TRIANGLE : RECT",
+                "(trueOrFalse) => trueOrFalse ? RECT : STAR"
+            ],
+            "fade": {},
+            "globals": {},
             "goal": [
                 "TRIANGLE", 
                 "STAR"
@@ -159,11 +159,11 @@
         {
             "animationScales": {}, 
             "board": [
-                "(thing1) => (thing2) => thing1 == thing2 ? 1 : 2", 
-                "x => xx"
-            ], 
-            "fade": {}, 
-            "globals": {}, 
+                "(thing1) => (thing2) => thing1 == thing2 ? 1 : 2",
+                "x => __tuple(x, x)"
+            ],
+            "fade": {},
+            "globals": {},
             "goal": [
                 "1", 
                 "2"
@@ -182,7 +182,7 @@
         {
             "animationScales": {}, 
             "board": [
-                "(x) => _ == 'STAR' ? true : _", 
+                "(x) => _ == STAR ? true : _",
                 "x"
             ], 
             "fade": {}, 

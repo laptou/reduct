@@ -40,12 +40,13 @@ export enum ActionKind {
   EvalReference = 'eval-reference',
 
   Execute = 'exec',
+  Stop = 'stop',
   Step = 'step',
 
   DetectCompletion = 'detect-end',
   Undo = 'undo',
   Redo = 'redo',
-  ClearError = 'clear-error'
+  ClearError = 'clear-error',
 }
 
 export type ReductAction = 
@@ -63,8 +64,9 @@ export type ReductAction =
   EvalNotAction |
   EvalApplyAction |
   EvalReferenceAction |
-  StepAction |
   ExecuteAction |
+  StopAction |
+  StepAction |
   CleanupAction | 
   DetectCompletionAction |
   ClearErrorAction |
@@ -601,6 +603,25 @@ export function createExecute(
 ): ExecuteAction {
   return {
     type: ActionKind.Execute,
+    targetNodeId
+  };
+}
+
+export interface StopAction {
+  type: ActionKind.Stop;
+  targetNodeId: NodeId;
+}
+
+/**
+ * Returns an action which will halt an execution of a node.
+ *
+ * @param targetNodeId The ID of the node to stop executing.
+ */
+export function createStop(
+  targetNodeId: NodeId
+): StopAction {
+  return {
+    type: ActionKind.Stop,
     targetNodeId
   };
 }
