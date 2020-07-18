@@ -27,7 +27,8 @@
     "redux": "^3.7.2",
     "redux-immutable": "^4.0.0",
     "redux-persist": "^6.0.0",
-    "regenerator-runtime": "^0.13.5"
+    "regenerator-runtime": "^0.13.5",
+    "use-sound": "^1.0.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.4",
