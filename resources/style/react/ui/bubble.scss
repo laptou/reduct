@@ -1,5 +1,6 @@
-
 .reduct-bubble {
+  --bubble-color: black;
+  --foreground: white;
   position: absolute;
   display: flex;
   flex-flow: column nowrap;
@@ -10,22 +11,20 @@
   font-size: 0.9em;
   font-family: 'Fira Sans', sans-serif;
   transform: var(--bubble-base-transform);
-  --bubble-color: black;
-  --foreground: white;
 
   &.bottom {
+    --bubble-base-transform: translate(-50%, 0);
     top: 100%;
     left: 50%;
     padding-top: 0.5rem;
     transform-origin: center top;
-    --bubble-base-transform: translate(-50%, 0);
   }
 
   .reduct-bubble-inner {
     padding: 0.5rem;
-    background: var(--bubble-color);
     border-radius: 0.25rem;
-    box-shadow: 0 0 4pt rgba(black, 0.25);
+    background: var(--bubble-color);
+    box-shadow: 0 0 4pt rgb(black 0.25);
   }
 
   .reduct-bubble-pointer {

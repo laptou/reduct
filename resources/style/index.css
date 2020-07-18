@@ -1,4 +1,4 @@
-@import 'https://fonts.googleapis.com/css?family=Fira+Mono|Fira+Sans|Nanum+Pen+Script|Material+Icons';
+@import 'https://fonts.googleapis.com/css?family=Fira+Mono|Fira+Sans|Material+Icons';
 
 body {
   margin: 0;
@@ -13,13 +13,13 @@ body {
  
 button, #nav > a {
   padding: 0.75em 1em;
+  border: 1px solid #8ab7db;
+  border-radius: 0.25rem;
+  background: lightblue;
   font-size: inherit;
   font-family: inherit;
 
   text-align: center;
-  background: lightblue;
-  border: 1px solid #8ab7db;
-  border-radius: 0.25rem;
   cursor: pointer;
 }
 
@@ -82,10 +82,10 @@ canvas {
 }
 
 #current-level, #animation-speed {
-  flex: 1 0 5em;
-  color: #FFF;
-  text-align: center;
   vertical-align: middle;
+  flex: 1 0 5em;
+  color: #ffffff;
+  text-align: center;
 }
 
 #current-level, #chapter {
@@ -105,7 +105,7 @@ canvas {
   width: 400px;
   height: 400px;
   padding: 0;
-  background: #111;
+  background: #111111;
 }
 
 #consent-id-error {
@@ -120,11 +120,11 @@ canvas {
   right: 0;
   bottom: 0;
   left: 0;
-  background: rgba(0, 0, 0, 0.7);
-  visibility: hidden;
+  background: rgb(0 0 0 / 0.7);
   opacity: 0;
-  transition: opacity 0.5s ease-in-out, visibility 0.5s linear;
+  visibility: hidden;
   pointer-events: none;
+  transition: opacity 0.5s ease-in-out, visibility 0.5s linear;
 }
 
 .modal-dialog.visible {
@@ -132,8 +132,8 @@ canvas {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  visibility: visible;
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
 }
 
@@ -148,10 +148,10 @@ canvas {
   max-width: calc(100vw - 10rem);
   height: 100%;
   max-height: calc(100vh - 10rem);
-  background: #FFF;
 
   border-radius: 0.25rem;
-  box-shadow: 0 0 2rem 2rem rgba(0, 0, 0, 0.15);
+  background: #ffffff;
+  box-shadow: 0 0 2rem 2rem rgb(0 0 0 / 0.15);
 
   transform: translate(-50%, -50%);
 }
@@ -192,7 +192,7 @@ canvas {
 
 h1 {
     
-  margin: 1.5rem 0 1rem 0;
+  margin: 1.5rem 0 1rem;
   font-weight: bold;
   font-size: 3rem;
 }
@@ -208,8 +208,8 @@ h1 {
 }
 
 #consent-inner .modal-body {
-  padding: 0 1rem 1rem;
   overflow-y: auto;
+  padding: 0 1rem 1rem;
 }
 
 .password-prompt {
@@ -235,8 +235,8 @@ h1 {
 #tutorial .modal-body {
   display: flex;
   align-items: center;
-  padding: 1rem;
   overflow-y: hidden; /* no scrollbar b/c video should not get clipped */
+  padding: 1rem;
 }
 
 #tutorial .video-player {
@@ -246,13 +246,13 @@ h1 {
 }
 
 #tutorial .video-player video {
-  box-shadow: 0 0 2pt 1pt rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 2pt 1pt rgb(0 0 0 / 0.15);
 }
 
 #tutorial .tutorial-hint {
   margin: 0.5rem 1rem;
-  font-size: 0.9rem;
   font-style: italic;
+  font-size: 0.9rem;
   opacity: 0.7;
 }
 
@@ -271,8 +271,8 @@ h1 {
   max-width: 100%;
   max-height: 100%;
   cursor: pointer;
-  transition: filter 0.25s ease-in-out, -moz-filter 0.25s ease-in-out, -webkit-filter 0.25s ease-in-out;
   pointer-events: auto;
+  transition: filter 0.25s ease-in-out, -moz-filter 0.25s ease-in-out, -webkit-filter 0.25s ease-in-out;
 }
 
 .video-player.paused video, .video-player.ended video, .video-player:hover video {
@@ -291,8 +291,8 @@ h1 {
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: opacity 0.25s ease-in-out;
   pointer-events: none; /* so that user can't click in space near video to pause and unpause */
+  transition: opacity 0.25s ease-in-out;
 }
 
 .video-player.paused .video-player-controls, .video-player.ended .video-player-controls, .video-player:hover .video-player-controls {
@@ -301,10 +301,10 @@ h1 {
 
 .video-player .video-player-controls button {
   display: none;
+  border: none;
+  background: transparent;
   color: white;
   font-size: 4em;
-  background: transparent;
-  border: none;
   pointer-events: auto;
 }
 
@@ -357,8 +357,8 @@ h1 {
 }
 
 .reduct-toolbar button {
-  line-height: 1em;
   border-radius: 0;
+  line-height: 1em;
 }
 
 .reduct-toolbar button:active {
@@ -397,8 +397,8 @@ h1 {
   position: absolute;
   width: 5px;
   height: 5px;
-  background: #fff;
   border-radius: 50%;
+  background: #ffffff;
   animation: loading-spinner 1.2s linear infinite;
 }
 
@@ -493,8 +493,8 @@ h1 {
   width: 8%;
   height: 4em;
   padding: 1em;
-  background-color: #fed;
   border: 2px solid gray;
+  background-color: #ffeedd;
 }
 
 #add-node {
@@ -504,8 +504,8 @@ h1 {
   width: 30%;
   height: 4em;
   padding: 1em;
-  background-color: #fed;
   border: 2px solid gray;
+  background-color: #ffeedd;
 }
 
 #capture-state {
@@ -515,17 +515,17 @@ h1 {
   width: 30%;
   height: 4em;
   padding: 1em;
-  background-color: #fed;
   border: 2px solid gray;
+  background-color: #ffeedd;
 }
 
 #capture-state button {
   width: 4em;
   height: 1em;
   padding: 0.5em;
-  font-size: 1em;
-  border: 1px solid #000;
+  border: 1px solid #000000;
   border-radius: 0;
+  font-size: 1em;
 }
 
 .error {

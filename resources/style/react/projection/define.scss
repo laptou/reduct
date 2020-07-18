@@ -13,8 +13,8 @@
   align-items: center;
 
   padding: 0.5rem;
-  color: theme.$projection-foreground-inverse;
   background-color: white;
+  color: theme.$projection-foreground-inverse;
 
   .define-label {
     grid-row: 1;
@@ -46,13 +46,13 @@
       list-style: none;
 
       &::before {
-        margin-right: -0.25rem;
         content: '(';
+        margin-right: -0.25rem;
       }
 
       &::after {
-        margin-left: 0.25rem;
         content: ')';
+        margin-left: 0.25rem;
       }
     }
 

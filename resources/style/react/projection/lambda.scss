@@ -7,9 +7,9 @@
   @include fx.projection-shadow-box();
 
   padding: 0.25rem 0.5rem;
-  color: theme.$projection-foreground-inverse;
-  background-color: white;
   border-radius: 0.25rem;
+  background-color: white;
+  color: theme.$projection-foreground-inverse;
 
   & > .arg, & > .arrow, & > .body {
     @extend %value-container;

@@ -8,8 +8,8 @@
 
   align-items: center;
   padding: 0.5rem;
-  color: theme.$projection-foreground;
   background-color: theme.$projection-color-list;
+  color: theme.$projection-foreground;
 
   .array-item {
     display: flex;
@@ -20,13 +20,13 @@
   }
 
   &::before {
-    margin-right: 0.25rem;
     content: '[';
+    margin-right: 0.25rem;
   }
 
   &::after {
-    margin-left: 0.25rem;
     content: ']';
+    margin-left: 0.25rem;
   }
 }
 

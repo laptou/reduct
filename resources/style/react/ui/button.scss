@@ -2,18 +2,18 @@
 
 button {
   padding: 0.75em 1em;
+  border: 1px solid #8ab7db;
+  border-radius: 0.25rem;
+  background: lightblue;
   font-family: text.$body-font;
 
   text-align: center;
-  background: lightblue;
-  border: 1px solid #8ab7db;
-  border-radius: 0.25rem;
   cursor: pointer;
 }
 
 .btn-flat {
+  border: none;
+  background: transparent;
   color: var(--foreground);
   font-family: text.$body-font;
-  background: transparent;
-  border: none;
 }
