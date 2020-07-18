@@ -1,3 +1,6 @@
+/* this file is no longer used -iaa34 */
+/* eslint-disable */
+
 import * as gfx from '../gfx/core';
 
 /**
@@ -11,136 +14,139 @@ import * as gfx from '../gfx/core';
  * @module ReductToolbar
  */
 export default class ReductToolbar {
-    constructor(stage) {
-        this.stage = stage;
+  constructor(stage) {
+    this.stage = stage;
 
-        // Map of node ID to [toolbox element, should stop reducing]
-        this.ids = new Map();
-        this.currentId = null;
-        this.playing = false;
+    // Map of node ID to [toolbox element, should stop reducing]
+    this.ids = new Map();
+    this.currentId = null;
+    this.playing = false;
 
-        // TODO: move this somewhere else
-        // Remove any toolbars from the previous level
-        for (const el of document.querySelectorAll('.reduct-toolbar:not(.reduct-toolbar-proto)')) {
-            el.remove();
-        }
-
-        this._shouldStop = this.shouldStop.bind(this);
+    // TODO: move this somewhere else
+    // Remove any toolbars from the previous level
+    for (const el of document.querySelectorAll('.reduct-toolbar:not(.reduct-toolbar-proto)')) {
+      el.remove();
     }
 
-    update(id, prevId = null) {
-        const state = this.stage.getState();
-        if (id !== null && (prevId === null || !this.ids.has(prevId))) {
-            if (this.stage.semantics.kind(state, state.nodes.get(id)) !== 'expression') {
-                return;
-            }
+    this._shouldStop = this.shouldStop.bind(this);
+  }
 
-            const elToolbar = document.querySelector('.reduct-toolbar-proto').cloneNode(true);
-            elToolbar.classList.remove('reduct-toolbar-proto');
-            elToolbar.dataset.id = id;
+  update(id, prevId = null) {
+    const state = this.stage.getState();
+    if (id !== null && (prevId === null || !this.ids.has(prevId))) {
+      if (this.stage.semantics.kind(state, state.nodes.get(id)) !== 'expression') {
+        return;
+      }
 
-            document.body.appendChild(elToolbar);
-            this.ids.set(id, { el: elToolbar, shouldStop: false });
+      const elToolbar = document.querySelector('.reduct-toolbar-proto').cloneNode(true);
+      elToolbar.classList.remove('reduct-toolbar-proto');
+      elToolbar.dataset.id = id;
 
-            const btnFfwd = elToolbar.querySelector('.toolbar-ffwd');
-            const btnPlayPause = elToolbar.querySelector('.toolbar-play, .toolbar-pause');
+      document.body.appendChild(elToolbar);
+      this.ids.set(id, {
+        el: elToolbar,
+        shouldStop: false, 
+      });
 
-            btnFfwd.addEventListener('click', () => this.ffwd(parseInt(elToolbar.dataset.id, 10)));
-            btnPlayPause.addEventListener('click', () => {
-                this.playing = !this.playing;
+      const btnFfwd = elToolbar.querySelector('.toolbar-ffwd');
+      const btnPlayPause = elToolbar.querySelector('.toolbar-play, .toolbar-pause');
 
-                if (!this.playing) {
-                    elToolbar.classList.remove('reduct-toolbar-playing');
-                    this.pause(parseInt(elToolbar.dataset.id, 10));
-                } else {
-                    elToolbar.classList.add('reduct-toolbar-playing');
-                    this.play(parseInt(elToolbar.dataset.id, 10));
-                }
+      btnFfwd.addEventListener('click', () => this.ffwd(parseInt(elToolbar.dataset.id, 10)));
+      btnPlayPause.addEventListener('click', () => {
+        this.playing = !this.playing;
 
-                // Reposition buttons
-                this.drawImpl(this.stage.getState());
-            });
-        } else if (this.ids.has(prevId)) {
-            const idRecord = this.ids.get(prevId);
-            this.ids.delete(prevId);
-            if (id !== null
+        if (!this.playing) {
+          elToolbar.classList.remove('reduct-toolbar-playing');
+          this.pause(parseInt(elToolbar.dataset.id, 10));
+        } else {
+          elToolbar.classList.add('reduct-toolbar-playing');
+          this.play(parseInt(elToolbar.dataset.id, 10));
+        }
+
+        // Reposition buttons
+        this.drawImpl(this.stage.getState());
+      });
+    } else if (this.ids.has(prevId)) {
+      const idRecord = this.ids.get(prevId);
+      this.ids.delete(prevId);
+      if (id !== null
                 && this.stage.semantics.kind(state, state.nodes.get(id)) === 'expression') {
-                this.ids.set(id, idRecord);
-                idRecord.el.dataset.id = id;
-            } else {
-                idRecord.el.remove();
-            }
-        }
+        this.ids.set(id, idRecord);
+        idRecord.el.dataset.id = id;
+      } else {
+        idRecord.el.remove();
+      }
     }
+  }
 
-    drawImpl(state) {
-        const offsetX = this.stage.sidebarWidth;
-        const offsetY = this.stage.canvas.offsetTop;
+  drawImpl(state) {
+    const offsetX = this.stage.sidebarWidth;
+    const offsetY = this.stage.canvas.offsetTop;
 
-        const board = state.board;
-        const toDelete = [];
+    const board = state.board;
+    const toDelete = [];
 
-        for (const [id, { el: toolbar }] of this.ids.entries()) {
-            if (!board.has(id)) {
-                toDelete.push(id);
-                continue;
-            }
+    for (const [id, { el: toolbar }] of this.ids.entries()) {
+      if (!board.has(id)) {
+        toDelete.push(id);
+        continue;
+      }
 
-            const view = this.stage.getView(id);
-            const absPos = gfx.absolutePos(view);
-            const absSize = gfx.absoluteSize(view);
+      const view = this.stage.getView(id);
+      const absPos = gfx.absolutePos(view);
+      const absSize = gfx.absoluteSize(view);
 
-            let posTop = absPos.y + absSize.h + offsetY;
-            let posLeft = (absPos.x - (toolbar.clientWidth / 2))
+      let posTop = absPos.y + absSize.h + offsetY;
+      let posLeft = (absPos.x - (toolbar.clientWidth / 2))
                   + (absSize.w / 2)
                   + offsetX;
 
-            // TODO: refactor this to stage?
-            if (gfx.viewport.IS_PHONE) {
-                posTop *= 1.33;
-                posLeft *= 1.33;
-            }
+      // TODO: refactor this to stage?
+      if (gfx.viewport.IS_PHONE) {
+        posTop *= 1.33;
+        posLeft *= 1.33;
+      }
 
-            toolbar.style.top = `${posTop}px`;
-            toolbar.style.left = `${posLeft}px`;
-        }
-
-        toDelete.forEach((id) => this.update(null, id));
+      toolbar.style.top = `${posTop}px`;
+      toolbar.style.left = `${posLeft}px`;
     }
 
-    shouldStop(id) {
-        if (this.ids.has(id)) {
-            return this.ids.get(id).shouldStop;
-        }
-        return false;
-    }
+    toDelete.forEach((id) => this.update(null, id));
+  }
 
-    play(id) {
-        if (this.ids.has(id)) {
-            this.ids.get(id).shouldStop = false;
-        }
-        this.stage.step(this.stage.getState(), id, 'multi', this._shouldStop);
+  shouldStop(id) {
+    if (this.ids.has(id)) {
+      return this.ids.get(id).shouldStop;
     }
+    return false;
+  }
 
-    pause(id) {
-        if (this.ids.has(id)) {
-            this.ids.get(id).shouldStop = true;
-        }
+  play(id) {
+    if (this.ids.has(id)) {
+      this.ids.get(id).shouldStop = false;
     }
+    this.stage.step(this.stage.getState(), id, 'multi', this._shouldStop);
+  }
 
-    ffwd(id) {
-        // TODO: LOGGING
-        if (this.ids.has(id)) {
-            this.ids.get(id).shouldStop = false;
-        }
-        this.stage.step(this.stage.getState(), id, 'big');
+  pause(id) {
+    if (this.ids.has(id)) {
+      this.ids.get(id).shouldStop = true;
     }
+  }
 
-    skip(id) {
-        // TODO: LOGGING
-        if (this.ids.has(id)) {
-            this.ids.get(id).shouldStop = false;
-        }
-        this.stage.step(this.stage.getState(), id, 'big');
+  ffwd(id) {
+    // TODO: LOGGING
+    if (this.ids.has(id)) {
+      this.ids.get(id).shouldStop = false;
     }
+    this.stage.step(this.stage.getState(), id, 'big');
+  }
+
+  skip(id) {
+    // TODO: LOGGING
+    if (this.ids.has(id)) {
+      this.ids.get(id).shouldStop = false;
+    }
+    this.stage.step(this.stage.getState(), id, 'big');
+  }
 }

@@ -1,3 +1,6 @@
+/* this file is no longer used -iaa34 */
+/* eslint-disable */
+
 /**
  * @module gfx/core
  */
@@ -20,7 +23,7 @@ const DEBUG_COLORS = {
   'hbox': 'blue',
   'vbox': 'blue',
   'text': 'green',
-  'custom/argumentBar': 'purple'
+  'custom/argumentBar': 'purple',
 };
 
 document.body.addEventListener('keyup', (e) => {
@@ -43,28 +46,40 @@ export function baseProjection(options) {
          * @alias gfx.baseProjection.pos
          * @instance
          */
-    pos: { x: 0, y: 0 },
+    pos: {
+      x: 0,
+      y: 0, 
+    },
     /**
          * @member
          * @memberof! gfx.baseProjection
          * @alias gfx.baseProjection.anchor
          * @instance
          */
-    anchor: { x: 0, y: 0 },
+    anchor: {
+      x: 0,
+      y: 0, 
+    },
     /**
          * @member
          * @memberof! gfx.baseProjection
          * @alias gfx.baseProjection.scale
          * @instance
          */
-    scale: { x: 1, y: 1 },
+    scale: {
+      x: 1,
+      y: 1, 
+    },
     /**
          * @member
          * @memberof! gfx.baseProjection
          * @alias gfx.baseProjection.size
          * @instance
          */
-    size: { w: 0, h: 0 },
+    size: {
+      w: 0,
+      h: 0, 
+    },
     /**
          * @member
          * @memberof! gfx.baseProjection
@@ -85,8 +100,11 @@ export function baseProjection(options) {
          * @alias gfx.baseProjection.offset
          * @instance
          */
-    offset: { x: 0, y: 0 },
-    ...options
+    offset: {
+      x: 0,
+      y: 0, 
+    },
+    ...options,
   };
 
   if (options && options.notches) {
@@ -169,12 +187,12 @@ export function baseProjection(options) {
       x: 0,
       y: 0,
       sx: 1,
-      sy: 1
+      sy: 1,
     }); // Assume we are a top level expression
     const offset = this.notchOffset(id, exprId, notchId);
     return {
       x: pos.x + offset.x,
-      y: pos.y + offset.y
+      y: pos.y + offset.y,
     };
   };
 
@@ -215,7 +233,7 @@ export function notchProjection(options) {
       if (this.highlighted) {
         primitive.setStroke(ctx, {
           lineWidth: 4,
-          color: 'magenta'
+          color: 'magenta',
         });
       } else if (this.stroke) {
         primitive.setStroke(ctx, this);
@@ -241,7 +259,10 @@ export function notchProjection(options) {
     }
   };
   projection.notchOffset = function(id, exprId, notch) {
-    return { x: 0, y: this.size.h / 2 };
+    return {
+      x: 0,
+      y: this.size.h / 2, 
+    };
   };
   return projection;
 }
@@ -263,7 +284,7 @@ export function hoverOutline(id, projection, stage, offset) {
     const { x, y } = util.topLeftPos(projection, offset);
     primitive.setStroke(stage.ctx, {
       lineWidth: 2,
-      color: projection.highlightColor || 'yellow'
+      color: projection.highlightColor || 'yellow',
     });
 
     primitive.roundRect(
@@ -327,7 +348,10 @@ export function absolutePos(projection) {
     x += projection.pos.x - (projection.anchor.x * projection.size.w * projection.scale.x);
     y += projection.pos.y - (projection.anchor.y * projection.size.h * projection.scale.y);
   }
-  return { x, y };
+  return {
+    x,
+    y, 
+  };
 }
 
 /**
@@ -345,7 +369,10 @@ export function absoluteSize(projection) {
     w *= projection.scale.x;
     h *= projection.scale.y;
   }
-  return { w, h };
+  return {
+    w,
+    h, 
+  };
 }
 
 /**
@@ -359,7 +386,7 @@ export function centerPos(projection) {
   const { w, h } = absoluteSize(projection);
   return {
     x: x + (w / 2),
-    y: y + (h / 2)
+    y: y + (h / 2),
   };
 }
 
@@ -407,7 +434,7 @@ export function baseShape(name, defaults, draw, baseShapeOptions = {}) {
       } else if (stage.isHovered(id) && (this.highlight !== false)) {
         primitive.setStroke(ctx, {
           lineWidth: 2,
-          color: this.highlightColor || 'yellow'
+          color: this.highlightColor || 'yellow',
         });
         shouldStroke = true;
       } else if (!!(node && node.parent && node.locked)
@@ -415,7 +442,7 @@ export function baseShape(name, defaults, draw, baseShapeOptions = {}) {
         // Stroke if we have a parent to make it clearer.
         primitive.setStroke(ctx, {
           lineWidth: 1,
-          color: 'gray'
+          color: 'gray',
         });
         shouldStroke = true;
       } else {
@@ -454,7 +481,7 @@ export const rect = baseShape('roundedRect', {
   radius: 20,
   shadowColor: '#000',
   shadowOffset: 4,
-  strokeWhenChild: true
+  strokeWhenChild: true,
 }, (ctx, projection, x, y, w, h, sx, sy, shouldStroke, notches) => {
   ctx.fillRect(x, y, w, h);
   if (shouldStroke) {
@@ -473,7 +500,7 @@ export const roundedRect = baseShape('roundedRect', {
   radius: 18,
   shadowColor: '#000',
   shadowOffset: 4,
-  strokeWhenChild: true // Draw border when child of another expression
+  strokeWhenChild: true, // Draw border when child of another expression
 }, (ctx, projection, x, y, w, h, sx, sy, shouldStroke, notches) => {
   primitive.roundRect(
     ctx,
@@ -494,27 +521,27 @@ export const roundedRect = baseShape('roundedRect', {
     case 'left':
       return {
         x: 0,
-        y: this.radius + ((this.size.h - this.radius) * (1 - notch.relpos) * this.scale.y)
+        y: this.radius + ((this.size.h - this.radius) * (1 - notch.relpos) * this.scale.y),
       };
     case 'right':
       return {
         x: (this.size.w * this.scale.x),
-        y: ((this.radius + ((this.size.h - (this.radius * 2)) * notch.relpos)) * this.scale.y)
+        y: ((this.radius + ((this.size.h - (this.radius * 2)) * notch.relpos)) * this.scale.y),
       };
     case 'top':
       return {
         x: this.radius + ((this.size.w - (this.radius * 2)) * notch.relpos),
-        y: 0
+        y: 0,
       };
     case 'bottom':
       return {
         x: this.radius + ((this.size.w - (this.radius * 2)) * (1 - notch.relpos)),
-        y: this.size.h
+        y: this.size.h,
       };
     default:
       throw `roundedRect#notchOffset: unrecognized side ${notch.side}`;
     }
-  }
+  },
 });
 
 /**
@@ -526,7 +553,7 @@ export const hexaRect = baseShape('hexaRect', {
   radius: 20,
   shadowColor: '#000',
   shadowOffset: 4,
-  strokeWhenChild: true // Draw border when child of another expression
+  strokeWhenChild: true, // Draw border when child of another expression
 }, (ctx, projection, x, y, w, h, sx, sy, shouldStroke) => {
   primitive.hexaRect(
     ctx,
@@ -642,5 +669,5 @@ export { default as text } from './text';
 export { default as decal } from './decal';
 export * from './sprite';
 export {
-  custom, layout, primitive, shapes, ui, viewport
+  custom, layout, primitive, shapes, ui, viewport,
 };

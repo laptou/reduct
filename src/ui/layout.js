@@ -1,3 +1,6 @@
+/* this file is no longer used -iaa34 */
+/* eslint-disable */
+
 import { uncmin } from 'numeric';
 
 import * as gfx from '../gfx/core';
@@ -72,7 +75,10 @@ export function ianPacking(stage, bounds, nodeIds) {
 
       const x = Math.max((seededRandom() * (bounds.w - size.w)) + bounds.x, bounds.x);
 
-      const pos = { x, y };
+      const pos = {
+        x,
+        y, 
+      };
       candidate.set(nodeId, pos);
     }
 
@@ -179,13 +185,13 @@ export function repulsorPacking(stage, bounds, nodeIds) {
       cx: pos1.x,
       cy: pos1.y,
       w: sz1.w,
-      h: sz1.h
+      h: sz1.h,
     };
     const aabb2 = {
       cx: pos2.x,
       cy: pos2.y,
       w: sz2.w,
-      h: sz2.h
+      h: sz2.h,
     };
 
     const d = edgeDistance(aabb1, aabb2);
@@ -200,14 +206,20 @@ export function repulsorPacking(stage, bounds, nodeIds) {
   const centerX = bounds.x + (bounds.w / 2);
   const centerY = bounds.y + (bounds.h / 2);
   for (const nodeId of nodeIds) {
-    positions.set(nodeId, { x: centerX, y: centerY });
+    positions.set(nodeId, {
+      x: centerX,
+      y: centerY, 
+    });
   }
 
   for (let i = 0; i < REPULSOR_STEPS; i++) {
     const forces = new Map();
 
     for (const id1 of nodeIds) {
-      forces.set(id1, { x: 0, y: 0 });
+      forces.set(id1, {
+        x: 0,
+        y: 0, 
+      });
     }
 
     for (const id1 of nodeIds) {
@@ -290,20 +302,58 @@ function aabbSides(aabb) {
 
   return [
     // Top
-    [{ x, y }, { x: w, y: 0 }],
+    [
+      {
+        x,
+        y, 
+      }, {
+        x: w,
+        y: 0, 
+      },
+    ],
     // Left
-    [{ x, y }, { x: 0, y: h }],
+    [
+      {
+        x,
+        y, 
+      }, {
+        x: 0,
+        y: h, 
+      },
+    ],
     // Right
-    [{ x: x + w, y: y + h }, { x: 0, y: -h }],
+    [
+      {
+        x: x + w,
+        y: y + h, 
+      }, {
+        x: 0,
+        y: -h, 
+      },
+    ],
     // Bottom
-    [{ x: x + w, y: y + h }, { x: -w, y: 0 }]
+    [
+      {
+        x: x + w,
+        y: y + h, 
+      }, {
+        x: -w,
+        y: 0, 
+      },
+    ],
   ];
 }
 
 function aabbIntersects(aabb1, aabb2) {
-  const pos1 = { x: aabb1.cx - (aabb1.w / 2), y: aabb1.cy - (aabb1.h / 2) };
+  const pos1 = {
+    x: aabb1.cx - (aabb1.w / 2),
+    y: aabb1.cy - (aabb1.h / 2), 
+  };
   const sz1 = aabb1;
-  const pos2 = { x: aabb2.cx - (aabb2.w / 2), y: aabb2.cy - (aabb2.h / 2) };
+  const pos2 = {
+    x: aabb2.cx - (aabb2.w / 2),
+    y: aabb2.cy - (aabb2.h / 2), 
+  };
   const sz2 = aabb2;
   return !(pos2.x > pos1.x + sz1.w
              || pos2.x + sz2.w < pos1.x
@@ -313,7 +363,10 @@ function aabbIntersects(aabb1, aabb2) {
 
 function raySegmentIntersect(p, r, q, s) {
   // https://stackoverflow.com/a/565282
-  const qmp = { x: q.x - p.x, y: q.y - p.y };
+  const qmp = {
+    x: q.x - p.x,
+    y: q.y - p.y, 
+  };
   const rxs = (r.x * s.y) - (r.y * s.x);
   const qmpxr = (qmp.x * r.y) - (qmp.y * r.x);
 
@@ -327,7 +380,7 @@ function raySegmentIntersect(p, r, q, s) {
         return {
           x: p.x + (t0 * r.x),
           y: p.y + (t0 * r.y),
-          t: t0
+          t: t0,
         };
       }
     }
@@ -345,7 +398,7 @@ function raySegmentIntersect(p, r, q, s) {
       x: p.x + (t * r.x),
       y: p.y + (t * r.y),
       t,
-      u
+      u,
     };
   }
   // Non-parallel and non-intersecting
@@ -359,8 +412,14 @@ function edgeDistance(aabb1, aabb2) {
   // AABB, then compute distance between those.
 
   // The ray has origin p and direction r.
-  const p = { x: aabb1.cx, y: aabb1.cy };
-  const r = { x: aabb2.cx - aabb1.cx, y: aabb2.cy - aabb1.cy };
+  const p = {
+    x: aabb1.cx,
+    y: aabb1.cy, 
+  };
+  const r = {
+    x: aabb2.cx - aabb1.cx,
+    y: aabb2.cy - aabb1.cy, 
+  };
 
   if (Math.abs(r.x) < 1e-5 && Math.abs(r.y) < 1e-5) {
     // Boxes have same center
@@ -422,12 +481,12 @@ export function optimizationPacking(stage, bounds, nodeIds) {
           cx: x1,
           cy: y1,
           w: sz1.w,
-          h: sz1.h
+          h: sz1.h,
         }, {
           cx: x2,
           cy: y2,
           w: sz2.w,
-          h: sz2.h
+          h: sz2.h,
         });
         result += 1 / Math.exp(Math.sqrt(pairwiseDistance) / (Math.max(bounds.w, bounds.h) / 5));
         // result += 1 / (1 + Math.abs(pairwiseDistance));
@@ -473,7 +532,7 @@ export function optimizationPacking(stage, bounds, nodeIds) {
   for (const id of nodeIds) {
     positions.set(id, {
       x: solution[i],
-      y: solution[i + 1]
+      y: solution[i + 1],
     });
     i += 2;
   }

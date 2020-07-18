@@ -1,3 +1,6 @@
+/* this file is no longer used -iaa34 */
+/* eslint-disable */
+
 import * as gfx from '../gfx/core';
 import * as animate from '../gfx/animate';
 import * as progression from '../game/progression';
@@ -7,17 +10,17 @@ import Loader from '../loader';
  * Replace references to objects like stars with the correct name
  */
 export function templateText(semantics, text) {
-    return text.replace(/\{([\w\s]+)\}/g, (wholeMatch, groupMatch) => {
-        const defn = semantics.definitionOf('symbol');
-        const matchParts = groupMatch.split(' ');
-        let key = matchParts[matchParts.length - 1];
-        let offset = matchParts.length > 1 ? 1 : 0;
-        if (!defn.goalNames[key] && key.endsWith('s')) {
-            key = key.slice(0, -1);
-            offset = 2;
-        }
-        return defn.goalNames[key][offset];
-    });
+  return text.replace(/\{([\w\s]+)\}/g, (wholeMatch, groupMatch) => {
+    const defn = semantics.definitionOf('symbol');
+    const matchParts = groupMatch.split(' ');
+    let key = matchParts[matchParts.length - 1];
+    let offset = matchParts.length > 1 ? 1 : 0;
+    if (!defn.goalNames[key] && key.endsWith('s')) {
+      key = key.slice(0, -1);
+      offset = 2;
+    }
+    return defn.goalNames[key][offset];
+  });
 }
 
 /**
@@ -25,162 +28,171 @@ export function templateText(semantics, text) {
  * @module Goal
  */
 export default class Goal {
-    constructor(stage) {
-        this.stage = stage;
+  constructor(stage) {
+    this.stage = stage;
 
-        const chapter = progression.currentChapter();
-        const alienIndex = Math.floor(((progression.currentLevel() - chapter.startIdx)
+    const chapter = progression.currentChapter();
+    const alienIndex = Math.floor(((progression.currentLevel() - chapter.startIdx)
                                        / ((chapter.endIdx - chapter.startIdx) + 1))
                                       * chapter.resources.aliens.length);
-        const image = Loader.images[chapter.resources.aliens[alienIndex]];
-        const alienSize = { h: 100, w: 100 * (image.frame.w / image.frame.h) };
-        if (alienSize.w > 120) {
-            alienSize.w = 120;
-            alienSize.h = 120 * (image.frame.h / image.frame.w);
-        }
-        const alien = stage.allocate(gfx.sprite({
-            image,
-            size: alienSize
+    const image = Loader.images[chapter.resources.aliens[alienIndex]];
+    const alienSize = {
+      h: 100,
+      w: 100 * (image.frame.w / image.frame.h), 
+    };
+    if (alienSize.w > 120) {
+      alienSize.w = 120;
+      alienSize.h = 120 * (image.frame.h / image.frame.w);
+    }
+    const alien = stage.allocate(gfx.sprite({
+      image,
+      size: alienSize,
+    }));
+
+    const alienBox = Loader.images.alien_box;
+
+    let bgSize = {
+      h: 1.5 * this.stage.getView(alien).size.h * (alienBox.frame.h / alienBox.frame.w),
+    };
+    bgSize.w = bgSize.h * (alienBox.frame.w / alienBox.frame.h);
+    if (image.frame.w > image.frame.h) {
+      bgSize = {
+        w: 1.5 * this.stage.getView(alien).size.w,
+        h: 1.5 * this.stage.getView(alien).size.w * (alienBox.frame.h / alienBox.frame.w),
+      };
+    }
+    const background = stage.allocate(gfx.sprite({
+      image: alienBox,
+      size: bgSize,
+    }));
+    this.stage.views[background].pos = {
+      x: 5,
+      y: 5, 
+    };
+    this.stage.views[alien].anchor = {
+      x: 0.5,
+      y: 0.5, 
+    };
+    const bg = this.stage.getView(background);
+    this.stage.views[alien].pos = {
+      x: 5 + (bg.size.w / 2),
+      // Yes w not h
+      y: 5 + (bg.size.w / 2),
+    };
+
+    this.alien = alien;
+    this.background = background;
+
+    const container = stage.allocate(gfx.layout.hbox((_id, state) => state.goal, {
+      subexpScale: 1,
+      padding: {
+        left: 10,
+        right: 10,
+        top: 5,
+        bottom: 5,
+      },
+    }, gfx.baseProjection));
+    this.container = stage.allocate(gfx.patch3(gfx.constant(container), {
+      left: Loader.images.dialog_box_left,
+      middle: Loader.images.dialog_box_mid,
+      right: Loader.images.dialog_box_right,
+      leftSpill: 0.4,
+    }));
+
+    this.textGoal = null;
+  }
+
+  startLevel(textGoal, showConcreteGoal = false) {
+    if (textGoal) {
+      textGoal = templateText(this.stage.semantics, textGoal);
+
+      this.text = this.stage.allocate(gfx.text(textGoal, {
+        fontSize: 20,
+        font: gfx.text.sans,
+        wrapWidth: 50,
+      }));
+      let container = null;
+      if (showConcreteGoal) {
+        const goalLabel = this.stage.allocate(gfx.text('Goal: ', {
+          fontSize: 20,
+          font: gfx.text.sans,
         }));
 
-        const alienBox = Loader.images.alien_box;
-
-        let bgSize = {
-            h: 1.5 * this.stage.getView(alien).size.h * (alienBox.frame.h / alienBox.frame.w)
+        const contents = (_id, state) => {
+          const result = [goalLabel];
+          return result.concat(Array.from(state.goal));
         };
-        bgSize.w = bgSize.h * (alienBox.frame.w / alienBox.frame.h);
-        if (image.frame.w > image.frame.h) {
-            bgSize = {
-                w: 1.5 * this.stage.getView(alien).size.w,
-                h: 1.5 * this.stage.getView(alien).size.w * (alienBox.frame.h / alienBox.frame.w)
-            };
-        }
-        const background = stage.allocate(gfx.sprite({
-            image: alienBox,
-            size: bgSize
-        }));
-        this.stage.views[background].pos = { x: 5, y: 5 };
-        this.stage.views[alien].anchor = { x: 0.5, y: 0.5 };
-        const bg = this.stage.getView(background);
-        this.stage.views[alien].pos = {
-            x: 5 + (bg.size.w / 2),
-            // Yes w not h
-            y: 5 + (bg.size.w / 2)
-        };
-
-        this.alien = alien;
-        this.background = background;
-
-        const container = stage.allocate(gfx.layout.hbox((_id, state) => state.goal, {
+        container = this.stage.allocate(gfx.layout.vbox(gfx.constant(
+          this.text,
+          this.stage.allocate(gfx.layout.hbox(contents, {
             subexpScale: 1,
-            padding: {
-                left: 10,
-                right: 10,
-                top: 5,
-                bottom: 5
-            }
+          }, gfx.baseProjection))
+        ), {
+          subexpScale: 1,
+          padding: {
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0,
+            inner: 5,
+          },
         }, gfx.baseProjection));
-        this.container = stage.allocate(gfx.patch3(gfx.constant(container), {
-            left: Loader.images.dialog_box_left,
-            middle: Loader.images.dialog_box_mid,
-            right: Loader.images.dialog_box_right,
-            leftSpill: 0.4
-        }));
+      } else {
+        const contents = gfx.constant(this.text);
+        container = this.stage.allocate(gfx.layout.hbox(contents, {
+          subexpScale: 1,
+        }, gfx.baseProjection));
+      }
 
-        this.textGoal = null;
+      this.container = this.stage.allocate(gfx.patch3(gfx.constant(container), {
+        left: Loader.images.dialog_box_left,
+        middle: Loader.images.dialog_box_mid,
+        right: Loader.images.dialog_box_right,
+      }));
     }
 
-    startLevel(textGoal, showConcreteGoal = false) {
-        if (textGoal) {
-            textGoal = templateText(this.stage.semantics, textGoal);
+    const alien = this.stage.getView(this.background);
+    this.stage.getView(this.container).pos = {
+      x: gfx.absolutePos(alien).x + alien.size.w - 10,
+      y: -300,
+    };
 
-            this.text = this.stage.allocate(gfx.text(textGoal, {
-                fontSize: 20,
-                font: gfx.text.sans,
-                wrapWidth: 50
-            }));
-            let container = null;
-            if (showConcreteGoal) {
-                const goalLabel = this.stage.allocate(gfx.text('Goal: ', {
-                    fontSize: 20,
-                    font: gfx.text.sans
-                }));
+    animate.tween(this.stage.getView(this.container), {
+      pos: {
+        y: 15,
+      },
+    }, {
+      duration: 500,
+      easing: animate.Easing.Anticipate.BackOut(1.2),
+    }).delay(500);
+  }
 
-                const contents = (_id, state) => {
-                    const result = [goalLabel];
-                    return result.concat(Array.from(state.goal));
-                };
-                container = this.stage.allocate(gfx.layout.vbox(gfx.constant(
-                    this.text,
-                    this.stage.allocate(gfx.layout.hbox(contents, {
-                        subexpScale: 1
-                    }, gfx.baseProjection))
-                ), {
-                    subexpScale: 1,
-                    padding: {
-                        left: 0,
-                        right: 0,
-                        top: 0,
-                        bottom: 0,
-                        inner: 5
-                    }
-                }, gfx.baseProjection));
-            } else {
-                const contents = gfx.constant(this.text);
-                container = this.stage.allocate(gfx.layout.hbox(contents, {
-                    subexpScale: 1
-                }, gfx.baseProjection));
-            }
+  drawImpl(state) {
+    const background = this.stage.views[this.background];
+    background.prepare(null, null, state, this.stage);
 
-            this.container = this.stage.allocate(gfx.patch3(gfx.constant(container), {
-                left: Loader.images.dialog_box_left,
-                middle: Loader.images.dialog_box_mid,
-                right: Loader.images.dialog_box_right
-            }));
-        }
+    const alien = this.stage.views[this.alien];
+    alien.prepare(null, null, state, this.stage);
 
-        const alien = this.stage.getView(this.background);
-        this.stage.getView(this.container).pos = {
-            x: gfx.absolutePos(alien).x + alien.size.w - 10,
-            y: -300
-        };
+    const view = this.stage.views[this.container];
+    view.prepare(null, null, state, this.stage);
 
-        animate.tween(this.stage.getView(this.container), {
-            pos: {
-                y: 15
-            }
-        }, {
-            duration: 500,
-            easing: animate.Easing.Anticipate.BackOut(1.2)
-        }).delay(500);
+    background.draw(null, null, state, this.stage, this.stage.makeBaseOffset());
+    alien.draw(null, null, state, this.stage, this.stage.makeBaseOffset());
+    view.draw(null, null, state, this.stage, this.stage.makeBaseOffset());
+  }
+
+  animatedNodes() {
+    if (this.textGoal) {
+      return [this.text];
     }
+    return [];
+  }
 
-    drawImpl(state) {
-        const background = this.stage.views[this.background];
-        background.prepare(null, null, state, this.stage);
-
-        const alien = this.stage.views[this.alien];
-        alien.prepare(null, null, state, this.stage);
-
-        const view = this.stage.views[this.container];
-        view.prepare(null, null, state, this.stage);
-
-        background.draw(null, null, state, this.stage, this.stage.makeBaseOffset());
-        alien.draw(null, null, state, this.stage, this.stage.makeBaseOffset());
-        view.draw(null, null, state, this.stage, this.stage.makeBaseOffset());
+  victory() {
+    if (this.text) {
+      this.stage.views[this.text].text = '';
     }
-
-    animatedNodes() {
-        if (this.textGoal) {
-            return [this.text];
-        }
-        return [];
-    }
-
-    victory() {
-        if (this.text) {
-            this.stage.views[this.text].text = '';
-        }
-        this.stage.getView(this.container).opacity = 0;
-    }
+    this.stage.getView(this.container).opacity = 0;
+  }
 }

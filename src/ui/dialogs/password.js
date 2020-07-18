@@ -5,68 +5,68 @@ import { DEVELOPMENT_BUILD, REQUIRE_PASSWORDS } from '../../logging/logging';
  * canceled).
  */
 export default function password(promptText, password) {
-    return new Promise((resolve, reject) => {
-        if (DEVELOPMENT_BUILD || !REQUIRE_PASSWORDS) {
-            resolve();
-            return;
-        }
+  return new Promise((resolve, reject) => {
+    if (DEVELOPMENT_BUILD || !REQUIRE_PASSWORDS) {
+      resolve();
+      return;
+    }
 
-        const outerContainer = document.createElement('div');
-        outerContainer.classList.add('fade-container');
+    const outerContainer = document.createElement('div');
+    outerContainer.classList.add('fade-container');
 
-        const modal = document.createElement('div');
-        outerContainer.appendChild(modal);
+    const modal = document.createElement('div');
+    outerContainer.appendChild(modal);
 
-        const container = document.createElement('div');
-        container.classList.add('password-prompt');
-        modal.appendChild(container);
+    const container = document.createElement('div');
+    container.classList.add('password-prompt');
+    modal.appendChild(container);
 
-        const prompt = document.createElement('p');
-        container.appendChild(prompt);
-        prompt.innerText = promptText;
+    const prompt = document.createElement('p');
+    container.appendChild(prompt);
+    prompt.innerText = promptText;
 
-        const message = document.createElement('p');
-        message.style.color = '#F00';
-        container.appendChild(message);
+    const message = document.createElement('p');
+    message.style.color = '#F00';
+    container.appendChild(message);
 
-        const form = document.createElement('form');
-        container.appendChild(form);
+    const form = document.createElement('form');
+    container.appendChild(form);
 
-        const input = document.createElement('input');
-        form.appendChild(input);
-        input.setAttribute('type', 'password');
-        input.setAttribute('autocomplete', 'password');
-        const submit = document.createElement('button');
-        form.appendChild(submit);
-        submit.innerText = 'Submit';
-        const cancel = document.createElement('button');
-        form.appendChild(cancel);
-        cancel.setAttribute('type', 'button');
-        cancel.innerText = 'Never Mind!';
+    const input = document.createElement('input');
+    form.appendChild(input);
+    input.setAttribute('type', 'password');
+    input.setAttribute('autocomplete', 'password');
+    const submit = document.createElement('button');
+    form.appendChild(submit);
+    submit.innerText = 'Submit';
+    const cancel = document.createElement('button');
+    form.appendChild(cancel);
+    cancel.setAttribute('type', 'button');
+    cancel.innerText = 'Never Mind!';
 
-        const next = (then) => (ev) => {
-            ev.preventDefault();
-            outerContainer.classList.remove('visible');
-            outerContainer.addEventListener('transitionend', () => {
-                outerContainer.remove();
-                then();
-            });
-        };
+    const next = (then) => (ev) => {
+      ev.preventDefault();
+      outerContainer.classList.remove('visible');
+      outerContainer.addEventListener('transitionend', () => {
+        outerContainer.remove();
+        then();
+      });
+    };
 
-        form.addEventListener('submit', (ev) => {
-            ev.preventDefault();
-            if (input.value === password) {
-                next(resolve)(ev);
-            } else {
-                message.innerText = 'Wrong password!';
-            }
-        });
-        cancel.addEventListener('click', next(reject));
-
-        document.body.appendChild(outerContainer);
-
-        window.setTimeout(() => {
-            outerContainer.classList.add('visible');
-        }, 200);
+    form.addEventListener('submit', (ev) => {
+      ev.preventDefault();
+      if (input.value === password) {
+        next(resolve)(ev);
+      } else {
+        message.innerText = 'Wrong password!';
+      }
     });
+    cancel.addEventListener('click', next(reject));
+
+    document.body.appendChild(outerContainer);
+
+    window.setTimeout(() => {
+      outerContainer.classList.add('visible');
+    }, 200);
+  });
 }

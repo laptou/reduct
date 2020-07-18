@@ -1,3 +1,6 @@
+/* this file is no longer used -iaa34 */
+/* eslint-disable */
+
 import chroma from 'chroma-js';
 
 import * as action from '../store/action';
@@ -69,11 +72,14 @@ export default class TouchRecord extends BaseTouchRecord {
 
       const indicator = this.stage.getView(this.stage.sidebar.indicator);
       indicator.tween = animate.tween(indicator, {
-        padding: { top: 50, bottom: 50 },
-        opacity: 1
+        padding: {
+          top: 50,
+          bottom: 50, 
+        },
+        opacity: 1,
       }, {
         duration: 300,
-        easing: animate.Easing.Cubic.In
+        easing: animate.Easing.Cubic.In,
       });
     }
 
@@ -100,7 +106,7 @@ export default class TouchRecord extends BaseTouchRecord {
         const view = this.stage.getView(targetId);
         const stroke = {
           color: targetId === this.hoverNode ? 'gold' : '#02d8f9',
-          lineWidth: 3 + (1.5 * Math.cos(time / 750))
+          lineWidth: 3 + (1.5 * Math.cos(time / 750)),
         };
 
         if (state.nodes.get(targetId).type === 'lambdaArg') {
@@ -206,7 +212,7 @@ export default class TouchRecord extends BaseTouchRecord {
         const view = this.stage.getView(this.topNode);
         this.stage.views[this.topNode].anchor = {
           x: this.dragAnchor.x,
-          y: this.dragAnchor.y
+          y: this.dragAnchor.y,
         };
         view.pos.x = mousePos.x;
         view.pos.y = mousePos.y;
@@ -300,13 +306,13 @@ export default class TouchRecord extends BaseTouchRecord {
                 left: view.padding.left + lr,
                 right: view.padding.right + lr,
                 top: view.padding.top + tb,
-                bottom: view.padding.bottom + tb
-              }
+                bottom: view.padding.bottom + tb,
+              },
             }, {
               duration: 600,
               easing: animate.Easing.Cubic.Out,
               // Don't override layout
-              setAnimatingFlag: false
+              setAnimatingFlag: false,
             });
             this.dropTweens.set(this.hoverNode, [tween, true]);
           }
@@ -333,20 +339,26 @@ export default class TouchRecord extends BaseTouchRecord {
       if (this.hoverNode) {
         if (this.scaleAnimation) this.scaleAnimation.cancel();
         this.scaleAnimation = animate.tween(this.stage.getView(this.topNode), {
-          scale: { x: 0.6, y: 0.6 }
+          scale: {
+            x: 0.6,
+            y: 0.6, 
+          },
         }, {
           easing: animate.Easing.Cubic.Out,
           setAnimatingFlag: false,
-          duration: 300
+          duration: 300,
         });
       } else if (this.stage.getView(this.topNode).scale.x < 1) {
         if (this.scaleAnimation) this.scaleAnimation.cancel();
         this.scaleAnimation = animate.tween(this.stage.getView(this.topNode), {
-          scale: { x: 1, y: 1 }
+          scale: {
+            x: 1,
+            y: 1, 
+          },
         }, {
           easing: animate.Easing.Cubic.Out,
           setAnimatingFlag: false,
-          duration: 300
+          duration: 300,
         });
       }
     }
@@ -373,9 +385,15 @@ export default class TouchRecord extends BaseTouchRecord {
 
     if (this.isExpr && this.topNode) {
       const view = this.stage.getView(this.topNode);
-      view.scale = { x: 1, y: 1 };
+      view.scale = {
+        x: 1,
+        y: 1, 
+      };
       const cp = gfxCore.centerPos(view);
-      view.anchor = { x: 0.5, y: 0.5 };
+      view.anchor = {
+        x: 0.5,
+        y: 0.5, 
+      };
       view.pos = cp;
     }
 
@@ -418,7 +436,10 @@ export default class TouchRecord extends BaseTouchRecord {
       // one motion
       if (projection) {
         const topLeft = gfxCore.absolutePos(projection);
-        const bottom = { x: 0, y: topLeft.y + projection.size.h };
+        const bottom = {
+          x: 0,
+          y: topLeft.y + projection.size.h, 
+        };
         if (this.stage.toolbox.containsPoint(bottom)) {
           useItem = false;
         }
@@ -442,7 +463,10 @@ export default class TouchRecord extends BaseTouchRecord {
     if (this.isExpr && this.topNode !== null) {
       const projection = this.stage.views[this.topNode];
       const topLeft = gfxCore.absolutePos(projection);
-      const bottom = { x: 0, y: topLeft.y + projection.size.h };
+      const bottom = {
+        x: 0,
+        y: topLeft.y + projection.size.h, 
+      };
       if (this.stage.toolbox.containsPoint(bottom)
                 && !this.stage.getState().toolbox.has(this.topNode)) {
         Logging.log('toolbox-reject', this.stage.saveNode(this.topNode));

@@ -22,14 +22,14 @@ export const PROGRESSIONS = {
       'list-functions': ['strings'],
       'strings': ['letExpr'],
       'letExpr': ['play'],
-      'play': []
+      'play': [],
     },
     settings: { // This sets global flags.
       __ALLOW_PARTIAL_REPLICATION: false,
       __ALLOW_SKIPPING: true,
-      __ALLOW_ARRAY_EVENTS: false
-    }
-  }
+      __ALLOW_ARRAY_EVENTS: false,
+    },
+  },
 };
 
 export const ACTIVE_PROGRESSION = 'Elementary';

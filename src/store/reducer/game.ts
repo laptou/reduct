@@ -1,25 +1,25 @@
 import type { Flat, NodeId, NodeMap } from '@/semantics';
 import {
-  ApplyNode, BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NotNode, NumberNode, OpNode, PTupleNode, ReferenceNode as ReferenceNode, StrNode 
+  ApplyNode, BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NotNode, NumberNode, OpNode, PTupleNode, ReferenceNode as ReferenceNode, StrNode, 
 } from '@/semantics/defs';
 import { builtins } from '@/semantics/defs/builtins';
 import {
-  createBoolNode, createMissingNode, createNumberNode, createStrNode, getKindForNode, getValueForName, iterateTuple 
+  createBoolNode, createMissingNode, createNumberNode, createStrNode, getKindForNode, getValueForName, iterateTuple, 
 } from '@/semantics/util';
 import {
-  DeepReadonly, DRF, mapIterable, withoutParent, withParent 
+  DeepReadonly, DRF, mapIterable, withoutParent, withParent, 
 } from '@/util/helper';
 import {
-  cloneNodeDeep, findNodesDeep, getRootForNode, isAncestorOf 
+  cloneNodeDeep, findNodesDeep, getRootForNode, isAncestorOf, 
 } from '@/util/nodes';
 import { castDraft, produce } from 'immer';
 import {
-  CircularCallError, GameError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError 
+  CircularCallError, GameError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, 
 } from '../errors';
 import { checkDefeat, checkVictory } from '../helper';
 import { GameMode, RState } from '../state';
 import {
-  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStep, ReductAction 
+  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStep, ReductAction, 
 } from '../action';
 
 const initialProgram: RState = {
@@ -32,7 +32,7 @@ const initialProgram: RState = {
   globals: new Map(),
   added: new Map(),
   removed: new Map(),
-  executing: new Set()
+  executing: new Set(),
 };
 
 // To speed up type checking, we only type check nodes that have
@@ -67,7 +67,7 @@ export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductA
       globals: act.globals,
       added: new Map(mapIterable(act.nodes.keys(), id => [id, null] as const)),
       removed: new Map(),
-      executing: new Set()
+      executing: new Set(),
     };
   }
 
@@ -106,10 +106,19 @@ export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductA
       const argName = argNode.fields.name;
 
       // bind the param value to the arg node
-      const boundArgNode = { ...argNode, fields: { ...argNode.fields, value: paramNodeId } };
+      const boundArgNode = {
+        ...argNode,
+        fields: {
+          ...argNode.fields,
+          value: paramNodeId, 
+        }, 
+      };
       const newNodeMap = new Map(state.nodes);
       newNodeMap.set(boundArgNode.id, boundArgNode);
-      state = { ...state, nodes: newNodeMap };
+      state = {
+        ...state,
+        nodes: newNodeMap, 
+      };
 
       // find all of the references who point to this arg
       const referenceNodes = findNodesDeep(
@@ -291,7 +300,9 @@ export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductA
         && leftNode.type !== 'string'
         && leftNode.type !== 'boolean'
         && leftNode.type !== 'symbol')
-        throw new WrongTypeError(leftNode.id, ['number', 'string', 'boolean', 'symbol'], leftNode.type);
+        throw new WrongTypeError(leftNode.id, [
+          'number', 'string', 'boolean', 'symbol',
+        ], leftNode.type);
 
       if (rightNode.type !== leftNode.type)
         throw new WrongTypeError(rightNode.id, leftNode.type, rightNode.type);
@@ -461,7 +472,7 @@ export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductA
       state = {
         ...state,
         added: new Map([newNode, ...addedNodes].map(({ id }) => [id, calleeNode.id])),
-        nodes: newNodeMap
+        nodes: newNodeMap,
       };
 
       resultNodeId = newNode.id;
@@ -526,7 +537,10 @@ export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductA
     const [clonedNode, , newNodeMap] = 
       cloneNodeDeep(targetId, state.nodes);
 
-    state = { ...state, nodes: newNodeMap };
+    state = {
+      ...state,
+      nodes: newNodeMap, 
+    };
     
     return produce(state, draft => {
       draft.nodes = castDraft(newNodeMap);
@@ -767,7 +781,11 @@ export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductA
       // trap errors and stop execution
       if (error instanceof GameError) {
         executing.delete(targetNodeId);
-        return { ...state, executing, error };
+        return {
+          ...state,
+          executing,
+          error, 
+        };
       } else {
         throw error;
       }
@@ -789,7 +807,10 @@ export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductA
       executing.add(nodeId);
     }
 
-    return { ...state, executing };
+    return {
+      ...state,
+      executing, 
+    };
   }
 
   case ActionKind.Stop: {
@@ -798,15 +819,24 @@ export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductA
     const executing = new Set(state.executing);
     executing.delete(targetNodeId);
 
-    return { ...state, executing };
+    return {
+      ...state,
+      executing, 
+    };
   }
 
   case ActionKind.DetectCompletion: {
     if (checkVictory(state))
-      return { ...state, mode: GameMode.Victory };
+      return {
+        ...state,
+        mode: GameMode.Victory, 
+      };
 
     if (checkDefeat(state))
-      return { ...state, mode: GameMode.Defeat };
+      return {
+        ...state,
+        mode: GameMode.Defeat, 
+      };
 
     return state;
   }

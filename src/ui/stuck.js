@@ -14,10 +14,10 @@ export default class StuckEffect {
 
     Audio.play('stuck');
     animate.tween(this, {
-      opacity: 0.5
+      opacity: 0.5,
     }, {
       duration: 1000,
-      easing: animate.Easing.Cubic.Out
+      easing: animate.Easing.Cubic.Out,
     }).then(() => this.highlightMismatches());
 
     this.infinite = null;
@@ -32,10 +32,10 @@ export default class StuckEffect {
     }
 
     return animate.tween(this, {
-      opacity: 0
+      opacity: 0,
     }, {
       duration: 400,
-      easing: animate.Easing.Cubic.Out
+      easing: animate.Easing.Cubic.Out,
     });
   }
 
@@ -60,14 +60,25 @@ export default class StuckEffect {
       if (typeof reverseMatching[id] === 'undefined') {
         blinkers.push(id);
         // Clone view to avoid messing up positioning
-        extraMsg.push([this.stage.allocate({
+        extraMsg.push([
+          this.stage.allocate({
 
-          ...this.stage.getView(id),
-          pos: { x: 0, y: 0 },
-          anchor: { x: 0, y: 0 },
-          animating: 0
-        }), id]);
-        this.stage.getView(id).stroke = { color: '#F00', lineWidth: 0 };
+            ...this.stage.getView(id),
+            pos: {
+              x: 0,
+              y: 0, 
+            },
+            anchor: {
+              x: 0,
+              y: 0, 
+            },
+            animating: 0,
+          }), id,
+        ]);
+        this.stage.getView(id).stroke = {
+          color: '#F00',
+          lineWidth: 0, 
+        };
       }
     }
 
@@ -76,14 +87,22 @@ export default class StuckEffect {
       if (typeof matching[id] === 'undefined') {
         blinkers.push(id);
         // Clone view to avoid messing up positioning
-        missingMsg.push([this.stage.allocate({
+        missingMsg.push([
+          this.stage.allocate({
 
-          ...this.stage.getView(id),
-          pos: { x: 0, y: 0 },
-          animating: 0
-        }), id]);
+            ...this.stage.getView(id),
+            pos: {
+              x: 0,
+              y: 0, 
+            },
+            animating: 0,
+          }), id,
+        ]);
 
-        this.stage.getView(id).stroke = { color: '#F00', lineWidth: 0 };
+        this.stage.getView(id).stroke = {
+          color: '#F00',
+          lineWidth: 0, 
+        };
       }
     }
 

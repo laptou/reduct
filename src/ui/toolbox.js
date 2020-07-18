@@ -1,3 +1,6 @@
+/* this file is no longer used -iaa34 */
+/* eslint-disable */
+
 import * as gfx from '../gfx/core';
 import * as animate from '../gfx/animate';
 import Loader from '../loader';
@@ -19,13 +22,19 @@ export default class Toolbox {
     // over stuff that assumed we had a sprite view
     this.bg = stage.allocateInternal(gfx.layout.sticky(gfx.layout.hexpand(gfx.sprite({
       image: Loader.images['toolbox-bg'],
-      size: { h: TOOLBOX_ROW_HEIGHT }
+      size: { h: TOOLBOX_ROW_HEIGHT },
     })), 'bottom'));
 
     this._firstRender = true;
     this.rows = 1;
-    this._size = { w: 0, h: 0 };
-    this._pos = { x: 0, y: 0 };
+    this._size = {
+      w: 0,
+      h: 0, 
+    };
+    this._pos = {
+      x: 0,
+      y: 0, 
+    };
   }
 
   containsPoint(pos) {
@@ -35,7 +44,7 @@ export default class Toolbox {
   get size() {
     return {
       w: this.stage.internalViews[this.bg].size.w,
-      h: this.stage.internalViews[this.bg].size.h
+      h: this.stage.internalViews[this.bg].size.h,
     };
   }
 
@@ -74,7 +83,10 @@ export default class Toolbox {
     let rows = 1;
     for (const nodeId of state.toolbox) {
       const projection = this.stage.views[nodeId];
-      projection.scale = { x: 1, y: 1 };
+      projection.scale = {
+        x: 1,
+        y: 1, 
+      };
       projection.prepare(nodeId, nodeId, state, this.stage);
 
       if (x + projection.size.w >= this.stage.width - TOOLBOX_RIGHT_MARGIN) {
@@ -134,26 +146,44 @@ export default class Toolbox {
         projection.pos.y = nodeY;
         projection.scale.x = 0;
         projection.scale.y = 0;
-        projection.anchor = { x: 0, y: 0.5 };
+        projection.anchor = {
+          x: 0,
+          y: 0.5, 
+        };
         animate
           .tween(projection, {
             pos: { x },
-            scale: { x: 1, y: 1 }
+            scale: {
+              x: 1,
+              y: 1, 
+            },
           }, {
             easing: animate.Easing.Cubic.Out,
-            duration: 400
+            duration: 400,
           })
           .delay(200 * Math.log(2 + i));
       } else if (projection.pos.x !== x && !projection.animating && !this._firstRender) {
         animate
-          .tween(projection, { pos: { x, y: nodeY }, anchor: { x: 0, y: 0.5 } }, {
+          .tween(projection, {
+            pos: {
+              x,
+              y: nodeY, 
+            },
+            anchor: {
+              x: 0,
+              y: 0.5, 
+            }, 
+          }, {
             duration: 400,
-            easing: animate.Easing.Cubic.Out
+            easing: animate.Easing.Cubic.Out,
           });
       } else if (!projection.animating) {
         projection.pos.x = x;
         projection.pos.y = nodeY;
-        projection.anchor = { x: 0, y: 0.5 };
+        projection.anchor = {
+          x: 0,
+          y: 0.5, 
+        };
       }
 
       x += projection.size.w + TOOLBOX_INNER_MARGIN;
@@ -164,7 +194,7 @@ export default class Toolbox {
       if (node.__meta?.toolbox.unlimited) {
         projection.draw(nodeId, nodeId, state, this.stage, this.stage.makeBaseOffset({
           x: 2,
-          y: 6
+          y: 6,
         }));
       }
 
@@ -173,7 +203,7 @@ export default class Toolbox {
       if (node.__meta?.toolbox.unlimited) {
         projection.draw(nodeId, nodeId, state, this.stage, this.stage.makeBaseOffset({
           x: -2,
-          y: -6
+          y: -6,
         }));
       }
       // }
