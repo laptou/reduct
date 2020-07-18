@@ -273,7 +273,6 @@ module.exports = {
     ],
     'alpha-value-notation': 'number',
     'hue-degree-notation': 'number',
-    'color-function-notation': 'modern',
     'font-weight-notation': 'numeric',
     'unit-blacklist': [
       'ch',
