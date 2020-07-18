@@ -1,6 +1,6 @@
 {
   "name": "reduct-redux",
-  "version": "7.0.1-alpha",
+  "version": "7.0.2-alpha",
   "main": "src/index.js",
   "repository": "https://github.coecis.cornell.edu/Reduct/reduct-redux.git",
   "author": "David Li <li.davidm96@gmail.com>, Ibiyemi Abiodun <iaa34@cornell.edu>",
@@ -27,8 +27,7 @@
     "redux": "^3.7.2",
     "redux-immutable": "^4.0.0",
     "redux-persist": "^6.0.0",
-    "regenerator-runtime": "^0.13.5",
-    "use-sound": "^1.0.2"
+    "regenerator-runtime": "^0.13.5"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.4",
