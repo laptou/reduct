@@ -1,11 +1,11 @@
-import type { BaseNode, ReductNode, Flat, FlatReductNode, NodeId } from '..';
+import type { BaseNode, ReductNode, Flat, FlatReductNode, NodeId, ScopedNode } from '..';
 import * as fx from '../../gfx/fx';
 import { genericBetaReduce } from '../core';
 import type { NodeDef } from './base';
 import { DeepReadonly } from '@/util/helper';
 import { VTupleNode } from '../transform';
 
-export interface LambdaNode extends BaseNode {
+export interface LambdaNode extends ScopedNode {
   type: 'lambda';
 
   subexpressions: {
@@ -148,7 +148,7 @@ export const lambdaVar: NodeDef<LambdaVarNode> = {
         while (current.parent) {
           current = nodes.get(current.parent);
           if (current.type === 'lambda'
-                            && nodes.get(current.subexpressions.arg).fields.name === myName) {
+            && nodes.get(current.subexpressions.arg).fields.name === myName) {
             fx.blink(stage, stage.getView(current.arg), {
               times: 3,
               speed: 100,

@@ -24,7 +24,7 @@ import {
   PTupleNode,
   VTupleNode
 } from './defs';
-import { DeepReadonly } from '@/util/helper';
+import { DeepReadonly, DRF } from '@/util/helper';
 import { BuiltInReferenceNode } from './defs/builtins';
 
 export type NodeId = number;
@@ -35,39 +35,49 @@ export type NodeId = number;
  * or in the defs box.
  */
 export interface BaseNode {
-    /** The ID of this node. */
-    id: NodeId;
+  /** The ID of this node. */
+  id: NodeId;
 
-    /** The ID of this node's parent. */
-    parent?: NodeId | null;
+  /** The ID of this node's parent. */
+  parent?: NodeId | null;
 
-    /**
-     * The field in the parent node which this node
-     * occupies.
-     */
-    parentField?: string | null;
+  /**
+   * The field in the parent node which this node
+   * occupies.
+   */
+  parentField?: string | null;
 
-    type: string;
+  type: string;
 
-    fadeLevel: number;
+  fadeLevel: number;
 
-    locked: boolean;
+  locked: boolean;
 
-    complete?: boolean;
+  complete?: boolean;
 
-    fields: Record<string | number, any>;
-    
-    subexpressions: {};
+  fields: Record<string | number, any>;
 
-    __meta?: NodeMetadata;
+  subexpressions: {};
+
+  __meta?: NodeMetadata;
 }
 
-export type Flat<N extends BaseNode> = { 
+/**
+ * ScopedNode is a Reduct node, any item that requires the use of scoped
+ * nodes.
+ */
+export interface ScopedNode extends BaseNode {
+  /** a map from node names their ids in the current scope of a given
+   * node */
+  scope: Record<string, NodeId>;
+}
+
+export type Flat<N extends BaseNode> = {
   [K in keyof N]: K extends 'subexpressions' ? Record<keyof N['subexpressions'], NodeId> : N[K];
 };
 
 export interface NodeMetadata {
-  toolbox?: { 
+  toolbox?: {
     /** 
      * True if this node does not deplete when it is picked from the toolbox
      * (i.e., the user can use it an unlimited number of times.) 
@@ -82,38 +92,38 @@ export interface NodeMetadata {
 }
 
 export type NodeType = {
-    types: Map<NodeId, any>;
-    complete: boolean;
+  types: Map<NodeId, any>;
+  complete: boolean;
 }
 
-export type NodeMap = Map<NodeId, DeepReadonly<FlatReductNode>>;
+export type NodeMap = Map<NodeId, DRF>;
 
 export type ReductNode =
-    ApplyNode |
-    ArrayNode |
-    AutograderNode |
-    BinOpNode |
-    OpNode |
-    ConditionalNode |
-    DefineNode |
-    LambdaNode |
-    LambdaVarNode |
-    LambdaArgNode |
-    LetNode |
-    MemberNode |
-    NotNode |
-    NumberNode |
-    StrNode |
-    BoolNode |
-    UnsolNode |
-    SymbolNode |
-    DynVarNode |
-    ReferenceNode |
-    InvocationNode |
-    VTupleNode |
-    PTupleNode |
-    MissingNode |
-    BuiltInReferenceNode;
+  ApplyNode |
+  ArrayNode |
+  AutograderNode |
+  BinOpNode |
+  OpNode |
+  ConditionalNode |
+  DefineNode |
+  LambdaNode |
+  LambdaVarNode |
+  LambdaArgNode |
+  LetNode |
+  MemberNode |
+  NotNode |
+  NumberNode |
+  StrNode |
+  BoolNode |
+  UnsolNode |
+  SymbolNode |
+  DynVarNode |
+  ReferenceNode |
+  InvocationNode |
+  VTupleNode |
+  PTupleNode |
+  MissingNode |
+  BuiltInReferenceNode;
 
 export type FlatReductNode =
   Flat<ApplyNode> |

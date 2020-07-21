@@ -1,4 +1,4 @@
-import type { BaseNode, ReductNode } from '..';
+import type { ScopedNode, ReductNode } from '..';
 import * as animate from '../../gfx/animate';
 import * as gfx from '../../gfx/core';
 import type { NodeDef } from './base';
@@ -7,7 +7,7 @@ import type { NodeDef } from './base';
 /**
  * ConditionalNode is a reduct node representing an conditional expression
  */
-export interface ConditionalNode extends BaseNode {
+export interface ConditionalNode extends ScopedNode {
   type: 'conditional';
   subexpressions: {
     condition: ReductNode;
@@ -57,8 +57,8 @@ export const conditional: NodeDef<ConditionalNode> = {
     const result = new Map();
     const positiveTy = types.get(expr.positive);
     const branchesMatch = positiveTy === types.get(expr.negative)
-                  && positiveTy !== null
-                  && typeof positiveTy !== 'undefined';
+      && positiveTy !== null
+      && typeof positiveTy !== 'undefined';
     if (branchesMatch) {
       result.set(expr.id, types.get(expr.positive));
     }
