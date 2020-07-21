@@ -5,8 +5,10 @@
   display: inline-flex;
   align-items: stretch;
   justify-items: stretch;
+
   min-width: 2rem;
   min-height: 2rem;
+
   color: theme.$projection-foreground;
 
   & > .decoration {
@@ -30,6 +32,7 @@
 
   & > .content {
     margin: 0 -1px;
+
     background-color: theme.$projection-color-boolean;
   }
 }
@@ -45,6 +48,7 @@
 
   & > .content {
     margin: 0 -1px;
+
     background-color: theme.$projection-color-string;
   }
 }
@@ -60,6 +64,7 @@
 
   & > .content {
     margin: 0 -1px;
+
     background-color: theme.$projection-color-number;
   }
 }

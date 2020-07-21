@@ -1,13 +1,17 @@
 .projection {
+  --transform: scale(1);
   position: relative;
+
   margin-right: 0.125rem;
   margin-left: 0.125rem;
-  font-weight: bold;
+
+  font-weight: 700;
   font-family: 'IBM Plex Mono', monospace;
+
+  user-select: none;
+
   transform: var(--transform);
   transform-origin: center center;
-  user-select: none;
-  --transform: scale(1);
 
   &.draggable {
     cursor: grab;
@@ -29,14 +33,15 @@
 
 .projection, .projection .content {
   display: inline-flex;
-  align-items: stretch;
   vertical-align: middle;
+  align-items: stretch;
 }
 
 .projection-board-wrapper {
   position: absolute;
   top: 50%;
   left: 50%;
+
   transform-origin: top left;
 
   & > .projection {

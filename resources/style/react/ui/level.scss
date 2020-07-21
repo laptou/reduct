@@ -12,6 +12,7 @@
   z-index: 150;
   flex-flow: column nowrap;
   align-items: stretch;
+
   margin-top: -25rem;
   padding: 0;
 }
@@ -22,25 +23,29 @@
   right: 0;
   bottom: 0;
   left: 0;
+
   background: rgba(0 0 0 / 0.25);
 }
 
 #reduct-level-select {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
+  row-gap: 0.5rem;
+  overflow: auto;
+
   width: 100%;
   height: 20rem;
   margin-top: 5rem;
-  padding: 1rem 1rem;
-  overflow: auto;
+  padding: 1rem;
+
   column-gap: 0.5rem;
-  row-gap: 0.5rem;
 }
 
 #reduct-level-info {
   display: grid;
   grid-template-rows: auto auto;
   grid-template-columns: auto auto;
+
   padding: 1rem;
 }
 

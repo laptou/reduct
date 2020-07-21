@@ -3,7 +3,9 @@
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
+
   padding: 1rem;
+
   background: var(--reduct-ui-bg);
   box-shadow: 0 0 0.5rem rgba(black, 0.25);
 }
@@ -24,7 +26,8 @@
 
 @mixin ui-panel-bordered($color) {
   @extend %ui-panel;
-  color: $color;
-  border-color: $color;
   border-style: solid;
+  border-color: $color;
+
+  color: $color;
 }
