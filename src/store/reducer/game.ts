@@ -97,8 +97,8 @@ export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductA
 
       // force references to be reduced before being used as params
       if (paramNode.type === 'reference') {
-        state = program(state, createMoveNodeToBoard(paramNodeId));
-        state = program(state, createEvalReference(paramNodeId));
+        state = game(state, createMoveNodeToBoard(paramNodeId));
+        state = game(state, createEvalReference(paramNodeId));
         paramNodeId = [...state.added].find(([, source]) => source === paramNodeId)![0];
       }
 
@@ -140,7 +140,7 @@ export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductA
 
       // eval all relevant references and keep track of which nodes are destroyed
       for (const referenceNode of referenceNodes) {
-        state = program(state, createEvalReference(referenceNode.id));
+        state = game(state, createEvalReference(referenceNode.id));
         removed.push(...state.removed.keys());
       }
     }
@@ -481,7 +481,7 @@ export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductA
 
       while (paramIdx < paramNodes.length) {
         const paramNode = paramNodes[paramIdx];
-        state = program(state, createEvalLambda(calleeNode.id, paramNode.id));
+        state = game(state, createEvalLambda(calleeNode.id, paramNode.id));
         paramIdx++;
       }
 
@@ -629,7 +629,7 @@ export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductA
     // TODO: handle defs
 
     if (node.parent) {
-      return program(state, createDetach(node.id));
+      return game(state, createDetach(node.id));
     }
 
     return state;
@@ -638,7 +638,7 @@ export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductA
   case ActionKind.MoveNodeToSlot: {
     const { slotId, nodeId } = act;
 
-    state = program(state, createMoveNodeToBoard(nodeId));
+    state = game(state, createMoveNodeToBoard(nodeId));
 
     const newState = produce(state, draft => {
       const slot = draft.nodes.get(slotId)!;
@@ -736,7 +736,7 @@ export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductA
       // this is a child node that needs further evaluation, return the result
       // of stepping it once
       if (childNodeKind === 'expression') {
-        state = program(state, createStep(childId));
+        state = game(state, createStep(childId));
         stepped = true;
 
         if (!parallel)
@@ -754,15 +754,15 @@ export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductA
     // just step this node
     switch (targetNode.type) {
     case 'apply':
-      return program(state, createEvalApply(targetNode.id));
+      return game(state, createEvalApply(targetNode.id));
     case 'binop':
-      return program(state, createEvalOperator(targetNode.id));
+      return game(state, createEvalOperator(targetNode.id));
     case 'conditional':
-      return program(state, createEvalConditional(targetNode.id));
+      return game(state, createEvalConditional(targetNode.id));
     case 'not':
-      return program(state, createEvalNot(targetNode.id));
+      return game(state, createEvalNot(targetNode.id));
     case 'reference':
-      return program(state, createEvalReference(targetNode.id));
+      return game(state, createEvalReference(targetNode.id));
     default:
       throw new Error(`Cannot step a ${targetNode.type}`);
     }
@@ -776,7 +776,7 @@ export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductA
 
     try {
       // step the node
-      state = program(state, createStep(targetNodeId));
+      state = game(state, createStep(targetNodeId));
     } catch (error) {
       // trap errors and stop execution
       if (error instanceof GameError) {
