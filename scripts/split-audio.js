@@ -33,7 +33,9 @@ const child = require('child_process');
 
     const proc = child.spawn(
       'ffmpeg', 
-      ['-y', '-i', srcAudioPath, '-ss', start, '-t', duration, dstAudioPath]
+      [
+        '-y', '-i', srcAudioPath, '-ss', start, '-t', duration, dstAudioPath,
+      ]
     );
 
     processes.push(new Promise((resolve, reject) => {

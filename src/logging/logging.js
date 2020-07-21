@@ -1,8 +1,11 @@
+/* this file is no longer used -iaa34 */
+/* eslint-disable */
+
 import fileSaver from 'file-saver';
 
 import * as level from '../game/level';
 import { ActionKind } from '../store/action';
-import * as undoAction from '../store/undo';
+import * as undoAction from '../store/reducer/undo';
 import * as ajax from '../util/ajax';
 import * as random from '../util/random';
 import VERSION_ID from '../version';
@@ -25,7 +28,7 @@ const URLS = {
   PAGE_LOAD: 'page_load.php',
   QUEST_START: 'player_quest.php',
   QUEST_END: 'player_quest_end.php',
-  ACTION: 'player_action.php'
+  ACTION: 'player_action.php',
 };
 
 export const VICTORY_LEVEL_ID = -1;
@@ -111,7 +114,7 @@ class Logger {
 
       return ({
         user_id: this.currentUserId,
-        session_id: this.currentSessionid
+        session_id: this.currentSessionid,
       });
     }).catch(() => {
       this.info('Contacting remote server failed');
@@ -227,8 +230,14 @@ class Logger {
     }
 
     params.action_detail = data;
-    const staticParams = { action_id: actionId, ...params };
-    const remoteParams = { action_id: numericActionId, ...params };
+    const staticParams = {
+      action_id: actionId,
+      ...params, 
+    };
+    const remoteParams = {
+      action_id: numericActionId,
+      ...params, 
+    };
 
     this.logStatic('action', staticParams, false);
     if (!this.isTaskStarted) {
@@ -250,7 +259,7 @@ class Logger {
 
   downloadStaticLog() {
     const blob = new window.Blob([JSON.stringify(this.staticLog, null, 2)], {
-      type: 'application/json;charset=utf-8'
+      type: 'application/json;charset=utf-8',
     });
     fileSaver.saveAs(blob, `log_${new Date().getTime().toString()}.json`);
   }
@@ -278,14 +287,14 @@ class Logger {
     this.logStatic('startSession', {
       ...params,
       session_id: this.currentSessionId,
-      message: 'static_session'
+      message: 'static_session',
     }, false);
 
     this.saveState();
 
     return Promise.resolve({
       user_id: this.currentUserId,
-      session_id: this.currentSessionid
+      session_id: this.currentSessionid,
     });
   }
 
@@ -308,7 +317,11 @@ class Logger {
   }
 
   makeBaseParams() {
-    return { game_id: GAME_ID, client_timestamp: Date.now(), version_id: VERSION_ID };
+    return {
+      game_id: GAME_ID,
+      client_timestamp: Date.now(),
+      version_id: VERSION_ID, 
+    };
   }
 
   info(text) {
@@ -357,7 +370,7 @@ class Logger {
       local: false, // Are we logging to a local server?
       static: true, // Are we saving events to the in-browser cache?
       offline: false, // Are we only saving events offline?
-      stateGraph: false // Are we displaying a dynamic state graph?
+      stateGraph: false, // Are we displaying a dynamic state graph?
     };
   }
 
@@ -430,7 +443,7 @@ Logger.prototype.ACTIONS = {
   'define': 115,
   'define-failed': 115,
   'tutorial-skip': 116,
-  'theme': 117
+  'theme': 117,
 };
 
 const Logging = new Logger();

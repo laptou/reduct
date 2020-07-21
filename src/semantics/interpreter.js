@@ -1,3 +1,6 @@
+/* this file is no longer used -iaa34 */
+/* eslint-disable */
+
 import Audio from '../resource/audio';
 
 import * as animate from '../gfx/animate';
@@ -85,7 +88,7 @@ export default function(module) {
     const scaleCategory = `expr-${exp.type}`;
     return fx.shatter(stage, stage.views[exp.id], {
       introDuration: animate.scaleDuration(600, scaleCategory),
-      outroDuration: animate.scaleDuration(600, scaleCategory)
+      outroDuration: animate.scaleDuration(600, scaleCategory),
     });
   };
 
@@ -401,7 +404,7 @@ export default function(module) {
               .then(() => callbacks.update(...args));
           }
           return callbacks.update(...args);
-        }
+        },
       }, false, false
     );
   };
@@ -454,7 +457,7 @@ export default function(module) {
           }
 
           return true;
-        }
+        },
       }, false, false
     );
   };

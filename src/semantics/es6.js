@@ -15,10 +15,6 @@ import * as not from './defs/not';
 import * as reference from './defs/reference';
 import * as value from './defs/value';
 
-function capitalize(s) {
-  return s.charAt(0).toUpperCase() + s.substr(1);
-}
-
 export default new Semantics({
   name: 'ECMAScript 6',
   parser: {
@@ -85,7 +81,7 @@ export default new Semantics({
         return [name, thunk];
       }
       return [name, () => semant.reference(name)];
-    }
+    },
   },
 
   expressions: {
@@ -101,6 +97,6 @@ export default new Semantics({
     ...missing,
     ...not,
     ...reference,
-    ...value
-  }
+    ...value,
+  },
 });

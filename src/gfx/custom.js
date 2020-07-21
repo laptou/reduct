@@ -13,12 +13,15 @@ export function argumentBar() {
   projection.type = 'custom/argumentBar';
 
   const txt = gfx.text('', {
-    color: '#888'
+    color: '#888',
   });
 
   projection.prepare = function(id, exprId, state, stage) {
     this.names = [];
-    this.size = { w: 0, h: 50 };
+    this.size = {
+      w: 0,
+      h: 50, 
+    };
 
     const define = state.nodes.get(exprId);
 
@@ -106,7 +109,7 @@ export function argumentBar() {
           y,
           sx: offset.sx * this.scale.x,
           sy: offset.sy * this.scale.y,
-          opacity: this.opacity * offset.opacity
+          opacity: this.opacity * offset.opacity,
         };
 
         stage.getView(subexprId).draw(subexprId, subexprId, state, stage, subOffset);
@@ -147,7 +150,7 @@ export function argumentBar() {
           x: x + dx + Math.max(0, (w - width) / 2),
           y: y + (5 * offset.sy),
           sx,
-          sy
+          sy,
         });
 
         dx += w + (20 * sx);
@@ -158,7 +161,7 @@ export function argumentBar() {
     ctx.restore();
   };
 
-  projection.children = function* (exprId, state) {
+  projection.children = function * (exprId, state) {
     const expr = state.nodes.get(exprId);
     if (expr.type === 'define') return;
 
@@ -168,7 +171,7 @@ export function argumentBar() {
       params = state.getIn([
         'nodes',
         state.globals.get(expr.fields.name),
-        'params'
+        'params',
       ]);
     }
 
@@ -197,7 +200,7 @@ export function fadeMe(projection, onfade) {
       dy: Math.random() - 0.5,
       r: random.getRandInt(2, 8),
       opacity: 1.0,
-      deltaOpacity: -Math.max(3 * Math.random(), 0.8)
+      deltaOpacity: -Math.max(3 * Math.random(), 0.8),
     });
   }
 

@@ -10,7 +10,7 @@ export function button(stage, label, options) {
   if (typeof label === 'string') {
     label = gfx.constant(stage.allocate(gfx.text(label, {
       fontSize: 32,
-      color: '#FFF'
+      color: '#FFF',
     })));
   }
   const projection = gfx.layout.hbox(label, {
@@ -18,19 +18,19 @@ export function button(stage, label, options) {
     padding: {
       left: 20,
       right: 20,
-      inner: 10
+      inner: 10,
     },
     size: {
       w: 50,
-      h: 70
+      h: 70,
     },
     anchor: {
       x: 0.5,
-      y: 0.5
+      y: 0.5,
     },
     shadow: true,
     shadowColor: 'black',
-    ...options
+    ...options,
   });
 
   projection.onclick = function() {
@@ -54,18 +54,21 @@ export function button(stage, label, options) {
  * @alias gfx.ui.imageButton
  */
 export function imageButton(images, options = {}) {
-  const projection = gfx.baseProjection({ enabled: true, ...options });
+  const projection = gfx.baseProjection({
+    enabled: true,
+    ...options, 
+  });
 
   const sprites = {
     normal: gfx.sprite({ image: images.normal }),
     hover: gfx.sprite({ image: images.hover }),
-    active: gfx.sprite({ image: images.active })
+    active: gfx.sprite({ image: images.active }),
   };
 
   projection.size = {
     w: images.normal.naturalWidth,
     h: images.normal.naturalHeight,
-    ...options.size || {}
+    ...options.size || {},
   };
 
   let state = 'normal';
@@ -105,7 +108,10 @@ export function imageButton(images, options = {}) {
   };
 
   projection.draw = function(id, exprId, boardState, stage, offset) {
-    sprites[state].draw.call(this, id, exprId, boardState, stage, { ...offset, opacity: offset.opacity * (this.enabled ? 1 : 0.3) });
+    sprites[state].draw.call(this, id, exprId, boardState, stage, {
+      ...offset,
+      opacity: offset.opacity * (this.enabled ? 1 : 0.3), 
+    });
   };
 
   projection.highlight = function() {

@@ -59,7 +59,7 @@ export class LoaderClass {
 
     const [json, img] = await Promise.all([
             import(`@resources/graphics/${key}.json`),
-            getImage(imagePath)
+            getImage(imagePath),
     ]);
 
     const atlas = new gfx.image.ImageAtlas(alias, json, img);
@@ -80,7 +80,10 @@ export class LoaderClass {
     );
 
     await new Promise((resolve, reject) => {
-      this.audioVolumes = { ...this.audioVolumes, ...data.volumes };
+      this.audioVolumes = {
+        ...this.audioVolumes,
+        ...data.volumes, 
+      };
 
       this.audioSprites[alias] = new Howl({
         src: audioUrls,
@@ -92,7 +95,7 @@ export class LoaderClass {
 
           resolve();
         },
-        onloaderror: reject
+        onloaderror: reject,
       });
     });
 
@@ -129,7 +132,7 @@ export class LoaderClass {
       language: json.language,
       levels: [],
       dependencies: [],
-      password: json.password
+      password: json.password,
     };
     if (json.resources) d.resources = json.resources;
 
@@ -174,14 +177,14 @@ export class LoaderClass {
       chapters: {},
       levels: [],
       linearChapters: [],
-      syntax: {}
+      syntax: {},
     };
     this.progressions[name] = progression;
     const chapterKeys = Object.keys(definition.digraph);
 
     let extraDefines = [];
     let animationScales = {};
-    let fade = {};
+    const fade = {};
 
     // counting dependencies for each chapter so
     // as to sort the chapters in order --s
@@ -218,7 +221,7 @@ export class LoaderClass {
             const newScales = {
 
               ...animationScales,
-              ...level.animationScales
+              ...level.animationScales,
             };
             level.animationScales = Object.assign(
               animationScales,

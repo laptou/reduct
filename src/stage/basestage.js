@@ -1,3 +1,6 @@
+/* this file is no longer used -iaa34 */
+/* eslint-disable */
+
 /**
  * Handle drawing responsibilites for Reduct.
  * @module BaseStage
@@ -48,8 +51,14 @@ export default class BaseStage {
       null,
       null,
       false,
-      { dx: 0, dy: 0 },
-      { x: 0, y: 0 }
+      {
+        dx: 0,
+        dy: 0, 
+      },
+      {
+        x: 0,
+        y: 0, 
+      }
     ));
   }
 
@@ -145,7 +154,10 @@ export default class BaseStage {
     // Scaling
     const x = ((e.clientX - rect.left) / rect.width) * this._width;
     const y = ((e.clientY - rect.top) / rect.height) * this.height;
-    return { x, y };
+    return {
+      x,
+      y, 
+    };
   }
 
   /**
@@ -163,7 +175,10 @@ export default class BaseStage {
     x = Math.max(minX, Math.min(x, maxX));
     y = Math.max(minY, Math.min(y, maxY));
 
-    return { x, y };
+    return {
+      x,
+      y, 
+    };
   }
 
   /**
@@ -183,7 +198,7 @@ export default class BaseStage {
       sx: 1,
       sy: 1,
       opacity: 1,
-      ...opt
+      ...opt,
     };
   }
 
@@ -237,7 +252,10 @@ export default class BaseStage {
   }
 
   computeDragAnchor(pos, topNode, targetNode) {
-    const dragAnchor = { x: 0, y: 0 };
+    const dragAnchor = {
+      x: 0,
+      y: 0, 
+    };
     if (targetNode !== null) {
       const view = this.getView(topNode);
       const absPos = gfxCore.absolutePos(view);

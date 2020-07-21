@@ -1,3 +1,6 @@
+/* this file is no longer used -iaa34 */
+/* eslint-disable */
+
 import * as chroma from 'chroma-js';
 import { produce } from 'immer';
 
@@ -98,7 +101,7 @@ export default class Stage extends BaseStage {
 
       const subpos = {
         x: curPos.x - topLeft.x,
-        y: curPos.y - topLeft.y
+        y: curPos.y - topLeft.y,
       };
       for (const [childId, subexprId] of projection.children(curExprId, state)) {
         const subresult = this.testNodeAtPos(
@@ -111,7 +114,7 @@ export default class Stage extends BaseStage {
             x: 0,
             y: 0,
             sx: curOffset.sx * projection.scale.x,
-            sy: curOffset.sy * projection.scale.y
+            sy: curOffset.sy * projection.scale.y,
           },
           targetable
         );
@@ -153,7 +156,7 @@ export default class Stage extends BaseStage {
 
       const subpos = {
         x: curPos.x - topLeft.x,
-        y: curPos.y - topLeft.y
+        y: curPos.y - topLeft.y,
       };
       for (const [childId, subexprId] of projection.children(curExprId, state)) {
         const subresult = this.testExprAtPos(
@@ -166,7 +169,7 @@ export default class Stage extends BaseStage {
             x: 0,
             y: 0,
             sx: curOffset.sx * projection.scale.x,
-            sy: curOffset.sy * projection.scale.y
+            sy: curOffset.sy * projection.scale.y,
           }
         );
         if (subresult) {
@@ -252,7 +255,7 @@ export default class Stage extends BaseStage {
 
         const subpos = {
           x: curPos.x - topLeft.x,
-          y: curPos.y - topLeft.y
+          y: curPos.y - topLeft.y,
         };
         for (const [childId, subexprId] of projection.children(curExprId, state)) {
           const subresult = check(
@@ -264,7 +267,7 @@ export default class Stage extends BaseStage {
               x: 0,
               y: 0,
               sx: curOffset.sx * projection.scale.x,
-              sy: curOffset.sy * projection.scale.y
+              sy: curOffset.sy * projection.scale.y,
             }
           );
           if (subresult) {
@@ -369,7 +372,11 @@ export default class Stage extends BaseStage {
   getMousePos(e) {
     const { x, y } = super.getMousePos(e);
 
-    return { x: x - this.sidebarWidth, y, sidebar: x - this.sidebarWidth < 0 };
+    return {
+      x: x - this.sidebarWidth,
+      y,
+      sidebar: x - this.sidebarWidth < 0, 
+    };
   }
 
   drawContents() {
@@ -520,10 +527,10 @@ export default class Stage extends BaseStage {
     );
     animate.tween(currentView.pos, {
       x: safeX + (currentView.anchor.x * sz.w),
-      y: safeY + (currentView.anchor.y * sz.h)
+      y: safeY + (currentView.anchor.y * sz.h),
     }, {
       duration: 250,
-      easing: animate.Easing.Cubic.Out
+      easing: animate.Easing.Cubic.Out,
     });
   }
 
@@ -626,7 +633,7 @@ export default class Stage extends BaseStage {
     if (missingNodes.length > 0) {
       Logging.log('define-failed', {
         item: this.saveNode(selectedNode),
-        blocking: missingNodes.map((id) => this.saveNode(id))
+        blocking: missingNodes.map((id) => this.saveNode(id)),
       });
       missingNodes.forEach((id) => {
         fx.error(this, this.getView(id));
@@ -707,13 +714,13 @@ export default class Stage extends BaseStage {
             times: 2,
             color: 'magenta',
             speed: 100,
-            lineWidth: 5
+            lineWidth: 5,
           });
           fx.blink(this, this.views[selectedNode], {
             times: 2,
             color: 'magenta',
             speed: 100,
-            lineWidth: 5
+            lineWidth: 5,
           });
           this.store.dispatch(action.attachNotch(parent, 0, selectedNode, 0));
           return true;
@@ -749,7 +756,7 @@ export default class Stage extends BaseStage {
           color: 'lightblue',
           lineWidth: 5,
           lineDash: [5, 10],
-          lineDashOffset: time
+          lineDashOffset: time,
         };
       }
     });
@@ -766,7 +773,7 @@ export default class Stage extends BaseStage {
     // Assumes clicks always dispatched to top-level node
     let origPos = {
       x: gfxCore.centerPos(this.getView(selectedNode)).x,
-      y: gfxCore.centerPos(this.getView(selectedNode)).y
+      y: gfxCore.centerPos(this.getView(selectedNode)).y,
     };
 
     const mode = overrideMode || this.mode;
@@ -809,7 +816,7 @@ export default class Stage extends BaseStage {
 
         Logging.log('reduction', {
           before: this.saveNode(topNodeId),
-          after: newNodeIds.map((id) => this.saveNode(id, tempNodes))
+          after: newNodeIds.map((id) => this.saveNode(id, tempNodes)),
         });
         if (!recordUndo) {
           act = action.skipUndo(act);
@@ -854,9 +861,9 @@ export default class Stage extends BaseStage {
         Logging.log('reduction-error', {
           clicked: this.saveNode(selectedNode),
           cause: this.saveNode(errorNodeId),
-          reason
+          reason,
         });
-      }
+      },
     }).catch((_errorNodeId) => {
       // Ignore reduction errors, the reducer already handled it
     }).finally(finishReducing);
@@ -888,7 +895,10 @@ export default class Stage extends BaseStage {
         Audio.play('371270__mafon2__water-drip-2');
 
         this.views[topNode].pos = gfxCore.centerPos(this.views[topNode]);
-        this.views[topNode].anchor = { x: 0.5, y: 0.5 };
+        this.views[topNode].anchor = {
+          x: 0.5,
+          y: 0.5, 
+        };
 
         const bodyPos = gfxCore.absolutePos(this.views[body]);
         const bodySize = gfxCore.absoluteSize(this.views[body]);
@@ -905,26 +915,35 @@ export default class Stage extends BaseStage {
           fx.keepAlive(this, topNode, animate.tween(this.views[topNode], {
             opacity: 0,
             pos: { y: this.views[topNode].pos.y + 50 },
-            scale: { x: 0, y: 0 }
+            scale: {
+              x: 0,
+              y: 0, 
+            },
           }, {
             duration: 1000,
-            easing: animate.Easing.Cubic.Out
+            easing: animate.Easing.Cubic.Out,
           }).delay(350), true),
-          fx.emerge(this, this.getState(), bodyPos, bodySize, resultNodeIds)
+          fx.emerge(this, this.getState(), bodyPos, bodySize, resultNodeIds),
         ])
           .then(() => {
             this.views[topNode].opacity = 1;
           })
           .then(() => {
             this.views[arg].opacity = 1;
-            this.views[topNode].anchor = { x: 0, y: 0.5 };
-            this.views[topNode].scale = { x: 1, y: 1 };
+            this.views[topNode].anchor = {
+              x: 0,
+              y: 0.5, 
+            };
+            this.views[topNode].scale = {
+              x: 1,
+              y: 1, 
+            };
             this.views[topNode].pos.y = this.views[topNode].pos.y - 50;
           });
 
         animate.tween(this.views[arg], { opacity: 0 }, {
           duration: 250,
-          easing: animate.Easing.Cubic.Out
+          easing: animate.Easing.Cubic.Out,
         });
       } else {
         for (const newNodeId of resultNodeIds) {
@@ -944,7 +963,7 @@ export default class Stage extends BaseStage {
       Logging.log('reduction-lambda', {
         before: origExp,
         applied: origArg,
-        after: resultNodeIds.map((id) => this.saveNode(id, tempNodes))
+        after: resultNodeIds.map((id) => this.saveNode(id, tempNodes)),
       });
     } else {
       let applyTarget = target;
@@ -954,7 +973,7 @@ export default class Stage extends BaseStage {
       }
       Logging.log('reduction-lambda-failed', {
         target: this.saveNode(applyTarget),
-        arg: this.saveNode(arg)
+        arg: this.saveNode(arg),
       });
     }
   }
@@ -981,7 +1000,7 @@ export default class Stage extends BaseStage {
 
       tweens.push(fx.blink(this, view, {
         times: progression.currentLevel() === 0 ? 2 : 1,
-        color: '#0FF'
+        color: '#0FF',
       }));
     }
 
@@ -1001,7 +1020,10 @@ export default class Stage extends BaseStage {
       .then(() => {
         const title = gfxCore.sprite({
           image: Loader.images.you_win,
-          size: { w: 509, h: 110 }
+          size: {
+            w: 509,
+            h: 110, 
+          },
         });
         const titleId = this.allocate(title);
 
@@ -1009,7 +1031,7 @@ export default class Stage extends BaseStage {
         const chapter = progression.currentChapter();
         for (let i = 0; i < chapter.levels.length; i++) {
           const star = gfxCore.shapes.star({
-            color: (progression.currentLevel() > chapter.startIdx + i) ? 'gold' : 'gray'
+            color: (progression.currentLevel() > chapter.startIdx + i) ? 'gold' : 'gray',
           });
           star.opacity = 0;
 
@@ -1021,7 +1043,7 @@ export default class Stage extends BaseStage {
           animate.tween(star, { opacity: 1 }, {
             easing: animate.Easing.Cubic.In,
             duration: 300,
-            setAnimatingFlag: false
+            setAnimatingFlag: false,
           }).delay(delay);
           starList.push(this.allocate(star));
         }
@@ -1029,7 +1051,7 @@ export default class Stage extends BaseStage {
         const rows = [titleId];
         const layout = gfxCore.layout.sticky(
           gfxCore.layout.vbox(() => rows, {
-            subexpScale: 1
+            subexpScale: 1,
           }, gfxCore.baseProjection),
           'center',
           {}
@@ -1058,7 +1080,7 @@ export default class Stage extends BaseStage {
             const state = this.getState();
             const offset = this.makeBaseOffset();
             layout.draw(layoutId, null, state, this, offset);
-          }
+          },
         });
         Audio.play('325805__wagna__collect');
 
@@ -1067,26 +1089,26 @@ export default class Stage extends BaseStage {
         thisStar.opacity = 0;
         return Promise.all([
           animate.tween(thisStar, {
-            color: '#F00'
+            color: '#F00',
           }, {
             duration: 1500,
             setAnimatingFlag: false,
-            easing: animate.Easing.Color(animate.Easing.Cubic.In, thisStar.color, '#F00')
+            easing: animate.Easing.Color(animate.Easing.Cubic.In, thisStar.color, '#F00'),
           }),
           animate.tween(thisStar, {
-            offset: { y: 0 }
+            offset: { y: 0 },
           }, {
             duration: 1500,
             setAnimatingFlag: false,
-            easing: animate.Easing.Anticipate.BackOut(1.2)
+            easing: animate.Easing.Anticipate.BackOut(1.2),
           }),
           animate.tween(thisStar, {
-            opacity: 1
+            opacity: 1,
           }, {
             duration: 500,
             setAnimatingFlag: false,
-            easing: animate.Easing.Cubic.In
-          })
+            easing: animate.Easing.Cubic.In,
+          }),
         ]).then(() => {
           thisStar.color = 'gold';
           const scale = chroma.scale('Spectral').mode('lab');
@@ -1096,23 +1118,23 @@ export default class Stage extends BaseStage {
             numOfParticles: 60,
             duration: 800,
             color: (idx) => scale(idx / 60.0),
-            angle: (idx) => 2 * Math.PI * (idx / 60.0)
+            angle: (idx) => 2 * Math.PI * (idx / 60.0),
           });
         }).then(() => Promise.all([
           animate.tween(title, {
-            opacity: 0
+            opacity: 0,
           }, {
             duration: 200,
             setAnimatingFlag: false,
-            easing: animate.Easing.Cubic.In
+            easing: animate.Easing.Cubic.In,
           }),
           animate.tween(layout, {
-            opacity: 0
+            opacity: 0,
           }, {
             duration: 200,
             setAnimatingFlag: false,
-            easing: animate.Easing.Cubic.In
-          })
+            easing: animate.Easing.Cubic.In,
+          }),
         ]));
       });
   }
@@ -1161,31 +1183,40 @@ export default class Stage extends BaseStage {
       const image = Loader.images[defn.header];
       const sprite = gfxCore.sprite({
         image,
-        size: { w: image.naturalWidth, h: image.naturalHeight }
+        size: {
+          w: image.naturalWidth,
+          h: image.naturalHeight, 
+        },
       });
       const id = this.allocateInternal(sprite);
 
       sprite.opacity = 0;
       sprite.pos = {
         x: this.width / 2,
-        y: this.height / 2
+        y: this.height / 2,
       };
-      sprite.anchor = { x: 0.5, y: 0.5 };
+      sprite.anchor = {
+        x: 0.5,
+        y: 0.5, 
+      };
       animate.tween(sprite, { opacity: 1 }, {
         duration: 800,
-        easing: animate.Easing.Cubic.Out
+        easing: animate.Easing.Cubic.Out,
       }).then(() => {
-        animate.tween(sprite.scale, { x: 0.1, y: 0.1 }, {
+        animate.tween(sprite.scale, {
+          x: 0.1,
+          y: 0.1, 
+        }, {
           duration: 1000,
-          easing: animate.Easing.Cubic.Out
+          easing: animate.Easing.Cubic.Out,
         });
 
         return animate.tween(sprite.pos, {
           x: journalButton.pos.x + (journalButton.size.w / 2),
-          y: journalButton.pos.y + (journalButton.size.h / 2)
+          y: journalButton.pos.y + (journalButton.size.h / 2),
         }, {
           duration: 2000,
-          easing: animate.Easing.Cubic.InOut
+          easing: animate.Easing.Cubic.InOut,
         });
       }).then(() => {
         journalButton.highlight();
@@ -1298,7 +1329,7 @@ export default class Stage extends BaseStage {
       } else {
         this.functionDef.cancel();
         Logging.log('unfold-cancel', {
-          item: this.saveNode(this.functionDef.referenceId)
+          item: this.saveNode(this.functionDef.referenceId),
         });
       }
       this.functionDef = null;
@@ -1321,7 +1352,7 @@ export default class Stage extends BaseStage {
       draw: () => {
         this.getView(unfadedId)
           .draw(unfadedId, unfadedId, this.getState(), this, this.makeBaseOffset());
-      }
+      },
     });
 
     this.getView(fadedId).opacity = 0;
@@ -1329,17 +1360,17 @@ export default class Stage extends BaseStage {
 
     return Promise.all([
       animate.tween(this.getView(unfadedId), {
-        opacity: 0
+        opacity: 0,
       }, {
         duration: 2000,
-        easing: animate.Easing.Cubic.InOut
+        easing: animate.Easing.Cubic.InOut,
       }),
       animate.tween(this.getView(fadedId), {
-        opacity: 1
+        opacity: 1,
       }, {
         duration: 2000,
-        easing: animate.Easing.Cubic.InOut
-      })
+        easing: animate.Easing.Cubic.InOut,
+      }),
     ]).then(() => {
       this.removeEffect(fxId);
     });

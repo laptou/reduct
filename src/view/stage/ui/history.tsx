@@ -4,7 +4,7 @@
 
 import { GlobalState } from '@/store/state';
 import '@resources/style/react/ui/history.scss';
-import { redo as createRedo, undo as createUndo } from '@/store/undo';
+import { redo as createRedo, undo as createUndo } from '@/store/reducer/undo';
 import { DeepReadonly } from '@/util/helper';
 import React from 'react';
 import { connect } from 'react-redux';

@@ -1,33 +1,26 @@
 import type { Flat, NodeId, NodeMap } from '@/semantics';
 import {
-  ApplyNode, BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NotNode, NumberNode, OpNode, PTupleNode, ReferenceNode as ReferenceNode, StrNode 
+  ApplyNode, BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NotNode, NumberNode, OpNode, PTupleNode, ReferenceNode as ReferenceNode, StrNode, 
 } from '@/semantics/defs';
 import { builtins } from '@/semantics/defs/builtins';
 import {
-  createBoolNode, createMissingNode, createNumberNode, createStrNode, getKindForNode, getValueForName, iterateTuple 
+  createBoolNode, createMissingNode, createNumberNode, createStrNode, getKindForNode, getValueForName, iterateTuple, 
 } from '@/semantics/util';
 import {
-  DRF, mapIterable, withoutParent, withParent, DeepReadonly 
+  DeepReadonly, DRF, mapIterable, withoutParent, withParent, 
 } from '@/util/helper';
 import {
-  cloneNodeDeep, findNodesDeep, getRootForNode, isAncestorOf 
+  cloneNodeDeep, findNodesDeep, getRootForNode, isAncestorOf, 
 } from '@/util/nodes';
 import { castDraft, produce } from 'immer';
-import { combineReducers } from 'redux';
-import { createTransform, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
 import {
-  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStartLevel, createStep, ReductAction 
-} from './action';
+  CircularCallError, GameError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, 
+} from '../errors';
+import { checkDefeat, checkVictory } from '../helper';
+import { GameMode, RState } from '../state';
 import {
-  CircularCallError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, GameError 
-} from './errors';
-import { checkDefeat, checkVictory } from './helper';
-import { GameMode, GlobalState, RState } from './state';
-import { undoable } from './undo';
-
-export { nextId } from '@/util/nodes';
-
+  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStep, ReductAction, 
+} from '../action';
 
 const initialProgram: RState = {
   mode: GameMode.Title,
@@ -39,7 +32,7 @@ const initialProgram: RState = {
   globals: new Map(),
   added: new Map(),
   removed: new Map(),
-  executing: new Set()
+  executing: new Set(),
 };
 
 // To speed up type checking, we only type check nodes that have
@@ -59,7 +52,7 @@ function markDirty(nodes: NodeMap, id: NodeId) {
   dirty.add(node.id);
 }
 
-function program(state: DeepReadonly<RState> = initialProgram, act?: ReductAction): DeepReadonly<RState> {
+export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductAction): DeepReadonly<RState> {
   if (!act) return state;
   
   switch (act.type) {
@@ -74,7 +67,7 @@ function program(state: DeepReadonly<RState> = initialProgram, act?: ReductActio
       globals: act.globals,
       added: new Map(mapIterable(act.nodes.keys(), id => [id, null] as const)),
       removed: new Map(),
-      executing: new Set()
+      executing: new Set(),
     };
   }
 
@@ -113,10 +106,19 @@ function program(state: DeepReadonly<RState> = initialProgram, act?: ReductActio
       const argName = argNode.fields.name;
 
       // bind the param value to the arg node
-      const boundArgNode = { ...argNode, fields: { ...argNode.fields, value: paramNodeId } };
+      const boundArgNode = {
+        ...argNode,
+        fields: {
+          ...argNode.fields,
+          value: paramNodeId, 
+        }, 
+      };
       const newNodeMap = new Map(state.nodes);
       newNodeMap.set(boundArgNode.id, boundArgNode);
-      state = { ...state, nodes: newNodeMap };
+      state = {
+        ...state,
+        nodes: newNodeMap, 
+      };
 
       // find all of the references who point to this arg
       const referenceNodes = findNodesDeep(
@@ -298,7 +300,9 @@ function program(state: DeepReadonly<RState> = initialProgram, act?: ReductActio
         && leftNode.type !== 'string'
         && leftNode.type !== 'boolean'
         && leftNode.type !== 'symbol')
-        throw new WrongTypeError(leftNode.id, ['number', 'string', 'boolean', 'symbol'], leftNode.type);
+        throw new WrongTypeError(leftNode.id, [
+          'number', 'string', 'boolean', 'symbol',
+        ], leftNode.type);
 
       if (rightNode.type !== leftNode.type)
         throw new WrongTypeError(rightNode.id, leftNode.type, rightNode.type);
@@ -468,7 +472,7 @@ function program(state: DeepReadonly<RState> = initialProgram, act?: ReductActio
       state = {
         ...state,
         added: new Map([newNode, ...addedNodes].map(({ id }) => [id, calleeNode.id])),
-        nodes: newNodeMap
+        nodes: newNodeMap,
       };
 
       resultNodeId = newNode.id;
@@ -533,7 +537,10 @@ function program(state: DeepReadonly<RState> = initialProgram, act?: ReductActio
     const [clonedNode, , newNodeMap] = 
       cloneNodeDeep(targetId, state.nodes);
 
-    state = { ...state, nodes: newNodeMap };
+    state = {
+      ...state,
+      nodes: newNodeMap, 
+    };
     
     return produce(state, draft => {
       draft.nodes = castDraft(newNodeMap);
@@ -774,7 +781,11 @@ function program(state: DeepReadonly<RState> = initialProgram, act?: ReductActio
       // trap errors and stop execution
       if (error instanceof GameError) {
         executing.delete(targetNodeId);
-        return { ...state, executing, error };
+        return {
+          ...state,
+          executing,
+          error, 
+        };
       } else {
         throw error;
       }
@@ -796,7 +807,10 @@ function program(state: DeepReadonly<RState> = initialProgram, act?: ReductActio
       executing.add(nodeId);
     }
 
-    return { ...state, executing };
+    return {
+      ...state,
+      executing, 
+    };
   }
 
   case ActionKind.Stop: {
@@ -805,15 +819,24 @@ function program(state: DeepReadonly<RState> = initialProgram, act?: ReductActio
     const executing = new Set(state.executing);
     executing.delete(targetNodeId);
 
-    return { ...state, executing };
+    return {
+      ...state,
+      executing, 
+    };
   }
 
   case ActionKind.DetectCompletion: {
     if (checkVictory(state))
-      return { ...state, mode: GameMode.Victory };
+      return {
+        ...state,
+        mode: GameMode.Victory, 
+      };
 
     if (checkDefeat(state))
-      return { ...state, mode: GameMode.Defeat };
+      return {
+        ...state,
+        mode: GameMode.Defeat, 
+      };
 
     return state;
   }
@@ -1157,46 +1180,4 @@ function program(state: DeepReadonly<RState> = initialProgram, act?: ReductActio
 
   default: return state;
   }
-}
-
-interface SerializedState {
-  level: number;
-}
-
-const gameStateTransform = createTransform(
-  // transform state on its way to being serialized and persisted.
-  ($present: RState) => {
-    if (!$present) return $present;
-
-    return { 
-      level: $present.level
-    } as SerializedState;
-  },
-  // transform state being rehydrated
-  ($present: SerializedState) => {
-    if ($present.level >= 0) {
-      return program(undefined, createStartLevel($present.level));
-    }
-
-    return program();
-  },
-  { whitelist: ['$present'] }
-);
-
-export function createReducer() {
-  const reducer = undoable(program);
-
-  return combineReducers<GlobalState>({
-    program: persistReducer(
-      { 
-        key: 'reduct', 
-        storage,
-        whitelist: ['$present'], // do not save undo history
-        version: parseInt(PKG_VERSION.replace(/\D/, '')), // 7.0.0-alpha = 700
-        transforms: [gameStateTransform]
-        
-      },
-      reducer
-    )
-  });
 }
