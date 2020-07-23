@@ -2,7 +2,7 @@ import { RState } from '@/store/state';
 import { DeepReadonly, dethunk, DRF } from '@/util/helper';
 import { nextId } from '@/util/nodes';
 import {
-  Flat, NodeId, NodeMap, ReductNode, ScopedNode
+  Flat, NodeId, NodeMap, ReductNode
 } from '.';
 import { PTupleNode, VTupleNode } from './defs';
 import { apply, ApplyNode } from './defs/apply';
@@ -15,7 +15,7 @@ import { BuiltInReferenceNode } from './defs/builtins';
 import { conditional, ConditionalNode } from './defs/conditional';
 import { define, DefineNode } from './defs/define';
 import { LambdaArgNode, LambdaNode, LambdaVarNode } from './defs/lambda';
-import { letExpr } from './defs/letExpr';
+import { letExpr, LetNode } from './defs/letExpr';
 import { member, MemberNode } from './defs/member';
 import { missing, MissingNode } from './defs/missing';
 import { not, NotNode } from './defs/not';
@@ -159,6 +159,14 @@ export function createLambdaNode(arg: PTupleNode, body: ReductNode): LambdaNode 
     ...createNodeScoped(),
     type: 'lambda',
     subexpressions: { arg, body }
+  };
+}
+
+export function createLetNode(variable: ReferenceNode, e1: ReductNode, e2: ReductNode): LetNode {
+  return {
+    ...createNodeScoped(),
+    type: 'letExpr',
+    subexpressions: { variable, e1, e2 }
   };
 }
 

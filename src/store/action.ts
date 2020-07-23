@@ -38,6 +38,7 @@ export enum ActionKind {
   EvalNot = 'eval-not',
   EvalApply = 'eval-apply',
   EvalReference = 'eval-reference',
+  EvalLet = 'eval-let',
 
   Execute = 'exec',
   Stop = 'stop',
@@ -49,7 +50,7 @@ export enum ActionKind {
   ClearError = 'clear-error',
 }
 
-export type ReductAction = 
+export type ReductAction =
   StartLevelActionLegacy |
   StartLevelAction |
   MoveNodeToBoardAction |
@@ -67,17 +68,18 @@ export type ReductAction =
   ExecuteAction |
   StopAction |
   StepAction |
-  CleanupAction | 
+  CleanupAction |
   DetectCompletionAction |
   ClearErrorAction |
-  RaiseAction | 
-  DetachAction;
+  RaiseAction |
+  DetachAction |
+  EvalLetAction;
 
 
 export interface ClearErrorAction {
   type: ActionKind.ClearError;
 }
-  
+
 /**
    * This action clears any error currently held by the store.
    */
@@ -179,9 +181,9 @@ export interface StartLevelActionLegacy {
  */
 export function startLevelLegacy(
   stage: BaseStage,
-  goal: Iterable<ReductNode>, 
-  board: Iterable<ReductNode>, 
-  toolbox: Iterable<ReductNode>, 
+  goal: Iterable<ReductNode>,
+  board: Iterable<ReductNode>,
+  toolbox: Iterable<ReductNode>,
   globals: Record<string, ReductNode>
 ): StartLevelActionLegacy {
   const { semantics } = stage;
@@ -259,7 +261,7 @@ export function createStartLevel(index: number): StartLevelAction {
   for (const name of Object.keys(builtins)) {
     macros.set(name, () => createBuiltInReferenceNode(name));
   }
-  
+
   if (levelDefinition.macros) {
     for (const [name, script] of Object.entries(levelDefinition.macros)) {
       // TODO: remove override for builtins, remove defs for builtin methods in levels
@@ -296,7 +298,7 @@ export function createStartLevel(index: number): StartLevelAction {
 
       return [name, () => createReferenceNode(name)];
     });
-  
+
   const newDefinedNames = levelDefinition.board
     .map((script: string) => {
       const node = parseProgram(script, macros);
@@ -340,7 +342,7 @@ export function createStartLevel(index: number): StartLevelAction {
   for (const [name, script] of Object.entries(levelDefinition.globals)) {
     // TODO: remove override for builtins, remove defs for builtin methods in levels
     if (name in builtins) continue;
-    
+
     const node = parseProgram(script, macros);
 
     if (node.type !== 'define')
@@ -413,13 +415,37 @@ export interface AddNodeToToolboxAction {
  * @param newNodes The node being added, as well as all of its descendant nodes.
  */
 export function addToolboxItem(
-  newNodeId: NodeId, 
+  newNodeId: NodeId,
   newNodes: Iterable<ReductNode>
 ): AddNodeToToolboxAction {
   return {
     type: ActionKind.AddToolboxItem,
     newNodeId,
     addedNodes: newNodes
+  };
+}
+
+
+export interface EvalLetAction {
+  type: ActionKind.EvalLet;
+  letNodeId: NodeId;
+
+}
+
+/**
+ * Returns an action which will evaluate the variable to the first
+ * expression inside of the second expression.
+ * 
+ * @param letNodeId The ID of the node that represents the let expression
+
+ */
+export function createEvalLet(
+  letNodeId: NodeId,
+): EvalLetAction {
+  return {
+    type: ActionKind.EvalLet,
+    letNodeId
+
   };
 }
 
@@ -440,7 +466,7 @@ export interface EvalLambdaAction {
  */
 export function createEvalLambda(
   lambdaNodeId: NodeId,
-  paramNodeId: NodeId, 
+  paramNodeId: NodeId,
 ): EvalLambdaAction {
   return {
     type: ActionKind.EvalLambda,
@@ -460,7 +486,7 @@ export interface EvalOperatorAction {
  * @param operatorNodeId The ID of the node that represents the binary operator.
  */
 export function createEvalOperator(
-  operatorNodeId: NodeId, 
+  operatorNodeId: NodeId,
 ): EvalOperatorAction {
   return {
     type: ActionKind.EvalOperator,
@@ -479,7 +505,7 @@ export interface EvalConditionalAction {
  * @param operatorNodeId The ID of the node that represents the conditional.
  */
 export function createEvalConditional(
-  conditionalNodeId: NodeId, 
+  conditionalNodeId: NodeId,
 ): EvalConditionalAction {
   return {
     type: ActionKind.EvalConditional,
@@ -498,7 +524,7 @@ export interface EvalNotAction {
  * @param notNodeId The ID of the node that represents the conditional.
  */
 export function createEvalNot(
-  notNodeId: NodeId, 
+  notNodeId: NodeId,
 ): EvalNotAction {
   return {
     type: ActionKind.EvalNot,
@@ -517,7 +543,7 @@ export interface EvalApplyAction {
  * @param applyNodeId The ID of the node that represents the application.
  */
 export function createEvalApply(
-  applyNodeId: NodeId, 
+  applyNodeId: NodeId,
 ): EvalApplyAction {
   return {
     type: ActionKind.EvalApply,
@@ -536,7 +562,7 @@ export interface EvalReferenceAction {
  * @param referenceNodeId The ID of the node that represents the application.
  */
 export function createEvalReference(
-  referenceNodeId: NodeId, 
+  referenceNodeId: NodeId,
 ): EvalReferenceAction {
   return {
     type: ActionKind.EvalReference,
@@ -556,7 +582,7 @@ export interface EvalInvocationAction {
  * @param referenceNodeId The ID of the node that represents the application.
  */
 export function createEvalInvocation(
-  referenceNodeId: NodeId, 
+  referenceNodeId: NodeId,
   paramNodeId: NodeId
 ): EvalInvocationAction {
   return {
@@ -711,8 +737,8 @@ export interface LegacySmallStepAction {
  * contains ``newNodes`` as nested nodes.
  */
 export function smallStep(
-  nodeId: NodeId, 
-  newNodeIds: Iterable<NodeId>, 
+  nodeId: NodeId,
+  newNodeIds: Iterable<NodeId>,
   newNodes: Iterable<ReductNode>
 ): LegacySmallStepAction {
   return {
