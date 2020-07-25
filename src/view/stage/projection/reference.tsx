@@ -38,7 +38,7 @@ export const ReferenceProjection = connect(
     store: DeepReadonly<GlobalState>, 
     ownProps: ReferenceProjectionOwnProps
   ) => ({
-    valid: getDefinitionForName(ownProps.node.fields.name, ownProps.node, store.program.$present) !== null
+    valid: getDefinitionForName(ownProps.node.fields.name, ownProps.node, store.game.$present) !== null
   })
 )(ReferenceProjectionImpl);
   

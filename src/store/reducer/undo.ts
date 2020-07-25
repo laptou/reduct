@@ -1,44 +1,45 @@
 import { castDraft, produce } from 'immer';
-import type { Reducer } from 'redux';
 import { ActionKind, ReductAction } from '../action';
 import { GameError } from '../errors';
-import { RState } from '../state';
+import { GameState } from '../state';
+import type { gameReducer } from './game';
+import { DeepReadonly } from '@/util/helper';
 
 /** Undo the last action. */
 export function undo() {
   return {
-    type: ActionKind.Undo
+    type: ActionKind.Undo,
   };
 }
 
 /** Redo the last undone action. */
 export function redo() {
   return {
-    type: ActionKind.Redo
+    type: ActionKind.Redo,
   };
 }
 
-export interface UndoableState<S>
+export interface UndoableGameState
 {
-  $present: S;
-  $past: S[];
-  $future: S[];
+  $present: DeepReadonly<GameState>;
+  $past: Array<DeepReadonly<GameState>>;
+  $future: Array<DeepReadonly<GameState>>;
   $error: GameError | null;
 }
 
 /**
- * Given a reducer, return a reducer that supports undo/redo and handles game
+ * Given a game reducer, return a reducer that supports undo/redo and handles game
  * errors.
  */
-export function undoable(reducer: Reducer<RState>) {
-  const initialState: UndoableState<RState> = {
+export function undoableReducer(reducer: typeof gameReducer) {
+  const initialState: UndoableGameState = {
     $present: reducer(),
-    $past: [] as RState[],
-    $future: [] as RState[],
-    $error: null
+    $past: [],
+    $future: [],
+    $error: null,
   };
 
-  return function(state: UndoableState<RState> = initialState, action?: ReductAction): UndoableState<S> {
+  return (state: UndoableGameState = initialState, action?: ReductAction): UndoableGameState => {
     if (!action) return state;
 
     switch (action.type) {
@@ -80,7 +81,7 @@ export function undoable(reducer: Reducer<RState>) {
     case ActionKind.ClearError: {
       return {
         ...state,
-        $error: null
+        $error: null,
       };
     }
     
@@ -113,7 +114,10 @@ export function undoable(reducer: Reducer<RState>) {
         });
       } catch (error) {
         if (error instanceof GameError) {
-          return { ...state, $error: error };
+          return {
+            ...state,
+            $error: error, 
+          };
         } else {
           throw error;
         }

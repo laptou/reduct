@@ -34,8 +34,8 @@ const HistoryImpl = (props: HistoryStoreProps & HistoryDispatchProps) => {
 
 export const History = connect(
   (store: DeepReadonly<GlobalState>) => ({
-    canUndo: store.program.$past.length > 0,
-    canRedo: store.program.$future.length > 0,
+    canUndo: store.game.$past.length > 0,
+    canRedo: store.game.$future.length > 0,
   }),
   (dispatch) => ({
     undo() { dispatch(createUndo()); },

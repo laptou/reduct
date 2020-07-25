@@ -1,4 +1,4 @@
-import { RState } from '@/store/state';
+import { GameState } from '@/store/state';
 import { DeepReadonly, dethunk, DRF } from '@/util/helper';
 import { nextId } from '@/util/nodes';
 import {
@@ -316,7 +316,7 @@ export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKin
 export function getDefinitionForName(
   name: string,
   node: DRF,
-  state: DeepReadonly<RState>
+  state: DeepReadonly<GameState>
 ): NodeId | null {
   let current: DRF = node;
 
@@ -364,7 +364,7 @@ export function getDefinitionForName(
 export function getValueForName(
   name: string,
   node: DRF,
-  state: DeepReadonly<RState>
+  state: DeepReadonly<GameState>
 ): NodeId | null {
   const definitionId = getDefinitionForName(name, node, state);
   if (definitionId === null) return null;

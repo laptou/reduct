@@ -31,7 +31,7 @@ const TitleImpl = (props: TitleStoreProps & TitleDispatchProps) => {
 
 export const Title = connect(
   (store: DeepReadonly<GlobalState>) => ({
-    isTitle: store.program.$present.mode === GameMode.Title
+    isTitle: store.game.$present.mode === GameMode.Title
   }),
   (dispatch) => ({
     startLevel() { dispatch(createStartLevel(0)); }

@@ -1,5 +1,5 @@
 import type { ProjectionDef } from '@/gfx/projection';
-import { RState } from '@/store/state';
+import { GameState } from '@/store/state';
 import type Stage from '@/stage/stage';
 import type { DeepReadonly, Thunk, DRF } from '@/util/helper';
 import type {
@@ -37,11 +37,11 @@ export interface NodeDef<N extends BaseNode> {
 
     projection: ProjectionDef<N>;
 
-    type?: N['type'] | Thunk<[Semantics, DeepReadonly<RState>, any, DRF<N>], NodeType>;
+    type?: N['type'] | Thunk<[Semantics, DeepReadonly<GameState>, any, DRF<N>], NodeType>;
 
     targetable?: (
         semantics: Semantics,
-        state: DeepReadonly<RState>,
+        state: DeepReadonly<GameState>,
         expr: DRF<N>
     ) => boolean;
 
@@ -92,7 +92,7 @@ export interface NodeDef<N extends BaseNode> {
     smallStep?: (
         semantics: Semantics,
         stage: Stage,
-        state: DeepReadonly<RState>,
+        state: DeepReadonly<GameState>,
         expr: DeepReadonly<Flat<N>>
     ) => [NodeId, NodeId[], BaseNode[]] | NodeDef<any>;
 
@@ -109,7 +109,7 @@ export interface NodeDef<N extends BaseNode> {
     betaReduce?: (
         semantics: Semantics,
         stage: Stage,
-        state: DeepReadonly<RState>,
+        state: DeepReadonly<GameState>,
         expr: DeepReadonly<Flat<N>>,
         argIds: NodeId[]
     ) => [NodeId, NodeId[], BaseNode[]];
@@ -117,14 +117,14 @@ export interface NodeDef<N extends BaseNode> {
     stepAnimation?: (
         semantics: Semantics,
         stage: Stage,
-        state: DeepReadonly<RState>,
+        state: DeepReadonly<GameState>,
         expr: DeepReadonly<Flat<N>>
     ) => Promise<void>;
 
     stepSound?: string | string[] | ((
         semantics: Semantics,
         stage: Stage,
-        state: DeepReadonly<RState>,
+        state: DeepReadonly<GameState>,
         expr: DeepReadonly<Flat<N>>
     ) => string | string[]);
 
@@ -135,7 +135,7 @@ export interface NodeDef<N extends BaseNode> {
      */
     validateStep?: string | ((
         semantics: Semantics,
-        state: DeepReadonly<RState>,
+        state: DeepReadonly<GameState>,
         expr: DeepReadonly<Flat<N>>
     ) => [NodeId, string] | null);
 
@@ -159,7 +159,7 @@ export interface NodeDef<N extends BaseNode> {
      * return true or false.
      */
     substepFilter?: (
-      state: DeepReadonly<RState>,
+      state: DeepReadonly<GameState>,
       expr: DRF<N>,
       field: string
     ) => boolean;

@@ -2,7 +2,7 @@
 /**
  * @module transform
  */
-import { RState } from '@/store/state';
+import { GameState } from '@/store/state';
 import {
   genericClone, genericEqual, genericFlatten, genericMap, genericSearch 
 } from '@/semantics/core';
@@ -242,7 +242,7 @@ export class Semantics {
     }
 
     /** The remnants of type checking. */
-    public collectTypes(state: RState, rootExpr) {
+    public collectTypes(state: GameState, rootExpr) {
       const result = new Map();
       const completeness = new Map();
       const nodes = state.nodes;
@@ -342,7 +342,7 @@ export class Semantics {
     }
 
     /** Check whether a node is detachable from its parent. */
-    public detachable(state: DeepReadonly<RState>, parentId: NodeId, childId: NodeId) {
+    public detachable(state: DeepReadonly<GameState>, parentId: NodeId, childId: NodeId) {
       const parent = state.nodes.get(parentId)!;
       const child = state.nodes.get(childId)!;
 
@@ -371,7 +371,7 @@ export class Semantics {
     /**
      * Can an expression have something dropped into it?
      */
-    public droppable(state: DeepReadonly<RState>, itemId: NodeId, targetId: NodeId) {
+    public droppable(state: DeepReadonly<GameState>, itemId: NodeId, targetId: NodeId) {
       // TODO: don't hardcode these checks
       const item = state.nodes.get(itemId)!;
       const target = state.nodes.get(targetId)!;
@@ -412,14 +412,14 @@ export class Semantics {
      * Check whether we should ignore the given node when matching
      * nodes to determine victory.
      */
-    public ignoreForVictory(state: DeepReadonly<RState>, node: ReductNode) {
+    public ignoreForVictory(state: DeepReadonly<GameState>, node: ReductNode) {
       const defn = this.definitionOf(node);
       return this.kind(state, node) === 'syntax' || (defn && defn.ignoreForVictory);
     }
 
 
     /** Get the kind of an expression (e.g., "expression", "value", "statement"). */
-    public kind(state: DeepReadonly<RState>, node: DRF) {
+    public kind(state: DeepReadonly<GameState>, node: DRF) {
       const def = this.definitionOf(node);
       return dethunk(def.kind, node, state.nodes);
     }
@@ -438,7 +438,7 @@ export class Semantics {
     }
 
     /** Determine if a level could possibly be completed. */
-    public mightBeCompleted(state: DeepReadonly<RState>, checkVictory) {
+    public mightBeCompleted(state: DeepReadonly<GameState>, checkVictory) {
       const containsReduceableExpr = [...state.board.values(), ...state.toolbox.values()].some((id) => {
         const node = state.nodes.get(id)!;
         const kind = this.kind(state, node);
@@ -661,7 +661,7 @@ export class Semantics {
     /**
      * Is an expression selectable/hoverable by the mouse?
      */
-    public targetable(state: RState, expr: ReductNode) {
+    public targetable(state: GameState, expr: ReductNode) {
       const defn = this.definitionOf(expr);
       if (defn && defn.targetable && typeof defn.targetable === 'function') {
         return defn.targetable(this, state, expr);

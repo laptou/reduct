@@ -60,13 +60,13 @@ export const logMiddleware: Middleware = (api) => (next) => (act) => {
   case ActionKind.MoveNodeToSlot:
     datadogRum.addUserAction(act.type, { 
       action: serialize(act), 
-      result: serialize(newState.program.$present),
-      error: serialize(newState.program.$error),
+      result: serialize(newState.game.$present),
+      error: serialize(newState.game.$error),
       level: serialize(newState.level) 
     });
     break;
   case ActionKind.DetectCompletion:
-    switch (newState.program.$present.mode) {
+    switch (newState.game.$present.mode) {
     case GameMode.Victory:
       datadogRum.addUserAction('victory', { });
       break;

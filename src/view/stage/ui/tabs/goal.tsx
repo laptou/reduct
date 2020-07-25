@@ -28,6 +28,6 @@ const GoalImpl: FunctionComponent<GoalProps> =
 
 export const Goal = connect(
   (state: DeepReadonly<GlobalState>) => ({
-    nodeIds: state.program.$present.goal,
+    nodeIds: state.game.$present.goal,
   })
 )(GoalImpl);

@@ -213,11 +213,11 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
  */
 export const StageProjection = connect(
   (state: DeepReadonly<GlobalState>, ownProps: StageProjectionOwnProps) => {
-    const presentState = state.program.$present;
+    const presentState = state.game.$present;
 
     if (ownProps.nodeId) {
       const node = presentState.nodes.get(ownProps.nodeId) ?? null;
-      const error = state.program.$error?.target === ownProps.nodeId ? state.program.$error : null;
+      const error = state.game.$error?.target === ownProps.nodeId ? state.game.$error : null;
       const executing = presentState.executing.has(ownProps.nodeId);
       let settled;
 

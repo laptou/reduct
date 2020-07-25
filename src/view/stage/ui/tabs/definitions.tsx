@@ -59,7 +59,7 @@ export const Definitions = connect(
   (state: DeepReadonly<GlobalState>) => ({
     // TODO: only show globals which are referenced by something on the board
     // or in the toolbox
-    nodeIds: Array.from(state.program.$present.globals.values()),
+    nodeIds: Array.from(state.game.$present.globals.values()),
   }),
   (dispatch) => ({
     moveNodeToDefs(id: NodeId) {

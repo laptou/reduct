@@ -1,4 +1,4 @@
-import type { RState } from '@/store/state';
+import type { GameState } from '@/store/state';
 import { DeepReadonly, withoutParent } from '@/util/helper';
 import { produce } from 'immer';
 import type {
@@ -96,7 +96,7 @@ export const genericSearch: GenericNodeTransformer<(
 export const genericEqual = (
   getSubExpressions: (node: DeepReadonly<ReductNode>) => string[],
   comparer: (left: DeepReadonly<ReductNode>, right: DeepReadonly<ReductNode>) => boolean
-) => function equal(id1: NodeId, id2: NodeId, state: DeepReadonly<RState>) {
+) => function equal(id1: NodeId, id2: NodeId, state: DeepReadonly<GameState>) {
   const n1 = state.nodes.get(id1)!;
   const n2 = state.nodes.get(id2)!;
 
@@ -152,7 +152,7 @@ export const genericClone: GenericNodeCreator<(
  * [newNodes] = All the new added nodes (includs the children of the parent node
     as well.)
  */
-export function genericBetaReduce(semant: Semantics, state: DeepReadonly<RState>, config) {
+export function genericBetaReduce(semant: Semantics, state: DeepReadonly<GameState>, config) {
   const { topNode, targetNode, argIds } = config;
   const nodes = state.nodes;
   // Prevent application when there are missing nodes

@@ -258,7 +258,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
   };
 
 export const Board = connect(
-  ({ program: { $present: { added, removed, board } } }: DeepReadonly<GlobalState>) => ({
+  ({ game: { $present: { added, removed, board } } }: DeepReadonly<GlobalState>) => ({
     added,
     removed,
     board,

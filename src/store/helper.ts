@@ -1,6 +1,6 @@
 import { getKindForNode } from '@/semantics/util';
 import { DeepReadonly } from '@/util/helper';
-import { RState } from './state';
+import { GameState } from './state';
 import { compareNodesDeep } from '@/util/nodes';
 import { produce } from 'immer';
 
@@ -9,7 +9,7 @@ import { produce } from 'immer';
  * the board) match the nodes in the goal.
  * @param state The current game state.
  */
-export function checkVictory(state: DeepReadonly<RState>): boolean {
+export function checkVictory(state: DeepReadonly<GameState>): boolean {
   // syntax nodes are ignored when detecting level completion
   const board = new Set(Array.from(state.board).filter((id) => {
     const node = state.nodes.get(id)!;
@@ -50,7 +50,7 @@ export function checkVictory(state: DeepReadonly<RState>): boolean {
  * true if the level is already in a victory state.
  * @param state The current game state.
  */
-export function checkDefeat(state: DeepReadonly<RState>): boolean {
+export function checkDefeat(state: DeepReadonly<GameState>): boolean {
   // if there are still expressions on the board that can be stepped, don't declare defeat yet
   const containsReduceableExpr = [...state.board.values(), ...state.toolbox.values()].some((id) => {
     const node = state.nodes.get(id)!;

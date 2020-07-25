@@ -66,7 +66,7 @@ const LevelInfoImpl: React.FC<LevelInfoProps> = (props) => {
 
 export const LevelSelect = connect(
   (store: DeepReadonly<GlobalState>) => ({
-    level: store.program.$present.level,
+    level: store.game.$present.level,
   }),
   (dispatch) => ({
     startLevel(level: number) { dispatch(createStartLevel(level)); },
@@ -75,6 +75,6 @@ export const LevelSelect = connect(
 
 export const LevelInfo = connect(
   (store: DeepReadonly<GlobalState>) => ({
-    level: store.program.$present.level,
+    level: store.game.$present.level,
   })
 )(LevelInfoImpl);

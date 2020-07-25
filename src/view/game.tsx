@@ -68,5 +68,5 @@ function GameImpl(props: GameStoreProps) {
 }
 
 export const Game = connect((state: DeepReadonly<GlobalState>) => ({
-  mode: state.program.$present.mode,
+  mode: state.game.$present.mode,
 }))(GameImpl);

@@ -76,7 +76,7 @@ const BinOpProjectionImpl: FunctionComponent<BinOpProjectionProps> =
 
 export const BinOpProjection = connect(
   (store: DeepReadonly<GlobalState>, ownProps: BinOpProjectionOwnProps) => {
-    const opNode = store.program.$present.nodes.get(ownProps.node.subexpressions.op);
+    const opNode = store.game.$present.nodes.get(ownProps.node.subexpressions.op);
 
     if (opNode && opNode.type === 'op') {
       return { op: opNode.fields.name }

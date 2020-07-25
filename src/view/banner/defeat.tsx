@@ -31,7 +31,7 @@ const DefeatImpl = (props: DefeatStoreProps & DefeatDispatchProps) => {
 
 export const DefeatOverlay = connect(
   (store: DeepReadonly<GlobalState>) => ({
-    isDefeat: store.program.$present.mode === GameMode.Defeat
+    isDefeat: store.game.$present.mode === GameMode.Defeat
   }),
   (dispatch) => ({
     undo() { dispatch(createUndo()); }
