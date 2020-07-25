@@ -1,5 +1,5 @@
 import { NodeId } from '@/semantics';
-import { createClearError, createDetectCompetion, createMoveNodeToBoard } from '@/store/action';
+import { createClearError, createDetectCompetion, createMoveNodeToBoard } from '@/store/action/game';
 import { GlobalState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
 import '@resources/style/react/ui/board.scss';
@@ -171,7 +171,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
 
 
     const transitions = useTransition(
-      [...props.board],
+      [...board],
       id => id,
       {
         from: (id) => {

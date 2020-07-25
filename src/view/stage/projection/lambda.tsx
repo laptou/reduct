@@ -4,7 +4,7 @@ import React, { FunctionComponent, useState } from 'react';
 import { connect } from 'react-redux';
 import { StageProjection } from './base';
 import { Flat, NodeId } from '@/semantics';
-import { createEvalLambda } from '@/store/action';
+import { createEvalLambda } from '@/store/action/game';
 import cx from 'classnames';
 
 interface LambdaArgProjectionOwnProps {

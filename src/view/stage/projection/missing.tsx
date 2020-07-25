@@ -1,4 +1,4 @@
-import { createClearError, moveNodeToSlot } from '@/store/action';
+import { createClearError, moveNodeToSlot } from '@/store/action/game';
 import { Flat, NodeId } from '@/semantics';
 import { MissingNode } from '@/semantics/defs';
 import '@resources/style/react/projection/missing.scss';

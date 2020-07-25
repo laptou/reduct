@@ -5,7 +5,7 @@ import { DeepReadonly } from '@/util/helper';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { StageProjection } from '../../projection/base';
-import { createMoveNodeToDefs } from '@/store/action';
+import { createMoveNodeToDefs } from '@/store/action/game';
 
 interface DefinitionsStoreProps {
   nodeIds: NodeId[];

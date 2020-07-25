@@ -1,5 +1,5 @@
 import Loader from '@/loader';
-import { createStartLevel } from '@/store/action';
+import { createStartLevel } from '@/store/action/game';
 import { GlobalState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
 import '@resources/style/react/ui/level.scss';

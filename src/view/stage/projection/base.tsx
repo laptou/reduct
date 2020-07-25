@@ -2,7 +2,7 @@ import { NodeId } from '@/semantics';
 import { getKindForNode, NodeKind } from '@/semantics/util';
 import {
   createCleanup, createClearError, createExecute, createRaise, createStop 
-} from '@/store/action';
+} from '@/store/action/game';
 import { GameError } from '@/store/errors';
 import { GlobalState } from '@/store/state';
 import { DeepReadonly, DRF } from '@/util/helper';

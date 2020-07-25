@@ -6,7 +6,7 @@ import * as gfx from '../gfx/core';
 import * as animate from '../gfx/animate';
 import * as progression from '../game/progression';
 import Loader from '../loader';
-import * as action from '../store/action';
+import * as action from '../store/action/game';
 import { nextId } from '../store/reducer';
 
 export default class SyntaxJournal {

@@ -20,7 +20,7 @@ import { checkDefeat, checkVictory } from '../helper';
 import { GameMode, GameState } from '../state';
 import {
   ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStep, ReductAction, 
-} from '../action';
+} from '../action/game';
 
 const initialProgram: GameState = {
   mode: GameMode.Title,

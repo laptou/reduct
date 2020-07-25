@@ -1,4 +1,4 @@
-import { ActionKind, ReductAction } from '@/store/action';
+import { ActionKind, ReductAction } from '@/store/action/game';
 import { GameMode, GlobalState } from '@/store/state';
 import { Datacenter, datadogRum } from '@datadog/browser-rum';
 import type { Middleware } from 'redux';

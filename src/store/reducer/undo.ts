@@ -1,5 +1,5 @@
 import { castDraft, produce } from 'immer';
-import { ActionKind, ReductAction } from '../action';
+import { ActionKind, ReductAction } from '../action/game';
 import { GameError } from '../errors';
 import { GameState } from '../state';
 import type { gameReducer } from './game';

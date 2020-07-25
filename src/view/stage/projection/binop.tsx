@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { BooleanShape } from '../shape/boolean';
 import { NumberShape } from '../shape/number';
 import { StageProjection } from './base';
-import { createEvalOperator } from '@/store/action';
+import { createEvalOperator } from '@/store/action/game';
 
 interface BinOpProjectionOwnProps {
   node: Flat<BinOpNode>;

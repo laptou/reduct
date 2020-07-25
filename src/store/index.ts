@@ -1,4 +1,4 @@
-import { ActionKind } from './action';
+import { ActionKind } from './action/game';
 import { compose, applyMiddleware, createStore } from 'redux';
 import { createReducer } from './reducer';
 import { logMiddleware } from '@/logging';
