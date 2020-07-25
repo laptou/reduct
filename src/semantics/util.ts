@@ -1,16 +1,12 @@
 import { GameState } from '@/store/state';
 import { DeepReadonly, dethunk, DRF } from '@/util/helper';
 import { nextId } from '@/util/nodes';
-import {
-  Flat, NodeId, NodeMap, ReductNode, ScopedNode
-} from '.';
+import { Flat, NodeId, NodeMap, ReductNode } from '.';
 import { PTupleNode, VTupleNode } from './defs';
 import { apply, ApplyNode } from './defs/apply';
 import { array, ArrayNode } from './defs/array';
 import { autograder } from './defs/autograder';
-import {
-  binop, BinOpNode, op, OpNode
-} from './defs/binop';
+import { binop, BinOpNode, op, OpNode } from './defs/binop';
 import { BuiltInReferenceNode } from './defs/builtins';
 import { conditional, ConditionalNode } from './defs/conditional';
 import { define, DefineNode } from './defs/define';
@@ -20,10 +16,7 @@ import { member, MemberNode } from './defs/member';
 import { missing, MissingNode } from './defs/missing';
 import { not, NotNode } from './defs/not';
 import { reference, ReferenceNode } from './defs/reference';
-import {
-  boolean, BoolNode, dynamicVariant, number, NumberNode, ReductSymbol, string, StrNode, symbol, SymbolNode, unsol
-} from './defs/value';
-import { DRAFTABLE } from 'immer/dist/internal';
+import { boolean, BoolNode, dynamicVariant, number, NumberNode, ReductSymbol, string, StrNode, symbol, SymbolNode, unsol } from './defs/value';
 
 /**
  * Creates a partial node. Helper for "create node" functions to avoid

@@ -34,7 +34,7 @@ const gameStateTransform = createTransform(
 );
 
 export function createReducer() {
-  const version = parseInt(PKG_VERSION.replace(/\D/, '')); // 7.0.0-alpha = 700
+  const version = parseInt(PKG_VERSION.replace(/\D/g, '')); // 7.0.0-alpha = 700
 
   const gameReducerPersisted = persistReducer(
     { 

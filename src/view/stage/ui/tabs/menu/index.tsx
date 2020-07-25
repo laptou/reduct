@@ -2,10 +2,11 @@
  * @file The menu which appears in the top right of the game. Contains the level
  * selector as well as preferences and navigation.
  */
-import '@resources/style/react/ui/level.scss';
+import '@resources/style/react/ui/menu.scss';
 import React, { useState } from 'react';
 import { animated, useSpring, useTransition } from 'react-spring';
 import { LevelSelect, LevelInfo } from './level';
+import { Preferences } from './preferences';
 
 export const GameMenu: React.FC = () => {
   const [isOpen, setOpen] = useState(false);
@@ -43,8 +44,13 @@ export const GameMenu: React.FC = () => {
           position: absolute to not work as intended */
       }
       <animated.div id='reduct-game-menu-inner' style={innerStyle}>
-        <LevelSelect />
-        <LevelInfo onToggleLevelSelect={() => setOpen(!isOpen)} />
+        <div id='reduct-game-menu-scroller'>
+          <Preferences />
+          <LevelSelect />
+        </div>
+        <div id='reduct-game-menu-tab'>
+          <LevelInfo onToggleLevelSelect={() => setOpen(!isOpen)} />
+        </div>
       </animated.div>
     </div>
   );

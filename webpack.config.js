@@ -112,10 +112,11 @@ exports.default = (env) => ({
       'PKG_VERSION': JSON.stringify(require('./package.json').version),
       'process.env.NODE_ENV': JSON.stringify(env.production ? 'production' : 'development'),
     }),
-    new TsCheckerPlugin({
-      workers: TsCheckerPlugin.TWO_CPUS_FREE,
-      eslint: true,
-    }),
+    // new TsCheckerPlugin({
+    //   workers: TsCheckerPlugin.TWO_CPUS_FREE,
+    //   eslint: true,
+
+    // }),
     ...(env.production
       ? [
         new CompressionPlugin({
