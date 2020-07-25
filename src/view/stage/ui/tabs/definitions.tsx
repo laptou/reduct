@@ -4,7 +4,7 @@ import '@resources/style/react/ui/definitions.scss';
 import { DeepReadonly } from '@/util/helper';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
-import { StageProjection } from '../projection/base';
+import { StageProjection } from '../../projection/base';
 import { createMoveNodeToDefs } from '@/store/action';
 
 interface DefinitionsStoreProps {
@@ -59,11 +59,11 @@ export const Definitions = connect(
   (state: DeepReadonly<GlobalState>) => ({
     // TODO: only show globals which are referenced by something on the board
     // or in the toolbox
-    nodeIds: Array.from(state.program.$present.globals.values())
+    nodeIds: Array.from(state.program.$present.globals.values()),
   }),
   (dispatch) => ({
     moveNodeToDefs(id: NodeId) {
       dispatch(createMoveNodeToDefs(id));
-    }
+    },
   })
 )(DefinitionsImpl);

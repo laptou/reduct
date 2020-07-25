@@ -4,7 +4,7 @@ import '@resources/style/react/ui/toolbox.scss';
 import { DeepReadonly } from '@/util/helper';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
-import { StageProjection } from '../projection/base';
+import { StageProjection } from '../../projection/base';
 
 interface ToolboxStoreProps {
   nodeIds: DeepReadonly<Set<NodeId>>;
@@ -43,6 +43,6 @@ const ToolboxImpl: FunctionComponent<ToolboxProps> =
 
 export const Toolbox = connect(
   (state: DeepReadonly<GlobalState>) => ({
-    nodeIds: state.program.$present.toolbox
+    nodeIds: state.program.$present.toolbox,
   })
 )(ToolboxImpl);
