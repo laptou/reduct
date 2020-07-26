@@ -99,6 +99,10 @@ exports.default = (env) => ({
         test: /\.(mp3|mp4|ogg|opus|wav|png)$/i,
         use: ['file-loader'],
       },
+      {
+        test: /\.(md)$/i,
+        use: ['frontmatter-markdown-loader'],
+      },
     ],
   },
   plugins: [
