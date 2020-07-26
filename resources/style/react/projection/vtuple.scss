@@ -3,6 +3,7 @@
 
 .projection.vtuple {
   @extend %projection-standalone;
+  @include fx.projection-shadow-irregular();
   flex-flow: column nowrap;
 
   margin: 0;

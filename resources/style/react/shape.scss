@@ -31,7 +31,7 @@
   }
 
   & > .content {
-    margin: 0 -1px;
+    margin: 0 -0.5px;
 
     background-color: theme.$projection-color-boolean;
   }
@@ -47,7 +47,7 @@
   }
 
   & > .content {
-    margin: 0 -1px;
+    margin: 0 -0.5px;
 
     background-color: theme.$projection-color-string;
   }
@@ -63,7 +63,7 @@
   }
 
   & > .content {
-    margin: 0 -1px;
+    margin: 0 -0.5px;
 
     background-color: theme.$projection-color-number;
   }
