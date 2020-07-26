@@ -111,6 +111,8 @@ module.exports = {
     'dot-location': ['warn', 'property'],
     'block-spacing': ['error', 'always'],
     'key-spacing': ['error'],
+    'semi-spacing': ['error', { before: false, after: true }],
+    'comma-spacing': ['error', { before: false, after: true }],
     'keyword-spacing': ['error', { before: true, after: true }],
     'object-curly-spacing': ['error', 'always'],
     'array-bracket-spacing': ['error', 'never'],
@@ -148,6 +150,8 @@ module.exports = {
       }
     ],
     'comma-spacing': ['error', { before: false, after: true }],
+    'semi': ['error', 'always'],
+    'no-extra-semi': ['error'],
 
     // braces
     'brace-style': ['error', '1tbs', { allowSingleLine: true }],
@@ -197,6 +201,11 @@ module.exports = {
     
     'import/extensions': ['warn', 'never'],
     'import/prefer-default-export': ['off'],
+    'import/first': ['warn'],
+    'import/exports-last': ['warn'],
+    'import/no-duplicates': ['warn'],
+    'import/order': ['error', { 'newlines-between': 'always' }],
+    'import/newline-after-import': ['warn'],
     'max-classes-per-file': ['warn', 2]
   },
   ignorePatterns: [

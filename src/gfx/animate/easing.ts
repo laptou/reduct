@@ -12,42 +12,42 @@ export const Linear: Easing = (start, stop, t) => start + (t * (stop - start));
    * Quadratic tweens.
    */
 export const Quadratic: EasingGroup = {
-    In: (start, stop, t) => start + (t * t * (stop - start)),
-    Out: (start, stop, t) => start - (t * (t - 2) * (stop - start)),
-    InOut: (start, stop, t) => {
-        t *= 2;
-        if (t < 1) {
-            return start + (((stop - start) * t * t) / 2);
-        }
-        t -= 1;
-        return start - (((stop - start) * ((t * (t - 2)) - 1)) / 2);
+  In: (start, stop, t) => start + (t * t * (stop - start)),
+  Out: (start, stop, t) => start - (t * (t - 2) * (stop - start)),
+  InOut: (start, stop, t) => {
+    t *= 2;
+    if (t < 1) {
+      return start + (((stop - start) * t * t) / 2);
     }
+    t -= 1;
+    return start - (((stop - start) * ((t * (t - 2)) - 1)) / 2);
+  },
 };
 
 /**
    * Cubic tweens.
    */
 export const Cubic: EasingGroup = {
-    In: (start, stop, t) => start + (t * t * t * (stop - start)),
-    Out: (start, stop, t) => {
-        t -= 1;
-        return start + (((t * t * t) + 1) * (stop - start));
-    },
-    InOut: (start, stop, t) => {
-        t *= 2;
-        if (t < 1) {
-            return start + (((stop - start) * t * t * t) / 2);
-        }
-        t -= 2;
-        return start + (((stop - start) * ((t * t * t) + 2)) / 2);
+  In: (start, stop, t) => start + (t * t * t * (stop - start)),
+  Out: (start, stop, t) => {
+    t -= 1;
+    return start + (((t * t * t) + 1) * (stop - start));
+  },
+  InOut: (start, stop, t) => {
+    t *= 2;
+    if (t < 1) {
+      return start + (((stop - start) * t * t * t) / 2);
     }
+    t -= 2;
+    return start + (((stop - start) * ((t * t * t) + 2)) / 2);
+  },
 };
 
 /**
    * Exponential tweens.
    */
 export const Exponential: { Out: Easing } = {
-    Out: (start, stop, t) => ((stop - start) * (1 - (2 ** (-10 * t)))) + start
+  Out: (start, stop, t) => ((stop - start) * (1 - (2 ** (-10 * t)))) + start,
 };
 
 /**
@@ -79,8 +79,8 @@ export const Exponential: { Out: Easing } = {
    * @returns {Function} The easing function.
    */
 export const Color = (easing: Easing, src: string | chroma.Color, dst: string | chroma.Color): Easing<chroma.Color> => {
-    const scale = chroma.scale([src, dst]).mode('lch');
-    return (start, stop, t) => scale(easing(0.0, 1.0, t));
+  const scale = chroma.scale([src, dst]).mode('lch');
+  return (start, stop, t) => scale(easing(0.0, 1.0, t));
 };
 
 /**
@@ -88,10 +88,10 @@ export const Color = (easing: Easing, src: string | chroma.Color, dst: string | 
    * :func:`Color`.
    */
 export const Projectile = (easing: Easing): Easing => (start, stop, t) => {
-    const dy = stop - start;
-    // console.log(start, stop, t, start + (-4 * dy * t * t) + (4 * dy * t));
-    t = easing(0.0, 1.0, t);
-    return start + (-4 * dy * t * t) + (4 * dy * t);
+  const dy = stop - start;
+  // console.log(start, stop, t, start + (-4 * dy * t * t) + (4 * dy * t));
+  t = easing(0.0, 1.0, t);
+  return start + (-4 * dy * t * t) + (4 * dy * t);
 };
 
 /**
@@ -115,8 +115,8 @@ export const Anticipate: {
   BackIn: (s: number) => Easing;
   BackOut: (s: number) => Easing;
 } = {
-    BackIn: (s) => (start, stop, t) => start + ((stop - start)
+  BackIn: (s) => (start, stop, t) => start + ((stop - start)
                    * t * t * (((s + 1) * t) - s)),
-    BackOut: (s) => (start, stop, t) => start + ((stop - start)
-                   * (((t - 1) * (t - 1) * (((s + 1) * (t - 1)) + s)) + 1))
+  BackOut: (s) => (start, stop, t) => start + ((stop - start)
+                   * (((t - 1) * (t - 1) * (((s + 1) * (t - 1)) + s)) + 1)),
 };

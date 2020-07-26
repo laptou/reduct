@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+
 import { DeepReadonly } from '@/util/helper';
 import { GlobalState, GameMode } from '@/store/state';
 import { undo as createUndo } from '@/store/reducer/undo';
@@ -27,13 +28,13 @@ const DefeatImpl = (props: DefeatStoreProps & DefeatDispatchProps) => {
       </div>
     </div>
   );
-}
+};
 
 export const DefeatOverlay = connect(
   (store: DeepReadonly<GlobalState>) => ({
-    isDefeat: store.game.$present.mode === GameMode.Defeat
+    isDefeat: store.game.$present.mode === GameMode.Defeat,
   }),
   (dispatch) => ({
-    undo() { dispatch(createUndo()); }
+    undo() { dispatch(createUndo()); },
   })
 )(DefeatImpl);

@@ -1,7 +1,9 @@
 import { Howler } from 'howler';
-import { store } from '@/store';
 
 import Loader from '../loader';
+
+import { store } from '@/store';
+
 
 class AudioEngine {
   constructor() {

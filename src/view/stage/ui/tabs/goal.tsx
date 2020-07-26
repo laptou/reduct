@@ -1,10 +1,12 @@
+import React, { FunctionComponent } from 'react';
+import { connect } from 'react-redux';
+
+import { StageProjection } from '../../projection/base';
+
 import { GlobalState } from '@/store/state';
 import { NodeId } from '@/semantics';
 import { DeepReadonly } from '@/util/helper';
 import '@resources/style/react/ui/goal.scss';
-import React, { FunctionComponent } from 'react';
-import { connect } from 'react-redux';
-import { StageProjection } from '../../projection/base';
 
 interface GoalStoreProps {
   nodeIds: DeepReadonly<Set<NodeId>>;

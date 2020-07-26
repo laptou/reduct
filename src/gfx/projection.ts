@@ -1,6 +1,6 @@
 import type { GameState } from '@/store/state';
 import type {
-  BaseNode, Flat, NodeId, NodeMap 
+  BaseNode, Flat, NodeId, NodeMap, 
 } from '@/semantics';
 import { SymbolNode } from '@/semantics/defs';
 import { DeepReadonly, Thunk } from '@/util/helper';

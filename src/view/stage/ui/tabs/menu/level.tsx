@@ -1,10 +1,12 @@
+import React from 'react';
+import { connect } from 'react-redux';
+
 import Loader from '@/loader';
 import { createStartLevel } from '@/store/action/game';
 import { GlobalState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
+
 import '@resources/style/react/ui/level.scss';
-import React from 'react';
-import { connect } from 'react-redux';
 
 interface LevelMenuStoreProps {
   level: number;
@@ -46,7 +48,7 @@ const LevelSelectImpl: React.FC<LevelSelectProps> = (props) => {
       }
     </div>
   );
-}
+};
 
 const LevelInfoImpl: React.FC<LevelInfoProps> = (props) => {
   return (
@@ -61,8 +63,8 @@ const LevelInfoImpl: React.FC<LevelInfoProps> = (props) => {
         Levels
       </button>
     </div>
-  )
-}
+  );
+};
 
 export const LevelSelect = connect(
   (store: DeepReadonly<GlobalState>) => ({

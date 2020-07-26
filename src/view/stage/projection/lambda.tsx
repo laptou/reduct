@@ -1,11 +1,14 @@
+import cx from 'classnames';
+import { connect } from 'react-redux';
+import React, { FunctionComponent, useState } from 'react';
+
+import { StageProjection } from './base';
+
 import { LambdaNode, LambdaArgNode, LambdaVarNode } from '@/semantics/defs';
 import '@resources/style/react/projection/lambda.scss';
-import React, { FunctionComponent, useState } from 'react';
-import { connect } from 'react-redux';
-import { StageProjection } from './base';
 import { Flat, NodeId } from '@/semantics';
 import { createEvalLambda } from '@/store/action/game';
-import cx from 'classnames';
+
 
 interface LambdaArgProjectionOwnProps {
   node: Flat<LambdaArgNode>;
@@ -118,7 +121,8 @@ export const LambdaProjectionImpl: FunctionComponent<LambdaProjectionProps> =
 
     return (
       <div className={cx('projection lambda', { hover })}>
-        <div className='arg' 
+        <div
+          className='arg' 
           onDragOver={e => onDragOver(e, props, setHover)}
           onDragLeave={e => onDragLeave(e, props, setHover)}
           onDrop={e => onDrop(e, props, setHover)}
@@ -139,7 +143,7 @@ export const LambdaProjection = connect(
   null, 
   (dispatch, ownProps: LambdaProjectionOwnProps) => ({
     evalLambda(paramNodeId: NodeId) {
-      dispatch(createEvalLambda(ownProps.node.id, paramNodeId))
-    }
+      dispatch(createEvalLambda(ownProps.node.id, paramNodeId));
+    },
   })
 )(LambdaProjectionImpl);

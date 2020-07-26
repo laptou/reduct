@@ -1,8 +1,10 @@
-import type { BuiltInReferenceNode } from '@/semantics/defs';
-import { DRF } from '@/util/helper';
-import '@resources/style/react/projection/builtin.scss';
 import cx from 'classnames';
 import React, { FunctionComponent } from 'react';
+
+import type { BuiltInReferenceNode } from '@/semantics/defs';
+import { DRF } from '@/util/helper';
+
+import '@resources/style/react/projection/builtin.scss';
 
 interface BuiltInReferenceProjectionOwnProps {
   node: DRF<BuiltInReferenceNode>;
@@ -19,5 +21,5 @@ export const BuiltInReferenceProjection: FunctionComponent<BuiltInReferenceProje
           {props.node.fields.name}
         </div>
       </div>
-    )
+    );
   };

@@ -1,6 +1,7 @@
 import type { ScopedNode, ReductNode } from '..';
 import * as animate from '../../gfx/animate';
 import * as gfx from '../../gfx/core';
+
 import type { NodeDef } from './base';
 
 
@@ -31,27 +32,27 @@ export const conditional: NodeDef<ConditionalNode> = {
         type: 'default',
         shape: 'none',
         fields: ['\'if\'', 'condition', '\'then\''],
-        subexpScale: 1.0
+        subexpScale: 1.0,
       },
       {
         type: 'default',
         shape: 'none',
         fields: ['\'    \'', 'positive'],
-        subexpScale: 1.0
+        subexpScale: 1.0,
       },
       {
         type: 'default',
         shape: 'none',
         fields: ['\'else\''],
-        subexpScale: 1.0
+        subexpScale: 1.0,
       },
       {
         type: 'default',
         shape: 'none',
         fields: ['\'    \'', 'negative'],
-        subexpScale: 1.0
-      }
-    ]
+        subexpScale: 1.0,
+      },
+    ],
   },
   type: (semant, state, types, expr) => {
     const result = new Map();
@@ -66,7 +67,7 @@ export const conditional: NodeDef<ConditionalNode> = {
 
     return {
       types: result,
-      complete: branchesMatch && types.get(expr.condition) === 'boolean'
+      complete: branchesMatch && types.get(expr.condition) === 'boolean',
     };
   },
   validateStep: (semant, state, expr) => {
@@ -107,7 +108,7 @@ export const conditional: NodeDef<ConditionalNode> = {
     const view = stage.getView(expr.subexpressions[cond ? 'positive' : 'negative']);
     return {
       x: gfx.centerPos(view).x,
-      y: gfx.centerPos(view).y
+      y: gfx.centerPos(view).y,
     };
   },
   stepAnimation: (semant, stage, state, expr) => {
@@ -119,7 +120,10 @@ export const conditional: NodeDef<ConditionalNode> = {
 
     const view = stage.getView(expr.condition);
 
-    view.stroke = { lineWidth: 1, color };
+    view.stroke = {
+      lineWidth: 1,
+      color, 
+    };
     const reset = [];
     const speed = animate.scaleDuration(300, 'expr-conditional');
     const pauseTime = animate.scaleDuration(700, 'expr-conditional');
@@ -128,13 +132,16 @@ export const conditional: NodeDef<ConditionalNode> = {
 
     return animate.tween(view, { stroke: { lineWidth: 4 } }, {
       duration: animate.scaleDuration(700, 'expr-conditional'),
-      easing: animate.Easing.Cubic.In
+      easing: animate.Easing.Cubic.In,
     })
       .then(() => {
-        branch.stroke = { lineWidth: 1, color };
+        branch.stroke = {
+          lineWidth: 1,
+          color, 
+        };
         return animate.tween(branch, { stroke: { lineWidth: 4 } }, {
           duration: animate.scaleDuration(700, 'expr-conditional'),
-          easing: animate.Easing.Cubic.In
+          easing: animate.Easing.Cubic.In,
         });
       })
       .then(() => animate.after(pauseTime))
@@ -147,17 +154,17 @@ export const conditional: NodeDef<ConditionalNode> = {
         for (const [childId] of condView.children(expr.id, state)) {
           if (ctr !== safe) {
             reset.push(animate.tween(stage.getView(childId), {
-              scale: { y: 0 }
+              scale: { y: 0 },
             }, {
               duration: totalDuration,
               restTime,
-              easing: animate.Easing.Cubic.InOut
+              easing: animate.Easing.Cubic.InOut,
             }));
             reset.push(animate.tween(stage.getView(childId), {
-              opacity: 0
+              opacity: 0,
             }, {
               duration: totalDuration / 8,
-              easing: animate.Easing.Cubic.In
+              easing: animate.Easing.Cubic.In,
             }));
           }
           ctr += 1;
@@ -168,14 +175,14 @@ export const conditional: NodeDef<ConditionalNode> = {
             bottom: 0,
             inner: 0,
             right: 0,
-            left: 0
+            left: 0,
           },
           backgroundOpacity: 0,
-          subexpScale: 1
+          subexpScale: 1,
         }, {
           duration: totalDuration,
           restTime,
-          easing: animate.Easing.Cubic.InOut
+          easing: animate.Easing.Cubic.InOut,
         }));
 
         return Promise.all(reset);
@@ -186,5 +193,5 @@ export const conditional: NodeDef<ConditionalNode> = {
         branch.stroke = null;
         reset.forEach((tween) => tween.undo());
       });
-  }
+  },
 };

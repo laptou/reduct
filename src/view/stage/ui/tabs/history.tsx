@@ -2,12 +2,13 @@
  * @file This file contains the component for the undo and redo buttons.
  */
 
+import React from 'react';
+import { connect } from 'react-redux';
+
 import { GlobalState } from '@/store/state';
 import '@resources/style/react/ui/history.scss';
 import { redo as createRedo, undo as createUndo } from '@/store/reducer/undo';
 import { DeepReadonly } from '@/util/helper';
-import React from 'react';
-import { connect } from 'react-redux';
 
 interface HistoryStoreProps {
   canUndo: boolean;
@@ -30,7 +31,7 @@ const HistoryImpl = (props: HistoryStoreProps & HistoryDispatchProps) => {
       </button>
     </div>
   );
-}
+};
 
 export const History = connect(
   (store: DeepReadonly<GlobalState>) => ({

@@ -1,5 +1,6 @@
 import type Clock from '../clock';
 import type { Easing } from '../easing';
+
 import { TweenOptions, Tween, TweenStatus } from '.';
 
 export interface InterpolateTweenOptions extends TweenOptions {
@@ -34,115 +35,115 @@ export default class InterpolateTween extends Tween<InterpolateTweenOptions> {
   private reversing: boolean;
 
   public constructor(
-      clock: Clock,
-      properties: InterpolateTweenProperty<any, any>[],
-      options: InterpolateTweenOptions
+    clock: Clock,
+    properties: InterpolateTweenProperty<any, any>[],
+    options: InterpolateTweenOptions
   ) {
-      super(clock, options);
+    super(clock, options);
 
-      this.properties = properties;
-      this.duration = options.duration;
-      this.remaining = options.duration;
-      this.reverse = false;
-      this.repeat = 1;
-      this.reversing = false;
+    this.properties = properties;
+    this.duration = options.duration;
+    this.remaining = options.duration;
+    this.reverse = false;
+    this.repeat = 1;
+    this.reversing = false;
 
-      if (typeof options.reverse !== 'undefined') {
-          this.reverse = options.reverse;
-      }
+    if (typeof options.reverse !== 'undefined') {
+      this.reverse = options.reverse;
+    }
 
-      if (typeof options.repeat !== 'undefined') {
-          this.repeat = options.repeat;
-      }
+    if (typeof options.repeat !== 'undefined') {
+      this.repeat = options.repeat;
+    }
   }
 
   private makeUndo() {
-      const properties = [];
-      for (const attr of this.properties) {
-          properties.push({
-              ...attr,
-              start: attr.end,
-              end: attr.start
-          });
-      }
-      return new InterpolateTween(this.clock, properties, this.options);
+    const properties = [];
+    for (const attr of this.properties) {
+      properties.push({
+        ...attr,
+        start: attr.end,
+        end: attr.start,
+      });
+    }
+    return new InterpolateTween(this.clock, properties, this.options);
   }
 
   public update(dt: number) {
-      if (this.status !== TweenStatus.Running) {
-          return false;
-      }
+    if (this.status !== TweenStatus.Running) {
+      return false;
+    }
 
-      // Guard against very long time steps (e.g. when paused by a
-      // debugger)
-      dt %= this.duration;
+    // Guard against very long time steps (e.g. when paused by a
+    // debugger)
+    dt %= this.duration;
 
-      if (this.reversing) {
-          this.remaining += dt;
-      } else {
-          this.remaining -= dt;
-      }
+    if (this.reversing) {
+      this.remaining += dt;
+    } else {
+      this.remaining -= dt;
+    }
 
-      let t = Math.max(0, 1 - (this.remaining / this.duration));
-      let completed = false;
+    let t = Math.max(0, 1 - (this.remaining / this.duration));
+    let completed = false;
 
-      if ((!this.reversing && this.remaining <= 0)
+    if ((!this.reversing && this.remaining <= 0)
           || (this.reversing && this.remaining >= this.duration)) {
-          this.repeat -= 1;
-          if (this.repeat <= 0) {
-              completed = true;
-              t = 1.0;
-          } else {
-              if (this.reverse) {
-                  this.reversing = !this.reversing;
-              } else {
-                  this.remaining = this.duration;
-              }
-              t = Math.max(0, 1 - (this.remaining / this.duration));
-          }
+      this.repeat -= 1;
+      if (this.repeat <= 0) {
+        completed = true;
+        t = 1.0;
+      } else {
+        if (this.reverse) {
+          this.reversing = !this.reversing;
+        } else {
+          this.remaining = this.duration;
+        }
+        t = Math.max(0, 1 - (this.remaining / this.duration));
       }
+    }
 
-      for (const attr of this.properties) {
-          const {
-              target, property, start, end, easing
-          } = attr;
-          target[property] = easing(start, end, t);
-      }
+    for (const attr of this.properties) {
+      const {
+        target, property, start, end, easing,
+      } = attr;
+      target[property] = easing(start, end, t);
+    }
 
-      if (completed) {
-          this.completed();
-          return false;
-      }
-      return true;
+    if (completed) {
+      this.completed();
+      return false;
+    }
+    return true;
   }
 
   /** Resets properties affected back to their initial value. */
   public undo(animated = false): Tween | null {
-      if (animated) {
-          const tween = this.makeUndo();
-          this.clock.addTween(tween);
-          return tween;
-      }
+    if (animated) {
+      const tween = this.makeUndo();
+      this.clock.addTween(tween);
+      return tween;
+    }
 
-      for (const attr of this.properties) {
-          const { target, property, start } = attr;
-          target[property] = start;
-      }
+    for (const attr of this.properties) {
+      const { target, property, start } = attr;
+      target[property] = start;
+    }
 
-      return null;
+    return null;
   }
 
   public cancel() {
-      this.status = TweenStatus.Completed;
+    this.status = TweenStatus.Completed;
   }
 
   public completed() {
-      for (const attr of this.properties) {
-          const {
-              target, property, start, end, easing
-          } = attr;
-          target[property] = easing(start, end, 1);
-      }
-      super.completed();
+    for (const attr of this.properties) {
+      const {
+        target, property, start, end, easing,
+      } = attr;
+      target[property] = easing(start, end, 1);
+    }
+    super.completed();
   }
 }

@@ -33,29 +33,29 @@ export default class Clock {
   private _scale: number | null = null;
 
   public constructor() {
-      this.listeners = [];
-      this.tweens = [];
-      this.running = false;
-      this.lastTimestamp = null;
+    this.listeners = [];
+    this.tweens = [];
+    this.running = false;
+    this.lastTimestamp = null;
   }
 
   public get scale(): number {
-      if (this._scale) {
-          return this._scale;
-      }
-      const el = document.querySelector('#animation-speed-slider') as HTMLInputElement;
-      if (el) {
-          return parseFloat(el.value);
-      }
-      return 1;
+    if (this._scale) {
+      return this._scale;
+    }
+    const el = document.querySelector('#animation-speed-slider') as HTMLInputElement;
+    if (el) {
+      return parseFloat(el.value);
+    }
+    return 1;
   }
 
   public set scale(s) {
-      this._scale = s;
+    this._scale = s;
   }
 
   public addUpdateListener(f: Listener) {
-      this.listeners.push(f);
+    this.listeners.push(f);
   }
 
   /**
@@ -65,33 +65,33 @@ export default class Clock {
    * battery power when no animations are running.
    */
   public tick(time: number) {
-      const dt = this.scale * (time - (this.lastTimestamp ?? time));
-      const completed = [];
-      let running = false;
+    const dt = this.scale * (time - (this.lastTimestamp ?? time));
+    const completed = [];
+    let running = false;
 
-      for (const t of this.tweens) {
-          running = t.update(dt) || running;
-          if (t.status === TweenStatus.Completed) {
-              completed.push(t);
-          }
+    for (const t of this.tweens) {
+      running = t.update(dt) || running;
+      if (t.status === TweenStatus.Completed) {
+        completed.push(t);
       }
+    }
 
-      for (const t of completed) {
-          this.tweens.splice(this.tweens.indexOf(t), 1);
-      }
+    for (const t of completed) {
+      this.tweens.splice(this.tweens.indexOf(t), 1);
+    }
 
-      this.running = this.tweens.length > 0 && running;
+    this.running = this.tweens.length > 0 && running;
 
-      if (this.running) {
-          this.lastTimestamp = time;
-          window.requestAnimationFrame(this.tick.bind(this));
-      } else {
-          this.lastTimestamp = null;
-      }
+    if (this.running) {
+      this.lastTimestamp = time;
+      window.requestAnimationFrame(this.tick.bind(this));
+    } else {
+      this.lastTimestamp = null;
+    }
 
-      for (const listener of this.listeners) {
-          listener();
-      }
+    for (const listener of this.listeners) {
+      listener();
+    }
   }
 
   /**
@@ -111,81 +111,84 @@ export default class Clock {
    * @returns {animate.InterpolateTween} The tween object.
    */
   public tween<T extends Animatable, V = number>(
-      target: T,
-      properties: Partial<T>,
-      options: TweenOptions<V>
+    target: T,
+    properties: Partial<T>,
+    options: TweenOptions<V>
   ): InterpolateTween {
-      const duration = options.duration || 300;
-      const props: InterpolateTweenProperty<any, any>[] = [];
-      const defaultEasing = options.easing || Easing.Linear;
-      const setAnimatingFlag = options.setAnimatingFlag ?? true;
+    const duration = options.duration || 300;
+    const props: InterpolateTweenProperty<any, any>[] = [];
+    const defaultEasing = options.easing || Easing.Linear;
+    const setAnimatingFlag = options.setAnimatingFlag ?? true;
 
-      const buildProps = <ST extends object>(
-          subTarget: ST,
-          subProps: Partial<ST>, easing: Easing.Easing) => {
-          for (let [prop, final] of Object.entries(subProps)) {
-              let start = null;
+    const buildProps = <ST extends object>(
+      subTarget: ST,
+      subProps: Partial<ST>, easing: Easing.Easing) => {
+      for (let [prop, final] of Object.entries(subProps)) {
+        let start = null;
 
-              if (Array.isArray(final)) {
-                  if (final.length === 2 && typeof final[1] === 'function') {
-                      [final, easing] = final;
-                  } else if (final.length === 2) {
-                      [start, final] = final;
-                  } else if (final.length === 3) {
-                      [start, final, easing] = final;
-                  } else {
-                      throw new Error('Tween target can only be array if array is length 2 or 3');
-                  }
-              }
-
-              if (typeof final === 'number' || typeof final === 'string') {
-                  props.push({
-                      target: subTarget,
-                      property: prop,
-                      start: start || subTarget[prop as keyof ST],
-                      end: final,
-                      easing
-                  });
-              } else if (final) {
-                  // if it's not a number or a string we're assuming it's an object
-                  // and not a function or something because who would do something
-                  // like that?
-                  buildProps(subTarget[prop as keyof ST] as any, final as any, easing);
-              }
-          }
-      };
-
-      buildProps(target, properties, defaultEasing);
-
-      // Set flag so that layout functions know to skip this view,
-      // if it is a child. Use counter to allow overlapping tweens.
-      if (setAnimatingFlag) {
-          if ('animating' in target && typeof target.animating === 'number') {
-              target.animating += 1;
+        if (Array.isArray(final)) {
+          if (final.length === 2 && typeof final[1] === 'function') {
+            [final, easing] = final;
+          } else if (final.length === 2) {
+            [start, final] = final;
+          } else if (final.length === 3) {
+            [start, final, easing] = final;
           } else {
-              target.animating = 1;
+            throw new Error('Tween target can only be array if array is length 2 or 3');
           }
-      }
+        }
 
-      const decrementAnimatingCount = () => {
-          if (typeof target.animating === 'number') {
-              target.animating -= 1;
-          } else {
-              target.animating = 0;
-          }
-      };
-
-      const result = this.addTween(new InterpolateTween(this, props, { duration, ...options }));
-      if (setAnimatingFlag) {
-          result.then(() => {
-              if (options.restTime) {
-                  // eslint-disable-next-line @typescript-eslint/no-use-before-define
-                  return after(options.restTime);
-              }
-              return null;
-          }).then(() => decrementAnimatingCount());
+        if (typeof final === 'number' || typeof final === 'string') {
+          props.push({
+            target: subTarget,
+            property: prop,
+            start: start || subTarget[prop as keyof ST],
+            end: final,
+            easing,
+          });
+        } else if (final) {
+          // if it's not a number or a string we're assuming it's an object
+          // and not a function or something because who would do something
+          // like that?
+          buildProps(subTarget[prop as keyof ST] as any, final as any, easing);
+        }
       }
-      return result;
+    };
+
+    buildProps(target, properties, defaultEasing);
+
+    // Set flag so that layout functions know to skip this view,
+    // if it is a child. Use counter to allow overlapping tweens.
+    if (setAnimatingFlag) {
+      if ('animating' in target && typeof target.animating === 'number') {
+        target.animating += 1;
+      } else {
+        target.animating = 1;
+      }
+    }
+
+    const decrementAnimatingCount = () => {
+      if (typeof target.animating === 'number') {
+        target.animating -= 1;
+      } else {
+        target.animating = 0;
+      }
+    };
+
+    const result = this.addTween(new InterpolateTween(this, props, {
+      duration,
+      ...options, 
+    }));
+    if (setAnimatingFlag) {
+      result.then(() => {
+        if (options.restTime) {
+          // eslint-disable-next-line @typescript-eslint/no-use-before-define
+          return after(options.restTime);
+        }
+        return null;
+      }).then(() => decrementAnimatingCount());
+    }
+    return result;
   }
 
   /**
@@ -196,34 +199,34 @@ export default class Clock {
    * @param {animate.Tween} t
    */
   public addTween<T extends Tween>(t: T): T {
-      this.tweens.push(t);
-      if (!this.running) {
-          this.start();
-      }
+    this.tweens.push(t);
+    if (!this.running) {
+      this.start();
+    }
 
-      return t;
+    return t;
   }
 
   /**
    * Start the clock, if paused.
    */
   public start() {
-      if (!this.running) {
-          this.running = true;
-          this.lastTimestamp = window.performance.now();
-          window.requestAnimationFrame(this.tick.bind(this));
-      }
+    if (!this.running) {
+      this.running = true;
+      this.lastTimestamp = window.performance.now();
+      window.requestAnimationFrame(this.tick.bind(this));
+    }
   }
 
   /**
    * Cancel all tweens on this clock and stop the clock.
    */
   public cancelAll() {
-      this.running = false;
-      this.lastTimestamp = null;
-      while (this.tweens.length > 0) {
-          this.tweens.pop();
-      }
+    this.running = false;
+    this.lastTimestamp = null;
+    while (this.tweens.length > 0) {
+      this.tweens.pop();
+    }
   }
 }
 
@@ -240,7 +243,7 @@ export const clock = new Clock();
  * @param {Function} f - The function to be called.
  */
 export function addUpdateListener(f: Listener) {
-    clock.addUpdateListener(f);
+  clock.addUpdateListener(f);
 }
 
 /**
@@ -254,11 +257,11 @@ export function addUpdateListener(f: Listener) {
  * :js:func:`~animate.Clock.tween`.
  */
 export function tween<T extends object, V = number>(
-    target: T,
-    properties: Partial<T>,
-    options: TweenOptions<V>
+  target: T,
+  properties: Partial<T>,
+  options: TweenOptions<V>
 ) {
-    return clock.tween<T, V>(target, properties, options);
+  return clock.tween<T, V>(target, properties, options);
 }
 
 /**
@@ -269,20 +272,20 @@ export function tween<T extends object, V = number>(
  * @param {Object} options
  */
 export function infinite(updater: (dt: number) => void, options: TweenOptions) {
-    return clock.addTween(new InfiniteTween(clock, updater, options));
+  return clock.addTween(new InfiniteTween(clock, updater, options));
 }
 
 export function chain<T extends object>(target: T, ...properties: [Partial<T>, TweenOptions][]) {
-    let base = null;
-    for (const [prop, options] of properties) {
-        if (base === null) {
-            base = tween(target, prop, options);
-        } else {
-            base = base.then(() => tween(target, prop, options));
-        }
+  let base = null;
+  for (const [prop, options] of properties) {
+    if (base === null) {
+      base = tween(target, prop, options);
+    } else {
+      base = base.then(() => tween(target, prop, options));
     }
+  }
 
-    return base;
+  return base;
 }
 
 /**
@@ -292,9 +295,9 @@ export function chain<T extends object>(target: T, ...properties: [Partial<T>, T
  * @param c The clock to use to scale this delay.
  */
 export function after(ms: number, c = clock) {
-    return new Promise((resolve) => {
-        window.setTimeout(() => {
-            resolve();
-        }, ms / c.scale);
-    });
+  return new Promise((resolve) => {
+    window.setTimeout(() => {
+      resolve();
+    }, ms / c.scale);
+  });
 }

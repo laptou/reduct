@@ -5,6 +5,7 @@
 import '@resources/style/react/ui/menu.scss';
 import React, { useState } from 'react';
 import { animated, useSpring, useTransition } from 'react-spring';
+
 import { LevelSelect, LevelInfo } from './level';
 import { Preferences } from './preferences';
 
@@ -50,7 +51,7 @@ export const GameMenu: React.FC = () => {
         </div>
         <div id='reduct-game-menu-tab'>
           <LevelInfo onToggleLevelSelect={() => setOpen(!isOpen)} />
-        </div>
+        </div> 
       </animated.div>
     </div>
   );

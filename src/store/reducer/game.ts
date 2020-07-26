@@ -1,3 +1,14 @@
+import { castDraft, produce } from 'immer';
+
+import {
+  CircularCallError, GameError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, 
+} from '../errors';
+import { checkDefeat, checkVictory } from '../helper';
+import { GameMode, GameState } from '../state';
+import {
+  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStep, ReductAction, 
+} from '../action/game';
+
 import type { Flat, NodeId, NodeMap } from '@/semantics';
 import {
   ApplyNode, BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NotNode, NumberNode, OpNode, PTupleNode, ReferenceNode as ReferenceNode, StrNode, 
@@ -12,15 +23,6 @@ import {
 import {
   cloneNodeDeep, findNodesDeep, getRootForNode, isAncestorOf, 
 } from '@/util/nodes';
-import { castDraft, produce } from 'immer';
-import {
-  CircularCallError, GameError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, 
-} from '../errors';
-import { checkDefeat, checkVictory } from '../helper';
-import { GameMode, GameState } from '../state';
-import {
-  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStep, ReductAction, 
-} from '../action/game';
 
 const initialProgram: GameState = {
   mode: GameMode.Title,
@@ -588,7 +590,7 @@ export function gameReducer(
       // otherwise, just mark as ready for cleanup
       return produce(state, draft => {
         draft.removed.set(target, true);
-      })
+      });
     }
   }
 

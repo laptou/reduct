@@ -1,4 +1,5 @@
 import type Clock from '../clock';
+
 import { Tween, TweenStatus, TweenOptions } from '.';
 
 
@@ -15,30 +16,30 @@ export default class InfiniteTween extends Tween {
     protected stopped: boolean;
 
     public constructor(clock: Clock, updater: (dt: number) => void, options: TweenOptions) {
-        super(clock, options);
+      super(clock, options);
 
-        this.updater = updater;
-        this.stopped = false;
+      this.updater = updater;
+      this.stopped = false;
     }
 
     public update(dt: number) {
-        if (this.status !== TweenStatus.Running) {
-            return false;
-        }
+      if (this.status !== TweenStatus.Running) {
+        return false;
+      }
 
-        const finished = this.stopped || this.updater(dt);
-        if (finished) {
-            this.completed();
-            return false;
-        }
+      const finished = this.stopped || this.updater(dt);
+      if (finished) {
+        this.completed();
+        return false;
+      }
 
-        return true;
+      return true;
     }
 
     /**
      * Stop running this infinite tween.
      */
     public stop() {
-        this.stopped = true;
+      this.stopped = true;
     }
 }

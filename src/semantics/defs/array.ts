@@ -1,7 +1,9 @@
-import { DeepReadonly, DRF } from '@/util/helper';
 import type { BaseNode, ReductNode } from '..';
 import { getKindForNode } from '../util';
+
 import type { NodeDef } from './base';
+
+import { DeepReadonly, DRF } from '@/util/helper';
 
 // Returns the fields that are supposed to be displayed by
 // the projection of an array
@@ -26,7 +28,7 @@ export interface ArrayNode extends BaseNode {
 
   fields: { length: number };
   subexpressions: Record<number, ReductNode>;
-};
+}
 
 export const array: NodeDef<ArrayNode> = {
   kind: (arr, nodes) => {
@@ -55,9 +57,9 @@ export const array: NodeDef<ArrayNode> = {
       bottom: 3.5,
       left: 1,
       right: 1,
-      inner: 4
+      inner: 4,
     },
-    color: '#bec'
+    color: '#bec',
   },
-  complete: true
+  complete: true,
 };

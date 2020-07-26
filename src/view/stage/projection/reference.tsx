@@ -1,11 +1,12 @@
-import { ReferenceNode } from '@/semantics/defs';
-import { DRF, DeepReadonly } from '@/util/helper';
-import '@resources/style/react/projection/reference.scss';
 import React, { FunctionComponent } from 'react';
-import { getDefinitionForName } from '@/semantics/util';
 import { connect } from 'react-redux';
 import cx from 'classnames';
+
+import { ReferenceNode } from '@/semantics/defs';
+import { DRF, DeepReadonly } from '@/util/helper';
+import { getDefinitionForName } from '@/semantics/util';
 import { GlobalState } from '@/store/state';
+import '@resources/style/react/projection/reference.scss';
 
 interface ReferenceProjectionOwnProps {
   node: DRF<ReferenceNode>;
@@ -30,7 +31,7 @@ const ReferenceProjectionImpl: FunctionComponent<ReferenceProjectionProps> =
           {props.node.fields.name}
         </div>
       </div>
-    )
+    );
   };
 
 export const ReferenceProjection = connect(
@@ -38,7 +39,7 @@ export const ReferenceProjection = connect(
     store: DeepReadonly<GlobalState>, 
     ownProps: ReferenceProjectionOwnProps
   ) => ({
-    valid: getDefinitionForName(ownProps.node.fields.name, ownProps.node, store.game.$present) !== null
+    valid: getDefinitionForName(ownProps.node.fields.name, ownProps.node, store.game.$present) !== null,
   })
 )(ReferenceProjectionImpl);
   

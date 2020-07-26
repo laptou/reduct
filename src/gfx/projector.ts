@@ -3,13 +3,9 @@
  * Projectors transform a JSON-ish view specification into a gfx view.
  */
 
-import type { ReductNode, NodeMap } from '@/semantics';
-import type BaseStage from '@/stage/basestage';
-
-import { SymbolNode } from '@/semantics/defs';
-import type { Semantics } from '@/semantics/transform';
-import * as gfx from './core';
 import Loader from '../loader';
+
+import * as gfx from './core';
 import type {
   DefaultProjectionDef,
   BaseProjectionDef,
@@ -26,14 +22,19 @@ import type {
   ProjectionShape,
   CaseOnProjectionDef,
   CaseKeyProjectionDef,
-  SpriteProjectionDef
+  SpriteProjectionDef,
 } from './projection';
+
+import type { ReductNode, NodeMap } from '@/semantics';
+import type BaseStage from '@/stage/basestage';
+import { SymbolNode } from '@/semantics/defs';
+import type { Semantics } from '@/semantics/transform';
 import { Thunk, dethunk, DeepReadonly } from '@/util/helper';
 
 const optionFields = [
   'color', 'strokeWhenChild', 'shadowOffset', 'radius', 'padding',
   'notches', 'subexpScale', 'shadow', 'shadowColor', 'horizontalAlign',
-  'stroke', 'highlightColor', 'ellipsize'
+  'stroke', 'highlightColor', 'ellipsize',
 ] as const;
 
 function shapeToProjection(shape?: ProjectionShape) {
@@ -365,11 +366,14 @@ function spriteProjector<N extends ReductNode>(projection: SpriteProjectionDef<N
       }
     }
 
-    const size = { w, h };
+    const size = {
+      w,
+      h, 
+    };
 
     return gfx.exprify(gfx.sprite({
       image,
-      size
+      size,
     }));
   };
 }
