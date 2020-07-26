@@ -32,6 +32,7 @@ const initialProgram: GameState = {
   board: new Set(),
   toolbox: new Set(),
   globals: new Map(),
+  docs: new Map(),
   added: new Map(),
   removed: new Map(),
   executing: new Set(),
@@ -63,6 +64,7 @@ export function gameReducer(
   switch (act.type) {
   case ActionKind.StartLevel: {
     return {
+      ...state,
       mode: GameMode.Gameplay,
       level: act.level,
       nodes: act.nodes,
@@ -903,6 +905,27 @@ export function gameReducer(
     act.newNodeIds.forEach((id) => markDirty(newState.nodes, id));
     
     return newState;
+  }
+
+  case ActionKind.CreateDocNodes: {
+    return {
+      ...state,
+      nodes: new Map([...state.nodes, ...act.nodes]),
+      docs: new Map([...state.docs, [act.key, act.rootId]]),
+    };
+  }
+
+  case ActionKind.DeleteDocNodes: {
+    const rootId = state.docs.get(act.key)!;
+    const descendants = findNodesDeep(rootId, state.nodes, () => true);
+
+    return produce(state, draft => {
+      for (const descendant of descendants) {
+        draft.nodes.delete(descendant.id);
+      }
+
+      draft.docs.delete(act.key);
+    });
   }
 
   case ActionKind.AddToolboxItem: {

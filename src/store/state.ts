@@ -40,6 +40,13 @@ export interface GameState {
   globals: Map<string, NodeId>;
 
   /**
+   * Values are root nodes which are currently in the documentation section.
+   * Keys are for mapping each node to its corresponding part of the
+   * documentation.
+   */
+  docs: Map<string, NodeId>;
+
+  /**
    * Nodes which were added by the most recent action. The values are the
    * "sources" of the nodes: for example, if you step an addition operator and
    * get a number, the "source" of the number node is the addition node.

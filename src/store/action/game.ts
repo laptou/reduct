@@ -47,6 +47,9 @@ export enum ActionKind {
   Undo = 'undo',
   Redo = 'redo',
   ClearError = 'clear-error',
+
+  CreateDocNodes = 'create-docs',
+  DeleteDocNodes = 'delete-docs',
 }
 
 export type ReductAction = 
@@ -71,7 +74,9 @@ export type ReductAction =
   DetectCompletionAction |
   ClearErrorAction |
   RaiseAction | 
-  DetachAction;
+  DetachAction |
+  CreateDocsAction |
+  DeleteDocsAction;
 
 
 export interface ClearErrorAction {
@@ -401,6 +406,65 @@ export function createStartLevel(index: number): StartLevelAction {
     board: board,
     toolbox: toolbox,
     globals: flatGlobals,
+  };
+}
+
+export interface CreateDocsAction {
+  type: ActionKind.CreateDocNodes;
+  key: string;
+  rootId: number;
+  nodes: NodeMap;
+}
+
+/**
+ * Creates an action which will add nodes to the game to be displayed in the
+ * documentation area.
+ *
+ * @param key The key that is used to group documentation nodes together and
+ * link them to the document.
+ * @param docScript JavaScript that represents the nodes to create.
+ */
+export function createCreateDocs(key: string, docScript: string): CreateDocsAction {
+  const macros: MacroMap = new Map();
+
+  for (const name of Object.keys(builtins)) {
+    macros.set(name, () => createBuiltInReferenceNode(name));
+  }
+  
+  const node = parseProgram(docScript, macros);
+
+  const flatNodes = new Map();
+
+  for (const flatNode of flatten(node)) {
+    flatNode.__meta = flatNode.__meta ?? {};
+    flatNode.__meta.doc = key;
+
+    flatNodes.set(flatNode.id, flatNode);
+  }
+
+  return {
+    type: ActionKind.CreateDocNodes,
+    key,
+    rootId: node.id,
+    nodes: flatNodes,
+  };
+}
+
+export interface DeleteDocsAction {
+  type: ActionKind.DeleteDocNodes;
+  key: string;
+}
+
+/**
+ * Creates an action which will remove documentation nodes from the game.
+ *
+ * @param key The key that is used to group documentation nodes together and
+ * link them to the document.
+ */
+export function createDeleteDocs(key: string): DeleteDocsAction {
+  return {
+    type: ActionKind.DeleteDocNodes,
+    key,
   };
 }
 
