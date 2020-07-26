@@ -286,8 +286,6 @@ export const StageProjection = connect(
     cleanup() { 
       if (ownProps.nodeId) {
         dispatch(createCleanup(ownProps.nodeId)); 
-      } else {
-        console.log('hmm');
       }
     },
     clearErrorAndRaise() { 

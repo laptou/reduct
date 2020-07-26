@@ -14,6 +14,7 @@ import { GameMenu } from './stage/ui/tabs/menu';
 
 import { DeepReadonly } from '@/util/helper';
 import { GameMode, GlobalState } from '@/store/state';
+import { Docs } from './stage/ui/tabs/tutorial/docs';
 
 interface GameStoreProps
 {
@@ -31,6 +32,8 @@ function GameImpl(props: GameStoreProps) {
   case GameMode.Gameplay:
     return (
       <>
+        {/* for testing only */}
+        <Docs />
         <Board />
         <Toolbox />
         <Definitions />
