@@ -1,4 +1,4 @@
-import type { Flat, NodeId, NodeMap } from '@/semantics';
+import type { Flat, NodeId, NodeMap, FlatReductNode } from '@/semantics';
 import {
   ApplyNode, LetNode, BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NotNode, NumberNode, OpNode, PTupleNode, ReferenceNode as ReferenceNode, StrNode,
 } from '@/semantics/defs';
@@ -74,18 +74,74 @@ export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductA
     case ActionKind.EvalLet: {
       let { letNodeId } = act;
 
-      // get the let node
-      const letnode = state.nodes.get(letNodeId) as DRF<LetNode>;
-      // get the ref node
-      const refnode = state.nodes.get(letnode.subexpressions.variable) as DRF<ReferenceNode>;
+      const letNode = state.nodes.get(letNodeId) as DRF<LetNode>;
+      const refNode = state.nodes.get(letNode.subexpressions.variable) as DRF;
+      const valueNode = state.nodes.get(letNode.subexpressions.value) as DRF;
+      const bodyNode = state.nodes.get(letNode.subexpressions.body) as DRF;
       // place the reference node in the scope record of letnode with a value of e1
+      //letnode.scope[refnode.fields.name] = state.nodes.get(letnode.subexpressions.e1)!.id;
 
-      letnode.scope[refnode.fields.name] = state.nodes.get(letnode.subexpressions.e1)!.id;
+      if (!state.board.has(getRootForNode(letNodeId, state.nodes).id))
+        throw new NotOnBoardError(letNodeId);
 
+      if (refNode.type === 'missing')
+        throw new MissingNodeError(refNode.id);
 
+      if (refNode.type !== 'reference')
+        throw new WrongTypeError(refNode.id, 'reference', refNode.type);
 
+      if (valueNode.type === 'missing')
+        throw new MissingNodeError(valueNode.id);
+
+      if (bodyNode.type === 'missing')
+        throw new MissingNodeError(bodyNode.id);
+
+      return produce(state, draft => {
+        const bodyNodeMut = draft.nodes.get(letNode.subexpressions.body)!;
+
+        if (!bodyNodeMut.scope) {
+          bodyNodeMut.scope = {};
+        }
+
+        const varName = refNode.fields.name;
+        bodyNodeMut.scope[varName] = valueNode.id;
+
+        // update parent's reference to this node since we are replacing it with
+        // its body
+        if (letNode.parent) {
+          const parent = draft.nodes.get(letNode.parent)!;
+          const parentField = letNode.parentField;
+          bodyNodeMut.parent = parent.id;
+          bodyNodeMut.parentField = parentField;
+
+          // @ts-ignore
+          parent.subexpressions[parentField] = bodyNode.id;
+          draft.added.set(bodyNode.id, letNode.id);
+        } else {
+          // if there is no parent, then this node was on the board
+          bodyNodeMut.parent = null;
+          bodyNodeMut.parentField = null;
+
+          if (bodyNode.type === 'vtuple') {
+            for (const subExprId of Object.values(bodyNode.subexpressions)) {
+              const subExpr = draft.nodes.get(subExprId)!;
+              subExpr.parent = null;
+              subExpr.parentField = null;
+              draft.board.add(subExprId);
+              draft.added.set(subExprId, letNode.id);
+            }
+          } else {
+            draft.board.add(bodyNode.id);
+            draft.added.set(bodyNode.id, letNode.id);
+          }
+        }
+
+        draft.board.delete(letNode.id);
+
+        draft.nodes.delete(letNode.id);
+        draft.nodes.delete(refNode.id);
+      });
     }
-
 
     case ActionKind.EvalLambda: {
       let { lambdaNodeId, paramNodeId } = act;
@@ -194,7 +250,6 @@ export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductA
           }
 
           // move the body outwards if no more params
-
           if (newArgTuple.fields.size === 0) {
             const bodyNode = draft.nodes.get(newLambdaNode.subexpressions.body)!;
 

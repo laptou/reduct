@@ -1,14 +1,14 @@
 import type { NodeDef } from './base';
-import type { NodeId, ReductNode, ScopedNode } from '..';
+import type { NodeId, ReductNode, BaseNode } from '..';
 import { ReferenceNode } from './reference';
 
-export interface LetNode extends ScopedNode {
+export interface LetNode extends BaseNode {
   type: 'letExpr';
 
   subexpressions: {
     variable: ReferenceNode;
-    e1: ReductNode;
-    e2: ReductNode;
+    value: ReductNode;
+    body: ReductNode;
   };
 }
 

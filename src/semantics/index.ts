@@ -59,17 +59,11 @@ export interface BaseNode {
 
   subexpressions: {};
 
-  __meta?: NodeMetadata;
-}
-
-/**
- * ScopedNode is a Reduct node, any item that requires the use of scoped
- * nodes.
- */
-export interface ScopedNode extends BaseNode {
-  /** a map from node names their ids in the current scope of a given
+  /** a map from node names to their ids in the current scope of a given
    * node */
   scope: Record<string, NodeId>;
+
+  __meta?: NodeMetadata;
 }
 
 export type Flat<N extends BaseNode> = {

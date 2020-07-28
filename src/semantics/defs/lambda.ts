@@ -1,11 +1,11 @@
-import type { BaseNode, ReductNode, Flat, FlatReductNode, NodeId, ScopedNode } from '..';
+import type { BaseNode, ReductNode, Flat, FlatReductNode, NodeId } from '..';
 import * as fx from '../../gfx/fx';
 import { genericBetaReduce } from '../core';
 import type { NodeDef } from './base';
 import { DeepReadonly } from '@/util/helper';
 import { VTupleNode } from '../transform';
 
-export interface LambdaNode extends ScopedNode {
+export interface LambdaNode extends BaseNode {
   type: 'lambda';
 
   subexpressions: {
