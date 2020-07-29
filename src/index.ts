@@ -17,12 +17,12 @@ if (PKG_ENV === 'production') {
 // initialize Immer (immutable state creation)
 enableMapSet();
 
-(async () => {
+try {
   console.log(`Reduct v${PKG_VERSION} ${PKG_ENV}`);
   initReactApp();
-})().catch(error => {
+} catch (error) {
   if (PKG_ENV === 'production')
     Sentry.captureException(error);
   else 
     console.error(error);
-});
+}

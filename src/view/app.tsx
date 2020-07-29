@@ -29,8 +29,6 @@ const Game = React.lazy(async () => {
   // retrieve loaded code modules
   const [game, store] = await Promise.all(promises);
 
-  await new Promise(() => false);
-
   // wait for persistor to load state into store
   await new Promise((resolve) => {
     const unsubscriber = store.persistor.subscribe(() => {
