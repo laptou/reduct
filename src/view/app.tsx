@@ -19,7 +19,7 @@ const assetsPromise = Promise.all([
 ]);
 
 const Game = React.lazy(async () => {
-  // load assets and code
+  // load code and wait for assets
   const promises = [
     await import('./game'),
     await import('@/store'),
@@ -53,10 +53,9 @@ const Game = React.lazy(async () => {
 export function App() {
   return (
     <Sentry.ErrorBoundary showDialog fallback={ErrorDisplay}>
-      <Suspense fallback={<h1>loading</h1>}>
+      <Suspense fallback={<LoadingAnimationWithText />}>
         <Game />
       </Suspense>
-      <LoadingAnimationWithText />
     </Sentry.ErrorBoundary>
   );
 }
