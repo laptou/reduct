@@ -1,17 +1,15 @@
 import type { BaseNode, NodeId, ReductNode } from '..';
 
 import type { NodeDef } from './base';
+import { ReferenceNode } from './reference';
 
 export interface LetNode extends BaseNode {
   type: 'letExpr';
 
-  fields: {
-    variable: string;
-  };
-
   subexpressions: {
-    e1: ReductNode;
-    e2: ReductNode;
+    variable: ReferenceNode;
+    value: ReductNode;
+    body: ReductNode;
   };
 }
 
@@ -49,8 +47,8 @@ export const letExpr: NodeDef<LetNode> = {
     const callee = state.getIn(['nodes', expr.e2]);
     const kind = semant.kind(state, callee);
     if (kind === 'value'
-                && callee.type !== 'lambda'
-                && callee.type !== 'reference') {
+      && callee.type !== 'lambda'
+      && callee.type !== 'reference') {
       return [expr.callee, 'We can only apply functions!'];
     }
     return null;
