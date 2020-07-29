@@ -332,19 +332,18 @@ export function getDefinitionForName(
         return varNode.id;
       }
     }
+
+    if (!current.parent)
+      break;
+
+    current = state.nodes.get(current.parent)!;
   }
 
-  if (!current.parent)
-    break;
+  if (state.globals.has(name)) {
+    return state.globals.get(name)!;
+  }
 
-  current = state.nodes.get(current.parent)!;
-}
-
-if (state.globals.has(name)) {
-  return state.globals.get(name)!;
-}
-
-return null;
+  return null;
 }
 /**
  * Searches for `name` in the scope of `node`. If it is found, returns the
