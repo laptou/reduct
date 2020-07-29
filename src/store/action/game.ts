@@ -1,5 +1,4 @@
 import { NodeId, NodeMap, ReductNode } from '@/semantics';
-import BaseStage from '@/stage/basestage';
 import Loader from '@/loader';
 import { parseProgram, MacroMap } from '@/syntax/es6';
 import { createReferenceNode, createBuiltInReferenceNode } from '@/semantics/util';
@@ -10,11 +9,8 @@ export enum ActionKind {
   UseToolbox = 'use-toolbox',
   Raise = 'raise',
   Detach = 'detach',
-  AttachNotch = 'attach-notch',
-  SmallStep = 'small-step-legacy',
   Unfold = 'unfold',
   BetaReduce = 'beta-reduce',
-  StartLevelLegacy = 'start-level-legacy',
   Victory = 'victory',
   Fade = 'fade',
   Unfade = 'unfade',
@@ -54,13 +50,11 @@ export enum ActionKind {
 }
 
 export type ReductAction =
-  StartLevelActionLegacy |
   StartLevelAction |
   MoveNodeToBoardAction |
   MoveNodeToSlotAction |
   MoveNodeToDefsAction |
   AddNodeToToolboxAction |
-  LegacySmallStepAction |
   EvalLambdaAction |
   EvalLambdaAction |
   EvalOperatorAction |
@@ -161,91 +155,6 @@ export function moveNodeToSlot(slotId: NodeId, nodeId: NodeId): MoveNodeToSlotAc
     type: ActionKind.MoveNodeToSlot,
     slotId: slotId,
     nodeId: nodeId,
-  };
-}
-
-export interface StartLevelActionLegacy {
-  type: ActionKind.StartLevelLegacy;
-  nodes: NodeMap;
-  goal: Set<NodeId>;
-  board: Set<NodeId>;
-  toolbox: Set<NodeId>;
-  globals: Map<string, NodeId>;
-}
-
-/**
- * Redux action to start a new level.
- *
- * Takes trees of normal AST nodes and flattens them into immutable
- * nodes, suitable to store in Redux. Also runs the semantics module's
- * postParse hook, if defined, and creates the initial views for these
- * expressions.
- *
- * Flattened trees are doubly-linked: children know their parent, and
- * which parent field they are stored in.
- *
- * @param stage
- * @param goal - List of expressions for the goal.
- * @param board - List of expressions for the board.
- * @param toolbox - List of expressions for the toolbox.
- * @param globals - Map of expressions for globals.
- */
-export function startLevelLegacy(
-  stage: BaseStage,
-  goal: Iterable<ReductNode>,
-  board: Iterable<ReductNode>,
-  toolbox: Iterable<ReductNode>,
-  globals: Record<string, ReductNode>
-): StartLevelActionLegacy {
-  const { semantics } = stage;
-  const _nodes: Map<NodeId, ReductNode> = new Map();
-  const _goal: Set<NodeId> = new Set();
-  const _board: Set<NodeId> = new Set();
-  const _toolbox: Set<NodeId> = new Set();
-  const _globals: Map<string, NodeId> = new Map();
-
-  for (const expr of goal) {
-    for (const newExpr of semantics.flatten(expr)) {
-      _nodes.set(newExpr.id, newExpr);
-    }
-
-    _goal.add(expr.id);
-  }
-  for (const expr of board) {
-    for (const newExpr of semantics.flatten(expr)) {
-      _nodes.set(newExpr.id, newExpr);
-    }
-
-    _board.add(expr.id);
-  }
-
-  for (const expr of toolbox) {
-    for (const newExpr of semantics.flatten(expr)) {
-      _nodes.set(newExpr.id, newExpr);
-    }
-
-    _toolbox.add(expr.id);
-  }
-
-  for (const [name, expr] of Object.entries(globals)) {
-    for (const newExpr of semantics.flatten(expr)) {
-      _nodes.set(newExpr.id, newExpr);
-    }
-
-    _globals.set(name, expr.id);
-  }
-
-  // TODO: remove
-  for (const [nodeId, node] of _nodes.entries())
-    stage.views[nodeId] = semantics.project(stage, _nodes, node);
-
-  return {
-    type: ActionKind.StartLevelLegacy,
-    nodes: _nodes,
-    goal: _goal,
-    board: _board,
-    toolbox: _toolbox,
-    globals: _globals,
   };
 }
 
@@ -795,30 +704,6 @@ export function addBoardItem(newNodeIds, addedNodes) {
   };
 }
 
-export interface LegacySmallStepAction {
-  type: ActionKind.SmallStep;
-  topNodeId: NodeId;
-  newNodeIds: NodeId[];
-  addedNodes: ReductNode[];
-}
-
-/**
- * Node ``nodeId`` took a small step to produce ``newNode`` which
- * contains ``newNodes`` as nested nodes.
- */
-export function smallStep(
-  nodeId: NodeId,
-  newNodeIds: Iterable<NodeId>,
-  newNodes: Iterable<ReductNode>
-): LegacySmallStepAction {
-  return {
-    type: ActionKind.SmallStep,
-    topNodeId: nodeId,
-    newNodeIds,
-    addedNodes: newNodes,
-  };
-}
-
 /**
  * Unfold the definition of ``nodeId``, producing ``newNodeId`` (and
  * adding ``addedNodes`` to the store).
@@ -830,69 +715,6 @@ export function unfold(nodeId, newNodeId, addedNodes) {
     newNodeId,
     addedNodes,
   };
-}
-
-/**
- * Node ``topNodeId`` was applied to ``argNodeId`` to produce
- * ``newNodeIds`` which contain ``addedNodes`` as nested nodes.
- *
- * A beta-reduction can produce multiple result nodes due to
- * replicators.
- */
-export function betaReduce(topNodeId, argNodeId, newNodeIds, addedNodes) {
-  return {
-    type: ActionKind.BetaReduce,
-    topNodeId,
-    argNodeId,
-    newNodeIds,
-    addedNodes,
-  };
-}
-
-/**
- * Attach the child to the given parent through the given notches
- */
-export function attachNotch(parentId, notchIdx, childId, childNotchIdx) {
-  return {
-    type: ActionKind.AttachNotch,
-    parentId,
-    childId,
-    notchIdx,
-    childNotchIdx,
-  };
-}
-
-/**
- * Take the given node out of the toolbox.
- */
-export function useToolbox(nodeId, clonedNodeId = null, addedNodes = null) {
-  return {
-    type: ActionKind.UseToolbox,
-    nodeId,
-    clonedNodeId,
-    addedNodes,
-  };
-}
-
-/**
- * We've won the level.
- *
- * Clear the board/goal, which has the side effect of stopping them
- * from drawing anymore.
- */
-export function victory() {
-  return {
-    type: ActionKind.Victory,
-  };
-}
-
-/**
- * Add a flag to the action indicating not to record this on the
- * undo/redo stack.
- */
-export function skipUndo(action) {
-  action.skipUndo = true;
-  return action;
 }
 
 /**
