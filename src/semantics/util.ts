@@ -1,30 +1,26 @@
-import { PTupleNode, VTupleNode } from './defs';
-import { apply, ApplyNode } from './defs/apply';
-import { array, ArrayNode } from './defs/array';
-import { autograder } from './defs/autograder';
-import {
-  binop, BinOpNode, op, OpNode, 
-} from './defs/binop';
-import { BuiltInReferenceNode } from './defs/builtins';
-import { conditional, ConditionalNode } from './defs/conditional';
-import { define, DefineNode } from './defs/define';
-import { LambdaArgNode, LambdaNode, LambdaVarNode } from './defs/lambda';
-import { letExpr } from './defs/letExpr';
-import { member, MemberNode } from './defs/member';
-import { missing, MissingNode } from './defs/missing';
-import { not, NotNode } from './defs/not';
-import { reference, ReferenceNode } from './defs/reference';
-import {
-  boolean, BoolNode, dynamicVariant, number, NumberNode, ReductSymbol, string, StrNode, symbol, SymbolNode, unsol, 
+import type { PTupleNode, VTupleNode } from './defs';
+import type { ApplyNode } from './defs/apply';
+import type { ArrayNode } from './defs/array';
+import type { BinOpNode, OpNode } from './defs/binop';
+import type { BuiltInReferenceNode } from './defs/builtins';
+import type { ConditionalNode } from './defs/conditional';
+import type { DefineNode } from './defs/define';
+import type { LambdaArgNode, LambdaNode, LambdaVarNode } from './defs/lambda';
+import type { MemberNode } from './defs/member';
+import type { MissingNode } from './defs/missing';
+import type { NotNode } from './defs/not';
+import type { ReferenceNode } from './defs/reference';
+import type {
+  BoolNode, NumberNode, ReductSymbol, StrNode, SymbolNode, 
 } from './defs/value';
 
-import {
+import type {
   Flat, NodeId, NodeMap, ReductNode, 
 } from '.';
 
 import { nextId } from '@/util/nodes';
-import { DeepReadonly, dethunk, DRF } from '@/util/helper';
-import { GameState } from '@/store/state';
+import type { DeepReadonly, DRF } from '@/util/helper';
+import type { GameState } from '@/store/state';
 
 /**
  * Creates a partial node. Helper for "create node" functions to avoid
@@ -278,14 +274,28 @@ export type NodeKind = 'expression' | 'placeholder' | 'value' | 'statement' | 's
 
 export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKind {
   switch (node.type) {
-  case 'apply': return dethunk(apply.kind, node, nodes);
-  case 'autograder': return dethunk(autograder.kind, node, nodes);
-  case 'array': return dethunk(array.kind, node, nodes);
-  case 'binop': return dethunk(binop.kind, node, nodes);
-  case 'boolean': return dethunk(boolean.kind, node, nodes);
-  case 'conditional': return dethunk(conditional.kind, node, nodes);
-  case 'define': return dethunk(define.kind, node, nodes);
-  case 'dynamicVariant': return dethunk(dynamicVariant.kind, node, nodes);
+  case 'apply':
+  case 'letExpr':
+  case 'binop':
+  case 'conditional':
+  case 'member': 
+  case 'not':
+  case 'reference':
+    return 'expression';
+
+  case 'ptuple':
+  case 'vtuple':
+  case 'array': {
+    for (const childId of Object.values(node.subexpressions)) {
+      const child = nodes.get(childId)!;
+      const childKind = getKindForNode(child, nodes);
+      if (childKind === 'expression' || childKind === 'placeholder')
+        return 'expression';
+    }
+
+    return 'value';
+  }
+
   case 'lambda': {
     // lambda nodes with unbound arguments should be treated as values
     // because you can't step them; lambda nodes that are fully bound
@@ -303,28 +313,30 @@ export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKin
 
     return 'value';
   }
-  case 'lambdaArg': return 'syntax';
-  case 'letExpr': return dethunk(letExpr.kind, node, nodes);
-  case 'member': return dethunk(member.kind, node, nodes);
-  case 'missing': return dethunk(missing.kind, node, nodes);
-  case 'not': return dethunk(not.kind, node, nodes);
-  case 'number': return dethunk(number.kind, node, nodes);
-  case 'op': return dethunk(op.kind, node, nodes);
-  case 'reference': return dethunk(reference[0].kind, node, nodes);
-  case 'string': return dethunk(string.kind, node, nodes);
-  case 'symbol': return dethunk(symbol.kind, node, nodes);
-  case 'unsol': return dethunk(unsol.kind, node, nodes);
-  case 'ptuple':
-  case 'vtuple': {
-    for (const child of iterateTuple(node, nodes)) {
-      if (getKindForNode(child, nodes) === 'expression')
-        return 'expression';
-    }
 
+  case 'boolean':
+  case 'number':
+  case 'string':
+  case 'symbol':
+  case 'unsol':
+  case 'dynamicVariant':
+  case 'builtin-reference':
     return 'value';
-  }
-  case 'builtin-reference': return 'value';
+
+  case 'define': 
+    return 'statement';
+  
+  case 'lambdaArg': 
+  case 'op':
+    return 'syntax';
+    
+  case 'missing': 
+    return 'placeholder';
+
   default: throw new Error(`unknown node of type ${node.type}`);
+  
+  // TODO: reintroduce autograder?
+  // case 'autograder': return dethunk(autograder.kind, node, nodes);
   }
 }
 

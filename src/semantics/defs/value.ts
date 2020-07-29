@@ -1,7 +1,5 @@
 import type { BaseNode } from '..';
 
-import type { NodeDef } from './base';
-
 export interface ValueNode<T> extends BaseNode {
   fields: { value: T };
 }
@@ -43,114 +41,34 @@ export interface SymbolNode extends BaseNode {
   };
 }
 
-export const number: NodeDef<NumberNode> = {
-  kind: 'value',
-  type: 'number',
-  fields: ['value'],
-  subexpressions: [],
-  projection: {
-    type: 'default',
-    shape: '()',
-    color: 'cornsilk',
-    highlightColor: 'orangered',
-    fields: ['value'],
-  },
-};
+// TODO: what are unsol and dynamicVariant?
 
-export const symbol: NodeDef<SymbolNode> = {
-  kind: 'value',
-  type: 'symbol',
-  fields: ['name'],
-  subexpressions: [],
-  goalNames: {
-    star: ['star', 'a star', 'stars'],
-    circle: ['circle', 'a circle', 'circles'],
-    triangle: ['triangle', 'a triangle', 'triangles'],
-    square: ['square', 'a square', 'squares'],
-  },
-  projection: {
-    type: 'case',
-    on: 'name',
-    cases: {
-      star: {
-        type: 'symbol',
-        symbol: 'star',
-      },
-      circle: {
-        type: 'symbol',
-        symbol: 'circle',
-      },
-      triangle: {
-        type: 'symbol',
-        symbol: 'triangle',
-      },
-      rect: {
-        type: 'symbol',
-        symbol: 'rect',
-      },
-    },
-  },
-};
+// export const unsol: NodeDef<UnsolNode> = {
+//   kind: 'value',
+//   type: 'unsol',
+//   fields: ['color'],
+//   subexpressions: ['value'],
+//   projection: {
+//     type: 'default',
+//     shape: '()',
+//     color: (expr) => expr.color,
+//   },
+// };
 
-export const boolean: NodeDef<BoolNode> = {
-  kind: 'value',
-  type: 'boolean',
-  fields: ['value'],
-  subexpressions: [],
-  projection: {
-    type: 'default',
-    shape: '<>',
-    color: 'hotpink',
-    fields: ['value'],
-    padding: {
-      left: 25,
-      right: 25,
-      inner: 10,
-      top: 0,
-      bottom: 0,
-    },
-  },
-};
-
-export const string: NodeDef<StrNode> = {
-  kind: 'value',
-  type: 'string',
-  fields: ['value'],
-  subexpressions: [],
-  projection: {
-    type: 'default',
-    shape: '()',
-    color: 'lightgreen',
-    fields: ['\'"\'', 'value', '\'"\''],
-  },
-};
-
-export const unsol: NodeDef<UnsolNode> = {
-  kind: 'value',
-  type: 'unsol',
-  fields: ['color'],
-  subexpressions: ['value'],
-  projection: {
-    type: 'default',
-    shape: '()',
-    color: (expr) => expr.color,
-  },
-};
-
-export const dynamicVariant: NodeDef<DynVarNode> = {
-  kind: 'value',
-  type: (semant, state, types, expr) => ({
-    types: new Map([[expr.id, expr.variant]]),
-    // TODO: this isn't true if it's a variant with
-    // fields
-    complete: true,
-  }),
-  fields: ['variant', 'value'],
-  subexpressions: [],
-  projection: {
-    type: 'default',
-    shape: '()',
-    color: 'cornsilk',
-    fields: ['value'],
-  },
-};
+// export const dynamicVariant: NodeDef<DynVarNode> = {
+//   kind: 'value',
+//   type: (semant, state, types, expr) => ({
+//     types: new Map([[expr.id, expr.variant]]),
+//     // TODO: this isn't true if it's a variant with
+//     // fields
+//     complete: true,
+//   }),
+//   fields: ['variant', 'value'],
+//   subexpressions: [],
+//   projection: {
+//     type: 'default',
+//     shape: '()',
+//     color: 'cornsilk',
+//     fields: ['value'],
+//   },
+// };
