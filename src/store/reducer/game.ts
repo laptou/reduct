@@ -6,7 +6,7 @@ import {
 import { checkDefeat, checkVictory } from '../helper';
 import { GameMode, GameState } from '../state';
 import {
-  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStep, ReductAction, 
+  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStep, ReductAction, createEvalLet, 
 } from '../action/game';
 
 import type { Flat, NodeId, NodeMap } from '@/semantics';
@@ -176,8 +176,8 @@ export function gameReducer(
 
       // force references to be reduced before being used as params
       if (paramNode.type === 'reference') {
-        state = game(state, createMoveNodeToBoard(paramNodeId));
-        state = game(state, createEvalReference(paramNodeId));
+        state = gameReducer(state, createMoveNodeToBoard(paramNodeId));
+        state = gameReducer(state, createEvalReference(paramNodeId));
         paramNodeId = [...state.added].find(([, source]) => source === paramNodeId)![0];
       }
 
@@ -219,7 +219,7 @@ export function gameReducer(
 
       // eval all relevant references and keep track of which nodes are destroyed
       for (const referenceNode of referenceNodes) {
-        state = game(state, createEvalReference(referenceNode.id));
+        state = gameReducer(state, createEvalReference(referenceNode.id));
         removed.push(...state.removed.keys());
       }
 
@@ -817,7 +817,7 @@ export function gameReducer(
       // this is a child node that needs further evaluation, return the result
       // of stepping it once
       if (childNodeKind === 'expression') {
-        state = game(state, createStep(childId));
+        state = gameReducer(state, createStep(childId));
         stepped = true;
 
         if (!parallel)
@@ -835,17 +835,17 @@ export function gameReducer(
     // just step this node
     switch (targetNode.type) {
     case 'letExpr':
-      return game(state, createEvalLet(targetNode.id));
+      return gameReducer(state, createEvalLet(targetNode.id));
     case 'apply':
-      return game(state, createEvalApply(targetNode.id));
+      return gameReducer(state, createEvalApply(targetNode.id));
     case 'binop':
-      return game(state, createEvalOperator(targetNode.id));
+      return gameReducer(state, createEvalOperator(targetNode.id));
     case 'conditional':
-      return game(state, createEvalConditional(targetNode.id));
+      return gameReducer(state, createEvalConditional(targetNode.id));
     case 'not':
-      return game(state, createEvalNot(targetNode.id));
+      return gameReducer(state, createEvalNot(targetNode.id));
     case 'reference':
-      return game(state, createEvalReference(targetNode.id));
+      return gameReducer(state, createEvalReference(targetNode.id));
     default:
       throw new Error(`Cannot step a ${targetNode.type}`);
     }
@@ -859,7 +859,7 @@ export function gameReducer(
 
     try {
       // step the node
-      state = game(state, createStep(targetNodeId));
+      state = gameReducer(state, createStep(targetNodeId));
     } catch (error) {
       // trap errors and stop execution
       if (error instanceof GameError) {
