@@ -1,12 +1,14 @@
+import * as esprima from 'esprima';
+import type * as estree from 'estree';
+
+import * as progression from '../game/progression';
+
 import { ReductNode } from '@/semantics';
 import { LambdaNode } from '@/semantics/defs';
 import {
-  createApplyNode, createArrayNode, createBinOpNode, createBoolNode, createConditionalNode, createDefineNode, createLambdaArgNode, createLambdaNode, createMemberNode, createMissingNode, createNotNode, createNumberNode, createOpNode, createReferenceNode, createStrNode, createSymbolNode, createVtupleNode, createPtupleNode 
+  createApplyNode, createArrayNode, createBinOpNode, createBoolNode, createConditionalNode, createDefineNode, createLambdaArgNode, createLambdaNode, createMemberNode, createMissingNode, createNotNode, createNumberNode, createOpNode, createReferenceNode, createStrNode, createSymbolNode, createVtupleNode, createPtupleNode, 
 } from '@/semantics/util';
-import * as esprima from 'esprima';
 // eslint-disable-next-line import/no-unresolved
-import type * as estree from 'estree';
-import * as progression from '../game/progression';
 
 function modifier(ast: esprima.Program) {
   if (ast.body.length !== 2) return null;
@@ -17,9 +19,9 @@ function modifier(ast: esprima.Program) {
     return [
       {
         name: ast.body[0].expression.callee.name,
-        params: ast.body[0].expression.arguments.map((x) => x.name)
+        params: ast.body[0].expression.arguments.map((x) => x.name),
       },
-      ast.body[1]
+      ast.body[1],
     ];
   }
 
@@ -224,7 +226,9 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
       if (node.callee.name === '__autograder') {
       /* Color for goals
            */
-        const colors = ['#c0392b', '#2980b9', '#2ecc71', '#8e44ad', '#f39c12'];
+        const colors = [
+          '#c0392b', '#2980b9', '#2ecc71', '#8e44ad', '#f39c12',
+        ];
 
         /* Getting the alien index.
            */
@@ -306,7 +310,7 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
     return createArrayNode(...node.elements.map(elem => {
       if (elem.type === 'SpreadElement')
         throw new Error('Array spreading is not supported');
-      return parseNode(elem, macros)
+      return parseNode(elem, macros);
     }));
   }
 
@@ -347,15 +351,15 @@ export function parseProgram(program: string, macros: MacroMap = new Map()) {
       result.__meta = {
         toolbox: {
           unlimited: true,
-          targetable: false
-        }
-      }
+          targetable: false,
+        },
+      };
     } else if (modName === '__targetable') {
       result.__meta = {
         toolbox: {
           targetable: true,
-          unlimited: false
-        }
+          unlimited: false,
+        },
       };
     } else if (modName === '__argumentAnnotated') {
       result.body = createMissingNode();

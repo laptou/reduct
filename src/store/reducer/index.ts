@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux';
 import { createTransform, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+
 import { createStartLevel } from '../action/game';
 import { GameState } from '../state';
+
 import { gameReducer } from './game';
 import { preferencesReducer } from './preferences';
 import { undoableReducer } from './undo';

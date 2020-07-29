@@ -1,9 +1,13 @@
+import React, { FunctionComponent } from 'react';
+
+import { StageProjection } from './base';
+
 import { NodeId } from '@/semantics';
 import { ArrayNode } from '@/semantics/defs';
 import { DRF } from '@/util/helper';
+
 import '@resources/style/react/projection/array.scss';
-import React, { FunctionComponent } from 'react';
-import { StageProjection } from './base';
+
 
 interface ArrayProjectionOwnProps {
   node: DRF<ArrayNode>;
@@ -25,5 +29,5 @@ export const ArrayProjection: FunctionComponent<ArrayProjectionOwnProps> =
           )
         }
       </div>
-    )
+    );
   };

@@ -1,7 +1,6 @@
-import { GameMode, GlobalState } from '@/store/state';
-import { DeepReadonly } from '@/util/helper';
 import React from 'react';
 import { connect } from 'react-redux';
+
 import { Board } from './stage/ui/board';
 import { DefeatOverlay } from './banner/defeat';
 import { Definitions } from './stage/ui/tabs/definitions';
@@ -12,6 +11,9 @@ import { Title } from './banner/title';
 import { Toolbox } from './stage/ui/tabs/toolbox';
 import { VictoryOverlay } from './banner/victory';
 import { GameMenu } from './stage/ui/tabs/menu';
+
+import { DeepReadonly } from '@/util/helper';
+import { GameMode, GlobalState } from '@/store/state';
 
 interface GameStoreProps
 {
@@ -62,7 +64,7 @@ function GameImpl(props: GameStoreProps) {
         <History />
         <DefeatOverlay />
       </>
-    )
+    );
   }
   
 }

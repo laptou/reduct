@@ -1,6 +1,5 @@
 const webpack = require('webpack');
 const path = require('path');
-
 const SentryCliPlugin = require('@sentry/webpack-plugin');
 const HtmlPlugin = require('html-webpack-plugin');
 const TsCheckerPlugin = require('fork-ts-checker-webpack-plugin');

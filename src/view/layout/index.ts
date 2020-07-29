@@ -34,7 +34,7 @@ function findChunks(segments: number[], size: number): Chunk[] {
       start, 
       end,
       offset: currentOffset,
-      size: currentSize
+      size: currentSize,
     });
 
     start++;
@@ -102,7 +102,11 @@ export function placeRects(bounds: Rect, rects: Rect[]): Map<Rect, PlacedRect> {
         const chunkCenterDistance = Math.sqrt((chunkCenterX - boundsCenterX) ** 2 + (chunkCenterY - boundsCenterY) ** 2);
 
         if (cellChunk === null || cellChunk.dist > chunkCenterDistance) 
-          cellChunk = { col: potentialColChunk, row: potentialRowChunk, dist: chunkCenterDistance };
+          cellChunk = {
+            col: potentialColChunk,
+            row: potentialRowChunk,
+            dist: chunkCenterDistance, 
+          };
       }
     }
 
@@ -167,7 +171,10 @@ export function placeRects(bounds: Rect, rects: Rect[]): Map<Rect, PlacedRect> {
     }
     
     placedRects.set(rect, {
-      x, y, w: rect.w, h: rect.h
+      x,
+      y,
+      w: rect.w,
+      h: rect.h,
     });
   }
 

@@ -1,4 +1,5 @@
 import type { BaseNode } from '..';
+
 import type { NodeDef } from './base';
 
 export interface ValueNode<T> extends BaseNode {
@@ -52,8 +53,8 @@ export const number: NodeDef<NumberNode> = {
     shape: '()',
     color: 'cornsilk',
     highlightColor: 'orangered',
-    fields: ['value']
-  }
+    fields: ['value'],
+  },
 };
 
 export const symbol: NodeDef<SymbolNode> = {
@@ -65,7 +66,7 @@ export const symbol: NodeDef<SymbolNode> = {
     star: ['star', 'a star', 'stars'],
     circle: ['circle', 'a circle', 'circles'],
     triangle: ['triangle', 'a triangle', 'triangles'],
-    square: ['square', 'a square', 'squares']
+    square: ['square', 'a square', 'squares'],
   },
   projection: {
     type: 'case',
@@ -73,22 +74,22 @@ export const symbol: NodeDef<SymbolNode> = {
     cases: {
       star: {
         type: 'symbol',
-        symbol: 'star'
+        symbol: 'star',
       },
       circle: {
         type: 'symbol',
-        symbol: 'circle'
+        symbol: 'circle',
       },
       triangle: {
         type: 'symbol',
-        symbol: 'triangle'
+        symbol: 'triangle',
       },
       rect: {
         type: 'symbol',
-        symbol: 'rect'
-      }
-    }
-  }
+        symbol: 'rect',
+      },
+    },
+  },
 };
 
 export const boolean: NodeDef<BoolNode> = {
@@ -106,9 +107,9 @@ export const boolean: NodeDef<BoolNode> = {
       right: 25,
       inner: 10,
       top: 0,
-      bottom: 0
-    }
-  }
+      bottom: 0,
+    },
+  },
 };
 
 export const string: NodeDef<StrNode> = {
@@ -120,8 +121,8 @@ export const string: NodeDef<StrNode> = {
     type: 'default',
     shape: '()',
     color: 'lightgreen',
-    fields: ['\'"\'', 'value', '\'"\'']
-  }
+    fields: ['\'"\'', 'value', '\'"\''],
+  },
 };
 
 export const unsol: NodeDef<UnsolNode> = {
@@ -132,8 +133,8 @@ export const unsol: NodeDef<UnsolNode> = {
   projection: {
     type: 'default',
     shape: '()',
-    color: (expr) => expr.color
-  }
+    color: (expr) => expr.color,
+  },
 };
 
 export const dynamicVariant: NodeDef<DynVarNode> = {
@@ -142,7 +143,7 @@ export const dynamicVariant: NodeDef<DynVarNode> = {
     types: new Map([[expr.id, expr.variant]]),
     // TODO: this isn't true if it's a variant with
     // fields
-    complete: true
+    complete: true,
   }),
   fields: ['variant', 'value'],
   subexpressions: [],
@@ -150,6 +151,6 @@ export const dynamicVariant: NodeDef<DynVarNode> = {
     type: 'default',
     shape: '()',
     color: 'cornsilk',
-    fields: ['value']
-  }
+    fields: ['value'],
+  },
 };

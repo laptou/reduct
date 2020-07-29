@@ -2,11 +2,12 @@
  * Custom views for specific expressions.
  */
 
+import * as random from '../util/random';
+
 import * as gfx from './core';
 import * as animate from './animate';
 import * as primitive from './primitive';
 import * as util from './util';
-import * as random from '../util/random';
 
 export function argumentBar() {
   const projection = gfx.baseProjection();

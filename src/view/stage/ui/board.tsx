@@ -1,14 +1,16 @@
-import { NodeId } from '@/semantics';
-import { createClearError, createDetectCompetion, createMoveNodeToBoard } from '@/store/action/game';
-import { GlobalState } from '@/store/state';
-import { DeepReadonly } from '@/util/helper';
-import '@resources/style/react/ui/board.scss';
 import React, {
   FunctionComponent, RefObject, useEffect, useRef, useState, 
 } from 'react';
 import { connect } from 'react-redux';
 import { animated, useTransition } from 'react-spring';
+
 import { StageProjection } from '../projection/base';
+
+import { NodeId } from '@/semantics';
+import { createClearError, createDetectCompetion, createMoveNodeToBoard } from '@/store/action/game';
+import { GlobalState } from '@/store/state';
+import { DeepReadonly } from '@/util/helper';
+import '@resources/style/react/ui/board.scss';
 
 interface BoardStoreProps {
   board: DeepReadonly<Set<NodeId>>;

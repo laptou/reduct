@@ -3,8 +3,9 @@ import * as core from '../core';
 import * as action from '../../store/action/game';
 import * as gfxCore from '../../gfx/core';
 import * as level from '../../game/level';
-import type { NodeDef } from './base';
 import { BaseNode, NodeId } from '..';
+
+import type { NodeDef } from './base';
 
 export interface AutograderNode extends BaseNode {
   type: 'autograder';
@@ -28,16 +29,16 @@ export const autograder: NodeDef<AutograderNode> = {
         type: 'default',
         shape: 'none',
         fields: ['result'],
-        subexpScale: 1.0
+        subexpScale: 1.0,
       },
       {
         type: 'sprite',
         fields: ['goalId'],
         image: (expr) => expr.alienName,
         scale: 0.4,
-        subexpScale: 1.0
-      }
-    ]
+        subexpScale: 1.0,
+      },
+    ],
   },
   validateStep: (semant, state, expr) => null,
   smallStep: (semant, stage, state, expr) => {
@@ -205,7 +206,7 @@ export const autograder: NodeDef<AutograderNode> = {
       // Assumes clicks always dispatched to top-level node
       const origPos = {
         x: gfxCore.centerPos(stage.getView(expr.id)).x,
-        y: gfxCore.centerPos(stage.getView(expr.id)).y
+        y: gfxCore.centerPos(stage.getView(expr.id)).y,
       };
 
 
@@ -277,5 +278,5 @@ export const autograder: NodeDef<AutograderNode> = {
 
       return core.makeResult(expr, clonedFinal, semant);
     }
-  }
+  },
 };

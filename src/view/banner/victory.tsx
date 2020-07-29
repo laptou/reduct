@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+
 import { DeepReadonly } from '@/util/helper';
 import { GlobalState, GameMode } from '@/store/state';
 import { createStartLevel } from '@/store/action/game';
@@ -28,14 +29,14 @@ const VictoryImpl = (props: VictoryStoreProps & VictoryDispatchProps) => {
       </div>
     </div>
   );
-}
+};
 
 export const VictoryOverlay = connect(
   (store: DeepReadonly<GlobalState>) => ({
     isVictory: store.game.$present.mode === GameMode.Victory,
-    nextLevel: store.game.$present.level + 1
+    nextLevel: store.game.$present.level + 1,
   }),
   (dispatch) => ({
-    startLevel(index: number) { dispatch(createStartLevel(index)); }
+    startLevel(index: number) { dispatch(createStartLevel(index)); },
   })
 )(VictoryImpl);

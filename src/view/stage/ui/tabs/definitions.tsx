@@ -1,11 +1,13 @@
-import { GlobalState } from '@/store/state';
-import { NodeId } from '@/semantics';
-import '@resources/style/react/ui/definitions.scss';
-import { DeepReadonly } from '@/util/helper';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
+
 import { StageProjection } from '../../projection/base';
+
+import { GlobalState } from '@/store/state';
 import { createMoveNodeToDefs } from '@/store/action/game';
+import { NodeId } from '@/semantics';
+import { DeepReadonly } from '@/util/helper';
+import '@resources/style/react/ui/definitions.scss';
 
 interface DefinitionsStoreProps {
   nodeIds: NodeId[];

@@ -1,8 +1,11 @@
+import React, { FunctionComponent } from 'react';
+
+import { StageProjection } from './base';
+
 import { Flat } from '@/semantics';
 import { ConditionalNode } from '@/semantics/defs';
+
 import '@resources/style/react/projection/conditional.scss';
-import React, { FunctionComponent } from 'react';
-import { StageProjection } from './base';
 
 interface ConditionalProjectionOwnProps {
   node: Flat<ConditionalNode>;
@@ -29,5 +32,5 @@ export const ConditionalProjection: FunctionComponent<ConditionalProjectionProps
           <StageProjection nodeId={props.node.subexpressions.negative} />
         </div>
       </div>
-    )
+    );
   };

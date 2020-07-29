@@ -1,8 +1,10 @@
+import { produce } from 'immer';
+
+import { GameState } from './state';
+
 import { getKindForNode } from '@/semantics/util';
 import { DeepReadonly } from '@/util/helper';
-import { GameState } from './state';
 import { compareNodesDeep } from '@/util/nodes';
-import { produce } from 'immer';
 
 /**
  * Returns true if the user has completed the current level (i.e., the nodes on

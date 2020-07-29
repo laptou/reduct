@@ -1,6 +1,5 @@
 import * as animate from '../gfx/animate';
 import * as level from '../game/level';
-
 import Audio from '../resource/audio';
 
 /**

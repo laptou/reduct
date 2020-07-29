@@ -1,11 +1,10 @@
-import Loader from '@/loader';
-import { createStartLevel } from '@/store/action/game';
+import React from 'react';
+import { connect } from 'react-redux';
+
+import { createEnableSound } from '@/store/action/preferences';
 import { GlobalState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
 import '@resources/style/react/ui/level.scss';
-import React from 'react';
-import { connect } from 'react-redux';
-import { createEnableSound } from '@/store/action/preferences';
 
 interface PreferencesStoreProps {
   isSoundEnabled: boolean;
@@ -39,6 +38,6 @@ export const Preferences = connect(
     isSoundEnabled: store.preferences.enableSounds,
   }),
   (dispatch) => ({
-    enableSound(enabled: boolean) { dispatch(createEnableSound(enabled)) },
+    enableSound(enabled: boolean) { dispatch(createEnableSound(enabled)); },
   })
 )(PreferencesImpl);

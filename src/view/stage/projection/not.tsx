@@ -1,11 +1,18 @@
-import { createEvalNot } from '@/store/action/game';
+import React, { FunctionComponent } from 'react';
+
+import { BooleanShape } from '../shape/boolean';
+
+import { StageProjection } from './base';
+
 import { NotNode } from '@/semantics/defs';
 import { DRF } from '@/util/helper';
+
 import '@resources/style/react/projection/not.scss';
-import React, { FunctionComponent } from 'react';
-import { connect } from 'react-redux';
-import { BooleanShape } from '../shape/boolean';
-import { StageProjection } from './base';
+
+
+
+
+
 
 interface NotProjectionOwnProps {
   node: DRF<NotNode>;
@@ -23,5 +30,5 @@ export const NotProjection: FunctionComponent<NotProjectionProps> =
           <StageProjection nodeId={props.node.subexpressions.value} />
         </BooleanShape>
       </div>
-    )
+    );
   };

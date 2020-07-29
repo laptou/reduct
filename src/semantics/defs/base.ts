@@ -1,12 +1,13 @@
+import type {
+  BaseNode, Flat, NodeId, NodeType, NodeMap, 
+} from '..';
+import type { Semantics } from '../transform';
+import type { NodeKind } from '../util';
+
 import type { ProjectionDef } from '@/gfx/projection';
 import { GameState } from '@/store/state';
 import type Stage from '@/stage/stage';
 import type { DeepReadonly, Thunk, DRF } from '@/util/helper';
-import type {
-  BaseNode, Flat, NodeId, NodeType, NodeMap 
-} from '..';
-import type { Semantics } from '../transform';
-import type { NodeKind } from '../util';
 
 export interface NodeDef<N extends BaseNode> {
     /**
