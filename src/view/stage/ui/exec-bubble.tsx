@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Bubble } from './bubble';
 
 interface ExecBubbleProps {
@@ -29,4 +30,4 @@ export const ExecBubble: React.FC<ExecBubbleProps> = ({ executing, onStop, onSki
       </button>
     </Bubble>
   );
-}
+};

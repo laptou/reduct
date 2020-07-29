@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
+
 import { DeepReadonly } from '@/util/helper';
 import { GlobalState, GameMode } from '@/store/state';
-import { createStartLevel } from '@/store/action';
+import { createStartLevel } from '@/store/action/game';
 
 interface TitleStoreProps {
   isTitle: boolean;
@@ -27,13 +28,13 @@ const TitleImpl = (props: TitleStoreProps & TitleDispatchProps) => {
       </div>
     </div>
   );
-}
+};
 
 export const Title = connect(
   (store: DeepReadonly<GlobalState>) => ({
-    isTitle: store.program.$present.mode === GameMode.Title
+    isTitle: store.game.$present.mode === GameMode.Title,
   }),
   (dispatch) => ({
-    startLevel() { dispatch(createStartLevel(0)); }
+    startLevel() { dispatch(createStartLevel(0)); },
   })
 )(TitleImpl);

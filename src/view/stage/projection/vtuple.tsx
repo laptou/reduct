@@ -1,11 +1,13 @@
-import { VTupleNode } from '@/semantics/defs';
-import '@resources/style/react/projection/vtuple.scss';
 import React, { FunctionComponent } from 'react';
+
 import { StageProjection } from './base';
+
+import { VTupleNode } from '@/semantics/defs';
 import { Flat } from '@/semantics';
+import '@resources/style/react/projection/vtuple.scss';
 
 interface VTupleProjectionOwnProps {
-    node: Flat<VTupleNode>;
+  node: Flat<VTupleNode>;
 }
 
 export const VTupleProjection: FunctionComponent<VTupleProjectionOwnProps> = 

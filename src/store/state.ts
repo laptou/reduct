@@ -1,8 +1,9 @@
-import { NodeId, NodeMap } from '@/semantics';
-import { UndoableState } from './reducer/undo';
+import { UndoableGameState } from './reducer/undo';
 import { GameError } from './errors';
 
-export interface RState {
+import { NodeId, NodeMap } from '@/semantics';
+
+export interface GameState {
   /**
    * Represents which part of the game we are currently in: title screen,
    * gameplay, victory, or defeat.
@@ -75,6 +76,6 @@ export interface PreferenceState {
 }
 
 export interface GlobalState {
-  program: UndoableState<RState>;
+  game: UndoableGameState;
   preferences: PreferenceState;
 }

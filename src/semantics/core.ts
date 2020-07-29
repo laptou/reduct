@@ -1,10 +1,13 @@
-import type { RState } from '@/store/state';
-import { DeepReadonly, withoutParent } from '@/util/helper';
 import { produce } from 'immer';
-import type {
-  NodeId, NodeMap, ReductNode, Flat 
-} from '.';
+
 import { Semantics } from './transform';
+
+import type {
+  NodeId, NodeMap, ReductNode, Flat, 
+} from '.';
+
+import type { GameState } from '@/store/state';
+import { DeepReadonly, withoutParent } from '@/util/helper';
 
 type GenericNodeCreator<F> =
     (
@@ -20,7 +23,7 @@ type GenericNodeTransformer<F> =
 export const genericFlatten: GenericNodeCreator<(expr: ReductNode) => Array<Flat<ReductNode>>> =
     (getNextId, getSubExpressions) => function flatten(expr) {
       expr.id = getNextId();
-      let result = [expr];
+      const result = [expr];
 
       for (const field of getSubExpressions(expr)) {
         // Record the ID of the parent, as well as which field of
@@ -96,7 +99,7 @@ export const genericSearch: GenericNodeTransformer<(
 export const genericEqual = (
   getSubExpressions: (node: DeepReadonly<ReductNode>) => string[],
   comparer: (left: DeepReadonly<ReductNode>, right: DeepReadonly<ReductNode>) => boolean
-) => function equal(id1: NodeId, id2: NodeId, state: DeepReadonly<RState>) {
+) => function equal(id1: NodeId, id2: NodeId, state: DeepReadonly<GameState>) {
   const n1 = state.nodes.get(id1)!;
   const n2 = state.nodes.get(id2)!;
 
@@ -152,7 +155,7 @@ export const genericClone: GenericNodeCreator<(
  * [newNodes] = All the new added nodes (includs the children of the parent node
     as well.)
  */
-export function genericBetaReduce(semant: Semantics, state: DeepReadonly<RState>, config) {
+export function genericBetaReduce(semant: Semantics, state: DeepReadonly<GameState>, config) {
   const { topNode, targetNode, argIds } = config;
   const nodes = state.nodes;
   // Prevent application when there are missing nodes
@@ -215,7 +218,7 @@ export function genericBetaReduce(semant: Semantics, state: DeepReadonly<RState>
         ...config,
         topNode: curTopNode,
         targetNode: curTargetNode,
-        argIds: [argId]
+        argIds: [argId],
       });
       if (!result) {
         // Return partial result
@@ -315,14 +318,14 @@ export function genericBetaReduce(semant: Semantics, state: DeepReadonly<RState>
       topNode.id,
       semant.subexpressions(newTop).map((field) => newTop.subexpressions[field]),
       newNodes.slice(1).map((node) => (node.parent === newTop.id
-        ? withoutParent(node) : node))
+        ? withoutParent(node) : node)),
     ];
   }
 
   return [
     topNode.id,
     [newTop.id],
-    newNodes.concat([newTop])
+    newNodes.concat([newTop]),
   ];
 }
 
@@ -346,6 +349,6 @@ export function makeResult(sourceExpr, resultExpr, semant) {
   return [
     sourceExpr.id,
     [newNodes[0].id],
-    newNodes
+    newNodes,
   ];
 }

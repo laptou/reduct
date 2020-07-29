@@ -2,31 +2,35 @@
 /**
  * @module transform
  */
-import { RState } from '@/store/state';
-import {
-  genericClone, genericEqual, genericFlatten, genericMap, genericSearch 
-} from '@/semantics/core';
-import BaseStage from '@/stage/basestage';
-import { DeepReadonly, dethunk, DRF } from '@/util/helper';
 import { produce } from 'immer';
-import {
-  BaseNode, NodeId, NodeMap, ReductNode 
-} from '.';
+
 import * as progression from '../game/progression';
 import * as gfx from '../gfx/core';
 import * as fx from '../gfx/fx';
 import { getProjector, ViewFn } from '../gfx/projector';
 import Logging from '../logging/logging';
 import { nextId } from '../store/reducer';
+
 import type {
   BoolNode,
   DefineNode, DynVarNode, LambdaArgNode, LambdaVarNode,
   MissingNode, NumberNode, StrNode,
-  SymbolNode
+  SymbolNode,
 } from './defs';
 import { NodeDef } from './defs/base';
 import type { ReductSymbol } from './defs/value';
 import makeInterpreter from './interpreter';
+
+import {
+  BaseNode, NodeId, NodeMap, ReductNode, 
+} from '.';
+
+import { DeepReadonly, dethunk, DRF } from '@/util/helper';
+import BaseStage from '@/stage/basestage';
+import {
+  genericClone, genericEqual, genericFlatten, genericMap, genericSearch, 
+} from '@/semantics/core';
+import { GameState } from '@/store/state';
 
 
 export interface SemanticParserDefinition {
@@ -104,24 +108,26 @@ export class Semantics {
       this.definition = definition;
       this.projections = {};
 
-      this.projections.vtuple = [() => gfx.layout.vbox((id, state) => {
-        const node = state.nodes.get(id);
-        const result = [];
-        for (let i = 0; i < node.fields.size; i++) {
-          result.push(node.subexpressions[i]);
-        }
-        return result;
-      }, {
-        padding: {
-          top: 0,
-          inner: 5,
-          bottom: 0,
-          left: 0,
-          right: 0
-        },
-        strokeWhenChild: false,
-        subexpScale: 1
-      })];
+      this.projections.vtuple = [
+        () => gfx.layout.vbox((id, state) => {
+          const node = state.nodes.get(id);
+          const result = [];
+          for (let i = 0; i < node.fields.size; i++) {
+            result.push(node.subexpressions[i]);
+          }
+          return result;
+        }, {
+          padding: {
+            top: 0,
+            inner: 5,
+            bottom: 0,
+            left: 0,
+            right: 0,
+          },
+          strokeWhenChild: false,
+          subexpScale: 1,
+        }),
+      ];
 
       const ctors: Record<string, ((...args: any[]) => BaseNode)[]> = {};
 
@@ -139,7 +145,7 @@ export class Semantics {
           subexpressions: {},
           fields: { size: children.length },
           parent: null,
-          parentField: null
+          parentField: null,
         };
         let i = 0;
         for (const child of children) {
@@ -166,7 +172,7 @@ export class Semantics {
               fields: {}, 
               subexpressions: {},
               parent: null,
-              parentField: null
+              parentField: null,
             };
 
             if (typeof exprDefinition.locked !== 'undefined') {
@@ -203,7 +209,7 @@ export class Semantics {
               exprDefinition.projection,
               {
                 subExpressions: exprDefinition.subexpressions ?? [],
-                fields: exprDefinition.fields ?? []
+                fields: exprDefinition.fields ?? [],
               }
             )
           );
@@ -235,14 +241,14 @@ export class Semantics {
         unparse: definition.parser.unparse,
         extractDefines: definition.parser.extractDefines,
         extractGlobals: definition.parser.extractGlobals,
-        extractGlobalNames: definition.parser.extractGlobalNames
+        extractGlobalNames: definition.parser.extractGlobalNames,
       };
 
       this.meta = meta;
     }
 
     /** The remnants of type checking. */
-    public collectTypes(state: RState, rootExpr) {
+    public collectTypes(state: GameState, rootExpr) {
       const result = new Map();
       const completeness = new Map();
       const nodes = state.nodes;
@@ -307,7 +313,10 @@ export class Semantics {
 
       step(rootExpr);
 
-      return { types: result, completeness };
+      return {
+        types: result,
+        completeness, 
+      };
     }
 
     /** Check the equality of all subexpressions as well. */
@@ -342,7 +351,7 @@ export class Semantics {
     }
 
     /** Check whether a node is detachable from its parent. */
-    public detachable(state: DeepReadonly<RState>, parentId: NodeId, childId: NodeId) {
+    public detachable(state: DeepReadonly<GameState>, parentId: NodeId, childId: NodeId) {
       const parent = state.nodes.get(parentId)!;
       const child = state.nodes.get(childId)!;
 
@@ -371,7 +380,7 @@ export class Semantics {
     /**
      * Can an expression have something dropped into it?
      */
-    public droppable(state: DeepReadonly<RState>, itemId: NodeId, targetId: NodeId) {
+    public droppable(state: DeepReadonly<GameState>, itemId: NodeId, targetId: NodeId) {
       // TODO: don't hardcode these checks
       const item = state.nodes.get(itemId)!;
       const target = state.nodes.get(targetId)!;
@@ -406,20 +415,20 @@ export class Semantics {
           draft.subexpressions[field] = this.hydrate(nodes, nodes.get(draft.subexpressions[field]));
         }
       });
-    };
+    }
 
     /**
      * Check whether we should ignore the given node when matching
      * nodes to determine victory.
      */
-    public ignoreForVictory(state: DeepReadonly<RState>, node: ReductNode) {
+    public ignoreForVictory(state: DeepReadonly<GameState>, node: ReductNode) {
       const defn = this.definitionOf(node);
       return this.kind(state, node) === 'syntax' || (defn && defn.ignoreForVictory);
     }
 
 
     /** Get the kind of an expression (e.g., "expression", "value", "statement"). */
-    public kind(state: DeepReadonly<RState>, node: DRF) {
+    public kind(state: DeepReadonly<GameState>, node: DRF) {
       const def = this.definitionOf(node);
       return dethunk(def.kind, node, state.nodes);
     }
@@ -438,7 +447,7 @@ export class Semantics {
     }
 
     /** Determine if a level could possibly be completed. */
-    public mightBeCompleted(state: DeepReadonly<RState>, checkVictory) {
+    public mightBeCompleted(state: DeepReadonly<GameState>, checkVictory) {
       const containsReduceableExpr = [...state.board.values(), ...state.toolbox.values()].some((id) => {
         const node = state.nodes.get(id)!;
         const kind = this.kind(state, node);
@@ -531,7 +540,7 @@ export class Semantics {
               item: stage.saveNode(childId),
               parentNotchIdx: notchPair[0],
               childNotchIdx: notchPair[1],
-              blocking: blockingNodes.map((id) => stage.saveNode(id))
+              blocking: blockingNodes.map((id) => stage.saveNode(id)),
             });
             blockingNodes.forEach((id) => {
               fx.error(stage, stage.views[id]);
@@ -661,7 +670,7 @@ export class Semantics {
     /**
      * Is an expression selectable/hoverable by the mouse?
      */
-    public targetable(state: RState, expr: ReductNode) {
+    public targetable(state: GameState, expr: ReductNode) {
       const defn = this.definitionOf(expr);
       if (defn && defn.targetable && typeof defn.targetable === 'function') {
         return defn.targetable(this, state, expr);

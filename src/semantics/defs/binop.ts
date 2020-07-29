@@ -1,4 +1,5 @@
 import { BaseNode, ReductNode } from '..';
+
 import type { NodeDef } from './base';
 
 /**
@@ -17,8 +18,8 @@ export const op: NodeDef<OpNode> = {
   subexpressions: [],
   projection: {
     type: 'text',
-    text: '{name}'
-  }
+    text: '{name}',
+  },
 };
 
 /**
@@ -45,22 +46,22 @@ export const binop: NodeDef<BinOpNode> = {
       '+': {
         type: 'default',
         shape: '()',
-        color: '#ffcc00'
+        color: '#ffcc00',
       },
       '-': {
         type: 'default',
         shape: '()',
-        color: '#ffcc00'
+        color: '#ffcc00',
       },
       '>': {
         type: 'default',
         shape: '()',
-        color: '#ffcc00'
+        color: '#ffcc00',
       },
       '<': {
         type: 'default',
         shape: '()',
-        color: '#ffcc00'
+        color: '#ffcc00',
       },
       '==': {
         type: 'default',
@@ -71,8 +72,8 @@ export const binop: NodeDef<BinOpNode> = {
           right: 25,
           inner: 10,
           top: 0,
-          bottom: 0
-        }
+          bottom: 0,
+        },
       },
       '&&': {
         type: 'default',
@@ -83,8 +84,8 @@ export const binop: NodeDef<BinOpNode> = {
           right: 25,
           inner: 10,
           top: 0,
-          bottom: 0
-        }
+          bottom: 0,
+        },
       },
       '||': {
         type: 'default',
@@ -95,10 +96,10 @@ export const binop: NodeDef<BinOpNode> = {
           right: 25,
           inner: 10,
           top: 0,
-          bottom: 0
-        }
-      }
-    }
+          bottom: 0,
+        },
+      },
+    },
   },
   stepSound: (semant, state, expr) => {
     const op = state.nodes.get(expr.subexpressions.op);
@@ -144,7 +145,7 @@ export const binop: NodeDef<BinOpNode> = {
       complete: (types.get(expr.subexpressions.left) === 'number'
                            || nodes.get(expr.subexpressions.left).type === 'lambdaVar')
                     && (types.get(expr.subexpressions.right) === 'number'
-                     || nodes.get(expr.subexpressions.right).type === 'lambdaVar')
+                     || nodes.get(expr.subexpressions.right).type === 'lambdaVar'),
     };
   },
   // Invariant: all subexpressions are values or syntax;
@@ -235,5 +236,5 @@ export const binop: NodeDef<BinOpNode> = {
                                    && nodes.get(expr.subexpressions.right).fields.value);
     }
     throw `Unrecognized operator ${op}`;
-  }
+  },
 };

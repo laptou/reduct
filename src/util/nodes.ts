@@ -1,8 +1,10 @@
-import type {
-  BaseNode, Flat, FlatReductNode, NodeId, NodeMap, ReductNode 
-} from '@/semantics';
 import { castDraft, produce } from 'immer';
+
 import { DeepReadonly, DRF } from './helper';
+
+import type {
+  BaseNode, Flat, FlatReductNode, NodeId, NodeMap, ReductNode, 
+} from '@/semantics';
 
 let idCounter = 0;
 
@@ -59,7 +61,7 @@ export function cloneNodeDeep<N extends ReductNode = ReductNode>(id: NodeId, nod
 
       const reparentedChild = {
         ...clonedChild,
-        parent: newId
+        parent: newId,
       } as FlatReductNode;
 
       if (typeof locked === 'boolean')
@@ -145,7 +147,7 @@ export function mapNodeDeep(
   const reparentedChildren = Array.from(mappedChildren).map(([childPath, mappedChild]) => ({ 
     ...mappedChild, 
     parent: mappedRoot.id,
-    parentField: childPath 
+    parentField: childPath, 
   } as DRF));
 
   const finalNodeMap = produce(mappedNodeMap, draft => {
@@ -258,7 +260,7 @@ export function flatten(
 
   const flatNode = {
     ...node,
-    subexpressions: children
+    subexpressions: children,
   };
 
   return [flatNode, ...nodes];

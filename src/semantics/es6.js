@@ -1,6 +1,6 @@
 import { parseProgram, serializeNode } from '../syntax/es6';
-import { Semantics } from './transform';
 
+import { Semantics } from './transform';
 import * as apply from './defs/apply';
 import * as autograder from './defs/autograder';
 import * as array from './defs/array';

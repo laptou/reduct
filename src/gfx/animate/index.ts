@@ -3,11 +3,11 @@ import * as Easing from './easing';
 let scales: Record<string, number> = {};
 
 export function setDurationScale(category: string, factor: number) {
-    scales[category] = factor;
+  scales[category] = factor;
 }
 
 export function replaceDurationScales(newScales: Record<string, number>) {
-    scales = { ...newScales };
+  scales = { ...newScales };
 }
 
 /**
@@ -22,14 +22,14 @@ export function replaceDurationScales(newScales: Record<string, number>) {
  * });
  */
 export function scaleDuration(duration: number, ...categories: string[]) {
-    for (const category of categories) {
-        duration *= (typeof scales[category] === 'undefined' ? 1.0 : scales[category]);
-    }
-    return duration;
+  for (const category of categories) {
+    duration *= (typeof scales[category] === 'undefined' ? 1.0 : scales[category]);
+  }
+  return duration;
 }
 
 export {
-    default as Clock, addUpdateListener, after, chain, clock, infinite, tween
+  default as Clock, addUpdateListener, after, chain, clock, infinite, tween,
 } from './clock';
 export { Easing }; // TODO: fix when babel supports `export * as ns` syntax
 export type { Tween, TweenOptions, TweenStatus } from './tween';

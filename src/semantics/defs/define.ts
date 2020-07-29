@@ -1,5 +1,6 @@
 import type { BaseNode } from '..';
 import * as animate from '../../gfx/animate';
+
 import type { NodeDef } from './base';
 import { LambdaNode } from './lambda';
 
@@ -28,8 +29,8 @@ export const define: NodeDef<DefineNode> = {
       side: 'left',
       type: 'inset',
       shape: 'wedge',
-      relpos: 0.8
-    }
+      relpos: 0.8,
+    },
   ],
   projection: {
     type: 'dynamicProperty',
@@ -43,20 +44,20 @@ export const define: NodeDef<DefineNode> = {
     fields: {
       default: {
         color: (projection) => animate.tween(projection, {
-          color: 'OrangeRed'
+          color: 'OrangeRed',
         }, {
           duration: 500,
-          easing: animate.Easing.Color(animate.Easing.Cubic.Out, projection.color, 'OrangeRed')
-        })
+          easing: animate.Easing.Color(animate.Easing.Cubic.Out, projection.color, 'OrangeRed'),
+        }),
       },
       attached: {
         color: (projection) => animate.tween(projection, {
-          color: '#8ab7db'
+          color: '#8ab7db',
         }, {
           duration: 500,
-          easing: animate.Easing.Color(animate.Easing.Cubic.Out, projection.color, '#8ab7db')
-        })
-      }
+          easing: animate.Easing.Color(animate.Easing.Cubic.Out, projection.color, '#8ab7db'),
+        }),
+      },
     },
     projection: {
       type: 'vbox',
@@ -67,7 +68,7 @@ export const define: NodeDef<DefineNode> = {
         left: 15,
         inner: 5,
         right: 10,
-        bottom: 10
+        bottom: 10,
       },
       rows: [
         {
@@ -75,12 +76,13 @@ export const define: NodeDef<DefineNode> = {
           shape: 'none',
           subexpScale: 1.0,
           padding: {
-            left: 0, right: 0
+            left: 0,
+            right: 0,
           },
           cols: [
             {
               type: 'text',
-              text: 'def '
+              text: 'def ',
             },
             {
               type: 'hbox',
@@ -92,34 +94,37 @@ export const define: NodeDef<DefineNode> = {
               shadowOffset: 0,
               stroke: {
                 lineWidth: 0,
-                color: 'rgba(0,0,0,0)'
+                color: 'rgba(0,0,0,0)',
               },
               strokeWhenChild: false,
               padding: {
                 left: 5,
                 right: 5,
-                inner: 0
+                inner: 0,
               },
               cols: [
-                { type: 'text', text: '{name} ' },
+                {
+                  type: 'text',
+                  text: '{name} ', 
+                },
                 {
                   type: 'generic',
                   view: ['custom', 'argumentBar'],
-                  options: {}
-                }
-              ]
-            }
-          ]
+                  options: {},
+                },
+              ],
+            },
+          ],
         },
         {
           type: 'default',
           shape: 'none',
           fields: ['\'   \'', 'body'],
-          subexpScale: 1.0
-        }
-      ]
-    }
-  }
+          subexpScale: 1.0,
+        },
+      ],
+    },
+  },
 };
 
 export const defineAttach: NodeDef<DefineAttachNode> = {
@@ -157,8 +162,8 @@ export const defineAttach: NodeDef<DefineAttachNode> = {
       onDetach: (semant, state, selfId, otherId) => {
         const name = state.nodes.get(otherId).name;
         state.set('globals', state.globals.delete(name));
-      }
-    }
+      },
+    },
   ],
   projection: {
     type: 'sticky',
@@ -169,7 +174,7 @@ export const defineAttach: NodeDef<DefineAttachNode> = {
       color: '#8ab7db',
       shadow: true,
       shadowColor: '#000',
-      shadowOffset: 4
-    }
-  }
+      shadowOffset: 4,
+    },
+  },
 };

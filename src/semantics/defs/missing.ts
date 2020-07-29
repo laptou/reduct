@@ -1,4 +1,5 @@
 import type { BaseNode } from '..';
+
 import type { NodeDef } from './base';
 
 export interface MissingNode extends BaseNode {
@@ -17,7 +18,7 @@ export const missing: NodeDef<MissingNode> = {
   alwaysTargetable: true,
   type: () => ({
     types: new Map(),
-    complete: false
+    complete: false,
   }),
   projection: {
     type: 'dynamic',
@@ -31,8 +32,8 @@ export const missing: NodeDef<MissingNode> = {
       padding: {
         left: 20,
         right: 20,
-        inner: 0
-      }
+        inner: 0,
+      },
     },
     cases: {
       boolean: {
@@ -43,9 +44,9 @@ export const missing: NodeDef<MissingNode> = {
         padding: {
           left: 37.5,
           right: 37.5,
-          inner: 0
-        }
-      }
-    }
-  }
+          inner: 0,
+        },
+      },
+    },
+  },
 };

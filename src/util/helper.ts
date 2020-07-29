@@ -1,5 +1,8 @@
-import type { Flat, BaseNode, ReductNode, NodeId } from '@/semantics';
 import { produce } from 'immer';
+
+import type {
+  Flat, BaseNode, ReductNode, NodeId, 
+} from '@/semantics';
 
 /**
  * Type representing all objects, but is not `any` so that we can use Exclude<T,
@@ -57,7 +60,7 @@ export function withoutParent<N extends DeepReadonly<ReductNode> | DRF>(node: N)
   return {
     ...node,
     parent: null,
-    parentField: null
+    parentField: null,
   };
 }
 
@@ -69,7 +72,7 @@ export function withParent<N extends DeepReadonly<ReductNode> | DRF>(
   return {
     ...node,
     parent,
-    parentField: field
+    parentField: field,
   };
 }
 
@@ -85,7 +88,7 @@ export function withoutChild<N extends DeepReadonly<ReductNode> | DRF>(node: N, 
   });
 }
 
-export function* mapIterable<T, U>(it: Iterable<T>, fn: (t: T) => U) {
+export function * mapIterable<T, U>(it: Iterable<T>, fn: (t: T) => U) {
   for (const item of it) {
     yield fn(item);
   }

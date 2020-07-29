@@ -1,7 +1,8 @@
-import { ActionKind, ReductAction } from '@/store/action';
-import { GameMode, GlobalState } from '@/store/state';
 import { Datacenter, datadogRum } from '@datadog/browser-rum';
 import type { Middleware } from 'redux';
+
+import { ActionKind, ReductAction } from '@/store/action/game';
+import { GameMode, GlobalState } from '@/store/state';
 
 datadogRum.init({
   applicationId: 'e09f9042-041e-41a9-9166-c6be692e800e',
@@ -9,7 +10,7 @@ datadogRum.init({
   datacenter: Datacenter.US,
   sampleRate: 100,
   env: PKG_ENV,
-  version: PKG_VERSION
+  version: PKG_VERSION,
 });
 
 /**
@@ -60,13 +61,13 @@ export const logMiddleware: Middleware = (api) => (next) => (act) => {
   case ActionKind.MoveNodeToSlot:
     datadogRum.addUserAction(act.type, { 
       action: serialize(act), 
-      result: serialize(newState.program.$present),
-      error: serialize(newState.program.$error),
-      level: serialize(newState.level) 
+      result: serialize(newState.game.$present),
+      error: serialize(newState.game.$error),
+      level: serialize(newState.level), 
     });
     break;
   case ActionKind.DetectCompletion:
-    switch (newState.program.$present.mode) {
+    switch (newState.game.$present.mode) {
     case GameMode.Victory:
       datadogRum.addUserAction('victory', { });
       break;

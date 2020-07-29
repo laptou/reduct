@@ -1,11 +1,13 @@
 import { BaseNode, NodeMap, NodeId } from '..';
+import { createArrayNode, iterateTuple } from '../util';
+
+import { LambdaArgNode, PTupleNode, LambdaNode } from '.';
+
 import { DRF, DeepReadonly, withParent } from '@/util/helper';
 import {
-  WrongBuiltInParamsCountError, WrongTypeError, BuiltInError, AlreadyFullyBoundError 
+  WrongBuiltInParamsCountError, WrongTypeError, BuiltInError, AlreadyFullyBoundError, 
 } from '@/store/errors';
 import { cloneNodeDeep, CloneResult, mapNodeDeep } from '@/util/nodes';
-import { LambdaArgNode, PTupleNode, LambdaNode } from '.';
-import { createArrayNode, iterateTuple } from '../util';
 
 const VALID = null;
 
@@ -114,7 +116,7 @@ function validateSet(expr, semant, state) {
   if (iv < 0 || iv >= n) {
     return {
       subexpr: 'arg_i',
-      msg: `This array index must be between 0 and ${n - 1}, because the array only has ${n} elements!`
+      msg: `This array index must be between 0 and ${n - 1}, because the array only has ${n} elements!`,
     };
   }
   return VALID;
@@ -169,7 +171,13 @@ function builtinMap(node: DRF<BuiltInReferenceNode>, args: DRF[], nodes: DeepRea
         argNodeId = argNode.id;
         foundUnbound = true;
 
-        newNodeMap2.set(argNodeId, { ...argNode, fields: { ...argNode.fields, value: itemId } });
+        newNodeMap2.set(argNodeId, {
+          ...argNode,
+          fields: {
+            ...argNode.fields,
+            value: itemId, 
+          }, 
+        });
         break;
       }
     }
@@ -257,13 +265,13 @@ function validateSlice(expr, semant, state) {
   if (b < 0 || b >= n) {
     return {
       subexpr: 'arg_begin',
-      msg: `The array index of the beginning of the slice must be between 0 and ${n - 1}, because the array only has ${n} elements!`
+      msg: `The array index of the beginning of the slice must be between 0 and ${n - 1}, because the array only has ${n} elements!`,
     };
   }
   if (e < 0 || e > n) {
     return {
       subexpr: 'arg_begin',
-      msg: `The end of the slice must be between 0 and ${n}, because the array only has ${n} elements!`
+      msg: `The end of the slice must be between 0 and ${n}, because the array only has ${n} elements!`,
     };
   }
   return VALID;
@@ -271,13 +279,36 @@ function validateSlice(expr, semant, state) {
 
 export const builtins = {
   // repeat: {params: [{n: 'number'}, {f: 'function'}], impl: builtinRepeat},
-  length: { params: [{ a: 'any' }], impl: builtinLength },
-  get: { params: [{ a: 'any' }, { i: 'number' }], impl: builtinGet },
-  set: { params: [{ a: 'array' }, { i: 'number' }, { v: 'any' }], impl: builtinSet, validate: validateSet },
-  map: { params: [{ f: 'function' }, { a: 'array' }], impl: builtinMap },
-  fold: { params: [{ f: 'function' }, { a: 'array' }, { init: 'any' }], impl: builtinFold },
-  concat: { params: [{ left: 'array' }, { right: 'array' }], impl: builtinConcat },
-  slice: { params: [{ array: 'any' }, { begin: 'number' }, { end: 'number' }], impl: builtinSlice, validate: validateSlice }
+  length: {
+    params: [{ a: 'any' }],
+    impl: builtinLength, 
+  },
+  get: {
+    params: [{ a: 'any' }, { i: 'number' }],
+    impl: builtinGet, 
+  },
+  set: {
+    params: [{ a: 'array' }, { i: 'number' }, { v: 'any' }],
+    impl: builtinSet,
+    validate: validateSet, 
+  },
+  map: {
+    params: [{ f: 'function' }, { a: 'array' }],
+    impl: builtinMap, 
+  },
+  fold: {
+    params: [{ f: 'function' }, { a: 'array' }, { init: 'any' }],
+    impl: builtinFold, 
+  },
+  concat: {
+    params: [{ left: 'array' }, { right: 'array' }],
+    impl: builtinConcat, 
+  },
+  slice: {
+    params: [{ array: 'any' }, { begin: 'number' }, { end: 'number' }],
+    impl: builtinSlice,
+    validate: validateSlice, 
+  },
 } as const;
 
 /**
@@ -334,7 +365,7 @@ export function genericValidate(expr, semant, state) {
         if (!id) {
           return {
             subexpr: `arg_${n}`,
-            msg: `The name ${r} is not defined`
+            msg: `The name ${r} is not defined`,
           };
         }
         const body = nodes.get(nodes.get(id).body);
@@ -344,7 +375,7 @@ export function genericValidate(expr, semant, state) {
     if (!compatible(ty, expected)) {
       return {
         subexpr: `arg_${n}`,
-        msg: `The ${nth(i + 1)} argument to \"${name}\" must be ${article(expected)}!`
+        msg: `The ${nth(i + 1)} argument to \"${name}\" must be ${article(expected)}!`,
       };
     }
   }

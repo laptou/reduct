@@ -1,8 +1,10 @@
-import { ActionKind } from './action';
 import { compose, applyMiddleware, createStore } from 'redux';
-import { createReducer } from './reducer';
-import { logMiddleware } from '@/logging';
 import { persistStore } from 'redux-persist';
+
+import { ActionKind } from './action/game';
+import { createReducer } from './reducer';
+
+import { logMiddleware } from '@/logging';
 
 let composer;
 
@@ -10,7 +12,7 @@ if (PKG_ENV === 'development') {
   if (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) {
     composer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ 
       serialize: true,
-      actionsBlacklist: [ActionKind.Raise, ActionKind.DetectCompletion]
+      actionsBlacklist: [ActionKind.Raise, ActionKind.DetectCompletion],
     });
   } else {
     composer = compose;

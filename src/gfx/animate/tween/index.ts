@@ -55,15 +55,19 @@ export abstract class Tween<O extends TweenOptions = TweenOptions> {
     public status: TweenStatus;
 
     public constructor(clock: Clock, options?: O) {
-        this._options = { duration: 300, easing: Linear, ...options };
+      this._options = {
+        duration: 300,
+        easing: Linear,
+        ...options, 
+      };
 
-        this._promise = new Promise((resolve, reject) => {
-            this.resolve = resolve;
-            this.reject = reject;
-        });
+      this._promise = new Promise((resolve, reject) => {
+        this.resolve = resolve;
+        this.reject = reject;
+      });
 
-        this.clock = clock;
-        this.status = TweenStatus.Running;
+      this.clock = clock;
+      this.status = TweenStatus.Running;
     }
 
     protected get options(): O { return this._options as O; }
@@ -74,10 +78,10 @@ export abstract class Tween<O extends TweenOptions = TweenOptions> {
      * @returns {Promise}
      */
     public then<T>(
-        fulfilled: (() => T | PromiseLike<T>),
-        rejected?: (() => any | PromiseLike<any>)
+      fulfilled: (() => T | PromiseLike<T>),
+      rejected?: (() => any | PromiseLike<any>)
     ) {
-        return this._promise.then(fulfilled, rejected);
+      return this._promise.then(fulfilled, rejected);
     }
 
     /**
@@ -86,25 +90,25 @@ export abstract class Tween<O extends TweenOptions = TweenOptions> {
      * @returns The tween itself.
      */
     public delay(ms: number) {
-        // TODO: respect Clock.scale
-        this.status = TweenStatus.Paused;
-        setTimeout(() => {
-            this.status = TweenStatus.Running;
-            this.clock.start();
-        }, ms);
-        return this;
+      // TODO: respect Clock.scale
+      this.status = TweenStatus.Paused;
+      setTimeout(() => {
+        this.status = TweenStatus.Running;
+        this.clock.start();
+      }, ms);
+      return this;
     }
 
     /**
      * Force this tween to mark itself as completed.
      */
     public completed() {
-        this.status = TweenStatus.Completed;
-        this.resolve();
+      this.status = TweenStatus.Completed;
+      this.resolve();
 
-        if (this.options.callback) {
-            this.options.callback();
-        }
+      if (this.options.callback) {
+        this.options.callback();
+      }
     }
 
     public abstract update(dt: number): boolean;

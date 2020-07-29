@@ -1,9 +1,11 @@
 import { produce } from 'immer';
-import * as progression from './progression';
-import * as action from '../store/action';
+
+import * as action from '../store/action/game';
 import * as gfx from '../gfx/core';
 import * as animate from '../gfx/animate';
 import * as layout from '../ui/layout';
+
+import * as progression from './progression';
 
 export let MACROS;
 export function startLevel(index, description, parse, store, stage) {

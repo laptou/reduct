@@ -1,9 +1,11 @@
 import * as core from '../core';
-import { builtins, genericValidate } from './builtins';
 import { BaseNode, NodeId } from '..';
-import { NodeDef } from './base';
-import { withoutParent, DRF } from '@/util/helper';
 import { getKindForNode } from '../util';
+
+import { builtins, genericValidate } from './builtins';
+import { NodeDef } from './base';
+
+import { withoutParent, DRF } from '@/util/helper';
 
 /**
  * A node which represents a reference to a name.
@@ -30,7 +32,7 @@ const baseReference: NodeDef<ReferenceNode> = {
   stepSound: 'heatup',
   type: (semant, state, types, expr) => ({
     types: new Map(),
-    complete: state.globals.has(expr.name)
+    complete: state.globals.has(expr.name),
   }),
   targetable: (semant, state, expr) => {
     if (expr.__meta?.toolbox.targetable) {
@@ -55,14 +57,14 @@ const baseReference: NodeDef<ReferenceNode> = {
     return [
       expr.id,
       [result[0].id],
-      [withoutParent(result[0]), ...result[1]]
+      [withoutParent(result[0]), ...result[1]],
     ];
   },
   validateStep: (semant, state, expr) => {
     if (!state.globals.has(expr.fields.name)) {
       return [
         expr.id,
-        `We don't know what '${expr.fields.name}' is yet! Look for a "def ${expr.fields.name}".`
+        `We don't know what '${expr.fields.name}' is yet! Look for a "def ${expr.fields.name}".`,
       ];
     }
     const name = expr.fields.name;
@@ -94,9 +96,9 @@ const baseReference: NodeDef<ReferenceNode> = {
         {
           type: 'text',
           text: '{name}',
-          color: 'gray'
-        }
-      ]
+          color: 'gray',
+        },
+      ],
     },
     cases: {
       enabled: {
@@ -108,12 +110,12 @@ const baseReference: NodeDef<ReferenceNode> = {
         cols: [
           {
             type: 'text',
-            text: '{name}'
-          }
-        ]
-      }
-    }
-  }
+            text: '{name}',
+          },
+        ],
+      },
+    },
+  },
 };
 
 const invocationReference: NodeDef<InvocationNode> = {
@@ -200,7 +202,7 @@ const invocationReference: NodeDef<InvocationNode> = {
     return [
       expr.id,
       [result[0].id],
-      [withoutParent(result[0]), ...result[1]]
+      [withoutParent(result[0]), ...result[1]],
     ];
   },
   // Only care about arguments if partially filled
@@ -254,14 +256,14 @@ const invocationReference: NodeDef<InvocationNode> = {
         {
           type: 'text',
           text: '{name}',
-          color: 'gray'
+          color: 'gray',
         },
         {
           type: 'generic',
           view: ['custom', 'argumentBar'],
-          options: {}
-        }
-      ]
+          options: {},
+        },
+      ],
     },
     cases: {
       enabled: {
@@ -273,20 +275,20 @@ const invocationReference: NodeDef<InvocationNode> = {
         cols: [
           {
             type: 'text',
-            text: '{name}'
+            text: '{name}',
           },
           {
             type: 'generic',
             view: ['custom', 'argumentBar'],
-            options: {}
-          }
-        ]
-      }
-    }
-  }
+            options: {},
+          },
+        ],
+      },
+    },
+  },
 };
 
 export const reference = [
   baseReference,
-  invocationReference
+  invocationReference,
 ];
