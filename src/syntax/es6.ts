@@ -1,4 +1,5 @@
 import * as esprima from 'esprima';
+// eslint-disable-next-line import/no-unresolved
 import type * as estree from 'estree';
 
 import * as progression from '../game/progression';
@@ -8,14 +9,13 @@ import { LambdaNode } from '@/semantics/defs';
 import {
   createApplyNode, createArrayNode, createBinOpNode, createBoolNode, createConditionalNode, createDefineNode, createLambdaArgNode, createLambdaNode, createMemberNode, createMissingNode, createNotNode, createNumberNode, createOpNode, createReferenceNode, createStrNode, createSymbolNode, createVtupleNode, createPtupleNode, 
 } from '@/semantics/util';
-// eslint-disable-next-line import/no-unresolved
 
 function modifier(ast: esprima.Program) {
   if (ast.body.length !== 2) return null;
   if (ast.body[0].type !== 'ExpressionStatement') return null;
 
   if (ast.body[0].expression.type === 'CallExpression'
-        && ast.body[0].expression.callee.type === 'Identifier') {
+    && ast.body[0].expression.callee.type === 'Identifier') {
     return [
       {
         name: ast.body[0].expression.callee.name,
@@ -44,13 +44,13 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
   case 'ReturnStatement':
     if (node.argument)
       return parseNode(node.argument, macros);
-    else 
+    else
       throw new Error('Returning void is not supported');
 
-  case 'BlockStatement': 
-    if (node.body.length === 1) 
+  case 'BlockStatement':
+    if (node.body.length === 1)
       return parseNode(node.body[0], macros);
-    else 
+    else
       throw new Error('Cannot parse multi-statement programs.');
 
   case 'Identifier': {
@@ -89,15 +89,15 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
     }
 
     /*
-    if (node.name.startsWith('__variant')) {
-      const [variant, value] = node.name.slice(10).split('_');
-      if (!variant || !value) {
-        throw new Error(`Invalid dynamic variant ${node.name}`);
+      if (node.name.startsWith('__variant')) {
+        const [variant, value] = node.name.slice(10).split('_');
+        if (!variant || !value) {
+          throw new Error(`Invalid dynamic variant ${node.name}`);
+        }
+  
+        return this.semantics.dynamicVariant(variant, value);
       }
-
-      return this.semantics.dynamicVariant(variant, value);
-    }
-    */
+      */
 
     return createReferenceNode(name);
   }
@@ -116,7 +116,7 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
 
     // Interpreting strings after symbols so as to prevent the engine from
     // treating the symbols as strings
-    if (typeof node.value === 'string') 
+    if (typeof node.value === 'string')
       return createStrNode(node.value);
 
     throw new Error(`Unknown literal: ${node.value}`);
@@ -191,7 +191,7 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
         createOpNode(node.operator),
         parseNode(node.right, macros)
       );
-    
+
     default:
       throw new Error(`Operator ${node.operator} is unknown`);
     }
@@ -205,6 +205,20 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
 
   case 'CallExpression': {
     if (node.callee.type === 'Identifier') {
+      if (node.callee.name === '__let') {
+        throw new Error('TODO: implement let expressions');
+
+        /*
+            call let expressions in the level like this:
+            __let(3, variable, () => variable + 4)
+  
+            translate in-game to:
+            let variable = 3 in {
+              variable + 4
+            }
+          */
+      }
+
       if (node.callee.name === '__tuple') {
         const children = node.arguments.map((arg) => {
           if (arg.type === 'SpreadElement')
@@ -224,26 +238,26 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
       }
 
       if (node.callee.name === '__autograder') {
-      /* Color for goals
-           */
+        /* Color for goals
+               */
         const colors = [
           '#c0392b', '#2980b9', '#2ecc71', '#8e44ad', '#f39c12',
         ];
 
         /* Getting the alien index.
-           */
+             */
         const chapter = progression.currentChapter();
         const alienIndex = Math.floor(((progression.currentLevel() - chapter.startIdx)
-                                         / ((chapter.endIdx - chapter.startIdx) + 1))
-                                        * chapter.resources.aliens.length);
+            / ((chapter.endIdx - chapter.startIdx) + 1))
+            * chapter.resources.aliens.length);
         const alienName = chapter.resources.aliens[alienIndex];
 
         return this.semantics.autograder(alienName, node.arguments[0].value, colors[node.arguments[0].value], this.semantics.missing());
       }
 
       if (node.callee.name === 'unsol') {
-      // NOTE - This should never be called externally
-      // only called within inside the autograder.
+        // NOTE - This should never be called externally
+        // only called within inside the autograder.
         return this.semantics.unsol('red', parseNode(node.arguments[0], []));
       }
     }
