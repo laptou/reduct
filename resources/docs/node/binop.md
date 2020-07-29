@@ -4,7 +4,7 @@ name: Binary Operator
 example: '3 + 2'
 ---
 
-The **binary** operator node is used for math, comparison, and logic. You can
+The **binary operator** node is used for math, comparison, and logic. You can
 use it to add and subtract:
 
 ```javascript

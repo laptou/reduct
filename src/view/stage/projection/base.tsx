@@ -182,7 +182,7 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
     useEffect(() => () => cleanup(), [cleanup]);
 
     if (!node) {
-      return null;
+      return 'warning: missing node';
     }
 
     // top level nodes (nodes w/o parents) should not be considered locked
