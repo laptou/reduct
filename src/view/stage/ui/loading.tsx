@@ -1,4 +1,5 @@
 import React from 'react';
+import '@resources/style/react/ui/loading.scss';
 
 export const LoadingAnimation: React.FC = () => {
   return (

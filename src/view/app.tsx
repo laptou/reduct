@@ -10,16 +10,20 @@ import { LoadingAnimationWithText } from './stage/ui/loading';
 import * as progression from '@/game/progression';
 import Loader from '@/loader';
 
+const assetsPromise = Promise.all([
+  Loader.loadAudioSprite('sounds', 'output'),
+  Loader.loadImageAtlas('spritesheet', 'assets', 'assets.png'),
+  Loader.loadImageAtlas('titlesprites', 'title-assets', 'title-assets.png'),
+  Loader.loadImageAtlas('menusprites', 'menu-assets', 'menu-assets.png'),
+  Loader.loadChapters('Elementary', progression.ACTIVE_PROGRESSION_DEFINITION),
+]);
+
 const Game = React.lazy(async () => {
   // load assets and code
   const promises = [
     await import('./game'),
     await import('@/store'),
-    Loader.loadAudioSprite('sounds', 'output'),
-    Loader.loadImageAtlas('spritesheet', 'assets', 'assets.png'),
-    Loader.loadImageAtlas('titlesprites', 'title-assets', 'title-assets.png'),
-    Loader.loadImageAtlas('menusprites', 'menu-assets', 'menu-assets.png'),
-    Loader.loadChapters('Elementary', progression.ACTIVE_PROGRESSION_DEFINITION),
+    assetsPromise,
   ] as const;
 
   // retrieve loaded code modules
