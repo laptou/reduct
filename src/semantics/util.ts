@@ -9,7 +9,7 @@ import { BuiltInReferenceNode } from './defs/builtins';
 import { conditional, ConditionalNode } from './defs/conditional';
 import { define, DefineNode } from './defs/define';
 import { LambdaArgNode, LambdaNode, LambdaVarNode } from './defs/lambda';
-import { letExpr } from './defs/letExpr';
+import { letExpr, LetNode } from './defs/letExpr';
 import { member, MemberNode } from './defs/member';
 import { missing, MissingNode } from './defs/missing';
 import { not, NotNode } from './defs/not';
@@ -40,25 +40,6 @@ function createNodeBase() {
     parent: null,
     parentField: null,
     fadeLevel: 0,
-  };
-}
-
-/**
- * Creates a partial node for nodes which require scoping.
- * Helper for "create node" functions to avoid
- * repetition. 
- * @param type The type of the node being created
- */
-function createNodeScoped() {
-  return {
-    id: nextId(),
-    locked: true,
-    fields: {},
-    subexpressions: {},
-    parent: null,
-    parentField: null,
-    fadeLevel: 0,
-    scope: {},
   };
 }
 
@@ -165,7 +146,7 @@ export function createOpNode(name: OpNode['fields']['name']): OpNode {
 
 export function createLambdaNode(arg: PTupleNode, body: ReductNode): LambdaNode {
   return {
-    ...createNodeScoped(),
+    ...createNodeBase(),
     type: 'lambda',
     subexpressions: {
       arg,
@@ -174,9 +155,17 @@ export function createLambdaNode(arg: PTupleNode, body: ReductNode): LambdaNode 
   };
 }
 
+export function createLetNode(variable: ReferenceNode, e1: ReductNode, e2: ReductNode): LetNode {
+  return {
+    ...createNodeBase(),
+    type: 'letExpr',
+    subexpressions: { variable, value: e1, body: e2 }
+  };
+}
+
 export function createApplyNode(callee: ReductNode, argument: PTupleNode): ApplyNode {
   return {
-    ...createNodeScoped(),
+    ...createNodeBase(),
     type: 'apply',
     subexpressions: {
       callee,
@@ -187,7 +176,7 @@ export function createApplyNode(callee: ReductNode, argument: PTupleNode): Apply
 
 export function createConditionalNode(condition: ReductNode, positive: ReductNode, negative: ReductNode): ConditionalNode {
   return {
-    ...createNodeScoped(),
+    ...createNodeBase(),
     type: 'conditional',
     subexpressions: {
       condition,
@@ -198,7 +187,7 @@ export function createConditionalNode(condition: ReductNode, positive: ReductNod
 }
 
 export function createArrayNode(...items: Array<NodeId>): Flat<ArrayNode>;
-export function createArrayNode(...items: Array<DeepReadonly<ReductNode>>): Flat<ArrayNode>;
+export function createArrayNode(...items: Array<DeepReadonly<ReductNode>>): ArrayNode;
 export function createArrayNode(...items: Array<NodeId | DeepReadonly<ReductNode>>): ArrayNode | Flat<ArrayNode> {
   return {
     ...createNodeBase(),
@@ -358,6 +347,13 @@ export function getDefinitionForName(
         if (argNode.fields.name === name) {
           return argNode.id;
         }
+      }
+    }
+
+    if (current.type === 'letExpr') {
+      const varNode = state.nodes.get(current.subexpressions.variable)! as DRF<ReferenceNode>;
+      if (varNode.fields.name === name) {
+        return varNode.id;
       }
     }
 
