@@ -5,7 +5,7 @@ import { hot } from 'react-hot-loader/root';
 import { Provider } from 'react-redux';
 
 import { ErrorDisplay } from './banner/error';
-import { LoadingAnimationWithText } from './stage/ui/loading';
+import { LoadingPage } from './stage/ui/loading';
 
 import * as progression from '@/game/progression';
 import Loader from '@/loader';
@@ -28,6 +28,8 @@ const Game = React.lazy(async () => {
 
   // retrieve loaded code modules
   const [game, store] = await Promise.all(promises);
+
+  await new Promise(() => false);
 
   // wait for persistor to load state into store
   await new Promise((resolve) => {
@@ -53,7 +55,7 @@ const Game = React.lazy(async () => {
 export function App() {
   return (
     <Sentry.ErrorBoundary showDialog fallback={ErrorDisplay}>
-      <Suspense fallback={<LoadingAnimationWithText />}>
+      <Suspense fallback={<LoadingPage />}>
         <Game />
       </Suspense>
     </Sentry.ErrorBoundary>
