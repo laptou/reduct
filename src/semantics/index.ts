@@ -90,6 +90,13 @@ export interface NodeMetadata {
   /** Holds the IDs any slots that were children of this node but have been
    * replaced by another node. */
   slots?: Record<string, NodeId>;
+
+  /**
+   * Present if this node was created to be displayed in a documentation section
+   * and not in the game. Its value is a key that is used to figure out which
+   * part of the documentation section this node belongs to.
+   */
+  doc?: string;
 }
 
 export type NodeType = {
