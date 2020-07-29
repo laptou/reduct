@@ -1,8 +1,12 @@
+import React, { FunctionComponent } from 'react';
+
+import { StageProjection } from './base';
+
 import { ApplyNode } from '@/semantics/defs';
 import { DRF } from '@/util/helper';
+
 import '@resources/style/react/projection/apply.scss';
-import React, { FunctionComponent } from 'react';
-import { StageProjection } from './base';
+
 
 interface ApplyProjectionOwnProps {
   node: DRF<ApplyNode>;
@@ -19,5 +23,5 @@ export const ApplyProjection: FunctionComponent<ApplyProjectionOwnProps> =
           <StageProjection nodeId={props.node.subexpressions.argument} />
         </div>
       </div>
-    )
+    );
   };

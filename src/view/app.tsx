@@ -1,5 +1,3 @@
-import { persistor } from '@/store';
-import { GlobalState } from '@/store/state';
 import '@resources/style/react/index.scss';
 import * as Sentry from '@sentry/react';
 import React from 'react';
@@ -7,8 +5,12 @@ import { hot } from 'react-hot-loader/root';
 import { Provider } from 'react-redux';
 import type { Store } from 'redux';
 import { PersistGate } from 'redux-persist/integration/react';
+
 import { ErrorDisplay } from './banner/error';
 import { Game } from './game';
+
+import { persistor } from '@/store';
+import { GlobalState } from '@/store/state';
 
 // TODO: fix type for `store`
 export function App({ store }: { store: Store<GlobalState> }) {
@@ -20,7 +22,7 @@ export function App({ store }: { store: Store<GlobalState> }) {
         </PersistGate>
       </Sentry.ErrorBoundary>
     </Provider>
-  )
+  );
 }
 
 export const HotApp = hot(App);

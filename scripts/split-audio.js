@@ -5,8 +5,9 @@
  */
 
 const fs = require('fs');
-const path = require('path');
 const child = require('child_process');
+
+const path = require('path');
 
 (async () => {
   const audioDir = path.resolve(__dirname, '../resources/audio');
@@ -15,7 +16,7 @@ const child = require('child_process');
   console.info(`located audio manifest at ${manifestPath}`);
 
   const manifestData = await new Promise((resolve, reject) => {
-    fs.readFile(manifestPath, 'utf-8', (err, data) => err ? reject(err) : resolve(data))
+    fs.readFile(manifestPath, 'utf-8', (err, data) => err ? reject(err) : resolve(data));
   });
 
   const manifest = JSON.parse(manifestData);
@@ -66,7 +67,7 @@ const child = require('child_process');
           reject();
         }
       });
-    }))
+    }));
   }
 
   await Promise.all(processes);

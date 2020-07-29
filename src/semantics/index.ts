@@ -22,10 +22,11 @@ import {
   InvocationNode,
   MissingNode,
   PTupleNode,
-  VTupleNode
+  VTupleNode,
 } from './defs';
-import { DeepReadonly, DRF } from '@/util/helper';
 import { BuiltInReferenceNode } from './defs/builtins';
+
+import { DeepReadonly, DRF } from '@/util/helper';
 
 export type NodeId = number;
 

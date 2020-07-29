@@ -16,7 +16,7 @@ interface BubbleProps {
 }
 
 export const Bubble: React.FC<BubbleProps> = ({ 
-  children, type, show
+  children, type, show,
 }) => {
   const [side, setSide] = useState('bottom');
   
@@ -29,7 +29,7 @@ export const Bubble: React.FC<BubbleProps> = ({
       top: '100%',
       left: '50%',
       paddingTop: '1rem',
-      transformOrigin: 'center top'
+      transformOrigin: 'center top',
     };
     translate = 'translate(-50%, 0) ';
     break;
@@ -39,18 +39,18 @@ export const Bubble: React.FC<BubbleProps> = ({
     from: { 
       opacity: 0, 
       transform: translate + 'scale(0)', 
-      ...style 
+      ...style, 
     },
     enter: { 
       opacity: 1, 
       transform: translate + 'scale(1)', 
-      ...style 
+      ...style, 
     },
     leave: { 
       opacity: 0, 
       transform: translate + 'scale(0)', 
-      ...style 
-    }
+      ...style, 
+    },
   });
   
   return (
@@ -74,4 +74,4 @@ export const Bubble: React.FC<BubbleProps> = ({
       }
     </>
   );
-}
+};

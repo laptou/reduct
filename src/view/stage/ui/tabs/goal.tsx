@@ -1,10 +1,12 @@
+import React, { FunctionComponent } from 'react';
+import { connect } from 'react-redux';
+
+import { StageProjection } from '../../projection/base';
+
 import { GlobalState } from '@/store/state';
 import { NodeId } from '@/semantics';
 import { DeepReadonly } from '@/util/helper';
 import '@resources/style/react/ui/goal.scss';
-import React, { FunctionComponent } from 'react';
-import { connect } from 'react-redux';
-import { StageProjection } from '../projection/base';
 
 interface GoalStoreProps {
   nodeIds: DeepReadonly<Set<NodeId>>;
@@ -28,6 +30,6 @@ const GoalImpl: FunctionComponent<GoalProps> =
 
 export const Goal = connect(
   (state: DeepReadonly<GlobalState>) => ({
-    nodeIds: state.program.$present.goal
+    nodeIds: state.game.$present.goal,
   })
 )(GoalImpl);

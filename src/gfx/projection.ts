@@ -1,6 +1,6 @@
-import type { RState } from '@/store/state';
+import type { GameState } from '@/store/state';
 import type {
-  BaseNode, Flat, NodeId, NodeMap 
+  BaseNode, Flat, NodeId, NodeMap, 
 } from '@/semantics';
 import { SymbolNode } from '@/semantics/defs';
 import { DeepReadonly, Thunk } from '@/util/helper';
@@ -76,7 +76,7 @@ export interface DynPropProjectionDef<
     P extends ProjectionDef<N>
 > extends BaseProjectionDef<N> {
     type: 'dynamicProperty';
-    field(state: DeepReadonly<RState>, nodeId: NodeId): string;
+    field(state: DeepReadonly<GameState>, nodeId: NodeId): string;
     fields: Record<string, Record<string, (proj: P) => void>>;
     projection: P;
 }
@@ -88,7 +88,7 @@ export interface DynProjectionDef<
     P extends ProjectionDef<N>
 > extends BaseProjectionDef<N> {
     type: 'dynamic';
-    field(state: DeepReadonly<RState>, nodeId: NodeId): string;
+    field(state: DeepReadonly<GameState>, nodeId: NodeId): string;
     cases: Record<string, P>;
     default: P;
 

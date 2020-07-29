@@ -1,9 +1,15 @@
-import type { BaseNode, ReductNode, Flat, FlatReductNode, NodeId } from '..';
+import type {
+  BaseNode, Flat, FlatReductNode, NodeId, ReductNode, 
+} from '..';
 import * as fx from '../../gfx/fx';
 import { genericBetaReduce } from '../core';
+
+import { VTupleNode } from './tuple';
 import type { NodeDef } from './base';
+
 import { DeepReadonly } from '@/util/helper';
-import { VTupleNode } from '../transform';
+
+
 
 export interface LambdaNode extends BaseNode {
   type: 'lambda';
@@ -41,7 +47,7 @@ export const lambda: NodeDef<LambdaNode> = {
   kind: 'value',
   type: (semant, state, types, expr) => ({
     types: new Map([[expr.id, 'lambda']]),
-    complete: typeof types.get(expr.subexpressions.body) !== 'undefined'
+    complete: typeof types.get(expr.subexpressions.body) !== 'undefined',
   }),
   fields: [],
   subexpressions: ['arg', 'body'],
@@ -55,8 +61,8 @@ export const lambda: NodeDef<LambdaNode> = {
       bottom: 3.5,
       left: 10,
       right: 10,
-      inner: 5
-    }
+      inner: 5,
+    },
   },
   betaReduce: (semant, stage, state, expr, argIds) => genericBetaReduce(semant, state, {
     topNode: expr,
@@ -73,8 +79,8 @@ export const lambda: NodeDef<LambdaNode> = {
         stage.feedback.update('#000', [`We don't know what ${node.name} is!`]);
       }
       fx.error(stage, stage.views[id]);
-    }
-  })
+    },
+  }),
 };
 
 export const lambdaArg: NodeDef<LambdaArgNode> = {
@@ -97,24 +103,24 @@ export const lambdaArg: NodeDef<LambdaArgNode> = {
       },
       default: {
         type: 'text',
-        text: '({name})'
+        text: '({name})',
       },
       cases: {
         functionHole: {
           type: 'default',
           shape: '()',
           radius: 0,
-          fields: ['name']
-        }
-      }
-    }
+          fields: ['name'],
+        },
+      },
+    },
   },
   betaReduce: (semant, stage, state, expr, argIds) => {
     if (expr.parent) {
       return semant.interpreter.betaReduce(stage, state, expr.parent, argIds);
     }
     return null;
-  }
+  },
 };
 
 export const lambdaVar: NodeDef<LambdaVarNode> = {
@@ -139,7 +145,7 @@ export const lambdaVar: NodeDef<LambdaVarNode> = {
         fx.blink(stage, view, {
           times: 3,
           speed: 100,
-          color: '#6df902'
+          color: '#6df902',
         });
 
         const nodes = state.nodes;
@@ -153,7 +159,7 @@ export const lambdaVar: NodeDef<LambdaVarNode> = {
               times: 3,
               speed: 100,
               color: '#6df902',
-              field: 'outerStroke'
+              field: 'outerStroke',
             });
 
             break;
@@ -169,9 +175,9 @@ export const lambdaVar: NodeDef<LambdaVarNode> = {
         {
           type: 'text',
           text: '{name}',
-          color: 'gray'
-        }
-      ]
+          color: 'gray',
+        },
+      ],
     },
     cases: {
       enabled: {
@@ -180,9 +186,9 @@ export const lambdaVar: NodeDef<LambdaVarNode> = {
           type: 'default',
           shape: '()',
           strokeWhenChild: false,
-          fields: ['name']
-        }
-      }
-    }
-  }
+          fields: ['name'],
+        },
+      },
+    },
+  },
 };

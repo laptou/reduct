@@ -101,7 +101,10 @@ export interface CleanupAction {
  * @param target The node to delete.
  */
 export function createCleanup(target: NodeId): CleanupAction {
-  return { type: ActionKind.Cleanup, target };
+  return {
+    type: ActionKind.Cleanup,
+    target, 
+  };
 }
 
 export interface MoveNodeToBoardAction {
@@ -115,7 +118,10 @@ export interface MoveNodeToBoardAction {
  * @param nodeId The node to add to the board.
  */
 export function createMoveNodeToBoard(nodeId: NodeId): MoveNodeToBoardAction {
-  return { type: ActionKind.MoveNodeToBoard, nodeId };
+  return {
+    type: ActionKind.MoveNodeToBoard,
+    nodeId, 
+  };
 }
 
 export interface MoveNodeToDefsAction {
@@ -129,7 +135,7 @@ export interface MoveNodeToDefsAction {
 export function createMoveNodeToDefs(nodeId: NodeId): MoveNodeToDefsAction {
   return {
     type: ActionKind.MoveNodeToDefs,
-    nodeId
+    nodeId,
   };
 }
 
@@ -149,7 +155,7 @@ export function moveNodeToSlot(slotId: NodeId, nodeId: NodeId): MoveNodeToSlotAc
   return {
     type: ActionKind.MoveNodeToSlot,
     slotId: slotId,
-    nodeId: nodeId
+    nodeId: nodeId,
   };
 }
 
@@ -234,7 +240,7 @@ export function startLevelLegacy(
     goal: _goal,
     board: _board,
     toolbox: _toolbox,
-    globals: _globals
+    globals: _globals,
   };
 }
 
@@ -396,7 +402,7 @@ export function createStartLevel(index: number): StartLevelAction {
     goal: goal,
     board: board,
     toolbox: toolbox,
-    globals: flatGlobals
+    globals: flatGlobals,
   };
 }
 
@@ -421,7 +427,7 @@ export function addToolboxItem(
   return {
     type: ActionKind.AddToolboxItem,
     newNodeId,
-    addedNodes: newNodes
+    addedNodes: newNodes,
   };
 }
 
@@ -471,7 +477,7 @@ export function createEvalLambda(
   return {
     type: ActionKind.EvalLambda,
     paramNodeId,
-    lambdaNodeId
+    lambdaNodeId,
   };
 }
 
@@ -490,7 +496,7 @@ export function createEvalOperator(
 ): EvalOperatorAction {
   return {
     type: ActionKind.EvalOperator,
-    operatorNodeId
+    operatorNodeId,
   };
 }
 
@@ -509,7 +515,7 @@ export function createEvalConditional(
 ): EvalConditionalAction {
   return {
     type: ActionKind.EvalConditional,
-    conditionalNodeId
+    conditionalNodeId,
   };
 }
 
@@ -528,7 +534,7 @@ export function createEvalNot(
 ): EvalNotAction {
   return {
     type: ActionKind.EvalNot,
-    notNodeId
+    notNodeId,
   };
 }
 
@@ -547,7 +553,7 @@ export function createEvalApply(
 ): EvalApplyAction {
   return {
     type: ActionKind.EvalApply,
-    applyNodeId
+    applyNodeId,
   };
 }
 
@@ -566,7 +572,7 @@ export function createEvalReference(
 ): EvalReferenceAction {
   return {
     type: ActionKind.EvalReference,
-    referenceNodeId
+    referenceNodeId,
   };
 }
 
@@ -588,7 +594,7 @@ export function createEvalInvocation(
   return {
     type: ActionKind.EvalReference,
     referenceNodeId,
-    paramNodeId
+    paramNodeId,
   };
 }
 
@@ -609,7 +615,7 @@ export function createStep(
 ): StepAction {
   return {
     type: ActionKind.Step,
-    targetNodeId
+    targetNodeId,
   };
 }
 
@@ -629,7 +635,7 @@ export function createExecute(
 ): ExecuteAction {
   return {
     type: ActionKind.Execute,
-    targetNodeId
+    targetNodeId,
   };
 }
 
@@ -648,7 +654,7 @@ export function createStop(
 ): StopAction {
   return {
     type: ActionKind.Stop,
-    targetNodeId
+    targetNodeId,
   };
 }
 
@@ -663,7 +669,7 @@ export interface DetectCompletionAction {
  */
 export function createDetectCompetion(): DetectCompletionAction {
   return {
-    type: ActionKind.DetectCompletion
+    type: ActionKind.DetectCompletion,
   };
 }
 
@@ -681,7 +687,7 @@ export interface RaiseAction {
 export function createRaise(nodeId: NodeId): RaiseAction {
   return {
     type: ActionKind.Raise,
-    nodeId
+    nodeId,
   };
 }
 
@@ -696,7 +702,7 @@ export interface DetachAction {
 export function createDetach(nodeId: NodeId): DetachAction {
   return {
     type: ActionKind.Detach,
-    nodeId
+    nodeId,
   };
 }
 
@@ -704,7 +710,7 @@ export function addGoalItem(newNodeId, newNodes) {
   return {
     type: ActionKind.AddGoalItem,
     newNodeId,
-    addedNodes: newNodes
+    addedNodes: newNodes,
   };
 }
 
@@ -713,7 +719,7 @@ export function changeGoal(goal_id, newNodeIds, newNodes) {
     type: ActionKind.ChangeGoal,
     goal_id,
     newNodeIds,
-    addedNodes: newNodes
+    addedNodes: newNodes,
   };
 }
 
@@ -721,7 +727,7 @@ export function addBoardItem(newNodeIds, addedNodes) {
   return {
     type: ActionKind.AddBoardItem,
     newNodeIds,
-    addedNodes
+    addedNodes,
   };
 }
 
@@ -745,7 +751,7 @@ export function smallStep(
     type: ActionKind.SmallStep,
     topNodeId: nodeId,
     newNodeIds,
-    addedNodes: newNodes
+    addedNodes: newNodes,
   };
 }
 
@@ -758,7 +764,7 @@ export function unfold(nodeId, newNodeId, addedNodes) {
     type: ActionKind.Unfold,
     nodeId,
     newNodeId,
-    addedNodes
+    addedNodes,
   };
 }
 
@@ -775,7 +781,7 @@ export function betaReduce(topNodeId, argNodeId, newNodeIds, addedNodes) {
     topNodeId,
     argNodeId,
     newNodeIds,
-    addedNodes
+    addedNodes,
   };
 }
 
@@ -788,7 +794,7 @@ export function attachNotch(parentId, notchIdx, childId, childNotchIdx) {
     parentId,
     childId,
     notchIdx,
-    childNotchIdx
+    childNotchIdx,
   };
 }
 
@@ -800,7 +806,7 @@ export function useToolbox(nodeId, clonedNodeId = null, addedNodes = null) {
     type: ActionKind.UseToolbox,
     nodeId,
     clonedNodeId,
-    addedNodes
+    addedNodes,
   };
 }
 
@@ -812,7 +818,7 @@ export function useToolbox(nodeId, clonedNodeId = null, addedNodes = null) {
  */
 export function victory() {
   return {
-    type: ActionKind.Victory
+    type: ActionKind.Victory,
   };
 }
 
@@ -834,7 +840,7 @@ export function unfade(source, nodeId, newNodeId, addedNodes) {
     source,
     nodeId,
     newNodeId,
-    addedNodes
+    addedNodes,
   };
 }
 
@@ -846,6 +852,6 @@ export function fade(source, unfadedId, fadedId) {
     type: ActionKind.Fade,
     source,
     unfadedId,
-    fadedId
+    fadedId,
   };
 }

@@ -1,0 +1,37 @@
+@use '../theme';
+@use 'base';
+
+#reduct-game-menu {
+  grid-row: 1;
+  grid-column: 4;
+}
+
+#reduct-game-menu-inner {
+  @extend %ui-panel-top;
+  @include base.ui-panel-bordered(theme.$accent-4-inverse-default);
+  z-index: 150;
+  flex-flow: column nowrap;
+  align-items: stretch;
+
+  margin-top: -25rem;
+  padding: 0;
+}
+
+#reduct-game-menu-dismiss {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  background: rgba(0 0 0 / 0.25);
+}
+
+#reduct-game-menu-scroller {
+  overflow-y: auto;
+
+  width: 100%;
+  height: 20rem;
+  margin-top: 5rem;
+  padding: 1rem;
+}

@@ -1,14 +1,25 @@
-import { GlobalState } from '@/store/state';
-import { Flat, NodeId } from '@/semantics';
-import { BinOpNode, OpNode } from '@/semantics/defs';
-import { DeepReadonly } from '@/util/helper';
-import '@resources/style/react/projection/binop.scss';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
+
 import { BooleanShape } from '../shape/boolean';
 import { NumberShape } from '../shape/number';
+
 import { StageProjection } from './base';
-import { createEvalOperator } from '@/store/action';
+
+import { Flat } from '@/semantics';
+import { BinOpNode, OpNode } from '@/semantics/defs';
+import { GlobalState } from '@/store/state';
+import { DeepReadonly } from '@/util/helper';
+
+import '@resources/style/react/projection/binop.scss';
+
+
+
+
+
+
+
+
 
 interface BinOpProjectionOwnProps {
   node: Flat<BinOpNode>;
@@ -76,12 +87,12 @@ const BinOpProjectionImpl: FunctionComponent<BinOpProjectionProps> =
 
 export const BinOpProjection = connect(
   (store: DeepReadonly<GlobalState>, ownProps: BinOpProjectionOwnProps) => {
-    const opNode = store.program.$present.nodes.get(ownProps.node.subexpressions.op);
+    const opNode = store.game.$present.nodes.get(ownProps.node.subexpressions.op);
 
     if (opNode && opNode.type === 'op') {
-      return { op: opNode.fields.name }
+      return { op: opNode.fields.name };
     }
 
-    return { op: null }
+    return { op: null };
   }
 )(BinOpProjectionImpl);

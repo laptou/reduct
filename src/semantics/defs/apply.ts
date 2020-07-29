@@ -2,6 +2,7 @@ import type { BaseNode, ReductNode } from '..';
 import * as animate from '../../gfx/animate';
 import * as gfx from '../../gfx/core';
 import * as fx from '../../gfx/fx';
+
 import type { NodeDef } from './base';
 
 
@@ -28,8 +29,10 @@ export const apply: NodeDef<ApplyNode> = {
     content: {
       type: 'default',
       shape: '()',
-      fields: ['callee', '\'(\'', 'argument', '\')\'']
-    }
+      fields: [
+        'callee', '\'(\'', 'argument', '\')\'',
+      ],
+    },
   },
   stepAnimation: (semant, stage, state, expr) => {
     const callee = state.nodes.get(expr.subexpressions.callee)!;
@@ -51,13 +54,18 @@ export const apply: NodeDef<ApplyNode> = {
     // Fade out arrow
     reset.push(animate.tween(applyView, { arrowOpacity: [1.0, 0.0] }, {
       duration: animate.scaleDuration(200, 'expr-apply'),
-      easing: animate.Easing.Cubic.InOut
+      easing: animate.Easing.Cubic.InOut,
     }));
 
     // Scale down argument
-    reset.push(animate.tween(argView, { scale: { x: 0.4, y: 0.4 } }, {
+    reset.push(animate.tween(argView, {
+      scale: {
+        x: 0.4,
+        y: 0.4, 
+      }, 
+    }, {
       duration: animate.scaleDuration(300, 'expr-apply'),
-      easing: animate.Easing.Cubic.Out
+      easing: animate.Easing.Cubic.Out,
     }));
 
     // Jump argument to hole
@@ -74,18 +82,18 @@ export const apply: NodeDef<ApplyNode> = {
     const jumpTween = animate.tween(argView, {
       pos: {
         x: [centerX, animate.Easing.Linear],
-        y: [argView.pos.y - 75, animate.Easing.Projectile(animate.Easing.Linear)]
-      }
+        y: [argView.pos.y - 75, animate.Easing.Projectile(animate.Easing.Linear)],
+      },
     }, {
       duration: animate.scaleDuration(500, 'expr-apply'),
-      restTime
+      restTime,
     });
 
     if (!isCalleeLambda) {
       return jumpTween
         .then(() => fx.shatter(stage, stage.getView(expr.id), {
           introDuration,
-          outroDuration
+          outroDuration,
         }))
         .then(() => {
           reset.forEach((tween) => tween.undo());
@@ -98,11 +106,14 @@ export const apply: NodeDef<ApplyNode> = {
       .then(() => {
         // Replace arg hole with preview
         animate.tween(argView, {
-          scale: { x: 0, y: 0 },
-          opacity: 0
+          scale: {
+            x: 0,
+            y: 0, 
+          },
+          opacity: 0,
         }, {
           duration,
-          easing: animate.Easing.Cubic.Out
+          easing: animate.Easing.Cubic.Out,
         });
 
         reset.push(animate.tween(lambdaView, {
@@ -110,13 +121,13 @@ export const apply: NodeDef<ApplyNode> = {
           padding: {
             inner: 0,
             right: 0,
-            left: 0
+            left: 0,
           },
-          backgroundOpacity: 0
+          backgroundOpacity: 0,
         }, {
           duration,
           restTime,
-          easing: animate.Easing.Cubic.InOut
+          easing: animate.Easing.Cubic.InOut,
         }));
 
         lambdaView.strokeWhenChild = false;
@@ -125,19 +136,19 @@ export const apply: NodeDef<ApplyNode> = {
           if (exprId !== callee.subexpressions.body) {
             reset.push(animate.tween(stage.views[childId], {
               scale: { x: 0 },
-              opacity: 0
+              opacity: 0,
             }, {
               duration,
               restTime,
-              easing: animate.Easing.Cubic.InOut
+              easing: animate.Easing.Cubic.InOut,
             }));
 
             reset.push(animate.tween(stage.views[childId], {
-              opacity: 0
+              opacity: 0,
             }, {
               duration: duration / 16,
               restTime,
-              easing: animate.Easing.Cubic.InOut
+              easing: animate.Easing.Cubic.InOut,
             }));
           }
         }
@@ -147,7 +158,7 @@ export const apply: NodeDef<ApplyNode> = {
           .forEach((id) => {
             if (stage.views[id]) {
               stage.views[id].previewOptions = {
-                duration
+                duration,
               };
               stage.views[id].preview = expr.subexpressions.argument;
               clearPreview.push(stage.views[id]);
@@ -160,24 +171,24 @@ export const apply: NodeDef<ApplyNode> = {
           padding: {
             inner: 0,
             left: 0,
-            right: 0
+            right: 0,
           },
-          backgroundOpacity: 0
+          backgroundOpacity: 0,
         }, {
           duration,
           restTime,
-          easing: animate.Easing.Cubic.InOut
+          easing: animate.Easing.Cubic.InOut,
         }));
 
         for (const [childId, exprId] of applyView.children(expr.id, state)) {
           if (exprId !== expr.subexpressions.callee && exprId !== expr.subexpressions.argument) {
             reset.push(animate.tween(stage.views[childId], {
               scale: { x: 0 },
-              opacity: 0
+              opacity: 0,
             }, {
               duration: duration / 4,
               restTime,
-              easing: animate.Easing.Cubic.InOut
+              easing: animate.Easing.Cubic.InOut,
             }));
           }
         }
@@ -185,7 +196,7 @@ export const apply: NodeDef<ApplyNode> = {
         reset.push(animate.tween(argView, { x: 0 }, {
           duration: duration / 4,
           restTime,
-          easing: animate.Easing.Cubic.InOut
+          easing: animate.Easing.Cubic.InOut,
         }));
 
         return animate.after(totalTime)
@@ -238,5 +249,5 @@ export const apply: NodeDef<ApplyNode> = {
       return false;
     }
     return true;
-  }
+  },
 };

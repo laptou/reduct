@@ -3,7 +3,7 @@
 
 import chroma from 'chroma-js';
 
-import * as action from '../store/action';
+import * as action from '../store/action/game';
 import * as animate from '../gfx/animate';
 import Audio from '../resource/audio';
 import * as gfxCore from '../gfx/core';

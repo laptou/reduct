@@ -1,10 +1,12 @@
-import { createClearError, moveNodeToSlot } from '@/store/action';
-import { Flat, NodeId } from '@/semantics';
-import { MissingNode } from '@/semantics/defs';
-import '@resources/style/react/projection/missing.scss';
 import cx from 'classnames';
 import React, { FunctionComponent, useState } from 'react';
 import { connect } from 'react-redux';
+
+import { createClearError, moveNodeToSlot } from '@/store/action/game';
+import { Flat, NodeId } from '@/semantics';
+import { MissingNode } from '@/semantics/defs';
+
+import '@resources/style/react/projection/missing.scss';
 
 interface MissingProjectionOwnProps {
   node: Flat<MissingNode>;
@@ -64,7 +66,8 @@ export const MissingProjectionImpl: FunctionComponent<MissingProjectionProps> =
     const [hover, setHover] = useState(false);
 
     return (
-      <div className={cx('projection slot', { hover })}
+      <div
+        className={cx('projection slot', { hover })}
         onDragOver={e => onDragOver(e, setHover)}
         onDragLeave={e => onDragLeave(e, setHover)}
         onDrop={e => onDrop(e, props, setHover)}
@@ -77,6 +80,6 @@ export const MissingProjection = connect(
   null, 
   (dispatch, ownProps: MissingProjectionOwnProps) => ({
     fill: (id: NodeId) => dispatch(moveNodeToSlot(ownProps.node.id, id)),
-    clearError: () => dispatch(createClearError())
+    clearError: () => dispatch(createClearError()),
   })
 )(MissingProjectionImpl);

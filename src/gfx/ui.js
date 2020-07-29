@@ -1,6 +1,7 @@
+import Audio from '../resource/audio';
+
 import * as gfx from './core';
 
-import Audio from '../resource/audio';
 
 /**
  * @class

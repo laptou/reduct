@@ -1,6 +1,5 @@
 const webpack = require('webpack');
 const path = require('path');
-
 const SentryCliPlugin = require('@sentry/webpack-plugin');
 const HtmlPlugin = require('html-webpack-plugin');
 const TsCheckerPlugin = require('fork-ts-checker-webpack-plugin');
@@ -100,6 +99,10 @@ exports.default = (env) => ({
         test: /\.(mp3|mp4|ogg|opus|wav|png)$/i,
         use: ['file-loader'],
       },
+      {
+        test: /\.(md)$/i,
+        use: ['frontmatter-markdown-loader'],
+      },
     ],
   },
   plugins: [
@@ -112,10 +115,11 @@ exports.default = (env) => ({
       'PKG_VERSION': JSON.stringify(require('./package.json').version),
       'process.env.NODE_ENV': JSON.stringify(env.production ? 'production' : 'development'),
     }),
-    new TsCheckerPlugin({
-      workers: TsCheckerPlugin.TWO_CPUS_FREE,
-      eslint: true,
-    }),
+    // new TsCheckerPlugin({
+    //   workers: TsCheckerPlugin.TWO_CPUS_FREE,
+    //   eslint: true,
+
+    // }),
     ...(env.production
       ? [
         new CompressionPlugin({

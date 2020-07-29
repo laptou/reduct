@@ -1,4 +1,5 @@
 import type { BaseNode, ReductNode } from '..';
+
 import type { NodeDef } from './base';
 
 export interface MemberNode extends BaseNode {
@@ -24,15 +25,15 @@ export const member: NodeDef<MemberNode> = {
         type: 'default',
         shape: 'none',
         fields: ['array'],
-        subexpScale: 1.0
+        subexpScale: 1.0,
       },
       {
         type: 'default',
         shape: 'none',
         fields: ['\'[\'', 'index', '\']\''],
-        subexpScale: 1.0
-      }
-    ]
+        subexpScale: 1.0,
+      },
+    ],
   },
   validateStep: (semant, state, expr) => {
     const nodes = state.nodes;
@@ -63,5 +64,5 @@ export const member: NodeDef<MemberNode> = {
     const i = index.value;
     const res = nodes.get((array.get(`elem${i}`)));
     return semant.number(res.value);
-  }
+  },
 };

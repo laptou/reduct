@@ -1,18 +1,21 @@
+import cx from 'classnames';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+
+import { ErrorBubble } from '../ui/error-bubble';
+import { ExecBubble } from '../ui/exec-bubble';
+
+import { getProjectionForNode } from '.';
+
 import { NodeId } from '@/semantics';
 import { getKindForNode, NodeKind } from '@/semantics/util';
 import {
-  createCleanup, createClearError, createExecute, createRaise, createStop 
-} from '@/store/action';
+  createCleanup, createClearError, createExecute, createRaise, createStop, 
+} from '@/store/action/game';
 import { GameError } from '@/store/errors';
 import { GlobalState } from '@/store/state';
 import { DeepReadonly, DRF } from '@/util/helper';
 import { isAncestorOf } from '@/util/nodes';
-import cx from 'classnames';
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { getProjectionForNode } from '.';
-import { ErrorBubble } from '../ui/error-bubble';
-import { ExecBubble } from '../ui/exec-bubble';
 import Audio from '@/resource/audio';
 
 /**
@@ -111,16 +114,22 @@ function onDragStart(
 
   // get offset from top left of node
   const {
-    top, left, width, height 
+    top, left, width, height, 
   } = event.currentTarget.getBoundingClientRect();
-  const offset = { x: event.clientX - left, y: event.clientY - top };
+  const offset = {
+    x: event.clientX - left,
+    y: event.clientY - top, 
+  };
 
   // set drag image position to get rid of weird bug in Firefox where drag image
   // is position incorrectly
   event.dataTransfer.setDragImage(event.currentTarget, offset.x, offset.y);
 
   // get offset from center, since nodes are positioned by their center
-  const offsetCenter = { x: offset.x - width / 2, y: offset.y - height / 2 };
+  const offsetCenter = {
+    x: offset.x - width / 2,
+    y: offset.y - height / 2, 
+  };
   event.dataTransfer.setData('application/reduct-node-offset', JSON.stringify(offsetCenter));
 
   // stop parent projections from hijacking the drag
@@ -154,7 +163,7 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
       executing, 
       cleanup, 
       exec,
-      stopExec
+      stopExec,
     } = props;
 
     // whether execution is being fast-forwarded or not
@@ -165,7 +174,9 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
         const timer = setTimeout(exec, isFast ? 500 : 1000);
         return () => clearTimeout(timer);
       }
-    }, [settled, executing, exec, isFast]);
+    }, [
+      settled, executing, exec, isFast,
+    ]);
 
     // run when this component is unmounted
     useEffect(() => () => cleanup(), [cleanup]);
@@ -191,7 +202,10 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
       <div 
         id={`projection-${props.nodeId}`}
         className={cx('projection wrapper', {
-          locked, draggable, steppable, frozen 
+          locked,
+          draggable,
+          steppable,
+          frozen, 
         })}
         draggable={draggable}
         data-node-id={props.nodeId}
@@ -213,11 +227,11 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
  */
 export const StageProjection = connect(
   (state: DeepReadonly<GlobalState>, ownProps: StageProjectionOwnProps) => {
-    const presentState = state.program.$present;
+    const presentState = state.game.$present;
 
     if (ownProps.nodeId) {
       const node = presentState.nodes.get(ownProps.nodeId) ?? null;
-      const error = state.program.$error?.target === ownProps.nodeId ? state.program.$error : null;
+      const error = state.game.$error?.target === ownProps.nodeId ? state.game.$error : null;
       const executing = presentState.executing.has(ownProps.nodeId);
       let settled;
 
@@ -246,13 +260,17 @@ export const StageProjection = connect(
           kind: null, 
           error, 
           executing, 
-          settled
+          settled,
         };
 
       const kind = getKindForNode(node, presentState.nodes);
 
       return {
-        node, kind, error, executing, settled 
+        node,
+        kind,
+        error,
+        executing,
+        settled, 
       };
     }
     
@@ -261,15 +279,13 @@ export const StageProjection = connect(
       kind: null, 
       error: null, 
       executing: false, 
-      settled: false 
+      settled: false, 
     };
   },
   (dispatch, ownProps) => ({ 
     cleanup() { 
       if (ownProps.nodeId) {
         dispatch(createCleanup(ownProps.nodeId)); 
-      } else {
-        console.log('hmm')
       }
     },
     clearErrorAndRaise() { 
@@ -287,6 +303,6 @@ export const StageProjection = connect(
       if (ownProps.nodeId) {
         dispatch(createStop(ownProps.nodeId)); 
       }
-    } 
+    }, 
   })
 )(StageProjectionImpl);

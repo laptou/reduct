@@ -1,11 +1,13 @@
+import React, { FunctionComponent } from 'react';
+
+import { StageProjection } from './base';
+
 import { PTupleNode } from '@/semantics/defs';
 import '@resources/style/react/projection/ptuple.scss';
-import React, { FunctionComponent } from 'react';
-import { StageProjection } from './base';
 import { Flat } from '@/semantics';
 
 interface PTupleProjectionOwnProps {
-    node: Flat<PTupleNode>;
+  node: Flat<PTupleNode>;
 }
 
 export const PTupleProjection: FunctionComponent<PTupleProjectionOwnProps> = 

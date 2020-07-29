@@ -1,4 +1,15 @@
-import type { Flat, NodeId, NodeMap, FlatReductNode } from '@/semantics';
+import { castDraft, produce } from 'immer';
+
+import {
+  CircularCallError, GameError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, 
+} from '../errors';
+import { checkDefeat, checkVictory } from '../helper';
+import { GameMode, GameState } from '../state';
+import {
+  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStep, ReductAction, 
+} from '../action/game';
+
+import type { Flat, NodeId, NodeMap } from '@/semantics';
 import {
   ApplyNode, LetNode, BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NotNode, NumberNode, OpNode, PTupleNode, ReferenceNode as ReferenceNode, StrNode,
 } from '@/semantics/defs';
@@ -12,17 +23,8 @@ import {
 import {
   cloneNodeDeep, findNodesDeep, getRootForNode, isAncestorOf,
 } from '@/util/nodes';
-import { castDraft, produce } from 'immer';
-import {
-  CircularCallError, GameError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError,
-} from '../errors';
-import { checkDefeat, checkVictory } from '../helper';
-import { GameMode, RState } from '../state';
-import {
-  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStep, ReductAction, createEvalLet,
-} from '../action';
 
-const initialProgram: RState = {
+const initialProgram: GameState = {
   mode: GameMode.Title,
   level: -1,
   nodes: new Map(),
@@ -52,7 +54,10 @@ function markDirty(nodes: NodeMap, id: NodeId) {
   dirty.add(node.id);
 }
 
-export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductAction): DeepReadonly<RState> {
+export function gameReducer(
+  state: DeepReadonly<GameState> = initialProgram, 
+  act?: ReductAction
+): DeepReadonly<GameState> {
   if (!act) return state;
 
   switch (act.type) {
@@ -552,7 +557,7 @@ export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductA
 
         while (paramIdx < paramNodes.length) {
           const paramNode = paramNodes[paramIdx];
-          state = game(state, createEvalLambda(calleeNode.id, paramNode.id));
+          state = gameReducer(state, createEvalLambda(calleeNode.id, paramNode.id));
           paramIdx++;
         }
 
@@ -667,7 +672,7 @@ export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductA
 
       const node = state.nodes.get(act.nodeId)!;
 
-      state = game(state, createMoveNodeToBoard(nodeId));
+      state = gameReducer(state, createMoveNodeToBoard(nodeId));
       if (state.toolbox.has(act.nodeId)) {
         return produce(state, draft => {
           draft.added.clear();
@@ -702,7 +707,7 @@ export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductA
       // TODO: handle defs
 
       if (node.parent) {
-        return game(state, createDetach(node.id));
+        return gameReducer(state, createDetach(node.id));
       }
 
       return state;
@@ -711,7 +716,7 @@ export function game(state: DeepReadonly<RState> = initialProgram, act?: ReductA
     case ActionKind.MoveNodeToSlot: {
       const { slotId, nodeId } = act;
 
-      state = program(state, createMoveNodeToBoard(nodeId));
+      state = gameReducer(state, createMoveNodeToBoard(nodeId));
 
       const newState = produce(state, draft => {
         const slot = draft.nodes.get(slotId)!;

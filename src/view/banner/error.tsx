@@ -19,4 +19,4 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = (props) => {
       </div>
     </div>
   );
-}
+};

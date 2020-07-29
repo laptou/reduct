@@ -1,15 +1,9 @@
-import { RState } from '@/store/state';
-import { DeepReadonly, dethunk, DRF } from '@/util/helper';
-import { nextId } from '@/util/nodes';
-import {
-  Flat, NodeId, NodeMap, ReductNode
-} from '.';
 import { PTupleNode, VTupleNode } from './defs';
 import { apply, ApplyNode } from './defs/apply';
 import { array, ArrayNode } from './defs/array';
 import { autograder } from './defs/autograder';
 import {
-  binop, BinOpNode, op, OpNode
+  binop, BinOpNode, op, OpNode, 
 } from './defs/binop';
 import { BuiltInReferenceNode } from './defs/builtins';
 import { conditional, ConditionalNode } from './defs/conditional';
@@ -21,9 +15,16 @@ import { missing, MissingNode } from './defs/missing';
 import { not, NotNode } from './defs/not';
 import { reference, ReferenceNode } from './defs/reference';
 import {
-  boolean, BoolNode, dynamicVariant, number, NumberNode, ReductSymbol, string, StrNode, symbol, SymbolNode, unsol
+  boolean, BoolNode, dynamicVariant, number, NumberNode, ReductSymbol, string, StrNode, symbol, SymbolNode, unsol, 
 } from './defs/value';
-import { DRAFTABLE } from 'immer/dist/internal';
+
+import {
+  Flat, NodeId, NodeMap, ReductNode, 
+} from '.';
+
+import { nextId } from '@/util/nodes';
+import { DeepReadonly, dethunk, DRF } from '@/util/helper';
+import { GameState } from '@/store/state';
 
 /**
  * Creates a partial node. Helper for "create node" functions to avoid
@@ -39,15 +40,14 @@ function createNodeBase() {
     parent: null,
     parentField: null,
     fadeLevel: 0,
-    scope: {}
-  }
+  };
 }
 
 export function createBoolNode(value: boolean): BoolNode {
   return {
     ...createNodeBase(),
     type: 'boolean',
-    fields: { value }
+    fields: { value },
   };
 }
 
@@ -55,7 +55,7 @@ export function createNumberNode(value: number): NumberNode {
   return {
     ...createNodeBase(),
     type: 'number',
-    fields: { value }
+    fields: { value },
   };
 }
 
@@ -63,7 +63,7 @@ export function createStrNode(value: string): StrNode {
   return {
     ...createNodeBase(),
     type: 'string',
-    fields: { value }
+    fields: { value },
   };
 }
 
@@ -73,7 +73,7 @@ export function createVtupleNode(...children: ReductNode[]): VTupleNode {
     type: 'vtuple',
     locked: true,
     fields: { size: children.length },
-    subexpressions: Object.fromEntries(children.map((child, index) => [index, child]))
+    subexpressions: Object.fromEntries(children.map((child, index) => [index, child])),
   };
 }
 
@@ -83,7 +83,7 @@ export function createPtupleNode(...children: ReductNode[]): PTupleNode {
     type: 'ptuple',
     locked: true,
     fields: { size: children.length },
-    subexpressions: Object.fromEntries(children.map((child, index) => [index, child]))
+    subexpressions: Object.fromEntries(children.map((child, index) => [index, child])),
   };
 }
 
@@ -91,7 +91,7 @@ export function createMissingNode(): MissingNode {
   return {
     ...createNodeBase(),
     type: 'missing',
-    locked: true
+    locked: true,
   };
 }
 
@@ -99,7 +99,7 @@ export function createSymbolNode(kind: ReductSymbol): SymbolNode {
   return {
     ...createNodeBase(),
     type: 'symbol',
-    fields: { name: kind }
+    fields: { name: kind },
   };
 }
 
@@ -107,7 +107,7 @@ export function createLambdaVarNode(name: string): LambdaVarNode {
   return {
     ...createNodeBase(),
     type: 'lambdaVar',
-    fields: { name }
+    fields: { name },
   };
 }
 
@@ -115,7 +115,11 @@ export function createLambdaArgNode(name: string): LambdaArgNode {
   return {
     ...createNodeBase(),
     type: 'lambdaArg',
-    fields: { name, functionHole: false, value: null }
+    fields: {
+      name,
+      functionHole: false,
+      value: null, 
+    },
   };
 }
 
@@ -123,7 +127,11 @@ export function createBinOpNode(left: ReductNode, op: OpNode, right: ReductNode)
   return {
     ...createNodeBase(),
     type: 'binop',
-    subexpressions: { left, op, right }
+    subexpressions: {
+      left,
+      op,
+      right, 
+    },
   };
 }
 
@@ -132,7 +140,7 @@ export function createOpNode(name: OpNode['fields']['name']): OpNode {
     ...createNodeBase(),
     type: 'op',
     locked: true,
-    fields: { name }
+    fields: { name },
   };
 }
 
@@ -140,7 +148,10 @@ export function createLambdaNode(arg: PTupleNode, body: ReductNode): LambdaNode 
   return {
     ...createNodeBase(),
     type: 'lambda',
-    subexpressions: { arg, body }
+    subexpressions: {
+      arg,
+      body, 
+    },
   };
 }
 
@@ -156,7 +167,10 @@ export function createApplyNode(callee: ReductNode, argument: PTupleNode): Apply
   return {
     ...createNodeBase(),
     type: 'apply',
-    subexpressions: { callee, argument }
+    subexpressions: {
+      callee,
+      argument, 
+    },
   };
 }
 
@@ -164,18 +178,22 @@ export function createConditionalNode(condition: ReductNode, positive: ReductNod
   return {
     ...createNodeBase(),
     type: 'conditional',
-    subexpressions: { condition, positive, negative }
+    subexpressions: {
+      condition,
+      positive,
+      negative, 
+    },
   };
 }
 
 export function createArrayNode(...items: Array<NodeId>): Flat<ArrayNode>;
-export function createArrayNode(...items: Array<DeepReadonly<ReductNode>>): Flat<ArrayNode>;
+export function createArrayNode(...items: Array<DeepReadonly<ReductNode>>): ArrayNode;
 export function createArrayNode(...items: Array<NodeId | DeepReadonly<ReductNode>>): ArrayNode | Flat<ArrayNode> {
   return {
     ...createNodeBase(),
     type: 'array',
     fields: { length: items.length },
-    subexpressions: Object.fromEntries(items.map((item, index) => [index, item])) as any
+    subexpressions: Object.fromEntries(items.map((item, index) => [index, item])) as any,
   };
 }
 
@@ -183,7 +201,7 @@ export function createNotNode(value: ReductNode): NotNode {
   return {
     ...createNodeBase(),
     type: 'not',
-    subexpressions: { value }
+    subexpressions: { value },
   };
 }
 
@@ -191,7 +209,10 @@ export function createMemberNode(array: ReductNode, index: ReductNode): MemberNo
   return {
     ...createNodeBase(),
     type: 'member',
-    subexpressions: { array, index }
+    subexpressions: {
+      array,
+      index, 
+    },
   };
 }
 
@@ -199,8 +220,11 @@ export function createDefineNode(name: string, params: string[], body: LambdaNod
   return {
     ...createNodeBase(),
     type: 'define',
-    fields: { name, params },
-    subexpressions: { body }
+    fields: {
+      name,
+      params, 
+    },
+    subexpressions: { body },
   };
 }
 
@@ -208,7 +232,7 @@ export function createReferenceNode(name: string): ReferenceNode {
   return {
     ...createNodeBase(),
     type: 'reference',
-    fields: { name }
+    fields: { name },
   };
 }
 
@@ -216,11 +240,11 @@ export function createBuiltInReferenceNode(name: string): BuiltInReferenceNode {
   return {
     ...createNodeBase(),
     type: 'builtin-reference',
-    fields: { name }
+    fields: { name },
   };
 }
 
-export function* iterateTuple<N extends ReductNode>(
+export function * iterateTuple<N extends ReductNode>(
   tupleNode: NodeId | DRF<VTupleNode | PTupleNode>,
   nodes: DeepReadonly<NodeMap>
 ): Generator<DRF<N>> {
@@ -243,53 +267,53 @@ export type NodeKind = 'expression' | 'placeholder' | 'value' | 'statement' | 's
 
 export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKind {
   switch (node.type) {
-    case 'apply': return dethunk(apply.kind, node, nodes);
-    case 'autograder': return dethunk(autograder.kind, node, nodes);
-    case 'array': return dethunk(array.kind, node, nodes);
-    case 'binop': return dethunk(binop.kind, node, nodes);
-    case 'boolean': return dethunk(boolean.kind, node, nodes);
-    case 'conditional': return dethunk(conditional.kind, node, nodes);
-    case 'define': return dethunk(define.kind, node, nodes);
-    case 'dynamicVariant': return dethunk(dynamicVariant.kind, node, nodes);
-    case 'lambda': {
-      // lambda nodes with unbound arguments should be treated as values
-      // because you can't step them; lambda nodes that are fully bound
-      // should be treated as expressions
+  case 'apply': return dethunk(apply.kind, node, nodes);
+  case 'autograder': return dethunk(autograder.kind, node, nodes);
+  case 'array': return dethunk(array.kind, node, nodes);
+  case 'binop': return dethunk(binop.kind, node, nodes);
+  case 'boolean': return dethunk(boolean.kind, node, nodes);
+  case 'conditional': return dethunk(conditional.kind, node, nodes);
+  case 'define': return dethunk(define.kind, node, nodes);
+  case 'dynamicVariant': return dethunk(dynamicVariant.kind, node, nodes);
+  case 'lambda': {
+    // lambda nodes with unbound arguments should be treated as values
+    // because you can't step them; lambda nodes that are fully bound
+    // should be treated as expressions
 
-      let foundUnbound = false;
-      for (const argNode of iterateTuple<LambdaArgNode>(node.subexpressions.arg, nodes)) {
-        if (argNode.fields.value === null) {
-          foundUnbound = true;
-          break;
-        }
+    let foundUnbound = false;
+    for (const argNode of iterateTuple<LambdaArgNode>(node.subexpressions.arg, nodes)) {
+      if (argNode.fields.value === null) {
+        foundUnbound = true;
+        break;
       }
-
-      if (!foundUnbound) return 'expression';
-
-      return 'value';
     }
-    case 'lambdaArg': return 'syntax';
-    case 'letExpr': return dethunk(letExpr.kind, node, nodes);
-    case 'member': return dethunk(member.kind, node, nodes);
-    case 'missing': return dethunk(missing.kind, node, nodes);
-    case 'not': return dethunk(not.kind, node, nodes);
-    case 'number': return dethunk(number.kind, node, nodes);
-    case 'op': return dethunk(op.kind, node, nodes);
-    case 'reference': return dethunk(reference[0].kind, node, nodes);
-    case 'string': return dethunk(string.kind, node, nodes);
-    case 'symbol': return dethunk(symbol.kind, node, nodes);
-    case 'unsol': return dethunk(unsol.kind, node, nodes);
-    case 'ptuple':
-    case 'vtuple': {
-      for (const child of iterateTuple(node, nodes)) {
-        if (getKindForNode(child, nodes) === 'expression')
-          return 'expression';
-      }
 
-      return 'value';
+    if (!foundUnbound) return 'expression';
+
+    return 'value';
+  }
+  case 'lambdaArg': return 'syntax';
+  case 'letExpr': return dethunk(letExpr.kind, node, nodes);
+  case 'member': return dethunk(member.kind, node, nodes);
+  case 'missing': return dethunk(missing.kind, node, nodes);
+  case 'not': return dethunk(not.kind, node, nodes);
+  case 'number': return dethunk(number.kind, node, nodes);
+  case 'op': return dethunk(op.kind, node, nodes);
+  case 'reference': return dethunk(reference[0].kind, node, nodes);
+  case 'string': return dethunk(string.kind, node, nodes);
+  case 'symbol': return dethunk(symbol.kind, node, nodes);
+  case 'unsol': return dethunk(unsol.kind, node, nodes);
+  case 'ptuple':
+  case 'vtuple': {
+    for (const child of iterateTuple(node, nodes)) {
+      if (getKindForNode(child, nodes) === 'expression')
+        return 'expression';
     }
-    case 'builtin-reference': return 'value';
-    default: throw new Error(`unknown node of type ${node.type}`);
+
+    return 'value';
+  }
+  case 'builtin-reference': return 'value';
+  default: throw new Error(`unknown node of type ${node.type}`);
   }
 }
 
@@ -306,7 +330,7 @@ export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKin
 export function getDefinitionForName(
   name: string,
   node: DRF,
-  state: DeepReadonly<RState>
+  state: DeepReadonly<GameState>
 ): NodeId | null {
   let current: DRF = node;
 
@@ -361,7 +385,7 @@ export function getDefinitionForName(
 export function getValueForName(
   name: string,
   node: DRF,
-  state: DeepReadonly<RState>
+  state: DeepReadonly<GameState>
 ): NodeId | null {
   const definitionId = getDefinitionForName(name, node, state);
   if (definitionId === null) return null;

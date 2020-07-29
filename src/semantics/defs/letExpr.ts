@@ -1,5 +1,6 @@
+import type { BaseNode, NodeId, ReductNode } from '..';
+
 import type { NodeDef } from './base';
-import type { NodeId, ReductNode, BaseNode } from '..';
 import { ReferenceNode } from './reference';
 
 export interface LetNode extends BaseNode {
@@ -29,16 +30,18 @@ export const letExpr: NodeDef<LetNode> = {
       {
         type: 'default',
         shape: 'none',
-        fields: ['\'let\'', 'variable', '\'=\'', 'e1', '\'in\''],
-        subexpScale: 1.0
+        fields: [
+          '\'let\'', 'variable', '\'=\'', 'e1', '\'in\'',
+        ],
+        subexpScale: 1.0,
       },
       {
         type: 'default',
         shape: 'none',
         fields: ['e2'],
-        subexpScale: 1.0
-      }
-    ]
+        subexpScale: 1.0,
+      },
+    ],
   },
   validateStep: (semant, state, expr) => {
     const callee = state.getIn(['nodes', expr.e2]);
@@ -59,5 +62,5 @@ export const letExpr: NodeDef<LetNode> = {
     );
 
     return [expr.id, newNodeIds, addedNodes];
-  }
+  },
 };

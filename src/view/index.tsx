@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import { HotApp } from './app';
 
 export function initReactApp(store: any) {
