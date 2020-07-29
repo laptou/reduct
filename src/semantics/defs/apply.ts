@@ -1,13 +1,10 @@
-import type { ScopedNode, ReductNode } from '..';
-
-import type { NodeDef } from './base';
-
+import type { ReductNode, BaseNode } from '..';
 
 /**
  * ApplyNode is a Reduct node that represents function application
  * the node 'argument' is passed to the node 'callee'
  */
-export interface ApplyNode extends ScopedNode {
+export interface ApplyNode extends BaseNode {
   type: 'apply';
 
   subexpressions: {

@@ -6,22 +6,22 @@ import {
 import { checkDefeat, checkVictory } from '../helper';
 import { GameMode, GameState } from '../state';
 import {
-  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStep, ReductAction, 
+  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStep, ReductAction, createEvalLet, 
 } from '../action/game';
 
 import type { Flat, NodeId, NodeMap } from '@/semantics';
 import {
-  ApplyNode, BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NotNode, NumberNode, OpNode, PTupleNode, ReferenceNode as ReferenceNode, StrNode, 
+  ApplyNode, LetNode, BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NotNode, NumberNode, OpNode, PTupleNode, ReferenceNode as ReferenceNode, StrNode,
 } from '@/semantics/defs';
 import { builtins } from '@/semantics/defs/builtins';
 import {
-  createBoolNode, createMissingNode, createNumberNode, createStrNode, getKindForNode, getValueForName, iterateTuple, 
+  createBoolNode, createMissingNode, createNumberNode, createStrNode, getKindForNode, getValueForName, iterateTuple, createLetNode,
 } from '@/semantics/util';
 import {
-  DeepReadonly, DRF, mapIterable, withoutParent, withParent, 
+  DeepReadonly, DRF, mapIterable, withoutParent, withParent,
 } from '@/util/helper';
 import {
-  cloneNodeDeep, findNodesDeep, getRootForNode, isAncestorOf, 
+  cloneNodeDeep, findNodesDeep, getRootForNode, isAncestorOf,
 } from '@/util/nodes';
 
 const initialProgram: GameState = {
@@ -60,7 +60,7 @@ export function gameReducer(
   act?: ReductAction
 ): DeepReadonly<GameState> {
   if (!act) return state;
-  
+
   switch (act.type) {
   case ActionKind.StartLevel: {
     return {
@@ -78,7 +78,79 @@ export function gameReducer(
     };
   }
 
-  case ActionKind.EvalLambda: { 
+  case ActionKind.EvalLet: {
+    const { letNodeId } = act;
+
+    const letNode = state.nodes.get(letNodeId) as DRF<LetNode>;
+    const refNode = state.nodes.get(letNode.subexpressions.variable) as DRF;
+    const valueNode = state.nodes.get(letNode.subexpressions.value) as DRF;
+    const bodyNode = state.nodes.get(letNode.subexpressions.body) as DRF;
+    // place the reference node in the scope record of letnode with a value of e1
+    //letnode.scope[refnode.fields.name] = state.nodes.get(letnode.subexpressions.e1)!.id;
+
+    if (!state.board.has(getRootForNode(letNodeId, state.nodes).id))
+      throw new NotOnBoardError(letNodeId);
+
+    if (refNode.type === 'missing')
+      throw new MissingNodeError(refNode.id);
+
+    if (refNode.type !== 'reference')
+      throw new WrongTypeError(refNode.id, 'reference', refNode.type);
+
+    if (valueNode.type === 'missing')
+      throw new MissingNodeError(valueNode.id);
+
+    if (bodyNode.type === 'missing')
+      throw new MissingNodeError(bodyNode.id);
+
+    return produce(state, draft => {
+      const bodyNodeMut = draft.nodes.get(letNode.subexpressions.body)!;
+
+      if (!bodyNodeMut.scope) {
+        bodyNodeMut.scope = {};
+      }
+
+      const varName = refNode.fields.name;
+      bodyNodeMut.scope[varName] = valueNode.id;
+
+      // update parent's reference to this node since we are replacing it with
+      // its body
+      if (letNode.parent) {
+        const parent = draft.nodes.get(letNode.parent)!;
+        const parentField = letNode.parentField;
+        bodyNodeMut.parent = parent.id;
+        bodyNodeMut.parentField = parentField;
+
+        // @ts-ignore
+        parent.subexpressions[parentField] = bodyNode.id;
+        draft.added.set(bodyNode.id, letNode.id);
+      } else {
+        // if there is no parent, then this node was on the board
+        bodyNodeMut.parent = null;
+        bodyNodeMut.parentField = null;
+
+        if (bodyNode.type === 'vtuple') {
+          for (const subExprId of Object.values(bodyNode.subexpressions)) {
+            const subExpr = draft.nodes.get(subExprId)!;
+            subExpr.parent = null;
+            subExpr.parentField = null;
+            draft.board.add(subExprId);
+            draft.added.set(subExprId, letNode.id);
+          }
+        } else {
+          draft.board.add(bodyNode.id);
+          draft.added.set(bodyNode.id, letNode.id);
+        }
+      }
+
+      draft.board.delete(letNode.id);
+
+      draft.nodes.delete(letNode.id);
+      draft.nodes.delete(refNode.id);
+    });
+  }
+
+  case ActionKind.EvalLambda: {
     let { lambdaNodeId, paramNodeId } = act;
 
     if (!state.board.has(getRootForNode(lambdaNodeId, state.nodes).id))
@@ -117,27 +189,27 @@ export function gameReducer(
         ...argNode,
         fields: {
           ...argNode.fields,
-          value: paramNodeId, 
-        }, 
+          value: paramNodeId,
+        },
       };
       const newNodeMap = new Map(state.nodes);
       newNodeMap.set(boundArgNode.id, boundArgNode);
       state = {
         ...state,
-        nodes: newNodeMap, 
+        nodes: newNodeMap,
       };
 
       // find all of the references who point to this arg
       const referenceNodes = findNodesDeep(
-        bodyNodeId, 
+        bodyNodeId,
         state.nodes,
         (nodeToMatch) => nodeToMatch.type === 'reference' && nodeToMatch.fields.name === argName,
         (nodeToFilter, nodeMap) => {
-        // don't bother searching inside of nodes that redefine the name in
-        // their own scope, such as lambdas with the same arg name
+          // don't bother searching inside of nodes that redefine the name in
+          // their own scope, such as lambdas with the same arg name
           if (nodeToFilter.type === 'lambda') {
             const argTuple = nodeMap.get(nodeToFilter.subexpressions.arg) as DRF<PTupleNode>;
-            for (const nodeToFilterArg of iterateTuple<LambdaArgNode>(argTuple, nodeMap)) 
+            for (const nodeToFilterArg of iterateTuple<LambdaArgNode>(argTuple, nodeMap))
               if (nodeToFilterArg.fields.name === argName) return false;
           }
 
@@ -150,81 +222,80 @@ export function gameReducer(
         state = gameReducer(state, createEvalReference(referenceNode.id));
         removed.push(...state.removed.keys());
       }
-    }
 
-    // get param node and descendants
-    const paramNodeDescendants = findNodesDeep(paramNodeId, state.nodes, () => true);
+      // get param node and descendants
+      const paramNodeDescendants = findNodesDeep(paramNodeId, state.nodes, () => true);
 
-    return produce(state, draft => {
-      // everything is immutable, we have a new state which means lambdaNode
-      // points to old state
-      const newLambdaNode = draft.nodes.get(lambdaNodeId) as Flat<LambdaNode>;
-    
-      draft.added = new Map();
+      return produce(state, draft => {
+        // everything is immutable, we have a new state which means lambdaNode
+        // points to old state
+        const newLambdaNode = draft.nodes.get(lambdaNodeId) as Flat<LambdaNode>;
 
-      for (const id of removed)
-        draft.removed.set(id, false);
+        draft.added = new Map();
 
-      const newArgTuple = draft.nodes.get(newLambdaNode.subexpressions.arg) as Flat<PTupleNode>;
+        for (const id of removed)
+          draft.removed.set(id, false);
 
-      const oldArgNodeId = newArgTuple.subexpressions[0] ?? null;
+        const newArgTuple = draft.nodes.get(newLambdaNode.subexpressions.arg) as Flat<PTupleNode>;
 
-      // move all of the args down
-      for (let i = 1; i < newArgTuple.fields.size; i++) {
-        newArgTuple.subexpressions[i - 1] = newArgTuple.subexpressions[i];
-      }
+        const oldArgNodeId = newArgTuple.subexpressions[0] ?? null;
 
-      newArgTuple.fields.size--;
-
-      // param node should be consumed from board or toolbox
-      draft.board.delete(paramNodeId);
-      draft.toolbox.delete(paramNodeId);
-
-      // param node and descendants are no longer needed, eliminate them
-      for (const paramNodeDescendant of paramNodeDescendants) {
-        draft.removed.set(paramNodeDescendant.id, false);
-      }
-
-      // move the body outwards if no more params
-
-      if (newArgTuple.fields.size === 0) {
-        const bodyNode = draft.nodes.get(newLambdaNode.subexpressions.body)!;
-        
-        if (newLambdaNode.parent) {
-          bodyNode.parent = lambdaNode.parent;
-          bodyNode.parentField = lambdaNode.parentField;
-
-          const lambdaParent = draft.nodes.get(newLambdaNode.parent)!;
-          (lambdaParent.subexpressions as Record<string, NodeId>)[newLambdaNode.parentField!] = bodyNode.id;
-          draft.added.set(bodyNode.id, lambdaNode.id);
-        } else {
-          bodyNode.parent = null;
-          bodyNode.parentField = null;
-
-          if (bodyNode.type === 'vtuple') {
-            for (const subExprId of Object.values(bodyNode.subexpressions)) {
-              const subExpr = draft.nodes.get(subExprId)!;
-              subExpr.parent = null;
-              subExpr.parentField = null;
-              draft.board.add(subExprId);
-              draft.added.set(subExprId, lambdaNode.id);
-            }
-          } else {
-            draft.board.add(bodyNode.id);
-            draft.added.set(bodyNode.id, lambdaNode.id);
-          }
+        // move all of the args down
+        for (let i = 1; i < newArgTuple.fields.size; i++) {
+          newArgTuple.subexpressions[i - 1] = newArgTuple.subexpressions[i];
         }
 
-        // lambda node is no longer needed, eliminate it
-        draft.board.delete(lambdaNode.id);
+        newArgTuple.fields.size--;
 
-        // mark these nodes for cleanup
-        draft.removed.set(lambdaNode.id, false);
+        // param node should be consumed from board or toolbox
+        draft.board.delete(paramNodeId);
+        draft.toolbox.delete(paramNodeId);
 
-        if (oldArgNodeId !== null)
-          draft.removed.set(oldArgNodeId, false);
-      }
-    });
+        // param node and descendants are no longer needed, eliminate them
+        for (const paramNodeDescendant of paramNodeDescendants) {
+          draft.removed.set(paramNodeDescendant.id, false);
+        }
+
+        // move the body outwards if no more params
+        if (newArgTuple.fields.size === 0) {
+          const bodyNode = draft.nodes.get(newLambdaNode.subexpressions.body)!;
+
+          if (newLambdaNode.parent) {
+            bodyNode.parent = lambdaNode.parent;
+            bodyNode.parentField = lambdaNode.parentField;
+
+            const lambdaParent = draft.nodes.get(newLambdaNode.parent)!;
+            (lambdaParent.subexpressions as Record<string, NodeId>)[newLambdaNode.parentField!] = bodyNode.id;
+            draft.added.set(bodyNode.id, lambdaNode.id);
+          } else {
+            bodyNode.parent = null;
+            bodyNode.parentField = null;
+
+            if (bodyNode.type === 'vtuple') {
+              for (const subExprId of Object.values(bodyNode.subexpressions)) {
+                const subExpr = draft.nodes.get(subExprId)!;
+                subExpr.parent = null;
+                subExpr.parentField = null;
+                draft.board.add(subExprId);
+                draft.added.set(subExprId, lambdaNode.id);
+              }
+            } else {
+              draft.board.add(bodyNode.id);
+              draft.added.set(bodyNode.id, lambdaNode.id);
+            }
+          }
+
+          // lambda node is no longer needed, eliminate it
+          draft.board.delete(lambdaNode.id);
+
+          // mark these nodes for cleanup
+          draft.removed.set(lambdaNode.id, false);
+
+          if (oldArgNodeId !== null)
+            draft.removed.set(oldArgNodeId, false);
+        }
+      });
+    }
   }
 
   case ActionKind.EvalOperator: {
@@ -232,10 +303,10 @@ export function gameReducer(
     // except handled entirely in the reducer where it should be - iaa34
     if (!state.board.has(getRootForNode(act.operatorNodeId, state.nodes).id))
       throw new NotOnBoardError(act.operatorNodeId);
-    
+
     const binOpNode = state.nodes.get(act.operatorNodeId) as DRF<BinOpNode>;
     const opNode = state.nodes.get(binOpNode.subexpressions.op) as DRF<OpNode>;
-    
+
     const leftNode = state.nodes.get(binOpNode.subexpressions.left) as DRF;
     const rightNode = state.nodes.get(binOpNode.subexpressions.right) as DRF;
 
@@ -303,10 +374,10 @@ export function gameReducer(
     }
     case '==':
     {
-      if (leftNode.type !== 'number' 
-        && leftNode.type !== 'string'
-        && leftNode.type !== 'boolean'
-        && leftNode.type !== 'symbol')
+      if (leftNode.type !== 'number'
+              && leftNode.type !== 'string'
+              && leftNode.type !== 'boolean'
+              && leftNode.type !== 'symbol')
         throw new WrongTypeError(leftNode.id, [
           'number', 'string', 'boolean', 'symbol',
         ], leftNode.type);
@@ -326,7 +397,7 @@ export function gameReducer(
 
     if (typeof resultValue === 'boolean')
       resultNode = createBoolNode(resultValue);
-    
+
     if (typeof resultValue === 'number')
       resultNode = createNumberNode(resultValue);
 
@@ -360,7 +431,7 @@ export function gameReducer(
       draft.removed.set(rightNode.id, false);
     });
   }
-  
+
   case ActionKind.EvalConditional: {
     if (!state.board.has(getRootForNode(act.conditionalNodeId, state.nodes).id))
       throw new NotOnBoardError(act.conditionalNodeId);
@@ -419,7 +490,7 @@ export function gameReducer(
 
     if (valueNode.type === 'missing')
       throw new MissingNodeError(valueNode.id);
-    
+
     if (valueNode.type !== 'boolean')
       throw new WrongTypeError(valueNode.id, ['boolean'], valueNode.type);
 
@@ -456,7 +527,7 @@ export function gameReducer(
     const applyNode = state.nodes.get(applyNodeId) as DRF<ApplyNode>;
     const paramTupleNode = state.nodes.get(applyNode.subexpressions.argument)! as DRF<PTupleNode>;
     const paramNodes: DRF[] = [];
-    
+
     for (let i = 0; i < paramTupleNode.fields.size; i++) {
       const argNode = state.nodes.get(paramTupleNode.subexpressions[i])!;
 
@@ -472,7 +543,7 @@ export function gameReducer(
       throw new MissingNodeError(calleeNode.id);
 
     let resultNodeId: NodeId;
-      
+
     if (calleeNode.type === 'builtin-reference') {
       const builtin = builtins[calleeNode.fields.name as keyof typeof builtins];
       const [newNode, addedNodes, newNodeMap] = builtin.impl(calleeNode, paramNodes, state.nodes);
@@ -510,7 +581,7 @@ export function gameReducer(
           draft.added.set(addedNode, applyNode.id);
         }
       }
-      
+
       const resultNode = draft.nodes.get(resultNodeId)!;
 
       if (applyNode.parent) {
@@ -541,18 +612,18 @@ export function gameReducer(
     if (targetId === undefined || targetId === null)
       throw new UnknownNameError(referenceNode.id, referenceNode.fields.name);
 
-    const [clonedNode, , newNodeMap] = 
-      cloneNodeDeep(targetId, state.nodes);
+    const [clonedNode, , newNodeMap] =
+        cloneNodeDeep(targetId, state.nodes);
 
     state = {
       ...state,
-      nodes: newNodeMap, 
+      nodes: newNodeMap,
     };
-    
+
     return produce(state, draft => {
       draft.nodes = castDraft(newNodeMap);
       draft.board.delete(referenceNode.id);
-      
+
       // retrieve inside of produce() so we get a mutable draft object
       const resultNode = draft.nodes.get(clonedNode.id)!;
 
@@ -596,16 +667,18 @@ export function gameReducer(
     }
   }
 
+
   case ActionKind.MoveNodeToBoard: {
     if (state.board.has(act.nodeId))
       return state;
 
     const node = state.nodes.get(act.nodeId)!;
 
+    state = gameReducer(state, createMoveNodeToBoard(nodeId));
     if (state.toolbox.has(act.nodeId)) {
       return produce(state, draft => {
         draft.added.clear();
-          
+
         // if there is a meta tag that specifies unlimited uses, clone the node 
         // instead of moving it
         if (node.__meta?.toolbox?.unlimited) {
@@ -619,7 +692,7 @@ export function gameReducer(
           const idx = toolbox.findIndex(id => id === act.nodeId);
           toolbox[idx] = clonedNode.id;
           draft.toolbox = new Set(toolbox);
-          
+
           draft.added.set(clonedNode.id, act.nodeId);
           for (const clonedDescendant of clonedDescendants) {
             draft.added.set(clonedDescendant.id, act.nodeId);
@@ -651,7 +724,7 @@ export function gameReducer(
       const slot = draft.nodes.get(slotId)!;
 
       // this should be impossible
-      if (!slot.parent) 
+      if (!slot.parent)
         throw new Error(`Slot ${slotId} has no parent!`);
 
       const parent = draft.nodes.get(slot.parent)!;
@@ -740,6 +813,7 @@ export function gameReducer(
           continue;
       }
 
+
       // this is a child node that needs further evaluation, return the result
       // of stepping it once
       if (childNodeKind === 'expression') {
@@ -760,6 +834,8 @@ export function gameReducer(
     // if we are here, all of the child nodes are fully stepped so we should
     // just step this node
     switch (targetNode.type) {
+    case 'letExpr':
+      return gameReducer(state, createEvalLet(targetNode.id));
     case 'apply':
       return gameReducer(state, createEvalApply(targetNode.id));
     case 'binop':
@@ -791,7 +867,7 @@ export function gameReducer(
         return {
           ...state,
           executing,
-          error, 
+          error,
         };
       } else {
         throw error;
@@ -810,13 +886,13 @@ export function gameReducer(
       const node = state.nodes.get(nodeId)!;
 
       if (getKindForNode(node, state.nodes) !== 'expression') continue;
-      
+
       executing.add(nodeId);
     }
 
     return {
       ...state,
-      executing, 
+      executing,
     };
   }
 
@@ -828,7 +904,7 @@ export function gameReducer(
 
     return {
       ...state,
-      executing, 
+      executing,
     };
   }
 
@@ -836,13 +912,13 @@ export function gameReducer(
     if (checkVictory(state))
       return {
         ...state,
-        mode: GameMode.Victory, 
+        mode: GameMode.Victory,
       };
 
     if (checkDefeat(state))
       return {
         ...state,
-        mode: GameMode.Defeat, 
+        mode: GameMode.Defeat,
       };
 
     return state;
@@ -868,7 +944,7 @@ export function gameReducer(
     // TODO: handle this more gracefully? Create a vtuple?
     // TODO: handle when an expression doesn't create anything??
       throw new Error('Cannot small-step a child expression to multiple new expressions.');
-        
+
     const newNodeId = act.newNodeIds[0];
 
     let newState = produce(state, draft => {
@@ -903,7 +979,7 @@ export function gameReducer(
     });
 
     act.newNodeIds.forEach((id) => markDirty(newState.nodes, id));
-    
+
     return newState;
   }
 
@@ -914,16 +990,16 @@ export function gameReducer(
       docs: new Map([...state.docs, [act.key, act.rootId]]),
     };
   }
-
+  
   case ActionKind.DeleteDocNodes: {
     const rootId = state.docs.get(act.key)!;
     const descendants = findNodesDeep(rootId, state.nodes, () => true);
-
+  
     return produce(state, draft => {
       for (const descendant of descendants) {
         draft.nodes.delete(descendant.id);
       }
-
+  
       draft.docs.delete(act.key);
     });
   }
@@ -1047,7 +1123,7 @@ export function gameReducer(
       for (const [key, node] of addedNodes) {
         draft.nodes.set(key, node);
       }
-      
+
       if (!oldNode.parent) {
         for (const newNodeId of act.newNodeIds) {
           draft.board.add(newNodeId);
@@ -1139,7 +1215,7 @@ export function gameReducer(
       const node = draft.nodes.get(act.nodeId)!;
       const parent = draft.nodes.get(parentId)!;
       const oldHole = parent.__meta?.slots?.[node.parentField!];
-      
+
       if (oldHole) {
         parent.subexpressions[node.parentField] = oldHole;
         delete parent.__meta!.slots![`${node.parentField}:hole`];
