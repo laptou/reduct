@@ -1,13 +1,6 @@
 @use '../theme';
 @use 'base';
 
-#reduct-tutorial {
-  @extend %ui-panel-bottom;
-  @include base.ui-panel-bordered(theme.$accent-3-inverse-default);
-  grid-row: 3;
-  grid-column: 2 / 5;
-}
-
 .docs-container {
   padding: 1rem;
 }

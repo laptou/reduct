@@ -37,12 +37,7 @@ function onDrop(
   const nodeId = parseInt(event.dataTransfer.getData('application/reduct-node'));
   if (!nodeId || isNaN(nodeId)) return;
 
-  try {
-    props.moveNodeToDefs(nodeId);
-  } catch (e) {
-    // TODO: show toast to user
-    console.warn('could not add node to defs', e);
-  }
+  props.moveNodeToDefs(nodeId);
 
   event.preventDefault();
   event.stopPropagation();

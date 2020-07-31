@@ -13,6 +13,8 @@ import { Sidebar } from './stage/ui/tabs/sidebar';
 
 import { DeepReadonly } from '@/util/helper';
 import { GameMode, GlobalState } from '@/store/state';
+import { TutorialTab } from './stage/ui/tabs/sidebar/tutorial';
+import { DefinitionsTab } from './stage/ui/tabs/sidebar/definitions';
 
 interface GameStoreProps
 {
@@ -35,7 +37,14 @@ function GameImpl(props: GameStoreProps) {
         <GoalTab />
         <GameMenuTab />
         <HistoryTab />
-        <Sidebar />
+        <Sidebar>
+          <Sidebar.Section title='Tutorial'>
+            <TutorialTab />
+          </Sidebar.Section>
+          <Sidebar.Section title='Definitions'>
+            <DefinitionsTab />
+          </Sidebar.Section>
+        </Sidebar>
       </>
     );
 
