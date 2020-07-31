@@ -37,7 +37,7 @@ export function getProjectionForNode(node: DRF | null) {
   case 'apply': return <ApplyProjection node={node} key={node.id} />;
   case 'array': return <ArrayProjection node={node} key={node.id} />;
   case 'binop': return <BinOpProjection node={node} key={node.id} />;
-  case builtin: return <BuiltInReferenceProjection node={node} key={node.id} />;
+  case 'builtin': return <BuiltInReferenceProjection node={node} key={node.id} />;
   case 'op': return <OpProjection node={node} key={node.id} />;
   case 'conditional': return <ConditionalProjection node={node} key={node.id} />;
   case 'define': return <DefineProjection node={node} key={node.id} />;

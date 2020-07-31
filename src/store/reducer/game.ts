@@ -568,7 +568,7 @@ export function gameReducer(
       // should be the result of evaluating the lambda
       resultNodeId = [...state.added.keys()][0];
     } else {
-      throw new WrongTypeError(calleeNode.id, ['lambda', builtin], calleeNode.type);
+      throw new WrongTypeError(calleeNode.id, ['lambda', 'builtin'], calleeNode.type);
     }
 
     return produce(state, draft => {

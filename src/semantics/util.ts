@@ -235,7 +235,7 @@ export function createReferenceNode(name: string): IdentifierNode {
 export function createBuiltInReferenceNode(name: string): BuiltInIdentifierNode {
   return {
     ...createNodeBase(),
-    type: builtin,
+    type: 'builtin',
     fields: { name },
   };
 }
@@ -309,7 +309,7 @@ export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKin
   case 'symbol':
   case 'unsol':
   case 'dynamicVariant':
-  case builtin:
+  case 'builtin':
     return 'value';
 
   case 'define': 
