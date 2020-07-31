@@ -9,7 +9,7 @@ import { animated, useSpring, useTransition } from 'react-spring';
 import { LevelSelect, LevelInfo } from './level';
 import { Preferences } from './preferences';
 
-export const GameMenu: React.FC = () => {
+export const GameMenuTab: React.FC = () => {
   const [isOpen, setOpen] = useState(false);
 
   const innerStyle = useSpring({

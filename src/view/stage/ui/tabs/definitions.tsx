@@ -57,7 +57,7 @@ const DefinitionsImpl: FunctionComponent<DefinitionsProps> =
     );
   };
 
-export const Definitions = connect(
+export const DefinitionsTab = connect(
   (state: DeepReadonly<GlobalState>) => ({
     // TODO: only show globals which are referenced by something on the board
     // or in the toolbox

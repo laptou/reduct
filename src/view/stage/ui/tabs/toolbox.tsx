@@ -43,7 +43,7 @@ const ToolboxImpl: FunctionComponent<ToolboxProps> =
     );
   };
 
-export const Toolbox = connect(
+export const ToolboxTab = connect(
   (state: DeepReadonly<GlobalState>) => ({
     nodeIds: state.game.$present.toolbox,
   })
