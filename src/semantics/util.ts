@@ -2,14 +2,14 @@ import type { PTupleNode, VTupleNode } from './defs';
 import type { ApplyNode } from './defs/apply';
 import type { ArrayNode } from './defs/array';
 import type { BinOpNode, OpNode } from './defs/binop';
-import type { BuiltInReferenceNode } from './defs/builtins';
+import type { BuiltInIdentifierNode } from './defs/builtins';
 import type { ConditionalNode } from './defs/conditional';
 import type { DefineNode } from './defs/define';
 import type { LambdaArgNode, LambdaNode, LambdaVarNode } from './defs/lambda';
 import type { MemberNode } from './defs/member';
 import type { MissingNode } from './defs/missing';
 import type { NotNode } from './defs/not';
-import type { ReferenceNode } from './defs/reference';
+import type { IdentifierNode } from './defs/identifier';
 import type {
   BoolNode, NumberNode, ReductSymbol, StrNode, SymbolNode, 
 } from './defs/value';
@@ -151,7 +151,7 @@ export function createLambdaNode(arg: PTupleNode, body: ReductNode): LambdaNode 
   };
 }
 
-export function createLetNode(variable: ReferenceNode, e1: ReductNode, e2: ReductNode): LetNode {
+export function createLetNode(variable: IdentifierNode, e1: ReductNode, e2: ReductNode): LetNode {
   return {
     ...createNodeBase(),
     type: 'letExpr',
@@ -224,18 +224,18 @@ export function createDefineNode(name: string, params: string[], body: LambdaNod
   };
 }
 
-export function createReferenceNode(name: string): ReferenceNode {
+export function createReferenceNode(name: string): IdentifierNode {
   return {
     ...createNodeBase(),
-    type: 'reference',
+    type: 'identifier',
     fields: { name },
   };
 }
 
-export function createBuiltInReferenceNode(name: string): BuiltInReferenceNode {
+export function createBuiltInReferenceNode(name: string): BuiltInIdentifierNode {
   return {
     ...createNodeBase(),
-    type: 'builtin-reference',
+    type: builtin,
     fields: { name },
   };
 }
@@ -269,7 +269,7 @@ export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKin
   case 'conditional':
   case 'member': 
   case 'not':
-  case 'reference':
+  case 'identifier':
     return 'expression';
 
   case 'ptuple':
@@ -309,7 +309,7 @@ export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKin
   case 'symbol':
   case 'unsol':
   case 'dynamicVariant':
-  case 'builtin-reference':
+  case builtin:
     return 'value';
 
   case 'define': 
@@ -363,7 +363,7 @@ export function getDefinitionForName(
     }
 
     if (current.type === 'letExpr') {
-      const varNode = state.nodes.get(current.subexpressions.variable)! as DRF<ReferenceNode>;
+      const varNode = state.nodes.get(current.subexpressions.variable)! as DRF<IdentifierNode>;
       if (varNode.fields.name === name) {
         return varNode.id;
       }

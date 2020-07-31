@@ -16,8 +16,8 @@ type BuiltInReferenceProjectionProps =
 export const BuiltInReferenceProjection: FunctionComponent<BuiltInReferenceProjectionProps> = 
   (props) => {
     return (
-      <div className={cx('projection builtin-reference')}>
-        <div className='builtin-reference-name'>
+      <div className={cx('projection builtin')}>
+        <div className='builtin-name'>
           {props.node.fields.name}
         </div>
       </div>

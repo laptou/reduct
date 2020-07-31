@@ -3,30 +3,24 @@ import {
   ArrayNode,
   AutograderNode,
   BinOpNode,
-  OpNode,
-  ConditionalNode,
+  BoolNode, ConditionalNode,
   DefineNode,
-  LambdaNode,
+  DynVarNode, LambdaArgNode, LambdaNode,
   LambdaVarNode,
-  LambdaArgNode,
   LetNode,
   MemberNode,
+  PTupleNode, IdentifierNode, StrNode,
+  SymbolNode, UnsolNode,
+  VTupleNode,
+  MissingNode,
   NotNode,
   NumberNode,
-  StrNode,
-  BoolNode,
-  UnsolNode,
-  DynVarNode,
-  SymbolNode,
-  ReferenceNode,
-  InvocationNode,
-  MissingNode,
-  PTupleNode,
-  VTupleNode,
+  OpNode,
 } from './defs';
-import { BuiltInReferenceNode } from './defs/builtins';
+import { BuiltInIdentifierNode } from './defs/builtins';
 
-import { DeepReadonly, DRF } from '@/util/helper';
+import { DRF } from '@/util/helper';
+
 
 export type NodeId = number;
 
@@ -120,12 +114,11 @@ export type ReductNode =
   UnsolNode |
   SymbolNode |
   DynVarNode |
-  ReferenceNode |
-  InvocationNode |
+  IdentifierNode |
   VTupleNode |
   PTupleNode |
   MissingNode |
-  BuiltInReferenceNode;
+  BuiltInIdentifierNode;
 
 export type FlatReductNode =
   Flat<ApplyNode> |
@@ -147,9 +140,8 @@ export type FlatReductNode =
   Flat<UnsolNode> |
   Flat<SymbolNode> |
   Flat<DynVarNode> |
-  Flat<ReferenceNode> |
-  Flat<InvocationNode> |
+  Flat<IdentifierNode> |
   Flat<VTupleNode> |
   Flat<PTupleNode> |
   Flat<MissingNode> |
-  Flat<BuiltInReferenceNode>;
+  Flat<BuiltInIdentifierNode>;

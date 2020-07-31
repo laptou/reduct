@@ -11,7 +11,7 @@ export type { NotNode } from './not';
 export type {
   StrNode, UnsolNode, NumberNode, BoolNode, SymbolNode, DynVarNode,
 } from './value';
-export type { ReferenceNode, InvocationNode } from './reference';
+export type { IdentifierNode } from './identifier';
 export type { MissingNode } from './missing';
-export type { BuiltInReferenceNode } from './builtins';
+export type { BuiltInIdentifierNode as BuiltInReferenceNode } from './builtins';
 export type { VTupleNode, PTupleNode } from './tuple';

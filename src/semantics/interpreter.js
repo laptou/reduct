@@ -143,7 +143,7 @@ export default function(module) {
 
         // Hardcoded: delay expansion of references until
         // absolutely necessary (when they're being applied)
-        if (subexpr.type === 'reference') {
+        if (subexpr.type === 'identifier') {
           if (expr.type !== 'apply' && (
             !subexpr.params
                             || module.subexpressions(subexpr).some((f) => nodes.get(subexpr.subexpressions[f]).type === 'missing')
@@ -231,7 +231,7 @@ export default function(module) {
     // Return true if we are at an apply expression where the
     // callee is a previously defined function
     const shouldStepOver = (state, expr) => {
-      if (expr.type === 'reference' && expr.params && expr.params.length > 0) { // && !exp.get("params").includes("a")) {
+      if (expr.type === 'identifier' && expr.params && expr.params.length > 0) { // && !exp.get("params").includes("a")) {
         if (stage.newDefinedNames.includes(expr.name)) {
           return false;
         }
@@ -242,7 +242,7 @@ export default function(module) {
           const subexpr = state.getIn(['nodes', expr.get(subexprField)]);
           const kind = module.kind(state, subexpr);
           if (kind === 'expression') {
-            if (subexpr.type === 'reference') {
+            if (subexpr.type === 'identifier') {
               return (!subexpr.params
                                     || subexpr.params.length === 0
                                     || module
@@ -263,7 +263,7 @@ export default function(module) {
         return false;
       }
       const callee = state.getIn(['nodes', expr.callee]);
-      if (callee.type !== 'reference') {
+      if (callee.type !== 'identifier') {
         return false;
       }
       if (stage.newDefinedNames.includes(callee.name)) {
@@ -271,10 +271,10 @@ export default function(module) {
       }
       for (const subexprField of module.subexpressions(expr)) {
         const subexpr = state.getIn(['nodes', expr.get(subexprField)]);
-        if (subexpr.type === 'reference') {
+        if (subexpr.type === 'identifier') {
           return !subexpr.fields.params?.some((p) => state.nodes.get(subexpr.subexpressions[`arg_${p}`]).type !== 'missing');
         }
-        if (module.kind(state, subexpr) === 'expression' && subexpr.type !== 'reference') {
+        if (module.kind(state, subexpr) === 'expression' && subexpr.type !== 'identifier') {
           return false;
         }
       }
@@ -293,7 +293,7 @@ export default function(module) {
     exp = nodes.get(exprId);
 
     if (shouldStepOver(state, exp)) {
-      const name = exp.type === 'reference' ? exp.name
+      const name = exp.type === 'identifier' ? exp.name
         : `subcall ${nodes.get(exp.callee).name}`;
       console.debug(`semant.interpreter.reducers.over: stepping over call to ${name}`);
       return module.interpreter.reducers.big(stage, state, exp, callbacks);
@@ -432,7 +432,7 @@ export default function(module) {
           let repeated = null;
           while (curExpr.type === 'apply') {
             const callee = nodes.get(curExpr.callee);
-            if (callee.type === 'reference') {
+            if (callee.type === 'identifier') {
               rhs.push(callee.name);
               curExpr = nodes.get(curExpr.argument);
               if (callee.name === 'repeat') break;
@@ -440,7 +440,7 @@ export default function(module) {
               curExpr = callee;
               if (!repeated) {
                 repeated = nodes.get(callee.argument);
-                if (repeated.type !== 'reference') return false;
+                if (repeated.type !== 'identifier') return false;
               }
             } else {
               return false;
@@ -473,7 +473,7 @@ export default function(module) {
 
       const innerExpr = innerState.nodes.get(exprId);
       console.log(`successful result was_hybrid ${innerExpr}`);
-      if (innerExpr.type === 'reference' && !stage.newDefinedNames.includes(innerExpr.name)) {
+      if (innerExpr.type === 'identifier' && !stage.newDefinedNames.includes(innerExpr.name)) {
         console.log('going in if_hybrid');
         return module.interpreter.reducers
           .over(stage, innerState, topExpr, callbacks)
