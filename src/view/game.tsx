@@ -5,16 +5,14 @@ import { DefeatOverlay } from './banner/defeat';
 import { Title } from './banner/title';
 import { VictoryOverlay } from './banner/victory';
 import { Board } from './stage/ui/board';
-import { DefinitionsTab } from './stage/ui/tabs/definitions';
 import { GoalTab } from './stage/ui/tabs/goal';
 import { HistoryTab } from './stage/ui/tabs/history';
 import { GameMenuTab } from './stage/ui/tabs/menu';
 import { ToolboxTab } from './stage/ui/tabs/toolbox';
-import { Docs } from './stage/ui/tabs/tutorial/docs';
+import { Sidebar } from './stage/ui/tabs/sidebar';
 
 import { DeepReadonly } from '@/util/helper';
 import { GameMode, GlobalState } from '@/store/state';
-import { TutorialTab } from './stage/ui/tabs/tutorial';
 
 interface GameStoreProps
 {
@@ -33,12 +31,11 @@ function GameImpl(props: GameStoreProps) {
     return (
       <>
         <Board />
-        <TutorialTab />
         <ToolboxTab />
-        <DefinitionsTab />
         <GoalTab />
         <GameMenuTab />
         <HistoryTab />
+        <Sidebar />
       </>
     );
 
@@ -46,12 +43,11 @@ function GameImpl(props: GameStoreProps) {
     return (
       <>
         <Board />
-        <TutorialTab />
         <ToolboxTab />
-        <DefinitionsTab />
         <GoalTab />
         <GameMenuTab />
         <HistoryTab />
+        <Sidebar />
         <VictoryOverlay />
       </>
     );
@@ -60,12 +56,11 @@ function GameImpl(props: GameStoreProps) {
     return (
       <>
         <Board />
-        <TutorialTab />
         <ToolboxTab />
-        <DefinitionsTab />
         <GoalTab />
         <GameMenuTab />
         <HistoryTab />
+        <DefinitionsTab />
         <DefeatOverlay />
       </>
     );

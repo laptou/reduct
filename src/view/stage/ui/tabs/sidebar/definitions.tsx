@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 
-import { StageProjection } from '../../projection/base';
+import { StageProjection } from '../../../projection/base';
 
 import { GlobalState } from '@/store/state';
 import { createMoveNodeToDefs } from '@/store/action/game';
