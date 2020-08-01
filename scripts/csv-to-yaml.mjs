@@ -15,7 +15,7 @@
  * authoritative definition of the levels from now on.
  */
 
-import { resolve, dirname } from 'path';
+import { resolve, dirname, basename } from 'path';
 import fs from 'fs-extra';
 import csv from 'csv';
 import yaml from 'js-yaml';
@@ -34,18 +34,48 @@ import yaml from 'js-yaml';
   for (const fileName of chapterFiles) {
     console.info(`processing ${fileName}`);
 
-    const filePath = resolve(chapterDirectory, fileName);
-    const contents = await fs.readFile(filePath);
+    const csvFilePath = resolve(chapterDirectory, fileName);
+    const contents = await fs.readFile(csvFilePath);
     const parser = csv.parse(contents, {
       columns: true,
-      rtrim: true, 
+      rtrim: true,
       relaxColumnCount: true,
     });
 
+    const levels = [];
+
+    const destr = (arr) => arr.map((item) => eval(item));
+
     for await (const record of parser) {
-      console.log(record);
+      // there are singlequotes and empty fields in the CSV files, so eval will
+      // do a better job than JSON parse
+      const board = eval(record.board) || [];
+      const goal = eval(record.goal) || [];
+      const toolbox = eval(record.toolbox) || [];
+      const defines = eval(record.defines) || [];
+
+      
+
+      // surround in parens so that curly braces are interpreted as objects and
+      // not blocks
+      const globals = eval(`(${record.globals})`) || {};
+      const textgoal = record.textgoal;
+
+      levels.push({
+        board,
+        goal,
+        toolbox,
+        defines,
+        globals,
+        textgoal, 
+      });
     }
+
+    const yamlFileName = `${basename(fileName, '.csv')}.yaml`;
+    const yamlFilePath = resolve(chapterDirectory, yamlFileName);
+    const yamlData = yaml.safeDump({ levels });
+    await fs.writeFile(yamlFilePath, yamlData);
   }
 
   console.info('done');
-})().catch(err => console.error(err));
+})();
