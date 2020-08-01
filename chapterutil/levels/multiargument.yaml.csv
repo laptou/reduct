@@ -1,0 +1,7 @@
+board,goal,toolbox,defines,globals,textgoal,note
+"[""(firstNumber) => (secondNumber) => firstNumber + secondNumber""]",[7],"[1,2,3,4,5]",[],{},,
+"[""(a) => (b) => b + a""]",[12],"[1,11,8,4,5]",[],{},,
+"[""(number) => (dontCare) => number + 1"",""(dontCare) => (number) => number + 3""]","[4,6]","[1,2,3,4,5]",[],{},,
+"[""object => y => object"",""A"",""B""]","[""A""]",[],[],{},Create {a star},
+"[""x => y => x"",""x => y => y"",""A"",""B"",""D"",""C""]","[""A"",""C""]",[],[],{},Create {a star} and {a triangle},
+"[""x => y => _""]","[""A""]","[""A"",""B"",""x"",""y""]",[],{},Create {a star},

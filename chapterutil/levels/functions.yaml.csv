@@ -1,0 +1,12 @@
+board,goal,toolbox,defines,globals,textgoal,note
+"[""x => x"",""A""]","[""A""]",[],[],{},Drop the {star} onto the function!,
+"[""object => object"",""x => x"",""something => something"",""A""]","[""A""]",[],[],{},Use these functions to get {a star}.,
+"[""Function => Function"",""object => object"",""a => a""]","[""a => a""]",[],[],{},The input to a function can be another function,
+[1],[2],[],[],{},This is an expression you can click on,
+"[""B""]","[""B"",""B""]","[""C"",""B"",""A""]",[],{},Use the toolbox at the bottom of the screen to place two {squares} on the board,
+[],"[5,8]","[2,3,4,1]",[],{},,
+"[""x => A"",""A"",""D""]","[""A"",""A""]",[],[],{},Create two {stars},
+"[""x => x"",""dontCare => A"",""whatever => B""]","[""C"",""B"",""A""]","[""A"",""D"",""C"",""C""]",[],{},"Create a {star}, {square}, and {triangle}",
+"[""(number) => number + 1""]",[4],"[2,3,4,5]",[],{},,
+"[""(number) => number + 3"",""(i) => i + 1""]",[8],"[2,3,4,5,6]",[],{},Hint: you can’t add a function to a number,
+"[""x => x""]","[""B""]","[""something => B"",""dont_care => C""]",[],{},Create {a square},

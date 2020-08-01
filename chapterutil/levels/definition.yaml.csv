@@ -1,0 +1,8 @@
+board,goal,toolbox,defines,globals,textgoal,note
+"[""function star() { return A; }""]","[""A""]","[""STAR""]",[],{},Move the def block to the left box to define the word {star}!,
+"[""function star() { return A; }"",""function rect() { return B; }""]","[""B"",""B"",""A""]","[""__unlimited;star"",""__unlimited;rect""]",[],{},Reach the goal by creating new definitions!,
+"[""function trianglify(object) { return _; }"",""A"",""D"",""C""]","[""C"",""C""]","[""__unlimited;trianglify""]",[],{},Define a function that takes an input and outputs {a triangle},
+"[""function addOne(number) { return _; }"",2,4]","[3,6]","[""__unlimited;addOne"",""number"",""_ + 1""]","[""function addOne(x) { return x + 1; }""]",{},Define a function that computes x plus 1,
+"[3,7]","[6,9]","[""__unlimited;addOne;""]",[],{},,
+"[""__argumentAnnotated; function doNothing(x) { return _ }"",""_(7)"",""_(3)""]","[4,7]","[""__unlimited;addOne;"",""__unlimited; doNothing"",""x => _"",""x""]","[""function doNothing(x) { return x; }""]",{},Define a function that outputs the input it is given,
+"[""_(addOne(4))"",""_(_(1))"",""addOne(_(10))""]","[2,6,11]","[""addOne"",""addOne"",""doNothing"",""doNothing""]",[],{},,
