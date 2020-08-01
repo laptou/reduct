@@ -3,7 +3,7 @@
 @use 'fx';
 @use 'sass:color';
 
-.projection.builtin-reference {
+.projection.builtin {
   @extend %projection-standalone;
   @include fx.projection-shadow-box();
   
@@ -16,7 +16,7 @@
 
   line-height: 1;
   
-  .builtin-reference-name {
+  .builtin-name {
     padding: 0.25rem;
   }
 }

@@ -80,7 +80,7 @@ export default class Sidebar {
     for (const id of [...state.toolbox, ...state.board]) {
       this.stage.semantics.search(nodes, id, (_, nid) => {
         const expr = nodes.get(nid);
-        if (expr.type === 'reference' && globals.has(expr.name) && !hideGlobals.includes(expr.name)) {
+        if (expr.type === 'identifier' && globals.has(expr.name) && !hideGlobals.includes(expr.name)) {
           names.add(expr.name);
         }
       });
@@ -96,7 +96,7 @@ export default class Sidebar {
         const id = state.globals.get(name);
         this.stage.semantics.search(nodes, id, (_, nid) => {
           const expr = nodes.get(nid);
-          if (expr.type === 'reference' && globals.has(expr.name) && !hideGlobals.includes(expr.name)) {
+          if (expr.type === 'identifier' && globals.has(expr.name) && !hideGlobals.includes(expr.name)) {
             const name = expr.name;
             if (!names.has(name)) {
               names.add(name);
