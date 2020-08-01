@@ -1,5 +1,4 @@
 import { NodeId, NodeMap, ReductNode } from '@/semantics';
-import BaseStage from '@/stage/basestage';
 import Loader from '@/loader';
 import { parseProgram, MacroMap } from '@/syntax/es6';
 import { createReferenceNode, createBuiltInReferenceNode } from '@/semantics/util';
@@ -10,11 +9,8 @@ export enum ActionKind {
   UseToolbox = 'use-toolbox',
   Raise = 'raise',
   Detach = 'detach',
-  AttachNotch = 'attach-notch',
-  SmallStep = 'small-step-legacy',
   Unfold = 'unfold',
   BetaReduce = 'beta-reduce',
-  StartLevelLegacy = 'start-level-legacy',
   Victory = 'victory',
   Fade = 'fade',
   Unfade = 'unfade',
@@ -38,6 +34,7 @@ export enum ActionKind {
   EvalNot = 'eval-not',
   EvalApply = 'eval-apply',
   EvalReference = 'eval-reference',
+  EvalLet = 'eval-let',
 
   Execute = 'exec',
   Stop = 'stop',
@@ -52,14 +49,12 @@ export enum ActionKind {
   DeleteDocNodes = 'delete-docs',
 }
 
-export type ReductAction = 
-  StartLevelActionLegacy |
+export type ReductAction =
   StartLevelAction |
   MoveNodeToBoardAction |
   MoveNodeToSlotAction |
   MoveNodeToDefsAction |
   AddNodeToToolboxAction |
-  LegacySmallStepAction |
   EvalLambdaAction |
   EvalLambdaAction |
   EvalOperatorAction |
@@ -70,11 +65,12 @@ export type ReductAction =
   ExecuteAction |
   StopAction |
   StepAction |
-  CleanupAction | 
+  CleanupAction |
   DetectCompletionAction |
   ClearErrorAction |
-  RaiseAction | 
+  RaiseAction |
   DetachAction |
+  EvalLetAction |
   CreateDocsAction |
   DeleteDocsAction;
 
@@ -82,7 +78,7 @@ export type ReductAction =
 export interface ClearErrorAction {
   type: ActionKind.ClearError;
 }
-  
+
 /**
    * This action clears any error currently held by the store.
    */
@@ -162,91 +158,6 @@ export function moveNodeToSlot(slotId: NodeId, nodeId: NodeId): MoveNodeToSlotAc
   };
 }
 
-export interface StartLevelActionLegacy {
-  type: ActionKind.StartLevelLegacy;
-  nodes: NodeMap;
-  goal: Set<NodeId>;
-  board: Set<NodeId>;
-  toolbox: Set<NodeId>;
-  globals: Map<string, NodeId>;
-}
-
-/**
- * Redux action to start a new level.
- *
- * Takes trees of normal AST nodes and flattens them into immutable
- * nodes, suitable to store in Redux. Also runs the semantics module's
- * postParse hook, if defined, and creates the initial views for these
- * expressions.
- *
- * Flattened trees are doubly-linked: children know their parent, and
- * which parent field they are stored in.
- *
- * @param stage
- * @param goal - List of expressions for the goal.
- * @param board - List of expressions for the board.
- * @param toolbox - List of expressions for the toolbox.
- * @param globals - Map of expressions for globals.
- */
-export function startLevelLegacy(
-  stage: BaseStage,
-  goal: Iterable<ReductNode>, 
-  board: Iterable<ReductNode>, 
-  toolbox: Iterable<ReductNode>, 
-  globals: Record<string, ReductNode>
-): StartLevelActionLegacy {
-  const { semantics } = stage;
-  const _nodes: Map<NodeId, ReductNode> = new Map();
-  const _goal: Set<NodeId> = new Set();
-  const _board: Set<NodeId> = new Set();
-  const _toolbox: Set<NodeId> = new Set();
-  const _globals: Map<string, NodeId> = new Map();
-
-  for (const expr of goal) {
-    for (const newExpr of semantics.flatten(expr)) {
-      _nodes.set(newExpr.id, newExpr);
-    }
-
-    _goal.add(expr.id);
-  }
-  for (const expr of board) {
-    for (const newExpr of semantics.flatten(expr)) {
-      _nodes.set(newExpr.id, newExpr);
-    }
-
-    _board.add(expr.id);
-  }
-
-  for (const expr of toolbox) {
-    for (const newExpr of semantics.flatten(expr)) {
-      _nodes.set(newExpr.id, newExpr);
-    }
-
-    _toolbox.add(expr.id);
-  }
-
-  for (const [name, expr] of Object.entries(globals)) {
-    for (const newExpr of semantics.flatten(expr)) {
-      _nodes.set(newExpr.id, newExpr);
-    }
-
-    _globals.set(name, expr.id);
-  }
-
-  // TODO: remove
-  for (const [nodeId, node] of _nodes.entries())
-    stage.views[nodeId] = semantics.project(stage, _nodes, node);
-
-  return {
-    type: ActionKind.StartLevelLegacy,
-    nodes: _nodes,
-    goal: _goal,
-    board: _board,
-    toolbox: _toolbox,
-    globals: _globals,
-  };
-}
-
 export interface StartLevelAction {
   type: ActionKind.StartLevel;
   level: number;
@@ -270,7 +181,7 @@ export function createStartLevel(index: number): StartLevelAction {
   for (const name of Object.keys(builtins)) {
     macros.set(name, () => createBuiltInReferenceNode(name));
   }
-  
+
   if (levelDefinition.macros) {
     for (const [name, script] of Object.entries(levelDefinition.macros)) {
       // TODO: remove override for builtins, remove defs for builtin methods in levels
@@ -307,7 +218,7 @@ export function createStartLevel(index: number): StartLevelAction {
 
       return [name, () => createReferenceNode(name)];
     });
-  
+
   const newDefinedNames = levelDefinition.board
     .map((script: string) => {
       const node = parseProgram(script, macros);
@@ -351,7 +262,7 @@ export function createStartLevel(index: number): StartLevelAction {
   for (const [name, script] of Object.entries(levelDefinition.globals)) {
     // TODO: remove override for builtins, remove defs for builtin methods in levels
     if (name in builtins) continue;
-    
+
     const node = parseProgram(script, macros);
 
     if (node.type !== 'define')
@@ -483,13 +394,37 @@ export interface AddNodeToToolboxAction {
  * @param newNodes The node being added, as well as all of its descendant nodes.
  */
 export function addToolboxItem(
-  newNodeId: NodeId, 
+  newNodeId: NodeId,
   newNodes: Iterable<ReductNode>
 ): AddNodeToToolboxAction {
   return {
     type: ActionKind.AddToolboxItem,
     newNodeId,
     addedNodes: newNodes,
+  };
+}
+
+
+export interface EvalLetAction {
+  type: ActionKind.EvalLet;
+  letNodeId: NodeId;
+
+}
+
+/**
+ * Returns an action which will evaluate the variable to the first
+ * expression inside of the second expression.
+ * 
+ * @param letNodeId The ID of the node that represents the let expression
+
+ */
+export function createEvalLet(
+  letNodeId: NodeId,
+): EvalLetAction {
+  return {
+    type: ActionKind.EvalLet,
+    letNodeId
+
   };
 }
 
@@ -510,7 +445,7 @@ export interface EvalLambdaAction {
  */
 export function createEvalLambda(
   lambdaNodeId: NodeId,
-  paramNodeId: NodeId, 
+  paramNodeId: NodeId,
 ): EvalLambdaAction {
   return {
     type: ActionKind.EvalLambda,
@@ -530,7 +465,7 @@ export interface EvalOperatorAction {
  * @param operatorNodeId The ID of the node that represents the binary operator.
  */
 export function createEvalOperator(
-  operatorNodeId: NodeId, 
+  operatorNodeId: NodeId,
 ): EvalOperatorAction {
   return {
     type: ActionKind.EvalOperator,
@@ -549,7 +484,7 @@ export interface EvalConditionalAction {
  * @param operatorNodeId The ID of the node that represents the conditional.
  */
 export function createEvalConditional(
-  conditionalNodeId: NodeId, 
+  conditionalNodeId: NodeId,
 ): EvalConditionalAction {
   return {
     type: ActionKind.EvalConditional,
@@ -568,7 +503,7 @@ export interface EvalNotAction {
  * @param notNodeId The ID of the node that represents the conditional.
  */
 export function createEvalNot(
-  notNodeId: NodeId, 
+  notNodeId: NodeId,
 ): EvalNotAction {
   return {
     type: ActionKind.EvalNot,
@@ -587,7 +522,7 @@ export interface EvalApplyAction {
  * @param applyNodeId The ID of the node that represents the application.
  */
 export function createEvalApply(
-  applyNodeId: NodeId, 
+  applyNodeId: NodeId,
 ): EvalApplyAction {
   return {
     type: ActionKind.EvalApply,
@@ -606,7 +541,7 @@ export interface EvalReferenceAction {
  * @param referenceNodeId The ID of the node that represents the application.
  */
 export function createEvalReference(
-  referenceNodeId: NodeId, 
+  referenceNodeId: NodeId,
 ): EvalReferenceAction {
   return {
     type: ActionKind.EvalReference,
@@ -626,7 +561,7 @@ export interface EvalInvocationAction {
  * @param referenceNodeId The ID of the node that represents the application.
  */
 export function createEvalInvocation(
-  referenceNodeId: NodeId, 
+  referenceNodeId: NodeId,
   paramNodeId: NodeId
 ): EvalInvocationAction {
   return {
@@ -769,30 +704,6 @@ export function addBoardItem(newNodeIds, addedNodes) {
   };
 }
 
-export interface LegacySmallStepAction {
-  type: ActionKind.SmallStep;
-  topNodeId: NodeId;
-  newNodeIds: NodeId[];
-  addedNodes: ReductNode[];
-}
-
-/**
- * Node ``nodeId`` took a small step to produce ``newNode`` which
- * contains ``newNodes`` as nested nodes.
- */
-export function smallStep(
-  nodeId: NodeId, 
-  newNodeIds: Iterable<NodeId>, 
-  newNodes: Iterable<ReductNode>
-): LegacySmallStepAction {
-  return {
-    type: ActionKind.SmallStep,
-    topNodeId: nodeId,
-    newNodeIds,
-    addedNodes: newNodes,
-  };
-}
-
 /**
  * Unfold the definition of ``nodeId``, producing ``newNodeId`` (and
  * adding ``addedNodes`` to the store).
@@ -804,69 +715,6 @@ export function unfold(nodeId, newNodeId, addedNodes) {
     newNodeId,
     addedNodes,
   };
-}
-
-/**
- * Node ``topNodeId`` was applied to ``argNodeId`` to produce
- * ``newNodeIds`` which contain ``addedNodes`` as nested nodes.
- *
- * A beta-reduction can produce multiple result nodes due to
- * replicators.
- */
-export function betaReduce(topNodeId, argNodeId, newNodeIds, addedNodes) {
-  return {
-    type: ActionKind.BetaReduce,
-    topNodeId,
-    argNodeId,
-    newNodeIds,
-    addedNodes,
-  };
-}
-
-/**
- * Attach the child to the given parent through the given notches
- */
-export function attachNotch(parentId, notchIdx, childId, childNotchIdx) {
-  return {
-    type: ActionKind.AttachNotch,
-    parentId,
-    childId,
-    notchIdx,
-    childNotchIdx,
-  };
-}
-
-/**
- * Take the given node out of the toolbox.
- */
-export function useToolbox(nodeId, clonedNodeId = null, addedNodes = null) {
-  return {
-    type: ActionKind.UseToolbox,
-    nodeId,
-    clonedNodeId,
-    addedNodes,
-  };
-}
-
-/**
- * We've won the level.
- *
- * Clear the board/goal, which has the side effect of stopping them
- * from drawing anymore.
- */
-export function victory() {
-  return {
-    type: ActionKind.Victory,
-  };
-}
-
-/**
- * Add a flag to the action indicating not to record this on the
- * undo/redo stack.
- */
-export function skipUndo(action) {
-  action.skipUndo = true;
-  return action;
 }
 
 /**
