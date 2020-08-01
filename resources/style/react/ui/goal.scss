@@ -2,8 +2,7 @@
 @use 'base';
 
 #reduct-goal {
-  @extend %ui-panel-top;
-  @include base.ui-panel-bordered(theme.$accent-2-inverse-default);
+  @include base.ui-panel($accent: hsl(190, 60%, 70%));
   grid-row: 1;
   grid-column: 2;
 }

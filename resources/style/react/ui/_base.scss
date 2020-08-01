@@ -1,4 +1,4 @@
-%ui-panel {
+@mixin ui-panel($accent) {
   position: relative;
   display: flex;
   flex-flow: row nowrap;
@@ -6,28 +6,19 @@
 
   padding: 1rem;
 
-  background: var(--reduct-ui-bg);
-  box-shadow: 0 0 0.5rem rgba(black, 0.25);
-}
 
-%ui-panel-top {
-  @extend %ui-panel;
-  margin: 0 0.5rem 0.5rem;
-  border-width: 0 2px 2px;
-  border-radius: 0 0 0.25rem 0.25rem;
-}
+  &::before {
+    content: ' ';
+    position: absolute;
+    top: 0.25rem;
+    right: 0.25rem;
+    bottom: 0.25rem;
+    left: 0.25rem;
+    z-index: -1;
 
-%ui-panel-bottom {
-  @extend %ui-panel;
-  margin: 0.5rem 0.5rem 0;
-  border-width: 2px 2px 0;
-  border-radius: 0.25rem 0.25rem 0 0;
-}
+    border: 1.5px solid $accent;
+    border-radius: 0.25rem;
 
-@mixin ui-panel-bordered($color) {
-  @extend %ui-panel;
-  border-style: solid;
-  border-color: $color;
-
-  color: $color;
+    background: white;
+  }
 }
