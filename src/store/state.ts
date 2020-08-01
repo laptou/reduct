@@ -1,7 +1,7 @@
-import { UndoableGameState } from './reducer/undo';
-import { GameError } from './errors';
+import type { UndoableGameState } from './reducer/undo';
+import type { GameError } from './errors';
 
-import { NodeId, NodeMap } from '@/semantics';
+import type { NodeId, NodeMap } from '@/semantics';
 
 export interface GameState {
   /**

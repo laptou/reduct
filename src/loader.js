@@ -1,7 +1,8 @@
+/* eslint-disable import/exports-last */
+/* eslint-disable @typescript-eslint/explicit-member-accessibility */
 import FontFaceObserver from 'fontfaceobserver';
 import { Howl } from 'howler';
 
-import * as gfx from './gfx/core';
 import * as globalProgressions from './game/progression';
 
 async function getImage(path) {
@@ -47,30 +48,31 @@ export class LoaderClass {
     }
   }
 
-  /**
-     *
-     * @param {String} alias The name of this atlas.
-     * @param {String} key The name of the JSON file corresponding to this atlas (no extension).
-     * @param {String} imagePath The path to the image file relative to the `resources/graphics`
-     * directory.
-     */
-  async loadImageAtlas(alias, key, imagePath) {
-    this.startLoad();
+  // TODO: re-add image atlas functionality without importing the whole gfx module
+  // /**
+  //  *
+  //  * @param {String} alias The name of this atlas.
+  //  * @param {String} key The name of the JSON file corresponding to this atlas (no extension).
+  //  * @param {String} imagePath The path to the image file relative to the `resources/graphics`
+  //  * directory.
+  //  */
+  // async loadImageAtlas(alias, key, imagePath) {
+  //   this.startLoad();
 
-    const [json, img] = await Promise.all([
-            import(`@resources/graphics/${key}.json`),
-            getImage(imagePath),
-    ]);
+  //   const [json, img] = await Promise.all([
+  //     import(`@resources/graphics/${key}.json`),
+  //     getImage(imagePath),
+  //   ]);
 
-    const atlas = new gfx.image.ImageAtlas(alias, json, img);
-    for (const sprite of atlas.sprites) {
-      if (!this.images[sprite.name]) {
-        this.images[sprite.name] = sprite.image;
-      }
-    }
+  //   const atlas = new gfx.image.ImageAtlas(alias, json, img);
+  //   for (const sprite of atlas.sprites) {
+  //     if (!this.images[sprite.name]) {
+  //       this.images[sprite.name] = sprite.image;
+  //     }
+  //   }
 
-    this.finishLoad();
-  }
+  //   this.finishLoad();
+  // }
 
   async loadAudioSprite(alias, key) {
     this.startLoad();

@@ -1,3 +1,5 @@
+@use '../text';
+
 .projection {
   --transform: scale(1);
   position: relative;
@@ -6,7 +8,7 @@
   margin-left: 0.125rem;
 
   font-weight: 700;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: text.$mono-font;
 
   user-select: none;
 
