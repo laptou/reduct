@@ -75,7 +75,7 @@ import yaml from 'js-yaml';
       // not blocks
       const globals = eval(`(${record.globals})`) || {};
       const textgoal = record.textgoal;
-      const note = record.note || record['FVG note'];
+      const note = record.note || record['FVG note'] || null;
 
       levels.push({
         board,
@@ -88,7 +88,7 @@ import yaml from 'js-yaml';
       });
     }
 
-    const yamlFileName = `${basename(fileName, '.csv')}.yaml`;
+    const yamlFileName = `${basename(basename(fileName, '.csv'), '.yaml')}.yaml`;
     const yamlFilePath = resolve(chapterDirectory, yamlFileName);
     const yamlData = yaml.safeDump({ levels });
     await fs.writeFile(yamlFilePath, yamlData);
