@@ -23,3 +23,11 @@ export const LoadingAnimationWithText: React.FC = () => {
     </div>
   );
 };
+
+export const LoadingPage: React.FC = () => {
+  return (
+    <div className='reduct-loading-page'>
+      <LoadingAnimationWithText />
+    </div>
+  );
+};
