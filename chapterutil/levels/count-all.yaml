@@ -14,6 +14,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: Let's count to 4!
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function count(a) {return (a == _) ? _: count(remove_first(a)) + 1}'
     goal:
@@ -32,6 +38,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: Can you count a list with no items in it?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function count(a) {return (a == []) ? 0: _ + _}'
       - count
@@ -51,6 +63,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: Let's count to 3!
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function count(a) {return (a == _) ? _ : _ + _}'
       - count
@@ -71,6 +89,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: Can you count a mixed list?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function count_target(a, target) {(a == []) ? 0: (first(a) == target) ?
@@ -90,6 +114,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: Can you count only one type of object?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function count_target(a, target) {(_ == _) ? _: (first(a) == target) ?
@@ -113,6 +143,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: Let's count a list of 0!
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function count_target(a, target) {(a == []) ? 0: (_ == _) ?
@@ -135,6 +171,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: Can you count to 1?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function count_target(a, target) {(a == []) ? 0: (first(a) == target) ?
@@ -159,6 +201,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: Can we still count this list?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function count_target(a, target) {(a == []) ? 0: (first(a) == target) ?
@@ -183,6 +231,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: Can you fill out the bottom part?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function count_target(a, target) {(a == []) ? 0:( _ == _) ? _ + _: _}'
     goal:
@@ -204,6 +258,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: Can you fill out the whole thing?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function count_target(a, target) {(a == []) ? 0: (_ == _) ? _ + _: _}'
     goal:
@@ -228,6 +288,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: Let's fill out the whole function!
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - concat
     goal:
@@ -238,6 +304,12 @@ levels:
     defines: []
     globals: {}
     textgoal: 'Just as a reminder, concat glues two arrays together. '
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function remove_value(a, target) {(a == []) ? []: (first(a) == target) ?
@@ -256,6 +328,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: Can you remove something from this list?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function remove_value(a, target) {(_ == _) ? _: (first(a) == target) ?
@@ -276,6 +354,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: What happens when you put in an empty list?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function remove_value(a, target) {(a == []) ? []: (_ == _) ?
@@ -299,6 +383,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: What do you want to remove?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function remove_value(a, target) {(a == []) ? []: (first(a) == target) ?
@@ -321,6 +411,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: What happens when your first item is the target?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function remove_value(a, target) {(a == []) ? []: (first(a) == target) ?
@@ -345,6 +441,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: What happens when your first item isn't the target?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function remove_value(a, target) {(a == []) ? []: (first(a) == target) ?
@@ -368,6 +470,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: Can you fill out the entire bottom section?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function remove_value(a, target) {(_ == _) ? _: (_ == _) ? _ : _}'
       - '[A, B, A, A]'
@@ -391,6 +499,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: Can you fill out the whole thing?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function replace_value(a, target, replacement) {(a == []) ? [] :
@@ -412,6 +526,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: Replace value allows you to replace one value for another.
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function replace_value(a, target, replacement) {(_ == _) ? _ : (first(a)
@@ -433,6 +553,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: What happens when you have an empty list?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function replace_value(a, target, replacement) {(a == []) ? [] : (_ ==
@@ -458,6 +584,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: How can you make sure you are replacing the right value?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function replace_value(a, target, replacement) {(a == []) ? [] :
@@ -485,6 +617,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: What happens when the first value is the target?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function replace_value(a, target, replacement) {(a == []) ? [] :
@@ -514,6 +652,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: What happens if the first value isn't the target?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function replace_value(a, target, replacement) {(a == []) ? [] :
@@ -541,6 +685,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: Let's fill out the bottom part!
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function replace_value(a, target, replacement) {(_ == _) ? _: (_ == _) ?
@@ -569,6 +719,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: Let's fill out the whole function!
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function insert_in_order(a, target) {(a == []) ? [target] : (first(a) <
@@ -587,6 +743,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: Insert in order inserts a number so the whole list is sorted.
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function insert_in_order(a, target) {(_ == _) ? _ : (first(a) < target)
@@ -610,6 +772,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: What happens when you have an empty list?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function insert_in_order(a, target) {(a == []) ? [target] : (_ < _) ?
@@ -633,6 +801,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: How do you make sure you are inserting in the right place?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function insert_in_order(a, target) {(a == []) ? [target] : (first(a) <
@@ -659,6 +833,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: What happens when your position value is less than the target?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function insert_in_order(a, target) {(a == []) ? [target] : (first(a) <
@@ -681,6 +861,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: What happens when your position value is more than the target?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function insert_in_order(a, target) {(a == []) ? [target] : (first(a) <
@@ -706,6 +892,12 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: Let's fill out the bottom part!
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function insert_in_order(a, target) {(a == []) ? [target] : (first(a) <
@@ -732,3 +924,9 @@ levels:
         function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
         length(a))}
     textgoal: Let's fill out the whole function!
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []

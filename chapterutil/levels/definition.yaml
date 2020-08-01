@@ -8,6 +8,12 @@ levels:
     defines: []
     globals: {}
     textgoal: 'Move the def block to the left box to define the word {star}!'
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function star() { return A; }'
       - 'function rect() { return B; }'
@@ -21,6 +27,12 @@ levels:
     defines: []
     globals: {}
     textgoal: Reach the goal by creating new definitions!
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function trianglify(object) { return _; }'
       - A
@@ -34,6 +46,12 @@ levels:
     defines: []
     globals: {}
     textgoal: 'Define a function that takes an input and outputs {a triangle}'
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function addOne(number) { return _; }'
       - 2
@@ -49,6 +67,12 @@ levels:
       - 'function addOne(x) { return x + 1; }'
     globals: {}
     textgoal: Define a function that computes x plus 1
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 3
       - 7
@@ -60,6 +84,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - '__argumentAnnotated; function doNothing(x) { return _ }'
       - _(7)
@@ -76,6 +106,12 @@ levels:
       - 'function doNothing(x) { return x; }'
     globals: {}
     textgoal: Define a function that outputs the input it is given
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - _(addOne(4))
       - _(_(1))
@@ -92,3 +128,9 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []

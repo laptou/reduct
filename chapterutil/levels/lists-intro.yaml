@@ -12,6 +12,12 @@ levels:
     defines: []
     globals: {}
     textgoal: Make an array with three elements
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - get
       - '[STAR, RECT, _, CIRCLE]'
@@ -28,6 +34,12 @@ levels:
     defines: []
     globals: {}
     textgoal: '"get" can get an element from an array'
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'map([1, _, 4], addOne)'
     goal:
@@ -41,6 +53,12 @@ levels:
     defines: []
     globals: {}
     textgoal: '"map" applies a function to every element'
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'map([1, 2, 4, 8], _)'
     goal:
@@ -55,6 +73,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board: []
     goal:
       - 3
@@ -69,6 +93,12 @@ levels:
     defines: []
     globals: {}
     textgoal: '"length" gives the number of elements'
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'map(_, length)'
       - '[[STAR], _, _]'
@@ -81,6 +111,12 @@ levels:
     defines: []
     globals: {}
     textgoal: An array can hold other arrays
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - '[1]'
     goal:
@@ -95,3 +131,9 @@ levels:
     defines: []
     globals: {}
     textgoal: '"concat" glues arrays together'
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []

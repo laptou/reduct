@@ -13,6 +13,12 @@ levels:
     textgoal: >-
       Just as a reminder, "get" gets an item from a list. Hint: the list starts
       at position 0. 
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function first(a) {return get(a,0);}'
       - '[A, B, C]'
@@ -24,6 +30,12 @@ levels:
       - 'function first(a) {return get(a,0);}'
     globals: {}
     textgoal: First allows you to get the first item in a list.
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function first(a) {return _}'
       - '[B, A, A]'
@@ -38,6 +50,12 @@ levels:
     defines: []
     globals: {}
     textgoal: Can you get the first item from this list?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function remove_first(a) {return length(a) < 2 ? []: slice(a, 1,
@@ -53,6 +71,12 @@ levels:
         length(a))}
     globals: {}
     textgoal: Remove_first allows you to remove the first item in a list.
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function remove_first(a) {return _ < _ ? _: slice(a, 1, length(a))}'
       - '[A]'
@@ -73,6 +97,12 @@ levels:
     textgoal: >-
       What happens when the list only has one item in it? Hint: length allows
       you to find the length of a list and slice cuts up an array.
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function remove_first(a) {return length(a) < 2 ? []: _}'
       - '[A, B, B, A]'
@@ -90,3 +120,9 @@ levels:
     defines: []
     globals: {}
     textgoal: What happens in a normal list?
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []

@@ -11,6 +11,12 @@ levels:
       - 'function isTriangle(x) { return x == TRIANGLE }'
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function isStar(x) { return _; }'
       - '__tests(testMe(STAR), testMe(RECT), testMe(STAR))'
@@ -28,6 +34,12 @@ levels:
       - 'function isStar(x) { return x == ''STAR''; }'
     globals: {}
     textgoal: 'Define a function that outputs true if x is {a star}, otherwise false'
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - '__argumentAnnotated; function isZero(x) { return _; }'
       - _ == _
@@ -49,6 +61,12 @@ levels:
       - 'function isZero(x) { return x == 0; }'
     globals: {}
     textgoal: 'Define a function that outputs true if x is 0, otherwise false'
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function add(x,y) { return (_ + _); }'
       - x
@@ -67,6 +85,12 @@ levels:
     defines: []
     globals: {}
     textgoal: Define a function that adds two numbers
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function equals(x, y) { return _; }'
       - _ == _
@@ -84,6 +108,12 @@ levels:
     defines: []
     globals: {}
     textgoal: 'Define a function that outputs true if x and y are equal, otherwise false'
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - '__argumentAnnotated; function equals(x, y) { return _; }'
       - _ == _
@@ -104,6 +134,12 @@ levels:
       - 'function equals(x, y) { return x == y; }'
     globals: {}
     textgoal: 'Define a function that outputs true if x and y are equal, otherwise false'
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function starIs1(x) { return _ ? 1 : 0; }'
       - x == _
@@ -120,6 +156,12 @@ levels:
     defines: []
     globals: {}
     textgoal: 'Define a function that outputs 1 if x is {a star}'
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function alwaysOne(x) { return _; }'
       - '_ ? x : 1'
@@ -139,6 +181,12 @@ levels:
       - 'function alwaysOne(x) { return x == 1 ? x : 1; }'
     globals: {}
     textgoal: Define a function that always outputs 1
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function firstNonZero(x, y) { return _; }'
       - '_ ? _ : x'
@@ -160,3 +208,9 @@ levels:
       - 'function firstNonZero(x, y) { return x == 0 ? x : y; }'
     globals: {}
     textgoal: 'Define a function that outputs x if it is non zero and y otherwise '
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []

@@ -13,6 +13,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - _ + 1
       - _ + 1
@@ -27,6 +33,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - _ + 1
       - _ - 1
@@ -41,6 +53,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 3
       - _ + _
@@ -55,6 +73,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - (x) => _ + 3
       - 5
@@ -66,6 +90,12 @@ levels:
     defines: []
     globals: {}
     textgoal: Create a function to output 8
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - (x) => _ + 3
       - (y) => _ + 2
@@ -82,6 +112,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - (x) => (y) => x + 1
     goal:
@@ -94,6 +130,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - (x) => (y) => x + 2
       - (x) => (y) => y + 3
@@ -107,6 +149,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - (x) => (y) => _ + 2
     goal:
@@ -119,6 +167,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - (x) => (y) => _
       - 1
@@ -132,6 +186,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - (a) => (b) => a + b
     goal:
@@ -145,6 +205,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - (b) => (a) => a + b
       - x => xx
@@ -159,6 +225,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - (a) => (b) => a + b
       - x => xx
@@ -174,6 +246,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - (b) => b + b
     goal:
@@ -187,6 +265,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - (a) => (b) => _ + a
     goal:
@@ -203,6 +287,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - (a) => (b) => _ + b
     goal:
@@ -215,3 +305,9 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []

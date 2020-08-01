@@ -11,6 +11,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function starify(x) { return A; }'
       - 'function squarify(x) { return B; }'
@@ -24,6 +30,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - '__argumentAnnotated; function threeify(x) { return _; }'
       - '__tests(testMe(1),testMe(2),testMe(3))'
@@ -42,6 +54,12 @@ levels:
       - 'function threeify(x) { return 3; }'
     globals: {}
     textgoal: Define a function that outputs 3
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function addThree(x) { return _; }'
       - '__tests(testMe(2), testMe(6))'
@@ -60,3 +78,9 @@ levels:
       - 'function addThree(x) { return addOne(addOne(addOne(x))); }'
     globals: {}
     textgoal: Define a function that computes x plus 3
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []

@@ -10,6 +10,12 @@ levels:
     defines: []
     globals: {}
     textgoal: Define a function to concatenate two strings
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - '"coffee"'
       - '"chocolates"'
@@ -27,6 +33,12 @@ levels:
         reverseString(slice(str,1, length(str))) + x)(get(str,0));}
     globals: {}
     textgoal: Define a function that reverses a string
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function checkPalindrome(str) { return  ((str) == (_)) ? (true) :
@@ -43,6 +55,13 @@ levels:
     defines: []
     globals: {}
     textgoal: Define a function that checks if  string is a palindrome
+    note: null
+    hiddenGlobals:
+      - reverseString
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - '"ooooompalooooompa"'
       - '"ooooompalooooompa"'
@@ -66,3 +85,9 @@ levels:
     defines: []
     globals: {}
     textgoal: Define a function that counts the occurences of a given character
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []

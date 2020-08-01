@@ -18,6 +18,12 @@ levels:
         length(list)); }
     globals: {}
     textgoal: Head and Tail Introduction
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board: []
     goal:
       - 0
@@ -30,6 +36,12 @@ levels:
     defines: []
     globals: {}
     textgoal: Access Elements
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function cons(e,list) { return  concat([e], list); }'
       - '[]'
@@ -46,6 +58,12 @@ levels:
       - 'function cons(e,list) { return  concat([e], list); }'
     globals: {}
     textgoal: Build List
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function duplicate(list) { return concat(list, list); }'
       - '[1,2,3,4,5]'
@@ -57,6 +75,12 @@ levels:
       - 'function duplicate(list) { return concat(list, list); }'
     globals: {}
     textgoal: Demonstrate Duplicate
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function reverse(list) { (length(list) < 2) ? list :
@@ -72,6 +96,12 @@ levels:
         concat(reverse(tail(list)), [head(list)]) }
     globals: {}
     textgoal: Reverse List
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function count(list) {list == [] ? 0 : 1 + count(tail(list))}'
     goal:
@@ -88,6 +118,12 @@ levels:
       - 'function count(list) {list == [] ? 0 : 1 + count(tail(list))}'
     globals: {}
     textgoal: Counting Function
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - count
       - count
@@ -106,6 +142,12 @@ levels:
     defines: []
     globals: {}
     textgoal: Adding Count Results
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - '[10]'
       - '[5,2]'
@@ -120,6 +162,12 @@ levels:
     defines: []
     globals: {}
     textgoal: Count to Build
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - (_) < (_)
       - 'function smallList(list) { return  _; }'
@@ -138,6 +186,12 @@ levels:
     defines: []
     globals: {}
     textgoal: Compare Sizes
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 2
       - '[]'
@@ -150,6 +204,12 @@ levels:
     defines: []
     globals: {}
     textgoal: Powers of Two
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - '[5,4,3,2,1]'
       - (_) == (_)
@@ -172,6 +232,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - >-
         function filter(list,f) { return  ((list) == ([])) ? ([]) :
@@ -194,6 +260,12 @@ levels:
         f))) : (filter(tail(list), f))); }
     globals: {}
     textgoal: Introducing Filter
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - filter
       - filter
@@ -210,6 +282,12 @@ levels:
     defines: []
     globals: {}
     textgoal: Remove Zeros in Lists
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function keepTrue(list) { return  _; }'
       - (x) => _
@@ -229,6 +307,12 @@ levels:
     defines: []
     globals: {}
     textgoal: Keep True Values in the Lists
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function removeNumber(list,num){ return _;}'
       - list
@@ -247,6 +331,12 @@ levels:
     defines: []
     globals: {}
     textgoal: Remove a Specific Number from List
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'function my_filter(list,f) { return  _; }'
       - '[]'
@@ -273,6 +363,12 @@ levels:
     defines: []
     globals: {}
     textgoal: Build Filter
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board: []
     goal: []
     toolbox:
@@ -281,3 +377,9 @@ levels:
       - 'function fold(f, a, i) { return 0;}'
     globals: {}
     textgoal: play
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []

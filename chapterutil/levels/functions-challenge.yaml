@@ -11,6 +11,12 @@ levels:
     defines: []
     globals: {}
     textgoal: 'Create {a square} and {a triangle}'
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - x => y => _
       - y => x => _
@@ -28,6 +34,12 @@ levels:
     defines: []
     globals: {}
     textgoal: 'Create {a star} and {a square}'
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - (x) => (y) => _
       - x => xx
@@ -44,6 +56,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - x => xxx
       - (x) => (y) => _ + _
@@ -63,3 +81,9 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []

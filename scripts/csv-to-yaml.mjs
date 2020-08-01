@@ -70,10 +70,15 @@ import yaml from 'js-yaml';
       const goal = unstringify(eval(record.goal) || []);
       const toolbox = unstringify(eval(record.toolbox) || []);
       const defines = unstringify(eval(record.defines) || []);
+      const hiddenGlobals = unstringify(eval(record.hideGlobals) || []);
+      const autograderInputs = unstringify(eval(record.input) || []);
+      const autograderOutputs = unstringify(eval(record.output) || []);
+      const syntax = eval(record.syntax) || [];
 
       // surround in parens so that curly braces are interpreted as objects and
       // not blocks
       const globals = eval(`(${record.globals})`) || {};
+
       const textgoal = record.textgoal;
       const note = record.note || record['FVG note'] || null;
 
@@ -85,6 +90,12 @@ import yaml from 'js-yaml';
         globals,
         textgoal, 
         note,
+        hiddenGlobals,
+        syntax,
+        autograder: {
+          inputs: autograderInputs,
+          outputs: autograderOutputs
+        }
       });
     }
 

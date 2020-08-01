@@ -10,6 +10,12 @@ levels:
     defines: []
     globals: {}
     textgoal: let expressions
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - x = _ in (x = (x) + (x) in ((x) + (x)))
     goal:
@@ -22,6 +28,12 @@ levels:
     defines: []
     globals: {}
     textgoal: scoping x
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - f = _ in ((((f)(3))(4)) + (((f)(4))(3)))
     goal:
@@ -32,3 +44,9 @@ levels:
     defines: []
     globals: {}
     textgoal: functions in let
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []

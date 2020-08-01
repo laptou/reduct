@@ -12,6 +12,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - (x) => x == 1
       - (number) => 2 == number
@@ -26,6 +32,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - (isTwo) => 2 == isTwo
       - (x) => xx
@@ -39,6 +51,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - (thing1) => (thing2) => thing1 == thing2
       - x => xx
@@ -52,6 +70,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - 'true ? (1 + 2) : (5 + 6)'
     goal:
@@ -60,6 +84,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - '_ ? ''RECT'' : _'
     goal:
@@ -73,6 +103,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - '(truth) => truth ? ''TRIANGLE'' : ''RECT'''
       - '(trueOrFalse) => trueOrFalse ? ''RECT'' : ''STAR'''
@@ -87,6 +123,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - '(z) => z == _ ? 4 : z'
     goal:
@@ -98,6 +140,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - '(x) => x == _ ? 4 : x'
       - '(y) => _ == y ? 5 : y'
@@ -112,6 +160,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - '(thing1) => (thing2) => thing1 == thing2 ? 1 : 2'
       - x => xx
@@ -126,6 +180,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - (oneThing) => (anotherThing) => oneThing== anotherThing
       - (x) => xx
@@ -139,3 +199,9 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []

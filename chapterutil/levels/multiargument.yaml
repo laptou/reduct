@@ -12,6 +12,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - (a) => (b) => b + a
     goal:
@@ -25,6 +31,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - (number) => (dontCare) => number + 1
       - (dontCare) => (number) => number + 3
@@ -40,6 +52,12 @@ levels:
     defines: []
     globals: {}
     textgoal: ''
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - object => y => object
       - A
@@ -50,6 +68,14 @@ levels:
     defines: []
     globals: {}
     textgoal: 'Create {a star}'
+    note: >-
+      This is a logic follower of 10 because like 10 it shows the use of
+      function returning function.
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - x => y => x
       - x => y => y
@@ -64,6 +90,12 @@ levels:
     defines: []
     globals: {}
     textgoal: 'Create {a star} and {a triangle}'
+    note: Scope and how to use it...
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
   - board:
       - x => y => _
     goal:
@@ -76,3 +108,9 @@ levels:
     defines: []
     globals: {}
     textgoal: 'Create {a star}'
+    note: null
+    hiddenGlobals: []
+    syntax: []
+    autograder:
+      inputs: []
+      outputs: []
