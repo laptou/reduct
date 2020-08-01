@@ -917,6 +917,9 @@ export function gameReducer(
 
   case ActionKind.DeleteDocNodes: {
     const rootId = state.docs.get(act.key)!;
+
+    if (!state.nodes.has(rootId)) return state;
+
     const descendants = findNodesDeep(rootId, state.nodes, () => true);
 
     return produce(state, draft => {

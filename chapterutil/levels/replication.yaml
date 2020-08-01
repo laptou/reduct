@@ -42,8 +42,7 @@ levels:
       - TRIANGLE
     goal:
       - RECT
-    toolbox:
-      - ''
+    toolbox: []
     defines: []
     textGoal: 'Create {a square} using functions'
     note: null

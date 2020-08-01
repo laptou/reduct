@@ -67,8 +67,7 @@ levels:
       - RECT
     goal:
       - STAR
-    toolbox:
-      - ''
+    toolbox: []
     defines: []
     textGoal: 'Create {a star}'
     note: >-
@@ -91,8 +90,7 @@ levels:
     goal:
       - STAR
       - TRIANGLE
-    toolbox:
-      - ''
+    toolbox: []
     defines: []
     textGoal: 'Create {a star} and {a triangle}'
     note: Scope and how to use it...

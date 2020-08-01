@@ -4,7 +4,7 @@ levels:
       - STAR
     goal:
       - STAR
-    toolbox:
+    toolbox: []
     defines: []
     textGoal: 'Drop the {star} onto the function!'
     note: >-
@@ -25,8 +25,7 @@ levels:
       - STAR
     goal:
       - STAR
-    toolbox:
-      - ''
+    toolbox: []
     defines: []
     textGoal: 'Use these functions to get {a star}.'
     note: null
@@ -44,8 +43,7 @@ levels:
       - a => a
     goal:
       - a => a
-    toolbox:
-      - ''
+    toolbox: []
     defines: []
     textGoal: The input to a function can be another function
     note: null
@@ -119,8 +117,7 @@ levels:
     goal:
       - STAR
       - STAR
-    toolbox:
-      - ''
+    toolbox: []
     defines: []
     textGoal: 'Create two {stars}'
     note: null

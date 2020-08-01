@@ -3,8 +3,7 @@ levels:
       - (number => number)(1)
     goal:
       - '1'
-    toolbox:
-      - ''
+    toolbox: []
     defines: []
     textGoal: Use the application block
     note: null
