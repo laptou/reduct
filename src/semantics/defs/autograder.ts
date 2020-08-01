@@ -82,7 +82,7 @@ export const autograder: NodeDef<AutograderNode> = {
     /**
         * Generate Input/Output ------------------------------------------------
         */
-    if (f_type == 'reference' || f_type == 'lambda') {
+    if (f_type == 'identifier' || f_type == 'lambda') {
       const finalExpr = [];
       const finalOutput = [];
 

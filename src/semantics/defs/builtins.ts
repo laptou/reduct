@@ -62,7 +62,7 @@ function builtinLength(expr, semant, nodes) {
   console.error('Bad call to length');
 }
 
-function builtinGet(node: DRF<BuiltInReferenceNode>, args: DRF[], nodes: DeepReadonly<NodeMap>): CloneResult {
+function builtinGet(node: DRF<BuiltInIdentifierNode>, args: DRF[], nodes: DeepReadonly<NodeMap>): CloneResult {
   if (args.length !== 2)
     throw new WrongBuiltInParamsCountError(node.id, 2, args.length);
   
@@ -141,7 +141,7 @@ function builtinConcat(expr, semant, nodes) {
   return semant.array(nl + nr, ...elems);
 }
 
-function builtinMap(node: DRF<BuiltInReferenceNode>, args: DRF[], nodes: DeepReadonly<NodeMap>): CloneResult {
+function builtinMap(node: DRF<BuiltInIdentifierNode>, args: DRF[], nodes: DeepReadonly<NodeMap>): CloneResult {
   if (args.length !== 2)
     throw new WrongBuiltInParamsCountError(node.id, 2, args.length);
   
@@ -224,7 +224,7 @@ function builtinFold(expr, semant, nodes) {
   }
   const a_tail = semant.array(n - 1, ...tail);
   let fncall;
-  if (f2.type == 'reference' && f2.fields.params?.length >= 2) {
+  if (f2.type == 'identifier' && f2.fields.params?.length >= 2) {
     fncall = f2;
     f2.subexpressions[`arg_${f2.params[0]}`] = a.elem0;
     f2.subexpressions[`arg_${f2.params[1]}`] = init;
@@ -312,11 +312,11 @@ export const builtins = {
 } as const;
 
 /**
- * Represents a reference to a function that is built into the game (not defined
- * using nodes.) Used to implement functions like set().
+ * Represents an identifier for a function or object that is built into the game
+ * (not defined using nodes.) Used to implement functions like set().
  */
-export interface BuiltInReferenceNode extends BaseNode {
-  type: 'builtin-reference';
+export interface BuiltInIdentifierNode extends BaseNode {
+  type: 'builtin';
   fields: { name: string };
 }
 
@@ -356,7 +356,7 @@ export function genericValidate(expr, semant, state) {
     const expected = params[i][n];
     const actual = nodes.get(expr.get(`arg_${n}`));
     let ty = actual.type;
-    if (ty == 'reference') {
+    if (ty == 'identifier') {
       const r = actual.name;
       if (builtins.has(r)) {
         ty = 'lambda';
