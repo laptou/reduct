@@ -19,7 +19,6 @@ const rootReducer = combineReducers({
 
 const tutorialStore = createStore(rootReducer);
 
-
 export const TutorialTab: React.FC = () => {
   return (
     <div id='reduct-tutorial'>
