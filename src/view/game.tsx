@@ -10,11 +10,11 @@ import { HistoryTab } from './stage/ui/tabs/history';
 import { GameMenuTab } from './stage/ui/tabs/menu';
 import { ToolboxTab } from './stage/ui/tabs/toolbox';
 import { Sidebar } from './stage/ui/tabs/sidebar';
+import { TutorialTab } from './stage/ui/tabs/sidebar/tutorial';
+import { DefinitionsTab } from './stage/ui/tabs/sidebar/definitions';
 
 import { DeepReadonly } from '@/util/helper';
 import { GameMode, GlobalState } from '@/store/state';
-import { TutorialTab } from './stage/ui/tabs/sidebar/tutorial';
-import { DefinitionsTab } from './stage/ui/tabs/sidebar/definitions';
 
 interface GameStoreProps
 {
