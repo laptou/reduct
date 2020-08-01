@@ -454,7 +454,7 @@ export class Semantics {
         return kind === 'expression'
             || kind === 'statement'
             || node.type === 'lambda'
-            || node.type === 'reference';
+            || node.type === 'identifier';
       });
 
       if (containsReduceableExpr) {

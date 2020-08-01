@@ -1,12 +1,12 @@
 import type { BaseNode, ReductNode } from '..';
 
-import type { ReferenceNode } from './reference';
+import type { IdentifierNode } from './identifier';
 
 export interface LetNode extends BaseNode {
   type: 'letExpr';
 
   subexpressions: {
-    variable: ReferenceNode;
+    variable: IdentifierNode;
     value: ReductNode;
     body: ReductNode;
   };

@@ -60,7 +60,7 @@ export function checkDefeat(state: DeepReadonly<GameState>): boolean {
     return kind === 'expression'
         || kind === 'statement'
         || node.type === 'lambda'
-        || node.type === 'reference';
+        || node.type === 'identifier';
   });
 
   if (containsReduceableExpr) {
