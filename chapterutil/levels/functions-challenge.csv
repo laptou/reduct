@@ -1,5 +1,0 @@
-,board,goal,textgoal,FVG text,FVG leanring action,FVG note,,toolbox,defines,globals,syntax,animationScales
-#REF!,"['x => xx', 'x => C', 'A']","['B', 'C']",Create {a square} and {a triangle},TBD,,,What are we traching there? Shall we add a hint? ,['B'],,{},[],{}
-#REF!,"['x => y => _', 'y => x => _', 'A', 'A', 'B', 'C', 'C']","['A', 'B']",Create {a star} and {a square},build your own functions to create a star and a square,P,,OK,"['x', 'y']",,{},[],{}
-24,"['(x) => (y) => _', 'x => xx']",['15'],,53: need to have automatic execution...,,,,"['_ + _', 'x', 'y', '1', '3', '5', '7']",,{},[],{}
-25,"['x => xxx', '(x) => (y) => _ + _']",['16'],,54: Smae here... The creature should introduce the auomatic execution,,,,"['x', 'x', 'y', 'y', '0', '0', '1', '1', '2', '3']",,{},[],{}
