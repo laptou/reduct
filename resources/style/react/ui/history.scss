@@ -2,8 +2,8 @@
 @use 'base';
 
 #reduct-history {
-  @extend %ui-panel-top;
-  @include base.ui-panel-bordered(theme.$accent-5-inverse-default);
+  @include base.ui-panel($accent: hsl(221, 60%, 70%));
+  z-index: 150;
   grid-row: 1;
   grid-column: 3;
 }

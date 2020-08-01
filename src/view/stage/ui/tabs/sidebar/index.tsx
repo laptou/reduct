@@ -51,10 +51,15 @@ const Section: React.FC<SidebarSectionProps> = ({
 }) => {
   return (
     <>
-      <div className='reduct-sidebar-section-title' onClick={() => isOpen ? onClose?.() : onOpen?.()}>
+      <div 
+        className={cx('reduct-sidebar-section-title', { 'reduct-sidebar-section-open': isOpen })}
+        onClick={() => isOpen ? onClose?.() : onOpen?.()}
+      >
         {title}
       </div>
-      <div className={cx('reduct-sidebar-section-content', { 'reduct-sidebar-section-open': isOpen })}>
+      <div 
+        className={cx('reduct-sidebar-section-content', { 'reduct-sidebar-section-open': isOpen })}
+      >
         {children}
       </div>
     </>
