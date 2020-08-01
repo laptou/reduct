@@ -4,7 +4,7 @@ import type {
 import * as fx from '../../gfx/fx';
 import { genericBetaReduce } from '../core';
 
-import { VTupleNode } from './tuple';
+import type { VTupleNode } from './tuple';
 import type { NodeDef } from './base';
 
 import { DeepReadonly } from '@/util/helper';

@@ -935,54 +935,7 @@ export function gameReducer(
 
     return state;
   }
-
-  case ActionKind.SmallStep: {
-    // console.log("@@SMALL_STEP_REDUCE@@");
-    const oldNode = state.nodes.get(act.topNodeId)!;
-
-    if (oldNode.parent && act.newNodeIds.length !== 1)
-    // TODO: handle this more gracefully? Create a vtuple?
-    // TODO: handle when an expression doesn't create anything??
-      throw new Error('Cannot small-step a child expression to multiple new expressions.');
-
-    const newNodeId = act.newNodeIds[0];
-
-    let newState = produce(state, draft => {
-      // update the node map
-      for (const node of act.addedNodes) {
-        draft.nodes.set(node.id, node);
-      }
-
-      // update the board
-      draft.board.delete(act.topNodeId);
-
-      // if the old node was a top level node, add the nodes that it was
-      // turned into to the board
-      if (!oldNode.parent)
-        for (const newNodeId of act.newNodeIds)
-          draft.board.add(newNodeId);
-    });
-
-    // nodes that are added in the first part are not drafted
-    // by Immer since they come from outside, so we need to
-    // call produce() again in order to be able to edit them
-
-    newState = produce(newState, draft => {
-      if (oldNode.parent) {
-        const parent = draft.nodes.get(oldNode.parent)!;
-        parent.subexpressions[oldNode.parentField] = act.newNodeIds[0];
-
-        const child = draft.nodes.get(newNodeId)!;
-        child.parent = parent.id;
-        child.parentField = oldNode.parentField;
-      }
-    });
-
-    act.newNodeIds.forEach((id) => markDirty(newState.nodes, id));
-
-    return newState;
-  }
-
+  
   case ActionKind.CreateDocNodes: {
     return {
       ...state,
@@ -1084,103 +1037,6 @@ export function gameReducer(
     return newState;
   }
 
-  case ActionKind.BetaReduce: {
-    const queue = [act.topNodeId, act.argNodeId];
-    const removedNodes = new Set<number>();
-
-    const addedNodes = act.addedNodes.map((n) => {
-      const id = n.id;
-      if (act.newNodeIds.indexOf(id) >= 0) {
-        return [id, withoutParent(n)];
-      }
-
-      return [id, n];
-    });
-
-    while (queue.length > 0) {
-      const current = queue.pop();
-      const currentNode = state.nodes.get(current)!;
-      removedNodes.add(current);
-      for (const subexpField of semantics.subexpressions(currentNode)) {
-        queue.push(currentNode.subexpressions[subexpField]);
-      }
-    }
-
-    const oldNode = state.nodes.get(act.topNodeId)!;
-
-    const newState = produce(state, draft => {
-      for (const key of removedNodes) {
-        // TODO iaa34: eliminate nodes that were removed by beta reduction in
-        // this action. For now, this is currently handled by the stage for
-        // animation reasons.
-
-        // draft.nodes.delete(key);
-
-        draft.board.delete(key);
-        draft.toolbox.delete(key);
-      }
-
-      for (const [key, node] of addedNodes) {
-        draft.nodes.set(key, node);
-      }
-
-      if (!oldNode.parent) {
-        for (const newNodeId of act.newNodeIds) {
-          draft.board.add(newNodeId);
-        }
-      } else {
-        if (act.newNodeIds.length > 1) {
-          console.error('Can\'t beta reduce nested lambda that produced multiple new nodes!');
-          return;
-        }
-
-        const parent = draft.nodes.get(oldNode.parent)!;
-        parent.subexpressions[oldNode.parentField] = act.newNodeIds[0];
-      }
-    });
-
-    act.newNodeIds.forEach((id) => markDirty(newState.nodes, id));
-
-    return newState;
-  }
-
-  case ActionKind.AttachNotch: {
-    const child = state.getIn(['nodes', act.childId]);
-    if (child.parent) throw 'Dragging objects from one hole to another is unsupported.';
-
-    return state.withMutations((s) => {
-      // s.set("board", s.get("board").filter(n => n !== act.childId));
-      s.set('toolbox', s.toolbox.filter((n) => n !== act.childId));
-      s.set('nodes', s.nodes.withMutations((nodes) => {
-        nodes.set(act.parentId, nodes.get(act.parentId).set(`notch${act.notchIdx}`, act.childId));
-        nodes.set(act.childId, child.withMutations((c) => {
-          c.set('parentField', `notch${act.notchIdx}`);
-          c.set('parent', act.parentId);
-          c.set('locked', false);
-        }));
-      }));
-
-      // TODO: refactor
-      const defn = semantics.definition.expressions[s.getIn(['nodes', act.parentId, 'type'])];
-      if (defn && defn.notches[act.notchIdx]) {
-        const notch = defn.notches[act.notchIdx];
-        if (notch.onAttach) {
-          notch.onAttach(semantics, s, act.parentId, act.childId);
-        }
-      }
-
-      if (s.board.contains(act.childId)) {
-        // Actually remove from the board
-        s.set('board', s.board.filter((n) => n !== act.childId));
-      }
-
-      const nodes = state.nodes;
-      for (const id of state.board.concat(state.toolbox)) {
-        markDirty(nodes, id);
-      }
-    });
-  }
-
   case ActionKind.UseToolbox: {
     if (state.toolbox.has(act.nodeId)) {
       // If node has __meta indicating infinite uses, clone
@@ -1247,13 +1103,6 @@ export function gameReducer(
       node.parent = null;
 
       markDirty(draft.nodes, parentId);
-    });
-  }
-
-  case ActionKind.Victory: {
-    return produce(state, draft => {
-      draft.board.clear();
-      draft.goal.clear();
     });
   }
 
