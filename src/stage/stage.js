@@ -249,7 +249,7 @@ export default class Stage extends BaseStage {
 
       const topLeft = gfxCore.util.topLeftPos(projection, curOffset);
       if (projection.containsPoint(curPos, curOffset)) {
-        if (curNode && curNode.type == 'reference') {
+        if (curNode && curNode.type == 'identifier') {
           res = curExprId;
         }
 
