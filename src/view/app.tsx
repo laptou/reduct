@@ -8,26 +8,25 @@ import { ErrorDisplay } from './banner/error';
 import { LoadingPage } from './stage/ui/loading';
 
 import * as progression from '@/game/progression';
-import Loader from '@/loader';
-
-const assetsPromise = Promise.all([
-  Loader.loadAudioSprite('sounds', 'output'),
-  Loader.loadImageAtlas('spritesheet', 'assets', 'assets.png'),
-  Loader.loadImageAtlas('titlesprites', 'title-assets', 'title-assets.png'),
-  Loader.loadImageAtlas('menusprites', 'menu-assets', 'menu-assets.png'),
-  Loader.loadChapters('Elementary', progression.ACTIVE_PROGRESSION_DEFINITION),
-]);
 
 const Game = React.lazy(async () => {
-  // load code and wait for assets
-  const promises = [
-    await import('./game'),
-    await import('@/store'),
-    assetsPromise,
-  ] as const;
+  const assetsPromise = 
+    import(/* webpackChunkName: "loader" */ '@/loader')
+      .then(({ default: loader }) => Promise.all([
+        loader.loadAudioSprite('sounds', 'output'),
+        // comment this out b/c no images are currently used in the game
+        // loader.loadImageAtlas('spritesheet', 'assets', 'assets.png'),
+        // loader.loadImageAtlas('titlesprites', 'title-assets', 'title-assets.png'),
+        // loader.loadImageAtlas('menusprites', 'menu-assets', 'menu-assets.png'),
+        loader.loadChapters('Elementary', progression.ACTIVE_PROGRESSION_DEFINITION),
+      ]));
 
-  // retrieve loaded code modules
-  const [game, store] = await Promise.all(promises);
+  // load modules of code and retrieve assets
+  const [game, store] = await Promise.all([
+    import(/* webpackChunkName: "game" */ './game'),
+    import(/* webpackChunkName: "store" */ '@/store'),
+    assetsPromise,
+  ]);
 
   // wait for persistor to load state into store
   await new Promise((resolve) => {
