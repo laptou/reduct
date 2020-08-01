@@ -3,9 +3,7 @@
  * read it.
  */
 
-import React, {
-  ReactPortal, useEffect, useRef, useState, 
-} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { connect } from 'react-redux';
 

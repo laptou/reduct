@@ -28,7 +28,7 @@ const GoalImpl: FunctionComponent<GoalProps> =
     );
   };
 
-export const Goal = connect(
+export const GoalTab = connect(
   (state: DeepReadonly<GlobalState>) => ({
     nodeIds: state.game.$present.goal,
   })

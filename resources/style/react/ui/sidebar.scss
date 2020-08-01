@@ -1,0 +1,49 @@
+@use '../theme';
+@use 'base';
+
+#reduct-sidebar {
+  @extend %ui-panel;
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  grid-row: 1 / 5;
+  grid-column: 1;
+  align-items: stretch;
+  justify-content: stretch;
+  overflow: hidden;
+
+  width: 30vw;
+  max-width: 20rem;
+  margin: 0.5rem 0.5rem 0.5rem 0;
+  padding: 0;
+  border-radius: 0 0.25rem 0.25rem 0;
+}
+
+.reduct-sidebar-section-title {
+  flex-grow: 0;
+  flex-shrink: 0;
+
+  padding: 1rem;
+
+  background: hsla(0, 80%, 50%, 1);
+
+  color: white;
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  cursor: pointer;
+}
+
+.reduct-sidebar-section-content {
+  flex-basis: 0;
+  overflow-y: auto;
+
+  transition: flex-basis 0.25s ease-in-out;
+
+  &.reduct-sidebar-section-open {
+    flex-basis: 100%;
+  }
+}
+
