@@ -63,10 +63,10 @@ levels:
       outputs: []
   - board:
       - object => y => object
-      - A
-      - B
+      - STAR
+      - RECT
     goal:
-      - A
+      - STAR
     toolbox:
       - ''
     defines: []
@@ -84,13 +84,13 @@ levels:
   - board:
       - x => y => x
       - x => y => y
-      - A
-      - B
-      - D
-      - C
+      - STAR
+      - RECT
+      - CIRCLE
+      - TRIANGLE
     goal:
-      - A
-      - C
+      - STAR
+      - TRIANGLE
     toolbox:
       - ''
     defines: []
@@ -106,10 +106,10 @@ levels:
   - board:
       - x => y => _
     goal:
-      - A
+      - STAR
     toolbox:
-      - A
-      - B
+      - STAR
+      - RECT
       - x
       - 'y'
     defines: []

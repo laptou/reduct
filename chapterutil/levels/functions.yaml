@@ -1,11 +1,10 @@
 levels:
   - board:
       - x => x
-      - A
+      - STAR
     goal:
-      - A
+      - STAR
     toolbox:
-      - ''
     defines: []
     textGoal: 'Drop the {star} onto the function!'
     note: >-
@@ -23,9 +22,9 @@ levels:
       - object => object
       - x => x
       - something => something
-      - A
+      - STAR
     goal:
-      - A
+      - STAR
     toolbox:
       - ''
     defines: []
@@ -73,14 +72,14 @@ levels:
       inputs: []
       outputs: []
   - board:
-      - B
+      - RECT
     goal:
-      - B
-      - B
+      - RECT
+      - RECT
     toolbox:
-      - C
-      - B
-      - A
+      - TRIANGLE
+      - RECT
+      - STAR
     defines: []
     textGoal: >-
       Use the toolbox at the bottom of the screen to place two {squares} on the
@@ -114,12 +113,12 @@ levels:
       inputs: []
       outputs: []
   - board:
-      - x => A
-      - A
-      - D
+      - x => STAR
+      - STAR
+      - CIRCLE
     goal:
-      - A
-      - A
+      - STAR
+      - STAR
     toolbox:
       - ''
     defines: []
@@ -134,17 +133,17 @@ levels:
       outputs: []
   - board:
       - x => x
-      - dontCare => A
-      - whatever => B
+      - dontCare => STAR
+      - whatever => RECT
     goal:
-      - C
-      - B
-      - A
+      - TRIANGLE
+      - RECT
+      - STAR
     toolbox:
-      - A
-      - D
-      - C
-      - C
+      - STAR
+      - CIRCLE
+      - TRIANGLE
+      - TRIANGLE
     defines: []
     textGoal: 'Create a {star}, {square}, and {triangle}'
     note: null
@@ -198,10 +197,10 @@ levels:
   - board:
       - x => x
     goal:
-      - B
+      - RECT
     toolbox:
-      - something => B
-      - dont_care => C
+      - something => RECT
+      - dont_care => TRIANGLE
     defines: []
     textGoal: 'Create {a square}'
     note: null

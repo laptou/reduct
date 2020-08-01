@@ -1,7 +1,7 @@
 levels:
   - board:
       - 'function count(a) {return (a == []) ? 0: count(remove_first(a)) + 1}'
-      - '[A, A, C, A]'
+      - '[STAR, STAR, TRIANGLE, STAR]'
     goal:
       - '4'
     toolbox:
@@ -31,7 +31,7 @@ levels:
       - '0'
       - '[]'
       - '[]'
-      - '[A]'
+      - '[STAR]'
     defines: []
     textGoal: Can you count a list with no items in it?
     note: null
@@ -55,7 +55,7 @@ levels:
       - count
       - remove_first
       - '1'
-      - '[B, B, B]'
+      - '[RECT, RECT, RECT]'
       - a
       - '0'
     defines: []
@@ -83,7 +83,7 @@ levels:
       - '0'
       - '1'
       - a
-      - '[A, B, C, A]'
+      - '[STAR, RECT, TRIANGLE, STAR]'
       - '[]'
     defines: []
     textGoal: Can you count a mixed list?
@@ -108,9 +108,9 @@ levels:
       - '3'
     toolbox:
       - count_target
-      - A
-      - B
-      - '[A, B, A, A]'
+      - STAR
+      - RECT
+      - '[STAR, RECT, STAR, STAR]'
     defines: []
     textGoal: Can you count only one type of object?
     note: null
@@ -134,8 +134,8 @@ levels:
       - '0'
     toolbox:
       - count_target
-      - A
-      - B
+      - STAR
+      - RECT
       - '0'
       - '1'
       - '[]'
@@ -168,8 +168,8 @@ levels:
       - remove_first
       - a
       - target
-      - '[B, A, A]'
-      - B
+      - '[RECT, STAR, STAR]'
+      - RECT
     defines: []
     textGoal: Can you count to 1?
     note: null
@@ -198,9 +198,9 @@ levels:
       - count_target
       - target
       - a
-      - A
+      - STAR
       - count_target
-      - '[A, A, A]'
+      - '[STAR, STAR, STAR]'
     defines: []
     textGoal: Can we still count this list?
     note: null
@@ -228,8 +228,8 @@ levels:
       - remove_first
       - first
       - count_target
-      - B
-      - '[B, A, B]'
+      - RECT
+      - '[RECT, STAR, RECT]'
       - a
       - count_target
     defines: []
@@ -258,8 +258,8 @@ levels:
       - __unlimited; remove_first
       - '1'
       - '0'
-      - B
-      - '[B, B, B, A]'
+      - RECT
+      - '[RECT, RECT, RECT, STAR]'
     defines: []
     textGoal: Can you fill out the whole thing?
     note: null
@@ -287,9 +287,9 @@ levels:
       - __unlimited; 0
       - __unlimited; 1
       - '__unlimited; []'
-      - A
-      - B
-      - '[A, B, B, A]'
+      - STAR
+      - RECT
+      - '[STAR, RECT, RECT, STAR]'
       - '[]'
     defines: []
     textGoal: Let's fill out the whole function!
@@ -308,10 +308,10 @@ levels:
   - board:
       - concat
     goal:
-      - '[A, B, A]'
+      - '[STAR, RECT, STAR]'
     toolbox:
-      - '[A]'
-      - '[B, A]'
+      - '[STAR]'
+      - '[RECT, STAR]'
     defines: []
     textGoal: 'Just as a reminder, concat glues two arrays together. '
     note: null
@@ -328,11 +328,11 @@ levels:
         remove_value(remove_first(a), target): concat([first(a)],
         remove_value(remove_first(a), target))}
     goal:
-      - '[A, A, A]'
+      - '[STAR, STAR, STAR]'
     toolbox:
       - remove_value
-      - B
-      - '[A, B, A, A]'
+      - RECT
+      - '[STAR, RECT, STAR, STAR]'
     defines: []
     textGoal: Can you remove something from this list?
     note: null
@@ -380,16 +380,16 @@ levels:
         remove_value(remove_first(a), target): concat([first(a)],
         remove_value(remove_first(a), target))}
     goal:
-      - '[B, B, B]'
+      - '[RECT, RECT, RECT]'
     toolbox:
       - remove_value
       - remove_first
       - first
       - a
       - target
-      - A
-      - B
-      - '[A, B, B, B]'
+      - STAR
+      - RECT
+      - '[STAR, RECT, RECT, RECT]'
     defines: []
     textGoal: What do you want to remove?
     note: null
@@ -409,7 +409,7 @@ levels:
         function remove_value(a, target) {(a == []) ? []: (first(a) == target) ?
         _ : concat([first(a)], remove_value(remove_first(a), target))}
     goal:
-      - '[A, A]'
+      - '[STAR, STAR]'
     toolbox:
       - __unlimited; remove_value
       - remove_first
@@ -417,8 +417,8 @@ levels:
       - first
       - a
       - concat
-      - B
-      - '[A, B, A, B]'
+      - RECT
+      - '[STAR, RECT, STAR, RECT]'
     defines: []
     textGoal: What happens when your first item is the target?
     note: null
@@ -439,7 +439,7 @@ levels:
         remove_value(remove_first(a, target), _ ):concat([first(a)],
         remove_value(remove(first(a), target))}
     goal:
-      - '[B, B]'
+      - '[RECT, RECT]'
     toolbox:
       - concat
       - '[first(a)]'
@@ -448,8 +448,8 @@ levels:
       - __unlimited; remove_value
       - remove_first
       - target
-      - A
-      - '[A, A, B, B]'
+      - STAR
+      - '[STAR, STAR, RECT, RECT]'
     defines: []
     textGoal: What happens when your first item isn't the target?
     note: null
@@ -469,7 +469,7 @@ levels:
         function remove_value(a, target) {(a == []) ? []: (first(a) == target) ?
         _ : _}
     goal:
-      - '[A, A, A]'
+      - '[STAR, STAR, STAR]'
     toolbox:
       - __unlimited; concat
       - '__unlimited; [first(a)]'
@@ -478,8 +478,8 @@ levels:
       - __unlimited; remove_value
       - __unlimited; remove_first
       - __unlimited; target
-      - A
-      - '[A, B, B, A, A]'
+      - STAR
+      - '[STAR, RECT, RECT, STAR, STAR]'
     defines: []
     textGoal: Can you fill out the entire bottom section?
     note: null
@@ -496,10 +496,10 @@ levels:
       outputs: []
   - board:
       - 'function remove_value(a, target) {(_ == _) ? _: (_ == _) ? _ : _}'
-      - '[A, B, A, A]'
-      - B
+      - '[STAR, RECT, STAR, STAR]'
+      - RECT
     goal:
-      - '[A, A, A]'
+      - '[STAR, STAR, STAR]'
     toolbox:
       - __unlimited; concat
       - '__unlimited; [first(a)]'

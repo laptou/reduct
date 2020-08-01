@@ -1,9 +1,9 @@
 levels:
   - board:
       - 'function head(a) {return get(a,0);}'
-      - '[A, B, C]'
+      - '[STAR, RECT, TRIANGLE]'
     goal:
-      - A
+      - STAR
     toolbox:
       - head
     defines:
@@ -21,9 +21,9 @@ levels:
       - >-
         function removeFirst(a) {return length(a) < 2 ? []: slice(a, 1,
         length(a))}
-      - '[A, A, B, A]'
+      - '[STAR, STAR, RECT, STAR]'
     goal:
-      - '[A, B, A]'
+      - '[STAR, RECT, STAR]'
     toolbox:
       - removeHead
     defines:

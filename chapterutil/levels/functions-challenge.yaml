@@ -1,13 +1,13 @@
 levels:
   - board:
       - x => xx
-      - x => C
-      - A
+      - x => TRIANGLE
+      - STAR
     goal:
-      - B
-      - C
+      - RECT
+      - TRIANGLE
     toolbox:
-      - B
+      - RECT
     defines: []
     textGoal: 'Create {a square} and {a triangle}'
     note: null
@@ -21,14 +21,14 @@ levels:
   - board:
       - x => y => _
       - y => x => _
-      - A
-      - A
-      - B
-      - C
-      - C
+      - STAR
+      - STAR
+      - RECT
+      - TRIANGLE
+      - TRIANGLE
     goal:
-      - A
-      - B
+      - STAR
+      - RECT
     toolbox:
       - x
       - 'y'

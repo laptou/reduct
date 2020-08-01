@@ -1,9 +1,9 @@
 levels:
   - board:
       - 'get(a, _)'
-      - '[A, B, B]'
+      - '[STAR, RECT, RECT]'
     goal:
-      - A
+      - STAR
     toolbox:
       - '0'
       - '1'
@@ -22,9 +22,9 @@ levels:
       outputs: []
   - board:
       - 'function first(a) {return get(a,0);}'
-      - '[A, B, C]'
+      - '[STAR, RECT, TRIANGLE]'
     goal:
-      - A
+      - STAR
     toolbox:
       - first
     defines:
@@ -40,14 +40,14 @@ levels:
       outputs: []
   - board:
       - 'function first(a) {return _}'
-      - '[B, A, A]'
+      - '[RECT, STAR, STAR]'
     goal:
-      - B
+      - RECT
     toolbox:
       - first
       - 'get(a,_)'
       - '1'
-      - A
+      - STAR
       - '0'
     defines: []
     textGoal: Can you get the first item from this list?
@@ -63,9 +63,9 @@ levels:
       - >-
         function remove_first(a) {return length(a) < 2 ? []: slice(a, 1,
         length(a))}
-      - '[A, A, B, A]'
+      - '[STAR, STAR, RECT, STAR]'
     goal:
-      - '[A, B, A]'
+      - '[STAR, RECT, STAR]'
     toolbox:
       - remove_first
     defines:
@@ -83,7 +83,7 @@ levels:
       outputs: []
   - board:
       - 'function remove_first(a) {return _ < _ ? _: slice(a, 1, length(a))}'
-      - '[A]'
+      - '[STAR]'
     goal:
       - '[]'
     toolbox:
@@ -95,7 +95,7 @@ levels:
       - '2'
       - '[]'
       - a
-      - A
+      - STAR
     defines: []
     textGoal: >-
       What happens when the list only has one item in it? Hint: length allows
@@ -110,9 +110,9 @@ levels:
       outputs: []
   - board:
       - 'function remove_first(a) {return length(a) < 2 ? []: _}'
-      - '[A, B, B, A]'
+      - '[STAR, RECT, RECT, STAR]'
     goal:
-      - '[B, B, A]'
+      - '[RECT, RECT, STAR]'
     toolbox:
       - remove_first
       - length(a)

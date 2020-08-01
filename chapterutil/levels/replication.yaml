@@ -2,10 +2,10 @@ levels:
   - board:
       - object => _
     goal:
-      - B
+      - RECT
     toolbox:
-      - D
-      - B
+      - CIRCLE
+      - RECT
     defines: []
     textGoal: 'Build your own function to create a {square}'
     note: null
@@ -19,9 +19,9 @@ levels:
   - board:
       - x => _
     goal:
-      - A
+      - STAR
     toolbox:
-      - A
+      - STAR
       - x
       - 'y'
     defines: []
@@ -37,11 +37,11 @@ levels:
   - board:
       - something => _
       - something_else => _
-      - A
-      - B
-      - C
+      - STAR
+      - RECT
+      - TRIANGLE
     goal:
-      - B
+      - RECT
     toolbox:
       - ''
     defines: []
@@ -57,12 +57,12 @@ levels:
   - board:
       - x => xx
     goal:
-      - C
-      - C
+      - TRIANGLE
+      - TRIANGLE
     toolbox:
-      - A
-      - B
-      - C
+      - STAR
+      - RECT
+      - TRIANGLE
     defines: []
     textGoal: 'Create two {triangles}'
     note: >-

@@ -1,8 +1,8 @@
 levels:
   - board:
-      - 'function star() { return A; }'
+      - 'function star() { return STAR; }'
     goal:
-      - A
+      - STAR
     toolbox:
       - STAR
     defines: []
@@ -16,12 +16,12 @@ levels:
       inputs: []
       outputs: []
   - board:
-      - 'function star() { return A; }'
-      - 'function rect() { return B; }'
+      - 'function star() { return STAR; }'
+      - 'function rect() { return RECT; }'
     goal:
-      - B
-      - B
-      - A
+      - RECT
+      - RECT
+      - STAR
     toolbox:
       - __unlimited;star
       - __unlimited;rect
@@ -37,12 +37,12 @@ levels:
       outputs: []
   - board:
       - 'function trianglify(object) { return _; }'
-      - A
-      - D
-      - C
+      - STAR
+      - CIRCLE
+      - TRIANGLE
     goal:
-      - C
-      - C
+      - TRIANGLE
+      - TRIANGLE
     toolbox:
       - __unlimited;trianglify
     defines: []

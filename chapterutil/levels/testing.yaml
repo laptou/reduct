@@ -1,13 +1,13 @@
 levels:
   - board:
-      - '__tests(testMe(A), testMe(C))'
+      - '__tests(testMe(STAR), testMe(TRIANGLE))'
     goal:
-      - A
-      - A
+      - STAR
+      - STAR
     toolbox:
-      - x => A
-      - x => B
-      - x => C
+      - x => STAR
+      - x => RECT
+      - x => TRIANGLE
     defines: []
     textGoal: ''
     note: null
@@ -19,12 +19,12 @@ levels:
       inputs: []
       outputs: []
   - board:
-      - 'function starify(x) { return A; }'
-      - 'function squarify(x) { return B; }'
-      - '__tests(testMe(C), testMe(B))'
+      - 'function starify(x) { return STAR; }'
+      - 'function squarify(x) { return RECT; }'
+      - '__tests(testMe(TRIANGLE), testMe(RECT))'
     goal:
-      - A
-      - A
+      - STAR
+      - STAR
     toolbox:
       - __unlimited; starify
       - __unlimited; squarify

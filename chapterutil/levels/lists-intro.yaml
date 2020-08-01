@@ -2,12 +2,12 @@ levels:
   - board:
       - '[_, _, _]'
     goal:
-      - '[A, B, C]'
+      - '[STAR, RECT, TRIANGLE]'
     toolbox:
-      - A
-      - B
-      - C
-      - D
+      - STAR
+      - RECT
+      - TRIANGLE
+      - CIRCLE
       - '9'
     defines: []
     textGoal: Make an array with three elements
@@ -51,7 +51,7 @@ levels:
       - '2'
       - '3'
       - '4'
-      - B
+      - RECT
     defines: []
     textGoal: '"map" applies a function to every element'
     note: null
@@ -89,7 +89,7 @@ levels:
       - '0'
     toolbox:
       - '[1,2,3,4]'
-      - '[A,B,C]'
+      - '[STAR,RECT,TRIANGLE]'
       - '[]'
       - '[true]'
       - __unlimited; length
@@ -132,7 +132,7 @@ levels:
       - '[4]'
       - '[_,2]'
       - '[4,3]'
-      - A
+      - STAR
       - '3'
     defines: []
     textGoal: '"concat" glues arrays together'
