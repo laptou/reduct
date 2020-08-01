@@ -1,2 +1,2 @@
 board,goal,textgoal,toolbox,defines,globals,syntax,animationScales,hideGlobals
-"[]","[]","play","['addOne']","['function fold(f, a, i) { return 0;}']",{},[],{},["addOne"]
+"[]","[]","play","['addOne']","['function fold(f, a, i) { return 0;}']",{},[],{},['addOne']
