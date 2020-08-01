@@ -37,13 +37,17 @@ import yaml from 'js-yaml';
     const csvFilePath = resolve(chapterDirectory, fileName);
     const contents = await fs.readFile(csvFilePath);
     const parser = csv.parse(contents, {
+      // return objects instead of arrays, treat first row as header
       columns: true,
+      // trim trailing spaces
       rtrim: true,
+      // don't throw exception if a row has fewer columns than header
       relaxColumnCount: true,
     });
 
     const levels = [];
 
+    // to unwrap values that don't need to be strings
     const unstringify = (arr) => arr.reduce((acc, item) => {
       const int = parseInt(item, 10);
       if (!isNaN(int)) { acc.push(int); return acc; }
@@ -60,7 +64,7 @@ import yaml from 'js-yaml';
     }, []);
 
     for await (const record of parser) {
-      // there are singlequotes and empty fields in the CSV files, so eval will
+      // there may be singlequotes and empty fields in the CSV files, so eval will
       // do a better job than JSON parse
       const board = unstringify(eval(record.board) || []);
       const goal = unstringify(eval(record.goal) || []);
@@ -71,6 +75,7 @@ import yaml from 'js-yaml';
       // not blocks
       const globals = eval(`(${record.globals})`) || {};
       const textgoal = record.textgoal;
+      const note = record.note || record['FVG note'];
 
       levels.push({
         board,
@@ -79,6 +84,7 @@ import yaml from 'js-yaml';
         defines,
         globals,
         textgoal, 
+        note,
       });
     }
 
