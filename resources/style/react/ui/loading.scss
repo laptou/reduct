@@ -1,0 +1,44 @@
+@use '../text';
+
+.reduct-loading-anim {
+  vertical-align: middle;
+
+  height: 2rem;
+}
+
+.reduct-loading-anim-square {
+  stroke: black;
+
+  transform-origin: 100% 100%;
+  animation-name: reduct-loading-anim-rotate, reduct-loading-anim-color;
+  animation-duration: 0.5s, 0.5s;
+  animation-iteration-count: infinite, infinite;
+  animation-direction: normal, alternate;
+  stroke-width: 1px;
+}
+
+.reduct-loading-text {
+  padding: 0.5rem;
+
+  font-family: text.$mono-font;
+}
+
+@keyframes reduct-loading-anim-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: translateX(-100%) rotate(90deg);
+  }
+}
+
+@keyframes reduct-loading-anim-color {
+  0% {
+    fill: black;
+  }
+
+  100% {
+    fill: white;
+  }
+}
