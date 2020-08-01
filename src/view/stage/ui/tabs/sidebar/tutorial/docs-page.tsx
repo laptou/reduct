@@ -12,7 +12,7 @@ import { GlobalState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
 import { StageProjection } from '@/view/stage/projection/base';
 
-interface DocAttributes {
+export interface DocAttributes {
   type: string;
   name: string;
   example: string;
