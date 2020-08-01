@@ -1,5 +1,0 @@
-board,goal,toolbox,defines,globals,textgoal,note
-"[""__tests(testMe(A), testMe(C))""]","[""A"",""A""]","[""x => A"",""x => B"",""x => C""]",[],{},,
-"[""function starify(x) { return A; }"",""function squarify(x) { return B; }"",""__tests(testMe(C), testMe(B))""]","[""A"",""A""]","[""__unlimited; starify"",""__unlimited; squarify""]",[],{},,
-"[""__argumentAnnotated; function threeify(x) { return _; }"",""__tests(testMe(1),testMe(2),testMe(3))""]","[3,3,3]","[""__unlimited; threeify"",""x => _"",""x"",1,2,3]","[""function threeify(x) { return 3; }""]",{},Define a function that outputs 3,
-"[""function addThree(x) { return _; }"",""__tests(testMe(2), testMe(6))"",""x""]","[5,9]","[""__unlimited; _(_)"",""__unlimited; addThree"",""addOne"",""addOne"",""addOne"",""__unlimited;doNothing;""]","[""function addThree(x) { return addOne(addOne(addOne(x))); }""]",{},Define a function that computes x plus 3,

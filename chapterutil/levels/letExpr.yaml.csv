@@ -1,4 +1,0 @@
-board,goal,toolbox,defines,globals,textgoal,note
-"[""x = _ in ((x) + (x))""]",[4],"[2,3,5]",[],{},let expressions,
-"[""x = _ in (x = (x) + (x) in ((x) + (x)))""]",[4],"[1,2,3,4]",[],{},scoping x,
-"[""f = _ in ((((f)(3))(4)) + (((f)(4))(3)))""]",[0],"[""(x) => (y) => (x) + (y)"",""(x) => (y) => (x) - (y)""]",[],{},functions in let,
