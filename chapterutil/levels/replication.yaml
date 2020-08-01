@@ -1,0 +1,113 @@
+levels:
+  - board:
+      - object => _
+    goal:
+      - B
+    toolbox:
+      - D
+      - B
+    defines: []
+    globals: {}
+    textgoal: 'Build your own function to create a {square}'
+  - board:
+      - x => _
+    goal:
+      - A
+    toolbox:
+      - A
+      - x
+      - 'y'
+    defines: []
+    globals: {}
+    textgoal: 'Hint: create a function that gives back the input'
+  - board:
+      - something => _
+      - something_else => _
+      - A
+      - B
+      - C
+    goal:
+      - B
+    toolbox: []
+    defines: []
+    globals: {}
+    textgoal: 'Create {a square} using functions'
+  - board:
+      - x => xx
+    goal:
+      - C
+      - C
+    toolbox:
+      - A
+      - B
+      - C
+    defines: []
+    globals: {}
+    textgoal: 'Create two {triangles}'
+  - board:
+      - (x) => xx
+      - _ + 7
+      - 4
+    goal:
+      - 5
+      - 5
+      - 9
+    toolbox:
+      - 1
+      - 2
+      - 3
+    defines: []
+    globals: {}
+    textgoal: ''
+  - board:
+      - (x) => xx
+      - (number) => _ + number
+    goal:
+      - 5
+      - 6
+    toolbox:
+      - 1
+      - 2
+      - 3
+      - 4
+    defines: []
+    globals: {}
+    textgoal: Create a function to add 2 to the input
+  - board:
+      - x => xx
+    goal:
+      - 11
+    toolbox:
+      - (m) => m + 1
+      - (z) => z + 2
+      - 6
+      - 7
+      - 8
+    defines: []
+    globals: {}
+    textgoal: Choose your functions wisely
+  - board:
+      - x => x + x
+    goal:
+      - 4
+    toolbox:
+      - 0
+      - 1
+      - 3
+      - y => y + y
+    defines: []
+    globals: {}
+    textgoal: ''
+  - board:
+      - (x) => x + _
+      - x => xx
+    goal:
+      - 8
+    toolbox:
+      - x
+      - 0
+      - 1
+      - 2
+    defines: []
+    globals: {}
+    textgoal: 'Hint: what function should you duplicate?'

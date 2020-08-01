@@ -1,0 +1,734 @@
+levels:
+  - board:
+      - 'function count(a) {return (a == []) ? 0: count(remove_first(a)) + 1}'
+      - '[A, A, C, A]'
+    goal:
+      - 4
+    toolbox:
+      - count
+      - first
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: Let's count to 4!
+  - board:
+      - 'function count(a) {return (a == _) ? _: count(remove_first(a)) + 1}'
+    goal:
+      - 0
+    toolbox:
+      - count
+      - remove_first
+      - 0
+      - '[]'
+      - '[]'
+      - '[A]'
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: Can you count a list with no items in it?
+  - board:
+      - 'function count(a) {return (a == []) ? 0: _ + _}'
+      - count
+    goal:
+      - 3
+    toolbox:
+      - count
+      - remove_first
+      - 1
+      - '[B, B, B]'
+      - a
+      - 0
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: Let's count to 3!
+  - board:
+      - 'function count(a) {return (a == _) ? _ : _ + _}'
+      - count
+    goal:
+      - 4
+    toolbox:
+      - remove_first
+      - count
+      - 0
+      - 1
+      - a
+      - '[A, B, C, A]'
+      - '[]'
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: Can you count a mixed list?
+  - board:
+      - >-
+        function count_target(a, target) {(a == []) ? 0: (first(a) == target) ?
+        count_target(remove_first(a), target) + 1: count_target(remove_first(a),
+        target)}
+    goal:
+      - 3
+    toolbox:
+      - count_target
+      - A
+      - B
+      - '[A, B, A, A]'
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: Can you count only one type of object?
+  - board:
+      - >-
+        function count_target(a, target) {(_ == _) ? _: (first(a) == target) ?
+        count_target(remove_first(a), target) + 1: count_target(remove_first(a),
+        target)}
+    goal:
+      - 0
+    toolbox:
+      - count_target
+      - A
+      - B
+      - 0
+      - 1
+      - '[]'
+      - '[]'
+      - a
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: Let's count a list of 0!
+  - board:
+      - >-
+        function count_target(a, target) {(a == []) ? 0: (_ == _) ?
+        count_target(remove_first(a), target) + 1: count_target(remove_first(a),
+        target)}
+    goal:
+      - 1
+    toolbox:
+      - count_target
+      - first
+      - remove_first
+      - a
+      - target
+      - '[B, A, A]'
+      - B
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: Can you count to 1?
+  - board:
+      - >-
+        function count_target(a, target) {(a == []) ? 0: (first(a) == target) ?
+        _ + _: count_target(remove_first(a), target)}
+    goal:
+      - 3
+    toolbox:
+      - first
+      - remove_first
+      - 0
+      - 1
+      - count_target
+      - target
+      - a
+      - A
+      - count_target
+      - '[A, A, A]'
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: Can we still count this list?
+  - board:
+      - >-
+        function count_target(a, target) {(a == []) ? 0: (first(a) == target) ?
+        count_target(remove_first(a), target) + 1: _}
+    goal:
+      - 2
+    toolbox:
+      - 0
+      - 1
+      - target
+      - remove_first
+      - first
+      - count_target
+      - B
+      - '[B, A, B]'
+      - a
+      - count_target
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: Can you fill out the bottom part?
+  - board:
+      - 'function count_target(a, target) {(a == []) ? 0:( _ == _) ? _ + _: _}'
+    goal:
+      - 3
+    toolbox:
+      - __unlimited; first
+      - __unlimited; target
+      - __unlimited; a
+      - __unlimited; count_target
+      - __unlimited; remove_first
+      - 1
+      - 0
+      - B
+      - '[B, B, B, A]'
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: Can you fill out the whole thing?
+  - board:
+      - 'function count_target(a, target) {(a == []) ? 0: (_ == _) ? _ + _: _}'
+    goal:
+      - 2
+    toolbox:
+      - __unlimited; first
+      - __unlimited; target
+      - __unlimited; a
+      - __unlimited; remove_first
+      - __unlimited; count_target
+      - __unlimited; 0
+      - __unlimited; 1
+      - '__unlimited; []'
+      - A
+      - B
+      - '[A, B, B, A]'
+      - '[]'
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: Let's fill out the whole function!
+  - board:
+      - concat
+    goal:
+      - '[A, B, A]'
+    toolbox:
+      - '[A]'
+      - '[B, A]'
+    defines: []
+    globals: {}
+    textgoal: 'Just as a reminder, concat glues two arrays together. '
+  - board:
+      - >-
+        function remove_value(a, target) {(a == []) ? []: (first(a) == target) ?
+        remove_value(remove_first(a), target): concat([first(a)],
+        remove_value(remove_first(a), target))}
+    goal:
+      - '[A, A, A]'
+    toolbox:
+      - remove_value
+      - B
+      - '[A, B, A, A]'
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: Can you remove something from this list?
+  - board:
+      - >-
+        function remove_value(a, target) {(_ == _) ? _: (first(a) == target) ?
+        remove_value(remove_first(a), target): concat([first(a)],
+        remove_value(remove_fisrt(a), target))}
+    goal:
+      - '[]'
+    toolbox:
+      - remove_value
+      - '__unlimited; []'
+      - 0
+      - 1
+      - a
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: What happens when you put in an empty list?
+  - board:
+      - >-
+        function remove_value(a, target) {(a == []) ? []: (_ == _) ?
+        remove_value(remove_first(a), target): concat([first(a)],
+        remove_value(remove_first(a), target))}
+    goal:
+      - '[B, B, B]'
+    toolbox:
+      - remove_value
+      - remove_first
+      - first
+      - a
+      - target
+      - A
+      - B
+      - '[A, B, B, B]'
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: What do you want to remove?
+  - board:
+      - >-
+        function remove_value(a, target) {(a == []) ? []: (first(a) == target) ?
+        _ : concat([first(a)], remove_value(remove_first(a), target))}
+    goal:
+      - '[A, A]'
+    toolbox:
+      - __unlimited; remove_value
+      - remove_first
+      - target
+      - first
+      - a
+      - concat
+      - B
+      - '[A, B, A, B]'
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: What happens when your first item is the target?
+  - board:
+      - >-
+        function remove_value(a, target) {(a == []) ? []: (first(a) == target) ?
+        remove_value(remove_first(a, target), _ ):concat([first(a)],
+        remove_value(remove(first(a), target))}
+    goal:
+      - '[B, B]'
+    toolbox:
+      - concat
+      - '[first(a)]'
+      - first
+      - __unlimited; a
+      - __unlimited; remove_value
+      - remove_first
+      - target
+      - A
+      - '[A, A, B, B]'
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: What happens when your first item isn't the target?
+  - board:
+      - >-
+        function remove_value(a, target) {(a == []) ? []: (first(a) == target) ?
+        _ : _}
+    goal:
+      - '[A, A, A]'
+    toolbox:
+      - __unlimited; concat
+      - '__unlimited; [first(a)]'
+      - __unlimited; first
+      - __unlimited; a
+      - __unlimited; remove_value
+      - __unlimited; remove_first
+      - __unlimited; target
+      - A
+      - '[A, B, B, A, A]'
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: Can you fill out the entire bottom section?
+  - board:
+      - 'function remove_value(a, target) {(_ == _) ? _: (_ == _) ? _ : _}'
+      - '[A, B, A, A]'
+      - B
+    goal:
+      - '[A, A, A]'
+    toolbox:
+      - __unlimited; concat
+      - '__unlimited; [first(a)]'
+      - __unlimited; first
+      - __unlimited; a
+      - __unlimited; remove_value
+      - __unlimited; remove_first
+      - __unlimited; target
+      - '__unlimited; []'
+      - __unlimited; 0
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: Can you fill out the whole thing?
+  - board:
+      - >-
+        function replace_value(a, target, replacement) {(a == []) ? [] :
+        (first(a) == target) ? concat([replacement],
+        replace_value(remove_first(a), target, replacement)):
+        concat([first(a)],replace_value(remove_first(a), target, replacement))}
+      - replace_value
+      - '[5, 6, 7]'
+    goal:
+      - '[5, 8, 7]'
+    toolbox:
+      - 6
+      - 8
+      - 7
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: Replace value allows you to replace one value for another.
+  - board:
+      - >-
+        function replace_value(a, target, replacement) {(_ == _) ? _ : (first(a)
+        == target) ? concat([replacement], replace_value(remove_first(a),
+        target, replacement)): concat([first(a)],replace_value(remove_first(a),
+        target, replacement))}
+      - replace_value
+      - '[5, 6, 7]'
+    goal:
+      - '[]'
+    toolbox:
+      - 0
+      - a
+      - '__unlimited; []'
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: What happens when you have an empty list?
+  - board:
+      - >-
+        function replace_value(a, target, replacement) {(a == []) ? [] : (_ ==
+        _) ? concat([replacement], replace_value(remove_first(a), target,
+        replacement)): concat([first(a)],replace_value(remove_first(a), target,
+        replacement))}
+      - replace_value
+      - '[4, 7, 8]'
+      - 7
+      - 9
+    goal:
+      - '[4, 9, 8]'
+    toolbox:
+      - first
+      - a
+      - target
+      - replacement
+      - remove_first
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: How can you make sure you are replacing the right value?
+  - board:
+      - >-
+        function replace_value(a, target, replacement) {(a == []) ? [] :
+        (first(a) == target) ?  _:
+        concat([first(a)],replace_value(remove_first(a), target, replacement))}
+      - replace_value
+      - '[6, 7, 11]'
+      - 11
+      - 9
+    goal:
+      - '[6, 7, 9]'
+    toolbox:
+      - concat
+      - replacement
+      - '[replacement]'
+      - replace_value
+      - first
+      - a
+      - remove_first
+      - target
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: What happens when the first value is the target?
+  - board:
+      - >-
+        function replace_value(a, target, replacement) {(a == []) ? [] :
+        (first(a) == target) ? concat([replacement],
+        replace_value(remove_first(a), target, replacement)): _}
+      - replace_value
+      - '[3,4]'
+      - 5
+      - 3
+    goal:
+      - '[5, 4]'
+    toolbox:
+      - concat
+      - first
+      - '[first]'
+      - a
+      - replace_value
+      - a
+      - remove_first
+      - target
+      - replacement
+      - '[remove_first]'
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: What happens if the first value isn't the target?
+  - board:
+      - >-
+        function replace_value(a, target, replacement) {(a == []) ? [] :
+        (first(a) == target) ? _ : _}
+      - replace_value
+      - '[7,9]'
+      - 9
+      - 2
+    goal:
+      - '[7, 2]'
+    toolbox:
+      - __unlimited; concat
+      - __unlimited; replacement
+      - '__unlimited; [replacement]'
+      - __unlimited; replace_value
+      - __unlimited; remove_first
+      - __unlimited; a
+      - __unlimited; target
+      - __unlimited; first
+      - '__unlimited; [first]'
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: Let's fill out the bottom part!
+  - board:
+      - >-
+        function replace_value(a, target, replacement) {(_ == _) ? _: (_ == _) ?
+        _ : _}
+      - replace_value
+      - '[12, 15, 21]'
+      - 12
+      - 14
+    goal:
+      - '[14, 15, 21]'
+    toolbox:
+      - __unlimited; concat
+      - __unlimited; replacement
+      - '__unlimited; [replacement]'
+      - __unlimited; replace_value
+      - __unlimited; remove_first
+      - __unlimited; a
+      - __unlimited; target
+      - __unlimited; first
+      - '__unlimited; [first]'
+      - '__unlimited; []'
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: Let's fill out the whole function!
+  - board:
+      - >-
+        function insert_in_order(a, target) {(a == []) ? [target] : (first(a) <
+        target) ? concat([first(a)], insert_in_order(remove_first(a), target)):
+        concat([target],a)}
+      - insert_in_order
+      - '[10, 15, 18]'
+    goal:
+      - '[10, 14, 15, 18'
+    toolbox:
+      - 14
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: Insert in order inserts a number so the whole list is sorted.
+  - board:
+      - >-
+        function insert_in_order(a, target) {(_ == _) ? _ : (first(a) < target)
+        ? concat([first(a)], insert_in_order(remove_first(a), target)):
+        concat([target],a)}
+      - insert_in_order
+      - '[]'
+      - 2
+    goal:
+      - '[2]'
+    toolbox:
+      - a
+      - 0
+      - '[]'
+      - target
+      - '[target]'
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: What happens when you have an empty list?
+  - board:
+      - >-
+        function insert_in_order(a, target) {(a == []) ? [target] : (_ < _) ?
+        concat([first(a)], insert_in_order(remove_first(a), target)):
+        concat([target],a)}
+      - insert_in_order
+      - '[1, 2, 3]'
+      - 4
+    goal:
+      - '[1, 2, 3, 4]'
+    toolbox:
+      - first
+      - a
+      - target
+      - remove_first
+      - '[target]'
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: How do you make sure you are inserting in the right place?
+  - board:
+      - >-
+        function insert_in_order(a, target) {(a == []) ? [target] : (first(a) <
+        target) ? _: concat([target],a)}
+      - insert_in_order
+      - '[5, 6]'
+      - 7
+    goal:
+      - '[5, 6, 7]'
+    toolbox:
+      - target
+      - a
+      - remove_first
+      - '[remove_first]'
+      - insert_in_order
+      - '[first]'
+      - a
+      - first
+      - concat
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: What happens when your position value is less than the target?
+  - board:
+      - >-
+        function insert_in_order(a, target) {(a == []) ? [target] : (first(a) <
+        target) ? concat([first(a)], insert_in_order(remove_first(a), target)):
+        _}
+      - insert_in_order
+      - '[6, 7, 8]'
+      - 9
+    goal:
+      - '[6, 7, 8, 9]'
+    toolbox:
+      - concat
+      - a
+      - target
+      - '[target]'
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: What happens when your position value is more than the target?
+  - board:
+      - >-
+        function insert_in_order(a, target) {(a == []) ? [target] : (first(a) <
+        target) ? _ : _}
+      - insert_in_order
+      - '[10, 15, 23]'
+      - 21
+    goal:
+      - '[10, 15, 21, 23]'
+    toolbox:
+      - __unlimited; concat
+      - __unlimited; first
+      - '__unlimited; [first]'
+      - __unlimited; a
+      - __unlimited; insert_in_order
+      - __unlimited; remove_first
+      - __unlimited; target
+      - '__unlimited; [target]'
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: Let's fill out the bottom part!
+  - board:
+      - >-
+        function insert_in_order(a, target) {(a == []) ? [target] : (first(a) <
+        target) ? _ : _}
+      - insert_in_order
+      - '[25, 29, 36]'
+      - 21
+    goal:
+      - '[21, 25, 29, 36]'
+    toolbox:
+      - __unlimited; concat
+      - __unlimited; first
+      - '__unlimited; [first]'
+      - __unlimited; a
+      - __unlimited; insert_in_order
+      - __unlimited; remove_first
+      - __unlimited; target
+      - '__unlimited; [target]'
+      - '__unlimited; []'
+    defines: []
+    globals:
+      first: 'function first(a) {return get(a,0);}'
+      remove_first: >-
+        function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+        length(a))}
+    textgoal: Let's fill out the whole function!

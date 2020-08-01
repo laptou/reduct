@@ -1,0 +1,34 @@
+levels:
+  - board:
+      - x = _ in ((x) + (x))
+    goal:
+      - 4
+    toolbox:
+      - 2
+      - 3
+      - 5
+    defines: []
+    globals: {}
+    textgoal: let expressions
+  - board:
+      - x = _ in (x = (x) + (x) in ((x) + (x)))
+    goal:
+      - 4
+    toolbox:
+      - 1
+      - 2
+      - 3
+      - 4
+    defines: []
+    globals: {}
+    textgoal: scoping x
+  - board:
+      - f = _ in ((((f)(3))(4)) + (((f)(4))(3)))
+    goal:
+      - 0
+    toolbox:
+      - (x) => (y) => (x) + (y)
+      - (x) => (y) => (x) - (y)
+    defines: []
+    globals: {}
+    textgoal: functions in let

@@ -1,0 +1,68 @@
+levels:
+  - board:
+      - 'function concatStrings(a,b) { return  (a) + (b); }'
+      - '"Computer"'
+    goal:
+      - '"ComputerScience"'
+    toolbox:
+      - concatStrings
+      - '"Science"'
+    defines: []
+    globals: {}
+    textgoal: Define a function to concatenate two strings
+  - board:
+      - '"coffee"'
+      - '"chocolates"'
+      - >-
+        function reverseString(str) {return str == "" ? "" :
+        reverseString(slice(str,1, length(str))) + get(str,0);}
+    goal:
+      - '"eeffocsetalocohc"'
+    toolbox:
+      - reverseString
+      - (_) + (_)
+    defines:
+      - >-
+        function reverseString(str) {return str == "" ? "" : (x =>
+        reverseString(slice(str,1, length(str))) + x)(get(str,0));}
+    globals: {}
+    textgoal: Define a function that reverses a string
+  - board:
+      - >-
+        function checkPalindrome(str) { return  ((str) == (_)) ? (true) :
+        (false); }
+      - '"ababa"'
+      - '"abcd"'
+      - str
+    goal:
+      - true
+      - false
+    toolbox:
+      - reverseString
+      - __unlimited;checkPalindrome
+    defines: []
+    globals: {}
+    textgoal: Define a function that checks if  string is a palindrome
+  - board:
+      - '"ooooompalooooompa"'
+      - '"ooooompalooooompa"'
+      - >-
+        function countAs(str,char,counter) { return  ((str) == ("")) ? (counter)
+        : (((get(str, 0)) == (char)) ? (countAs(slice(str, 1, length(str)),
+        char, (counter) + (1))) : (countAs(slice(str, 1, length(str)), char,
+        counter))); }
+    goal:
+      - 10
+      - 2
+    toolbox:
+      - __unlimited;countAs
+      - __unlimited;0
+      - __unlimited;1
+      - '"o"'
+      - '"m"'
+      - '"p"'
+      - '"a"'
+      - '"l"'
+    defines: []
+    globals: {}
+    textgoal: Define a function that counts the occurences of a given character

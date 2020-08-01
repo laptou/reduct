@@ -1,0 +1,94 @@
+levels:
+  - board:
+      - 'function star() { return A; }'
+    goal:
+      - A
+    toolbox:
+      - STAR
+    defines: []
+    globals: {}
+    textgoal: 'Move the def block to the left box to define the word {star}!'
+  - board:
+      - 'function star() { return A; }'
+      - 'function rect() { return B; }'
+    goal:
+      - B
+      - B
+      - A
+    toolbox:
+      - __unlimited;star
+      - __unlimited;rect
+    defines: []
+    globals: {}
+    textgoal: Reach the goal by creating new definitions!
+  - board:
+      - 'function trianglify(object) { return _; }'
+      - A
+      - D
+      - C
+    goal:
+      - C
+      - C
+    toolbox:
+      - __unlimited;trianglify
+    defines: []
+    globals: {}
+    textgoal: 'Define a function that takes an input and outputs {a triangle}'
+  - board:
+      - 'function addOne(number) { return _; }'
+      - 2
+      - 4
+    goal:
+      - 3
+      - 6
+    toolbox:
+      - __unlimited;addOne
+      - number
+      - _ + 1
+    defines:
+      - 'function addOne(x) { return x + 1; }'
+    globals: {}
+    textgoal: Define a function that computes x plus 1
+  - board:
+      - 3
+      - 7
+    goal:
+      - 6
+      - 9
+    toolbox:
+      - __unlimited;addOne;
+    defines: []
+    globals: {}
+    textgoal: ''
+  - board:
+      - '__argumentAnnotated; function doNothing(x) { return _ }'
+      - _(7)
+      - _(3)
+    goal:
+      - 4
+      - 7
+    toolbox:
+      - __unlimited;addOne;
+      - __unlimited; doNothing
+      - x => _
+      - x
+    defines:
+      - 'function doNothing(x) { return x; }'
+    globals: {}
+    textgoal: Define a function that outputs the input it is given
+  - board:
+      - _(addOne(4))
+      - _(_(1))
+      - addOne(_(10))
+    goal:
+      - 2
+      - 6
+      - 11
+    toolbox:
+      - addOne
+      - addOne
+      - doNothing
+      - doNothing
+    defines: []
+    globals: {}
+    textgoal: ''

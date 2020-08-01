@@ -44,17 +44,28 @@ import yaml from 'js-yaml';
 
     const levels = [];
 
-    const destr = (arr) => arr.map((item) => eval(item));
+    const unstringify = (arr) => arr.reduce((acc, item) => {
+      const int = parseInt(item, 10);
+      if (!isNaN(int)) { acc.push(int); return acc; }
+
+      const float = parseFloat(item, 10);
+      if (!isNaN(float)) { acc.push(float); return acc; }
+
+      if (item === 'true') { acc.push(true); return acc; }
+      if (item === 'false') { acc.push(false); return acc; }
+      if (item === '') return acc;
+
+      acc.push(item);
+      return acc;
+    }, []);
 
     for await (const record of parser) {
       // there are singlequotes and empty fields in the CSV files, so eval will
       // do a better job than JSON parse
-      const board = eval(record.board) || [];
-      const goal = eval(record.goal) || [];
-      const toolbox = eval(record.toolbox) || [];
-      const defines = eval(record.defines) || [];
-
-      
+      const board = unstringify(eval(record.board) || []);
+      const goal = unstringify(eval(record.goal) || []);
+      const toolbox = unstringify(eval(record.toolbox) || []);
+      const defines = unstringify(eval(record.defines) || []);
 
       // surround in parens so that curly braces are interpreted as objects and
       // not blocks

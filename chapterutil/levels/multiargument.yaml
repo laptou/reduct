@@ -1,0 +1,78 @@
+levels:
+  - board:
+      - (firstNumber) => (secondNumber) => firstNumber + secondNumber
+    goal:
+      - 7
+    toolbox:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+    defines: []
+    globals: {}
+    textgoal: ''
+  - board:
+      - (a) => (b) => b + a
+    goal:
+      - 12
+    toolbox:
+      - 1
+      - 11
+      - 8
+      - 4
+      - 5
+    defines: []
+    globals: {}
+    textgoal: ''
+  - board:
+      - (number) => (dontCare) => number + 1
+      - (dontCare) => (number) => number + 3
+    goal:
+      - 4
+      - 6
+    toolbox:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+    defines: []
+    globals: {}
+    textgoal: ''
+  - board:
+      - object => y => object
+      - A
+      - B
+    goal:
+      - A
+    toolbox: []
+    defines: []
+    globals: {}
+    textgoal: 'Create {a star}'
+  - board:
+      - x => y => x
+      - x => y => y
+      - A
+      - B
+      - D
+      - C
+    goal:
+      - A
+      - C
+    toolbox: []
+    defines: []
+    globals: {}
+    textgoal: 'Create {a star} and {a triangle}'
+  - board:
+      - x => y => _
+    goal:
+      - A
+    toolbox:
+      - A
+      - B
+      - x
+      - 'y'
+    defines: []
+    globals: {}
+    textgoal: 'Create {a star}'

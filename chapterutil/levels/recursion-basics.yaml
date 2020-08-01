@@ -1,0 +1,136 @@
+levels:
+  - board:
+      - 15
+      - 'function countDown(n) { return n == 10 ? n : countDown(n-1); }'
+    goal:
+      - 10
+    toolbox:
+      - countDown
+    defines: []
+    globals: {}
+    textgoal: This function uses recursion to count down to 0
+  - board:
+      - 5
+      - 'function countDown(n) { return n == _ ? n : countDown(_ - 1); }'
+      - 'n'
+    goal:
+      - 1
+    toolbox:
+      - countDown
+      - 3
+      - 1
+      - 'n'
+    defines: []
+    globals: {}
+    textgoal: Define a function that counts down to 1
+  - board:
+      - 'function countUpTo(x, n) { return x == _ ? x : countUpTo(x + 1, n); }'
+    goal:
+      - 5
+    toolbox:
+      - countUpTo
+      - 10
+      - 5
+      - 1
+      - 'n'
+    defines: []
+    globals: {}
+    textgoal: We can use recursion to count up too.
+  - board:
+      - 'function countUpTo(x, n) { return x == _ ? x : countUpTo(_, _); }'
+      - 8
+      - 5
+    goal:
+      - 10
+      - 10
+    toolbox:
+      - '__unlimited; countUpTo(_, 10)'
+      - x + 1
+      - __unlimited; n
+    defines: []
+    globals: {}
+    textgoal: ''
+  - board:
+      - >-
+        function countAboveFive(num){ return num == 5 ? _ : countAboveFive(_)  +
+        1;}
+      - 0
+      - _ - 1
+      - num
+      - __autograder(0)
+      - __autograder(1)
+      - __autograder(2)
+      - __autograder(3)
+    goal:
+      - _
+      - _
+      - _
+      - _
+    toolbox:
+      - __unlimited;countAboveFive
+    defines:
+      - 'function countToFive(x) { return x == 5 ? x : countToFive(x + 1); }'
+    globals: {}
+    textgoal: Define a function that outputs the difference between x and 5
+  - board:
+      - 'function countAboveTen(x) { return _; }'
+      - __autograder(0)
+      - __autograder(1)
+      - _ == _
+      - '_ ? _ : _ '
+      - 10
+      - countAboveTen
+    goal:
+      - _
+      - _
+    toolbox:
+      - maybe
+      - __unlimited;countAboveTen
+      - _ + 1
+      - _ - 1
+      - x
+      - x
+      - 0
+    defines:
+      - >-
+        function howFarFromTen(x) { return x == 10 ? 0 : 1 + howFarFromTen(x +
+        1); }
+    globals: {}
+    textgoal: Define a function that outputs the difference between x and 10
+  - board:
+      - >-
+        function difference(num, target){ return num == target ? 0 :
+        difference(num - 1, target)  + 1;}
+      - __autograder(1)
+      - __autograder(0)
+      - __autograder(2)
+    goal:
+      - _
+      - _
+      - _
+    toolbox:
+      - __unlimited;difference
+    defines: []
+    globals: {}
+    textgoal: Define a function that outputs the difference between two numbers
+  - board:
+      - 'function difference(x,y) { return _; }'
+      - '_ == _ ? _ : _'
+      - __autograder(0)
+      - difference
+    goal:
+      - _
+    toolbox:
+      - difference
+      - _ + 1
+      - _ - 1
+      - __unlimited; x
+      - __unlimited; y
+      - 0
+      - '!_'
+    defines:
+      - >-
+        function howFarFromTen(x) { return x == 10 ? 0 : 1 + howFarFromTen(x +
+        1); }
+    globals: {}
+    textgoal: Define a function that outputs the difference between two numbers

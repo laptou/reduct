@@ -1,0 +1,128 @@
+levels:
+  - board:
+      - x => x
+      - A
+    goal:
+      - A
+    toolbox: []
+    defines: []
+    globals: {}
+    textgoal: 'Drop the {star} onto the function!'
+  - board:
+      - object => object
+      - x => x
+      - something => something
+      - A
+    goal:
+      - A
+    toolbox: []
+    defines: []
+    globals: {}
+    textgoal: 'Use these functions to get {a star}.'
+  - board:
+      - Function => Function
+      - object => object
+      - a => a
+    goal:
+      - a => a
+    toolbox: []
+    defines: []
+    globals: {}
+    textgoal: The input to a function can be another function
+  - board:
+      - 1
+    goal:
+      - 2
+    toolbox: []
+    defines: []
+    globals: {}
+    textgoal: This is an expression you can click on
+  - board:
+      - B
+    goal:
+      - B
+      - B
+    toolbox:
+      - C
+      - B
+      - A
+    defines: []
+    globals: {}
+    textgoal: >-
+      Use the toolbox at the bottom of the screen to place two {squares} on the
+      board
+  - board: []
+    goal:
+      - 5
+      - 8
+    toolbox:
+      - 2
+      - 3
+      - 4
+      - 1
+    defines: []
+    globals: {}
+    textgoal: ''
+  - board:
+      - x => A
+      - A
+      - D
+    goal:
+      - A
+      - A
+    toolbox: []
+    defines: []
+    globals: {}
+    textgoal: 'Create two {stars}'
+  - board:
+      - x => x
+      - dontCare => A
+      - whatever => B
+    goal:
+      - C
+      - B
+      - A
+    toolbox:
+      - A
+      - D
+      - C
+      - C
+    defines: []
+    globals: {}
+    textgoal: 'Create a {star}, {square}, and {triangle}'
+  - board:
+      - (number) => number + 1
+    goal:
+      - 4
+    toolbox:
+      - 2
+      - 3
+      - 4
+      - 5
+    defines: []
+    globals: {}
+    textgoal: ''
+  - board:
+      - (number) => number + 3
+      - (i) => i + 1
+    goal:
+      - 8
+    toolbox:
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+    defines: []
+    globals: {}
+    textgoal: 'Hint: you can’t add a function to a number'
+  - board:
+      - x => x
+    goal:
+      - B
+    toolbox:
+      - something => B
+      - dont_care => C
+    defines: []
+    globals: {}
+    textgoal: 'Create {a square}'

@@ -1,0 +1,97 @@
+levels:
+  - board:
+      - '[_, _, _]'
+    goal:
+      - '[A, B, C]'
+    toolbox:
+      - A
+      - B
+      - C
+      - D
+      - 9
+    defines: []
+    globals: {}
+    textgoal: Make an array with three elements
+  - board:
+      - get
+      - '[STAR, RECT, _, CIRCLE]'
+    goal:
+      - TRIANGLE
+    toolbox:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - TRIANGLE
+      - '(_)(_, _)'
+    defines: []
+    globals: {}
+    textgoal: '"get" can get an element from an array'
+  - board:
+      - 'map([1, _, 4], addOne)'
+    goal:
+      - '[2, 4, 5]'
+    toolbox:
+      - 1
+      - 2
+      - 3
+      - 4
+      - B
+    defines: []
+    globals: {}
+    textgoal: '"map" applies a function to every element'
+  - board:
+      - 'map([1, 2, 4, 8], _)'
+    goal:
+      - '[2, 4, 8, 16]'
+    toolbox:
+      - x => x + _
+      - y => y
+      - 1
+      - 2
+      - x
+      - 16
+    defines: []
+    globals: {}
+    textgoal: ''
+  - board: []
+    goal:
+      - 3
+      - 0
+    toolbox:
+      - '[1,2,3,4]'
+      - '[A,B,C]'
+      - '[]'
+      - '[true]'
+      - __unlimited; length
+      - (_)(_)
+    defines: []
+    globals: {}
+    textgoal: '"length" gives the number of elements'
+  - board:
+      - 'map(_, length)'
+      - '[[STAR], _, _]'
+    goal:
+      - '[1, 0, 2]'
+    toolbox:
+      - 0
+      - '[STAR, RECT]'
+      - '[]'
+    defines: []
+    globals: {}
+    textgoal: An array can hold other arrays
+  - board:
+      - '[1]'
+    goal:
+      - '[4,3,2,1]'
+    toolbox:
+      - __unlimited; concat
+      - '[4]'
+      - '[_,2]'
+      - '[4,3]'
+      - A
+      - 3
+    defines: []
+    globals: {}
+    textgoal: '"concat" glues arrays together'

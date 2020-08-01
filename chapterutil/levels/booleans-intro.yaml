@@ -1,0 +1,139 @@
+levels:
+  - board:
+      - TRIANGLE == STAR
+      - _ == STAR
+    goal:
+      - true
+      - false
+    toolbox:
+      - STAR
+      - TRIANGLE
+      - RECT
+    defines: []
+    globals: {}
+    textgoal: ''
+  - board:
+      - (x) => x == 1
+      - (number) => 2 == number
+      - 2
+    goal:
+      - true
+      - false
+    toolbox:
+      - 1
+      - 3
+      - 4
+    defines: []
+    globals: {}
+    textgoal: ''
+  - board:
+      - (isTwo) => 2 == isTwo
+      - (x) => xx
+    goal:
+      - false
+      - true
+    toolbox:
+      - 2
+      - 3
+      - 2
+    defines: []
+    globals: {}
+    textgoal: ''
+  - board:
+      - false
+      - _ == _
+      - _ == 2
+    goal:
+      - false
+    toolbox:
+      - 2
+      - 3
+    defines: []
+    globals: {}
+    textgoal: ''
+  - board:
+      - '_ ? RECT : _'
+    goal:
+      - STAR
+    toolbox:
+      - false
+      - true
+      - TRIANGLE
+      - STAR
+      - RECT
+    defines: []
+    globals: {}
+    textgoal: ''
+  - board:
+      - '(truth) => truth ? TRIANGLE : RECT'
+      - '(trueOrFalse) => trueOrFalse ? RECT : STAR'
+    goal:
+      - TRIANGLE
+      - STAR
+    toolbox:
+      - true
+      - false
+      - true
+      - false
+    defines: []
+    globals: {}
+    textgoal: ''
+  - board:
+      - '(z) => z == _ ? 4 : z'
+    goal:
+      - 3
+    toolbox:
+      - 1
+      - 3
+      - 3
+    defines: []
+    globals: {}
+    textgoal: ''
+  - board:
+      - '(thing1) => (thing2) => thing1 == thing2 ? 1 : 2'
+      - 'x => __tuple(x, x)'
+    goal:
+      - 1
+      - 2
+    toolbox:
+      - 3
+      - 2
+      - 3
+      - 4
+    defines: []
+    globals: {}
+    textgoal: ''
+  - board:
+      - '(x) => _ == STAR ? true : _'
+      - x
+    goal:
+      - true
+    toolbox:
+      - RECT
+      - RECT
+      - TRIANGLE
+      - _ == _
+    defines: []
+    globals: {}
+    textgoal: ''
+  - board:
+      - '!_'
+      - '_ == _ '
+    goal:
+      - false
+    toolbox:
+      - __unlimited;'STAR'
+      - __unlimited;'TRIANGLE'
+    defines: []
+    globals: {}
+    textgoal: ''
+  - board:
+      - '!_ ? 3 : 4'
+    goal:
+      - 3
+    toolbox:
+      - true
+      - false
+    defines: []
+    globals: {}
+    textgoal: ''

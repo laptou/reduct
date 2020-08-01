@@ -1,0 +1,9 @@
+levels:
+  - board: []
+    goal: []
+    toolbox:
+      - addOne
+    defines:
+      - 'function fold(f, a, i) { return 0;}'
+    globals: {}
+    textgoal: play
