@@ -9,11 +9,12 @@ levels:
       - x => B
       - x => C
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -28,11 +29,12 @@ levels:
       - __unlimited; starify
       - __unlimited; squarify
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -40,23 +42,24 @@ levels:
       - '__argumentAnnotated; function threeify(x) { return _; }'
       - '__tests(testMe(1),testMe(2),testMe(3))'
     goal:
-      - 3
-      - 3
-      - 3
+      - '3'
+      - '3'
+      - '3'
     toolbox:
       - __unlimited; threeify
       - x => _
       - x
-      - 1
-      - 2
-      - 3
+      - '1'
+      - '2'
+      - '3'
     defines:
       - 'function threeify(x) { return 3; }'
-    globals: {}
-    textgoal: Define a function that outputs 3
+    textGoal: Define a function that outputs 3
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -65,8 +68,8 @@ levels:
       - '__tests(testMe(2), testMe(6))'
       - x
     goal:
-      - 5
-      - 9
+      - '5'
+      - '9'
     toolbox:
       - __unlimited; _(_)
       - __unlimited; addThree
@@ -76,11 +79,12 @@ levels:
       - __unlimited;doNothing;
     defines:
       - 'function addThree(x) { return addOne(addOne(addOne(x))); }'
-    globals: {}
-    textgoal: Define a function that computes x plus 3
+    textGoal: Define a function that computes x plus 3
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []

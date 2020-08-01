@@ -6,11 +6,12 @@ levels:
     toolbox:
       - STAR
     defines: []
-    globals: {}
-    textgoal: 'Move the def block to the left box to define the word {star}!'
+    textGoal: 'Move the def block to the left box to define the word {star}!'
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -25,11 +26,12 @@ levels:
       - __unlimited;star
       - __unlimited;rect
     defines: []
-    globals: {}
-    textgoal: Reach the goal by creating new definitions!
+    textGoal: Reach the goal by creating new definitions!
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -44,49 +46,52 @@ levels:
     toolbox:
       - __unlimited;trianglify
     defines: []
-    globals: {}
-    textgoal: 'Define a function that takes an input and outputs {a triangle}'
+    textGoal: 'Define a function that takes an input and outputs {a triangle}'
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
       - 'function addOne(number) { return _; }'
-      - 2
-      - 4
+      - '2'
+      - '4'
     goal:
-      - 3
-      - 6
+      - '3'
+      - '6'
     toolbox:
       - __unlimited;addOne
       - number
       - _ + 1
     defines:
       - 'function addOne(x) { return x + 1; }'
-    globals: {}
-    textgoal: Define a function that computes x plus 1
+    textGoal: Define a function that computes x plus 1
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
-      - 3
-      - 7
+      - '3'
+      - '7'
     goal:
-      - 6
-      - 9
+      - '6'
+      - '9'
     toolbox:
       - __unlimited;addOne;
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -95,8 +100,8 @@ levels:
       - _(7)
       - _(3)
     goal:
-      - 4
-      - 7
+      - '4'
+      - '7'
     toolbox:
       - __unlimited;addOne;
       - __unlimited; doNothing
@@ -104,11 +109,12 @@ levels:
       - x
     defines:
       - 'function doNothing(x) { return x; }'
-    globals: {}
-    textgoal: Define a function that outputs the input it is given
+    textGoal: Define a function that outputs the input it is given
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -117,20 +123,21 @@ levels:
       - _(_(1))
       - addOne(_(10))
     goal:
-      - 2
-      - 6
-      - 11
+      - '2'
+      - '6'
+      - '11'
     toolbox:
       - addOne
       - addOne
       - doNothing
       - doNothing
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []

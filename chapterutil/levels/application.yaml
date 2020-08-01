@@ -2,14 +2,16 @@ levels:
   - board:
       - (number => number)(1)
     goal:
-      - 1
-    toolbox: []
+      - '1'
+    toolbox:
+      - ''
     defines: []
-    globals: {}
-    textgoal: Use the application block
+    textGoal: Use the application block
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -17,17 +19,18 @@ levels:
       - (x => x + 1)(_)
       - (x => x)(_)
     goal:
-      - 4
+      - '4'
     toolbox:
-      - 2
-      - 3
-      - 4
+      - '2'
+      - '3'
+      - '4'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -36,20 +39,21 @@ levels:
       - _(3)
       - _(8)
     goal:
-      - 1
-      - 6
-      - 8
+      - '1'
+      - '6'
+      - '8'
     toolbox:
       - x => x + 1
       - x => x - 2
       - x => x
       - x => x + 3
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -57,18 +61,19 @@ levels:
       - _(_)
       - x => x + _
     goal:
-      - 7
+      - '7'
     toolbox:
-      - 1
-      - 2
-      - 3
-      - 4
+      - '1'
+      - '2'
+      - '3'
+      - '4'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -77,22 +82,23 @@ levels:
       - _(_)
       - _(_)
       - (x => x + 2)(_)
-      - 1
-      - 3
+      - '1'
+      - '3'
     goal:
-      - 6
-      - 7
+      - '6'
+      - '7'
     toolbox:
       - number => number + _
       - k => k + 2
       - y => y + 3
       - x => x
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []

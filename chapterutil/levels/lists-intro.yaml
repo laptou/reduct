@@ -8,13 +8,14 @@ levels:
       - B
       - C
       - D
-      - 9
+      - '9'
     defines: []
-    globals: {}
-    textgoal: Make an array with three elements
+    textGoal: Make an array with three elements
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -24,19 +25,20 @@ levels:
     goal:
       - TRIANGLE
     toolbox:
-      - 0
-      - 1
-      - 2
-      - 3
-      - 4
+      - '0'
+      - '1'
+      - '2'
+      - '3'
+      - '4'
       - TRIANGLE
       - '(_)(_, _)'
     defines: []
-    globals: {}
-    textgoal: '"get" can get an element from an array'
+    textGoal: '"get" can get an element from an array'
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -45,17 +47,18 @@ levels:
     goal:
       - '[2, 4, 5]'
     toolbox:
-      - 1
-      - 2
-      - 3
-      - 4
+      - '1'
+      - '2'
+      - '3'
+      - '4'
       - B
     defines: []
-    globals: {}
-    textgoal: '"map" applies a function to every element'
+    textGoal: '"map" applies a function to every element'
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -66,23 +69,24 @@ levels:
     toolbox:
       - x => x + _
       - y => y
-      - 1
-      - 2
+      - '1'
+      - '2'
       - x
-      - 16
+      - '16'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board: []
     goal:
-      - 3
-      - 0
+      - '3'
+      - '0'
     toolbox:
       - '[1,2,3,4]'
       - '[A,B,C]'
@@ -91,11 +95,12 @@ levels:
       - __unlimited; length
       - (_)(_)
     defines: []
-    globals: {}
-    textgoal: '"length" gives the number of elements'
+    textGoal: '"length" gives the number of elements'
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -105,15 +110,16 @@ levels:
     goal:
       - '[1, 0, 2]'
     toolbox:
-      - 0
+      - '0'
       - '[STAR, RECT]'
       - '[]'
     defines: []
-    globals: {}
-    textgoal: An array can hold other arrays
+    textGoal: An array can hold other arrays
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -127,13 +133,14 @@ levels:
       - '[_,2]'
       - '[4,3]'
       - A
-      - 3
+      - '3'
     defines: []
-    globals: {}
-    textgoal: '"concat" glues arrays together'
+    textGoal: '"concat" glues arrays together'
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []

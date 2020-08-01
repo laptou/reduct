@@ -47,39 +47,23 @@ import yaml from 'js-yaml';
 
     const levels = [];
 
-    // to unwrap values that don't need to be strings
-    const unstringify = (arr) => arr.reduce((acc, item) => {
-      const int = parseInt(item, 10);
-      if (!isNaN(int)) { acc.push(int); return acc; }
-
-      const float = parseFloat(item, 10);
-      if (!isNaN(float)) { acc.push(float); return acc; }
-
-      if (item === 'true') { acc.push(true); return acc; }
-      if (item === 'false') { acc.push(false); return acc; }
-      if (item === '') return acc;
-
-      acc.push(item);
-      return acc;
-    }, []);
-
     for await (const record of parser) {
       // there may be singlequotes and empty fields in the CSV files, so eval will
       // do a better job than JSON parse
-      const board = unstringify(eval(record.board) || []);
-      const goal = unstringify(eval(record.goal) || []);
-      const toolbox = unstringify(eval(record.toolbox) || []);
-      const defines = unstringify(eval(record.defines) || []);
-      const hiddenGlobals = unstringify(eval(record.hideGlobals) || []);
-      const autograderInputs = unstringify(eval(record.input) || []);
-      const autograderOutputs = unstringify(eval(record.output) || []);
+      const board = eval(record.board) || [];
+      const goal = eval(record.goal) || [];
+      const toolbox = eval(record.toolbox) || [];
+      const defines = eval(record.defines) || [];
+      const hiddenGlobals = eval(record.hideGlobals) || [];
+      const autograderInputs = eval(record.input) || [];
+      const autograderOutputs = eval(record.output) || [];
       const syntax = eval(record.syntax) || [];
 
       // surround in parens so that curly braces are interpreted as objects and
       // not blocks
       const globals = eval(`(${record.globals})`) || {};
 
-      const textgoal = record.textgoal;
+      const textGoal = record.textgoal;
       const note = record.note || record['FVG note'] || null;
 
       levels.push({
@@ -87,11 +71,13 @@ import yaml from 'js-yaml';
         goal,
         toolbox,
         defines,
-        globals,
-        textgoal, 
+        textGoal, 
         note,
-        hiddenGlobals,
         syntax,
+        globals: {
+          add: globals,
+          hide: hiddenGlobals,
+        },
         autograder: {
           inputs: autograderInputs,
           outputs: autograderOutputs

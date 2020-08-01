@@ -2,51 +2,54 @@ levels:
   - board:
       - x = _ in ((x) + (x))
     goal:
-      - 4
+      - '4'
     toolbox:
-      - 2
-      - 3
-      - 5
+      - '2'
+      - '3'
+      - '5'
     defines: []
-    globals: {}
-    textgoal: let expressions
+    textGoal: let expressions
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
       - x = _ in (x = (x) + (x) in ((x) + (x)))
     goal:
-      - 4
+      - '4'
     toolbox:
-      - 1
-      - 2
-      - 3
-      - 4
+      - '1'
+      - '2'
+      - '3'
+      - '4'
     defines: []
-    globals: {}
-    textgoal: scoping x
+    textGoal: scoping x
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
       - f = _ in ((((f)(3))(4)) + (((f)(4))(3)))
     goal:
-      - 0
+      - '0'
     toolbox:
       - (x) => (y) => (x) + (y)
       - (x) => (y) => (x) - (y)
     defines: []
-    globals: {}
-    textgoal: functions in let
+    textGoal: functions in let
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []

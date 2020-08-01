@@ -8,11 +8,12 @@ levels:
       - concatStrings
       - '"Science"'
     defines: []
-    globals: {}
-    textgoal: Define a function to concatenate two strings
+    textGoal: Define a function to concatenate two strings
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -31,11 +32,12 @@ levels:
       - >-
         function reverseString(str) {return str == "" ? "" : (x =>
         reverseString(slice(str,1, length(str))) + x)(get(str,0));}
-    globals: {}
-    textgoal: Define a function that reverses a string
+    textGoal: Define a function that reverses a string
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -47,18 +49,19 @@ levels:
       - '"abcd"'
       - str
     goal:
-      - true
-      - false
+      - 'true'
+      - 'false'
     toolbox:
       - reverseString
       - __unlimited;checkPalindrome
     defines: []
-    globals: {}
-    textgoal: Define a function that checks if  string is a palindrome
+    textGoal: Define a function that checks if  string is a palindrome
     note: null
-    hiddenGlobals:
-      - reverseString
     syntax: []
+    globals:
+      add: {}
+      hide:
+        - reverseString
     autograder:
       inputs: []
       outputs: []
@@ -71,8 +74,8 @@ levels:
         char, (counter) + (1))) : (countAs(slice(str, 1, length(str)), char,
         counter))); }
     goal:
-      - 10
-      - 2
+      - '10'
+      - '2'
     toolbox:
       - __unlimited;countAs
       - __unlimited;0
@@ -83,11 +86,12 @@ levels:
       - '"a"'
       - '"l"'
     defines: []
-    globals: {}
-    textgoal: Define a function that counts the occurences of a given character
+    textGoal: Define a function that counts the occurences of a given character
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []

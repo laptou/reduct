@@ -3,19 +3,20 @@ levels:
       - _ + 1
       - _ - 1
     goal:
-      - 5
-      - 7
+      - '5'
+      - '7'
     toolbox:
-      - 2
-      - 4
-      - 6
-      - 8
+      - '2'
+      - '4'
+      - '6'
+      - '8'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -23,19 +24,20 @@ levels:
       - _ + 1
       - _ + 1
     goal:
-      - 7
+      - '7'
     toolbox:
-      - 3
-      - 4
-      - 5
-      - 6
-      - 7
+      - '3'
+      - '4'
+      - '5'
+      - '6'
+      - '7'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -43,96 +45,101 @@ levels:
       - _ + 1
       - _ - 1
     goal:
-      - 4
+      - '4'
     toolbox:
-      - 2
-      - 3
-      - 4
-      - 5
-      - 6
+      - '2'
+      - '3'
+      - '4'
+      - '5'
+      - '6'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
-      - 3
+      - 3 + _
       - _ + _
     goal:
-      - 7
-      - 9
+      - '7'
+      - '9'
     toolbox:
-      - 3
-      - 4
-      - 5
-      - 6
+      - '3'
+      - '4'
+      - '5'
+      - '6'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
       - (x) => _ + 3
-      - 5
+      - '5'
     goal:
-      - 8
+      - '8'
     toolbox:
       - x
       - 'y'
     defines: []
-    globals: {}
-    textgoal: Create a function to output 8
+    textGoal: Create a function to output 8
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
       - (x) => _ + 3
       - (y) => _ + 2
-      - 9
+      - '9'
     goal:
-      - 5
-      - 6
+      - '5'
+      - '6'
     toolbox:
       - x
       - 'y'
-      - 2
-      - 3
-      - 4
+      - '2'
+      - '3'
+      - '4'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
       - (x) => (y) => x + 1
     goal:
-      - 3
+      - '3'
     toolbox:
-      - 1
-      - 2
-      - 3
-      - 4
+      - '1'
+      - '2'
+      - '3'
+      - '4'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -140,74 +147,78 @@ levels:
       - (x) => (y) => x + 2
       - (x) => (y) => y + 3
     goal:
-      - 7
+      - '7'
     toolbox:
-      - 0
-      - 1
-      - 2
-      - 3
+      - '0'
+      - '1'
+      - '2'
+      - '3'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
       - (x) => (y) => _ + 2
     goal:
-      - 7
+      - '7'
     toolbox:
-      - 5
-      - 6
+      - '5'
+      - '6'
       - x
       - 'y'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
       - (x) => (y) => _
-      - 1
-      - 3
+      - '1'
+      - '3'
     goal:
-      - 6
+      - '6'
     toolbox:
       - x + 2
       - y + 3
       - x + 4
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
       - (a) => (b) => a + b
     goal:
-      - 7
+      - '7'
     toolbox:
-      - 1
-      - 2
-      - 3
-      - 4
-      - 5
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -215,19 +226,20 @@ levels:
       - (b) => (a) => a + b
       - x => xx
     goal:
-      - 4
-      - 6
+      - '4'
+      - '6'
     toolbox:
-      - 1
-      - 2
-      - 3
-      - 4
+      - '1'
+      - '2'
+      - '3'
+      - '4'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -235,79 +247,83 @@ levels:
       - (a) => (b) => a + b
       - x => xx
     goal:
-      - 7
-      - 9
+      - '7'
+      - '9'
     toolbox:
-      - 1
-      - 2
-      - 3
-      - 4
-      - 5
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
       - (b) => b + b
     goal:
-      - 8
+      - '8'
     toolbox:
-      - 1
-      - 2
-      - 3
-      - 4
-      - 5
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
       - (a) => (b) => _ + a
     goal:
-      - 2
-      - 6
+      - '2'
+      - '6'
     toolbox:
-      - 1
-      - 2
-      - 3
-      - 4
-      - 5
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
       - a
       - b
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
       - (a) => (b) => _ + b
     goal:
-      - 4
+      - '4'
     toolbox:
       - a
       - b
-      - 1
-      - 2
+      - '1'
+      - '2'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []

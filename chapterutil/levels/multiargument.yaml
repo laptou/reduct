@@ -2,38 +2,40 @@ levels:
   - board:
       - (firstNumber) => (secondNumber) => firstNumber + secondNumber
     goal:
-      - 7
+      - '7'
     toolbox:
-      - 1
-      - 2
-      - 3
-      - 4
-      - 5
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
       - (a) => (b) => b + a
     goal:
-      - 12
+      - '12'
     toolbox:
-      - 1
-      - 11
-      - 8
-      - 4
-      - 5
+      - '1'
+      - '11'
+      - '8'
+      - '4'
+      - '5'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -41,20 +43,21 @@ levels:
       - (number) => (dontCare) => number + 1
       - (dontCare) => (number) => number + 3
     goal:
-      - 4
-      - 6
+      - '4'
+      - '6'
     toolbox:
-      - 1
-      - 2
-      - 3
-      - 4
-      - 5
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -64,15 +67,17 @@ levels:
       - B
     goal:
       - A
-    toolbox: []
+    toolbox:
+      - ''
     defines: []
-    globals: {}
-    textgoal: 'Create {a star}'
+    textGoal: 'Create {a star}'
     note: >-
       This is a logic follower of 10 because like 10 it shows the use of
       function returning function.
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -86,13 +91,15 @@ levels:
     goal:
       - A
       - C
-    toolbox: []
+    toolbox:
+      - ''
     defines: []
-    globals: {}
-    textgoal: 'Create {a star} and {a triangle}'
+    textGoal: 'Create {a star} and {a triangle}'
     note: Scope and how to use it...
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -106,11 +113,12 @@ levels:
       - x
       - 'y'
     defines: []
-    globals: {}
-    textgoal: 'Create {a star}'
+    textGoal: 'Create {a star}'
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []

@@ -5,17 +5,18 @@ levels:
     goal:
       - A
     toolbox:
-      - 0
-      - 1
-      - 2
+      - '0'
+      - '1'
+      - '2'
     defines: []
-    globals: {}
-    textgoal: >-
+    textGoal: >-
       Just as a reminder, "get" gets an item from a list. Hint: the list starts
       at position 0. 
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -28,11 +29,12 @@ levels:
       - first
     defines:
       - 'function first(a) {return get(a,0);}'
-    globals: {}
-    textgoal: First allows you to get the first item in a list.
+    textGoal: First allows you to get the first item in a list.
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -44,15 +46,16 @@ levels:
     toolbox:
       - first
       - 'get(a,_)'
-      - 1
+      - '1'
       - A
-      - 0
+      - '0'
     defines: []
-    globals: {}
-    textgoal: Can you get the first item from this list?
+    textGoal: Can you get the first item from this list?
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -69,11 +72,12 @@ levels:
       - >-
         function remove_first(a) {return length(a) < 2 ? []: slice(a, 1,
         length(a))}
-    globals: {}
-    textgoal: Remove_first allows you to remove the first item in a list.
+    textGoal: Remove_first allows you to remove the first item in a list.
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -86,20 +90,21 @@ levels:
       - remove_first
       - length(a)
       - 'slice(a, 1, length(a)'
-      - 0
-      - 1
-      - 2
+      - '0'
+      - '1'
+      - '2'
       - '[]'
       - a
       - A
     defines: []
-    globals: {}
-    textgoal: >-
+    textGoal: >-
       What happens when the list only has one item in it? Hint: length allows
       you to find the length of a list and slice cuts up an array.
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -113,16 +118,17 @@ levels:
       - length(a)
       - 'slice(a, 1, length(a)'
       - a
-      - 0
-      - 1
+      - '0'
+      - '1'
       - a
-      - 2
+      - '2'
     defines: []
-    globals: {}
-    textgoal: What happens in a normal list?
+    textGoal: What happens in a normal list?
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []

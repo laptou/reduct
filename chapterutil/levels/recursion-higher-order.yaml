@@ -19,22 +19,23 @@ levels:
       - addOne
       - __unlimited;(_)(_)
       - __unlimited;myRepeat
-      - 1
+      - '1'
     defines: []
-    globals: {}
-    textgoal: Define your own repeat
+    textGoal: Define your own repeat
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs:
         - '(3, addOne, 3)'
         - '(3, doNothing, 5)'
         - '(4, addOne, 4)'
       outputs:
-        - 6
-        - 5
-        - 8
+        - '6'
+        - '5'
+        - '8'
   - board:
       - 'function myRepeat(num, func, value){ return _;}'
       - _ == _
@@ -45,9 +46,9 @@ levels:
         22))
       - myRepeat
     goal:
-      - 8
-      - 15
-      - 26
+      - '8'
+      - '15'
+      - '26'
     toolbox:
       - __unlimited; _(_)
       - __unlimited; myRepeat
@@ -56,11 +57,12 @@ levels:
       - __unlimited; num
       - __unlimited; value
     defines: []
-    globals: {}
-    textgoal: Define your own repeat!
+    textGoal: Define your own repeat!
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []

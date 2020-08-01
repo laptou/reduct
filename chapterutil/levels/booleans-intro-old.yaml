@@ -3,38 +3,40 @@ levels:
       - '''TRIANGLE'' == ''STAR'''
       - _ == 'STAR'
     goal:
-      - true
-      - false
+      - 'true'
+      - 'false'
     toolbox:
       - STAR
       - TRIANGLE
       - RECT
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
       - (x) => x == 1
       - (number) => 2 == number
-      - 2
+      - '2'
     goal:
-      - true
-      - false
+      - 'true'
+      - 'false'
     toolbox:
-      - 1
-      - 3
-      - 4
+      - '1'
+      - '3'
+      - '4'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -42,51 +44,54 @@ levels:
       - (isTwo) => 2 == isTwo
       - (x) => xx
     goal:
-      - false
-      - true
+      - 'false'
+      - 'true'
     toolbox:
-      - 2
-      - 3
-      - 2
+      - '2'
+      - '3'
+      - '2'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
       - (thing1) => (thing2) => thing1 == thing2
       - x => xx
-      - 1
-      - 2
-      - 2
+      - '1'
+      - '2'
+      - '2'
     goal:
-      - true
-      - false
+      - 'true'
+      - 'false'
     toolbox: []
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
       - 'true ? (1 + 2) : (5 + 6)'
     goal:
-      - 3
+      - '3'
     toolbox: []
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -95,17 +100,18 @@ levels:
     goal:
       - STAR
     toolbox:
-      - false
-      - true
+      - 'false'
+      - 'true'
       - TRIANGLE
       - STAR
       - RECT
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -116,33 +122,35 @@ levels:
       - TRIANGLE
       - STAR
     toolbox:
-      - true
-      - false
-      - true
-      - false
+      - 'true'
+      - 'false'
+      - 'true'
+      - 'false'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
       - '(z) => z == _ ? 4 : z'
     goal:
-      - 3
+      - '3'
     toolbox:
-      - 1
-      - 3
-      - 3
+      - '1'
+      - '3'
+      - '3'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -150,19 +158,20 @@ levels:
       - '(x) => x == _ ? 4 : x'
       - '(y) => _ == y ? 5 : y'
     goal:
-      - 5
+      - '5'
     toolbox:
-      - 1
-      - 2
-      - 3
-      - 1
-      - 4
+      - '1'
+      - '2'
+      - '3'
+      - '1'
+      - '4'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -170,19 +179,20 @@ levels:
       - '(thing1) => (thing2) => thing1 == thing2 ? 1 : 2'
       - x => xx
     goal:
-      - 1
-      - 2
+      - '1'
+      - '2'
     toolbox:
-      - 3
-      - 2
-      - 3
-      - 4
+      - '3'
+      - '2'
+      - '3'
+      - '4'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -190,18 +200,19 @@ levels:
       - (oneThing) => (anotherThing) => oneThing== anotherThing
       - (x) => xx
     goal:
-      - false
-      - true
+      - 'false'
+      - 'true'
     toolbox:
       - RECT
       - STAR
       - STAR
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []

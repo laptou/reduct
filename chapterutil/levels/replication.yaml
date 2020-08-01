@@ -7,11 +7,12 @@ levels:
       - D
       - B
     defines: []
-    globals: {}
-    textgoal: 'Build your own function to create a {square}'
+    textGoal: 'Build your own function to create a {square}'
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -24,11 +25,12 @@ levels:
       - x
       - 'y'
     defines: []
-    globals: {}
-    textgoal: 'Hint: create a function that gives back the input'
+    textGoal: 'Hint: create a function that gives back the input'
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -40,13 +42,15 @@ levels:
       - C
     goal:
       - B
-    toolbox: []
+    toolbox:
+      - ''
     defines: []
-    globals: {}
-    textgoal: 'Create {a square} using functions'
+    textGoal: 'Create {a square} using functions'
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -60,37 +64,39 @@ levels:
       - B
       - C
     defines: []
-    globals: {}
-    textgoal: 'Create two {triangles}'
+    textGoal: 'Create two {triangles}'
     note: >-
       We need a new visual for the texting bloc for sure. We discussed that it
       might be possible to have that on the side as a special area for testing.
       The problem I could see here is that this looks like a new kind of
       function. I am not sure what text to write so that it is clea it is
       something special.
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
       - (x) => xx
       - _ + 7
-      - 4
+      - 4 + _
     goal:
-      - 5
-      - 5
-      - 9
+      - '5'
+      - '5'
+      - '9'
     toolbox:
-      - 1
-      - 2
-      - 3
+      - '1'
+      - '2'
+      - '3'
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -98,56 +104,59 @@ levels:
       - (x) => xx
       - (number) => _ + number
     goal:
-      - 5
-      - 6
+      - '5'
+      - '6'
     toolbox:
-      - 1
-      - 2
-      - 3
-      - 4
+      - '1'
+      - '2'
+      - '3'
+      - '4'
     defines: []
-    globals: {}
-    textgoal: Create a function to add 2 to the input
+    textGoal: Create a function to add 2 to the input
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
       - x => xx
     goal:
-      - 11
+      - '11'
     toolbox:
       - (m) => m + 1
       - (z) => z + 2
-      - 6
-      - 7
-      - 8
+      - '6'
+      - '7'
+      - '8'
     defines: []
-    globals: {}
-    textgoal: Choose your functions wisely
+    textGoal: Choose your functions wisely
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
       - x => x + x
     goal:
-      - 4
+      - '4'
     toolbox:
-      - 0
-      - 1
-      - 3
+      - '0'
+      - '1'
+      - '3'
       - y => y + y
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -155,18 +164,19 @@ levels:
       - (x) => x + _
       - x => xx
     goal:
-      - 8
+      - '8'
     toolbox:
       - x
-      - 0
-      - 1
-      - 2
+      - '0'
+      - '1'
+      - '2'
     defines: []
-    globals: {}
-    textgoal: 'Hint: what function should you duplicate?'
+    textGoal: 'Hint: what function should you duplicate?'
     note: old 22
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []

@@ -3,18 +3,19 @@ levels:
       - mon == mon
       - _ == tue
     goal:
-      - true
-      - false
+      - 'true'
+      - 'false'
     toolbox:
       - tue
       - sat
       - sun
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -23,8 +24,8 @@ levels:
       - _ == _
       - '__tests(testMe(sat, sat), testMe(mon, tue))'
     goal:
-      - true
-      - false
+      - 'true'
+      - 'false'
     toolbox:
       - x
       - x
@@ -32,13 +33,14 @@ levels:
       - 'y'
       - __unlimited; isSameDay;
     defines: []
-    globals: {}
-    textgoal: >-
+    textGoal: >-
       Define a function that outputs true if the x and y are the same weekday,
       otherwise false
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -46,8 +48,8 @@ levels:
       - 'function isMonday(x) {return _; }'
       - '__tests(testMe(mon), testMe(tue))'
     goal:
-      - true
-      - false
+      - 'true'
+      - 'false'
     toolbox:
       - x == _
       - mon
@@ -55,11 +57,12 @@ levels:
       - __unlimited; isMonday;
     defines:
       - 'function isMonday(x) { return x == mon }'
-    globals: {}
-    textgoal: 'Define a function that outputs true if x is Monday, otherwise false'
+    textGoal: 'Define a function that outputs true if x is Monday, otherwise false'
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -67,8 +70,8 @@ levels:
       - 'function isFriday(x) {return _; }'
       - '__tests(testMe(mon), testMe(fri))'
     goal:
-      - false
-      - true
+      - 'false'
+      - 'true'
     toolbox:
       - _ == _
       - x
@@ -79,11 +82,12 @@ levels:
       - __unlimited; isFriday;
     defines:
       - 'function isFriday(x) { return x == fri }'
-    globals: {}
-    textgoal: 'Define a function that outputs true if x is Friday, otherwise false'
+    textGoal: 'Define a function that outputs true if x is Friday, otherwise false'
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -93,25 +97,26 @@ levels:
       - isFriday(_)
       - '__tests(testMe(mon), testMe(tue), testMe(fri), testMe(sun))'
     goal:
-      - true
-      - true
-      - false
-      - false
+      - 'true'
+      - 'true'
+      - 'false'
+      - 'false'
     toolbox:
       - mon
       - tue
-      - true
-      - false
+      - 'true'
+      - 'false'
       - x
       - __unlimited; isMondayOrFriday;
     defines: []
-    globals: {}
-    textgoal: >-
+    textGoal: >-
       Define a function that outputs true if x is Monday or Friday, otherwise
       false
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -121,27 +126,28 @@ levels:
       - x
       - '__tests(testMe(mon), testMe(tue), testMe(fri), testMe(sun))'
     goal:
-      - true
-      - true
-      - false
-      - false
+      - 'true'
+      - 'true'
+      - 'false'
+      - 'false'
     toolbox:
       - isMonday
       - isFriday
       - mon
       - tue
-      - true
-      - false
+      - 'true'
+      - 'false'
       - x
       - __unlimited; isMondayOrFriday;
     defines: []
-    globals: {}
-    textgoal: >-
+    textGoal: >-
       Define a function that outputs true if x is Monday or Friday, otherwise
       false
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -151,27 +157,28 @@ levels:
       - x == _
       - '__tests(testMe(sat), testMe(tue), testMe(mon), testMe(sun))'
     goal:
-      - true
-      - false
-      - false
-      - true
+      - 'true'
+      - 'false'
+      - 'false'
+      - 'true'
     toolbox:
       - sat
       - sun
       - mon
       - tue
-      - true
-      - false
+      - 'true'
+      - 'false'
       - x
       - _ == _
       - __unlimited; isWeekend;
     defines:
       - 'function isWeekend(x) { return x == sat ? true : x == sun }'
-    globals: {}
-    textgoal: 'Define a function that outputs true if x is the weekend, otherwise false'
+    textGoal: 'Define a function that outputs true if x is the weekend, otherwise false'
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -179,27 +186,28 @@ levels:
       - 'function isWeekday(x) {return isWeekend ? false : _; }'
       - '__tests(testMe(sat), testMe(tue), testMe(mon), testMe(sun))'
     goal:
-      - false
-      - true
-      - true
-      - false
+      - 'false'
+      - 'true'
+      - 'true'
+      - 'false'
     toolbox:
       - isWeekend
       - sat
       - sun
       - mon
       - tue
-      - true
-      - false
+      - 'true'
+      - 'false'
       - x
     defines: []
-    globals: {}
-    textgoal: >-
+    textGoal: >-
       Define a function that outputs true if x is one of the weekdays, otherwise
       false
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -208,29 +216,30 @@ levels:
       - '_ ? _ : _'
       - '__tests(testMe(sat), testMe(tue), testMe(mon), testMe(sun))'
     goal:
-      - false
-      - true
-      - true
-      - false
+      - 'false'
+      - 'true'
+      - 'true'
+      - 'false'
     toolbox:
       - isWeekend
       - sat
       - sun
       - mon
       - tue
-      - true
-      - false
+      - 'true'
+      - 'false'
       - x
       - _ == _
       - __unlimited; isWeekday;
     defines: []
-    globals: {}
-    textgoal: >-
+    textGoal: >-
       Define a function that outputs true if x is one of the weekdays, otherwise
       false
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -250,11 +259,12 @@ levels:
       - sat
       - __unlimited; tomorrow;
     defines: []
-    globals: {}
-    textgoal: Define the function tomorrow to compute the next day of any given day
+    textGoal: Define the function tomorrow to compute the next day of any given day
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -274,11 +284,12 @@ levels:
       - sat
       - __unlimited; yesterday;
     defines: []
-    globals: {}
-    textgoal: Define the function yesterday to compute the previous day of any given day
+    textGoal: Define the function yesterday to compute the previous day of any given day
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -302,19 +313,20 @@ levels:
         function yesterday(x) { return x == mon ? sun : (x == tue ? mon : (x ==
         wed ? tue : (x == thu ? wed : (x == fri ? thu : (x == sat ? fri :
         sat))))); }
-    globals:
-      tomorrow: >-
-        function tomorrow(x) { return x == mon ? tue : (x == tue ? wed : (x ==
-        wed ? thu : (x == thu ? fri : (x == fri ? sat : (x == sat ? sun :
-        mon))))); }
-      yesterday: >-
-        function yesterday(x) { return x == mon ? sun : (x == tue ? mon : (x ==
-        wed ? tue : (x == thu ? wed : (x == fri ? thu : (x == sat ? fri :
-        sat))))); }
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add:
+        tomorrow: >-
+          function tomorrow(x) { return x == mon ? tue : (x == tue ? wed : (x ==
+          wed ? thu : (x == thu ? fri : (x == fri ? sat : (x == sat ? sun :
+          mon))))); }
+        yesterday: >-
+          function yesterday(x) { return x == mon ? sun : (x == tue ? mon : (x
+          == wed ? tue : (x == thu ? wed : (x == fri ? thu : (x == sat ? fri :
+          sat))))); }
+      hide: []
     autograder:
       inputs: []
       outputs: []

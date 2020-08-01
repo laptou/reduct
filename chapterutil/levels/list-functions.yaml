@@ -5,7 +5,7 @@ levels:
         function tail(list) {length(list) == 1 ? [] : slice(list, 1,
         length(list)); }
     goal:
-      - 1
+      - '1'
       - '[2,4,6]'
     toolbox:
       - '__unlimited; [1,2,4,6]'
@@ -16,29 +16,31 @@ levels:
       - >-
         function tail(list) {length(list) == 1 ? [] : slice(list, 1,
         length(list)); }
-    globals: {}
-    textgoal: Head and Tail Introduction
+    textGoal: Head and Tail Introduction
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board: []
     goal:
-      - 0
-      - 1
-      - 2
+      - '0'
+      - '1'
+      - '2'
     toolbox:
       - __unlimited; head
       - __unlimited; tail
       - '__unlimited; [0,1,2,3]'
     defines: []
-    globals: {}
-    textgoal: Access Elements
+    textGoal: Access Elements
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -49,18 +51,19 @@ levels:
       - '[1,2,3]'
     toolbox:
       - __unlimited; cons
-      - 1
-      - 5
-      - 4
-      - 2
-      - 3
+      - '1'
+      - '5'
+      - '4'
+      - '2'
+      - '3'
     defines:
       - 'function cons(e,list) { return  concat([e], list); }'
-    globals: {}
-    textgoal: Build List
+    textGoal: Build List
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -73,11 +76,12 @@ levels:
       - duplicate
     defines:
       - 'function duplicate(list) { return concat(list, list); }'
-    globals: {}
-    textgoal: Demonstrate Duplicate
+    textGoal: Demonstrate Duplicate
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -94,20 +98,21 @@ levels:
       - >-
         function reverse(list) { (length(list) < 2) ? list :
         concat(reverse(tail(list)), [head(list)]) }
-    globals: {}
-    textgoal: Reverse List
+    textGoal: Reverse List
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
       - 'function count(list) {list == [] ? 0 : 1 + count(tail(list))}'
     goal:
-      - 1
-      - 3
-      - 0
+      - '1'
+      - '3'
+      - '0'
     toolbox:
       - __unlimited; count
       - '[1,3,5]'
@@ -116,11 +121,12 @@ levels:
       - '[13,4,6,2]'
     defines:
       - 'function count(list) {list == [] ? 0 : 1 + count(tail(list))}'
-    globals: {}
-    textgoal: Counting Function
+    textGoal: Counting Function
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -136,15 +142,16 @@ levels:
       - count
       - count
     goal:
-      - 10
+      - '10'
     toolbox:
       - __unlimited; add
     defines: []
-    globals: {}
-    textgoal: Adding Count Results
+    textGoal: Adding Count Results
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -160,11 +167,12 @@ levels:
       - count
       - count
     defines: []
-    globals: {}
-    textgoal: Count to Build
+    textGoal: Count to Build
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -172,41 +180,43 @@ levels:
       - (_) < (_)
       - 'function smallList(list) { return  _; }'
     goal:
-      - true
-      - true
-      - false
+      - 'true'
+      - 'true'
+      - 'false'
     toolbox:
       - count
       - '[1,5]'
-      - 3
+      - '3'
       - '[]'
       - list
       - '[1,2,4,3]'
       - __unlimited; tooSmall
     defines: []
-    globals: {}
-    textgoal: Compare Sizes
+    textGoal: Compare Sizes
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
-      - 2
+      - '2'
       - '[]'
       - cons
     goal:
-      - 8
+      - '8'
     toolbox:
       - __unlimited; duplicate
       - count
     defines: []
-    globals: {}
-    textgoal: Powers of Two
+    textGoal: Powers of Two
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -219,22 +229,23 @@ levels:
       - my_count
       - '(_) ? (_) : (_)'
     goal:
-      - 5
-      - 7
+      - '5'
+      - '7'
     toolbox:
-      - 0
-      - 1
+      - '0'
+      - '1'
       - (_) == (_)
       - (_) + (_)
       - __unlimited; list
       - tail
       - __unlimited; my_count
     defines: []
-    globals: {}
-    textgoal: ''
+    textGoal: ''
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -258,11 +269,12 @@ levels:
         function filter(list,f) { return  ((list) == ([])) ? ([]) :
         ((((f)(head(list))) == (true)) ? (cons(head(list), filter(tail(list),
         f))) : (filter(tail(list), f))); }
-    globals: {}
-    textgoal: Introducing Filter
+    textGoal: Introducing Filter
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -280,11 +292,12 @@ levels:
       - '[0,3,2,1]'
       - '[0,0,0,0]'
     defines: []
-    globals: {}
-    textgoal: Remove Zeros in Lists
+    textGoal: Remove Zeros in Lists
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -305,19 +318,20 @@ levels:
       - __unlimited; keepTrue
       - (_) == (true)
     defines: []
-    globals: {}
-    textgoal: Keep True Values in the Lists
+    textGoal: Keep True Values in the Lists
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
       - 'function removeNumber(list,num){ return _;}'
       - list
-      - 3
-      - 12
+      - '3'
+      - '12'
       - '[12,3,3,3,12,12,3]'
     goal:
       - '[]'
@@ -329,11 +343,12 @@ levels:
       - x => _
       - filter
     defines: []
-    globals: {}
-    textgoal: Remove a Specific Number from List
+    textGoal: Remove a Specific Number from List
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -361,11 +376,12 @@ levels:
       - __unlimited; tail
       - '__unlimited; [1,2,3]'
     defines: []
-    globals: {}
-    textgoal: Build Filter
+    textGoal: Build Filter
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -375,11 +391,12 @@ levels:
       - addOne
     defines:
       - 'function fold(f, a, i) { return 0;}'
-    globals: {}
-    textgoal: play
+    textGoal: play
     note: null
-    hiddenGlobals: []
     syntax: []
+    globals:
+      add: {}
+      hide: []
     autograder:
       inputs: []
       outputs: []
