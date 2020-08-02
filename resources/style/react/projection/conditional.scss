@@ -28,6 +28,9 @@
   }
 
   & > .positive, & > .negative {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-items: start;
     margin-inline-start: 1rem;
   }
 }

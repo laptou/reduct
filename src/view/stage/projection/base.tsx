@@ -1,6 +1,7 @@
 import cx from 'classnames';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import { useTransition, animated } from 'react-spring';
 
 import { ErrorBubble } from '../ui/error-bubble';
 import { ExecBubble } from '../ui/exec-bubble';
@@ -161,7 +162,7 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
       error, 
       settled, 
       executing, 
-      cleanup, 
+      cleanup: disposeNode, 
       exec,
       stopExec,
     } = props;
@@ -179,42 +180,73 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
     ]);
 
     // run when this component is unmounted
-    useEffect(() => () => cleanup(), [cleanup]);
+    useEffect(() => () => disposeNode(), [disposeNode]);
 
-    if (!node) {
-      return 'warning: missing node';
-    }
-
-    // top level nodes (nodes w/o parents) should not be considered locked
-    // TODO: don't mark top level nodes as locked
-    const locked = node.parent ? node.locked : false;
-
-    const draggable = 
-      // can't drag slots
-      node.type !== 'missing' 
-      // can't drag locked nodes
-      && !locked
-      && !frozen;
-
-    const steppable = kind === 'expression';
-
+    // transition for when this projection's node is changed
+    const transition = useTransition(
+      node, 
+      (n) => n?.id,
+      {
+        from: {
+          transform: 'scale(0)',
+          opacity: 0, 
+        },
+        enter: {
+          transform: 'scale(1)',
+          opacity: 1,
+        },
+        leave: {
+          transform: 'scale(0)',
+          filter: 'brightness(1)',
+          opacity: 0, 
+        },
+      });
     return (
-      <div 
-        id={`projection-${props.nodeId}`}
-        className={cx('projection wrapper', {
-          locked,
-          draggable,
-          steppable,
-          frozen, 
-        })}
-        draggable={draggable}
-        data-node-id={props.nodeId}
-        onDragStart={e => onDragStart(e, props)}
-        onClick={e => onClick(e, props)}
-      >
-        {getProjectionForNode(props.node)}
-        <ErrorBubble error={error} />
-        <ExecBubble executing={executing} onStop={stopExec} onSkip={() => setFast(true)} />
+      <div className='projection-animation-container'>
+        { 
+          transition.map(({ item: node, props: style, key }) => {
+            if (!node) return null;
+
+            // top level nodes (nodes w/o parents) should not be considered locked
+            // TODO: don't mark top level nodes as locked in the first place?
+            const locked = node.parent ? node.locked : false;
+
+            const draggable = 
+              // can't drag slots
+              node.type !== 'missing' 
+              // can't drag locked nodes
+              && !locked
+              && !frozen;
+
+            const steppable = kind === 'expression';
+
+            return (
+              <animated.div 
+                id={`projection-${node.id}`}
+                key={key}
+                style={style}
+                className={cx('projection-interaction-container', {
+                  locked,
+                  draggable,
+                  steppable,
+                  frozen, 
+                })}
+                draggable={draggable}
+                data-node-id={node.id}
+                onDragStart={e => onDragStart(e, props)}
+                onClick={e => onClick(e, props)}
+              >
+                {getProjectionForNode(node)}
+                <ErrorBubble error={error} />
+                <ExecBubble 
+                  executing={executing} 
+                  onStop={() => stopExec()} 
+                  onSkip={() => setFast(true)}
+                />
+              </animated.div>
+            ); 
+          }) 
+        }
       </div>
     );
   };
