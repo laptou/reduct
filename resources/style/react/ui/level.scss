@@ -1,15 +1,9 @@
 @use '../theme';
 @use 'base';
 
-#reduct-level-select {
-  button {
-    padding: 0.75rem 0.5rem;
-  }
-}
-
 .reduct-level-select-chapter {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   row-gap: 0.5rem;
 
   margin: 1.5rem 0;
@@ -18,7 +12,7 @@
 }
 
 .reduct-level-select-chapter-name {
-  grid-column: 1 / 5;
+  grid-column: 1 / 6;
 
   font-weight: 700;
   font-size: 0.9em;
@@ -29,6 +23,9 @@
   display: grid;
   grid-template-rows: auto auto;
   grid-template-columns: auto auto;
+  align-content: center;
+
+  height: 100%;
 
   padding: 1rem;
 }
@@ -36,12 +33,17 @@
 #reduct-level-info-level {
   grid-row: 1;
   grid-column: 1;
+
+  font-weight: 700;
   padding-inline-end: 1rem;
 }
 
 #reduct-level-info-chapter {
   grid-row: 2;
   grid-column: 1;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
   padding-inline-end: 1rem;
 }
 

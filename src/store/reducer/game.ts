@@ -544,7 +544,7 @@ export function gameReducer(
 
     let resultNodeId: NodeId;
 
-    if (calleeNode.type === builtin) {
+    if (calleeNode.type === 'builtin') {
       const builtin = builtins[calleeNode.fields.name as keyof typeof builtins];
       const [newNode, addedNodes, newNodeMap] = builtin.impl(calleeNode, paramNodes, state.nodes);
       state = {

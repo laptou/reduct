@@ -9,8 +9,11 @@
 #reduct-game-menu-inner {
   @include base.ui-panel($accent: hsl(221, 60%, 70%));
   z-index: 150;
-  flex-flow: column nowrap;
+  display: grid;
+  grid-template-rows: 25rem 1fr;
   align-items: stretch;
+
+  height: calc(100% + 25rem);
 
   margin-top: -25rem;
   padding: 0;
@@ -22,6 +25,7 @@
   right: 0;
   bottom: 0;
   left: 0;
+  z-index: 100;
 
   background: rgba(0 0 0 / 0.25);
 }

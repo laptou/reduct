@@ -9,7 +9,7 @@ import { DeepReadonly } from '@/util/helper';
 import '@resources/style/react/ui/level.scss';
 
 interface LevelMenuStoreProps {
-  level: number;
+  levelIndex: number;
 }
 
 interface LevelSelectDispatchProps {
@@ -57,6 +57,11 @@ const LevelSelectImpl: React.FC<LevelSelectProps> = (props) => {
                 type='button' 
                 key={index} 
                 onClick={() => props.startLevel(index)}
+                className={
+                  index === props.levelIndex 
+                    ? 'btn btn-primary' 
+                    : 'btn btn-primary-inv'
+                }
               >
                 {index + 1}
               </button>
@@ -68,15 +73,29 @@ const LevelSelectImpl: React.FC<LevelSelectProps> = (props) => {
   );
 };
 
-const LevelInfoImpl: React.FC<LevelInfoProps> = (props) => {
+const LevelInfoImpl: React.FC<LevelInfoProps> = ({ levelIndex, onToggleLevelSelect }) => {
+  const progression = Loader.progressions['Elementary'];
+  const chapters = progression.linearChapters.map(key => progression.chapters[key]);
+  const chapterIndex = chapters.findIndex(
+    ({ startIdx, endIdx }) => startIdx <= levelIndex && endIdx >= levelIndex
+  );
+  const chapter = chapters[chapterIndex];
+
   return (
     <div id='reduct-level-info'>
-      <span id='reduct-level-info-level'>Level {props.level + 1}</span>
-      <span id='reduct-level-info-chapter'>Chapter X</span>
+      <span id='reduct-level-info-level'>
+        Level {levelIndex + 1}
+      </span>
+      <span id='reduct-level-info-chapter'>
+        <span id='reduct-level-info-chapter-index'>Chapter {chapterIndex + 1}:</span>
+        &nbsp;
+        <span>{chapter.name}</span>
+      </span>
       <button
         id='reduct-level-info-expander' 
         type='button' 
-        onClick={() => props.onToggleLevelSelect()}
+        onClick={() => onToggleLevelSelect()}
+        className='btn btn-primary'
       >
         Levels
       </button>
@@ -86,7 +105,7 @@ const LevelInfoImpl: React.FC<LevelInfoProps> = (props) => {
 
 export const LevelSelect = connect(
   (store: DeepReadonly<GlobalState>) => ({
-    level: store.game.$present.level,
+    levelIndex: store.game.$present.level,
   }),
   (dispatch) => ({
     startLevel(level: number) { dispatch(createStartLevel(level)); },
@@ -95,6 +114,6 @@ export const LevelSelect = connect(
 
 export const LevelInfo = connect(
   (store: DeepReadonly<GlobalState>) => ({
-    level: store.game.$present.level,
+    levelIndex: store.game.$present.level,
   })
 )(LevelInfoImpl);
