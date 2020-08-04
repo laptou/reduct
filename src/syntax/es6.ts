@@ -208,8 +208,7 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
         if (node.callee.name === '__let') {
           if (node.arguments[0].type !== 'Identifier') {
             throw new Error('A let node must have an identifier')
-          }
-          else {
+          } else {
             return createLetNode(
               createReferenceNode(node.arguments[0].name),
               parseNode(node.arguments[1], macros) as ReductNode,
