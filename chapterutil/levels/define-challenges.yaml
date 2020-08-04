@@ -1,0 +1,187 @@
+levels:
+  - board:
+      - '3'
+    goal:
+      - '9'
+    toolbox:
+      - add
+      - '3'
+      - '4'
+      - '5'
+      - '6'
+    defines: []
+    textGoal: ''
+    note: null
+    syntax: []
+    globals:
+      add:
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - '__tests(testMe(3), testMe(4), testMe(7))'
+    goal:
+      - '10'
+      - '11'
+      - '14'
+    toolbox:
+      - add
+      - __unlimited; _(_)
+      - '5'
+      - '6'
+      - '7'
+      - '8'
+    defines: []
+    textGoal: ''
+    note: null
+    syntax: []
+    globals:
+      add:
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - 'function addEight(x) { return _; }'
+      - '__tests(testMe(1), testMe(4), testMe(7))'
+    goal:
+      - '9'
+      - '12'
+      - '15'
+    toolbox:
+      - addEight
+      - add
+      - '5'
+      - '6'
+      - '7'
+      - '8'
+      - x
+      - __unlimited;_(_)
+    defines:
+      - 'function addEight(x) { return add(8, x); }'
+    textGoal: Define a function that outputs x plus 8
+    note: null
+    syntax: []
+    globals:
+      add:
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - 'function multiplyByFour(a) { return repeat(4, (x => add(_, x)))(0); }'
+      - a
+      - '__tests(testMe(8), testMe(6), testMe(5))'
+    goal:
+      - '32'
+      - '24'
+      - '20'
+    toolbox:
+      - __unlimited;_(_)
+      - '0'
+      - '5'
+      - '6'
+      - '7'
+      - '8'
+      - multiplyByFour
+    defines: []
+    textGoal: 'Using Repeat, define a function that multiplies a number by 4'
+    note: null
+    syntax: []
+    globals:
+      add:
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - 'function multiplyBySix(a) { return _; }'
+      - '__tests(testMe(2), testMe(3), testMe(5))'
+      - _(0)
+      - repeat
+      - add
+    goal:
+      - '12'
+      - '18'
+      - '30'
+    toolbox:
+      - __unlimited;_(_)
+      - x => _
+      - x
+      - a
+      - '0'
+      - '5'
+      - '6'
+      - '7'
+      - '8'
+      - multiplyBySix
+    defines:
+      - 'function multiplyBySix(a) { return repeat(a, add(2), 0); }'
+    textGoal: 'Using Repeat, define a function that multiplies a number by 6'
+    note: null
+    syntax: []
+    globals:
+      add:
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - >-
+        function multiplyTogether(a, b) { return repeat(_, (x => add(_, x)))(0);
+        }
+      - a
+      - b
+      - '__tests(testMe(1, 3), testMe(2, 4), testMe(3, 3))'
+    goal:
+      - '3'
+      - '8'
+      - '9'
+    toolbox:
+      - __unlimited; _(_)
+      - add
+      - repeat
+      - '0'
+      - multiplyTogether
+    defines: []
+    textGoal: Define a function that computes the multiplication of a and b
+    note: null
+    syntax: []
+    globals:
+      add:
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - 'function multiplyTogether(a, b) { return _; }'
+      - a
+      - b
+      - '__tests(testMe(9, 7), testMe(12, 3))'
+    goal:
+      - '63'
+      - '36'
+    toolbox:
+      - __unlimited; _(_)
+      - add
+      - repeat
+      - '0'
+      - multiplyTogether
+    defines: []
+    textGoal: Define a function that computes the multiplication of a and b
+    note: null
+    syntax: []
+    globals:
+      add:
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []

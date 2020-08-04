@@ -1,0 +1,17 @@
+levels:
+  - board: []
+    goal: []
+    toolbox:
+      - addOne
+    defines:
+      - 'function fold(f, a, i) { return 0;}'
+    textGoal: play
+    note: null
+    syntax: []
+    globals:
+      add: {}
+      hide:
+        - addOne
+    autograder:
+      inputs: []
+      outputs: []

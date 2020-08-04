@@ -19,5 +19,11 @@
       "@resources/*": ["../resources/*"],
       "@/*": ["*"],
     }
-  }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.js",
+    "scripts/**/*.js",
+    "scripts/**/*.mjs"
+  ]
 }

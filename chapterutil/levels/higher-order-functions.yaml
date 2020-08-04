@@ -1,0 +1,293 @@
+levels:
+  - board:
+      - 'function addTwo(number){ return _;}'
+      - number
+      - _(_)
+      - _(_)
+    goal:
+      - '7'
+    toolbox:
+      - __unlimited; addOne
+      - addTwo
+      - '3'
+      - '4'
+      - '5'
+      - '6'
+    defines: []
+    textGoal: Define a function to add 2 to a number.
+    note: null
+    syntax: []
+    globals:
+      add: {}
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - 'function threeTimes(func, number){ return _(_(_(_)));}'
+      - number
+    goal:
+      - '18'
+    toolbox:
+      - __unlimited; addThree
+      - __unlimited; func
+      - threeTimes
+      - '3'
+      - '4'
+      - '5'
+      - '9'
+      - '10'
+    defines: []
+    textGoal: Define a function to use a function 3 times in a row.
+    note: null
+    syntax: []
+    globals:
+      add: {}
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - __unlimited; _(_)
+      - twice(_)
+    goal:
+      - '7'
+    toolbox:
+      - addOne
+      - addThree
+      - '1'
+      - '5'
+      - '9'
+    defines: []
+    textGoal: "\U0001F346"
+    note: null
+    syntax: []
+    globals:
+      add:
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - twice
+      - 'y'
+      - 'function addTwo(y) { return _; }'
+      - '__tests(testMe(3), testMe(7), testMe(11))'
+    goal:
+      - '5'
+      - '9'
+      - '13'
+    toolbox:
+      - __unlimited; _(_)
+      - addTwo
+      - addOne
+    defines:
+      - 'function addTwo(x) { return (twice(addOne))(x); }'
+    textGoal: Use twice to define a function that computes x plus 2
+    note: null
+    syntax: []
+    globals:
+      add:
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - 'repeat(2, addOne)'
+    goal:
+      - '5'
+    toolbox:
+      - __unlimited; _(_)
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+    defines: []
+    textGoal: The repeat function lets you use the same function many times!
+    note: null
+    syntax: []
+    globals:
+      add:
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
+        repeat: >-
+          function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
+          f)(f(x)); }
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - 'repeat(_, addOne)'
+    goal:
+      - '11'
+    toolbox:
+      - __unlimited; _(_)
+      - '3'
+      - '4'
+      - '5'
+      - '6'
+    defines: []
+    textGoal: ''
+    note: null
+    syntax: []
+    globals:
+      add:
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
+        repeat: >-
+          function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
+          f)(f(x)); }
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - 'repeat(3, _)'
+    goal:
+      - '8'
+    toolbox:
+      - __unlimited; _(_)
+      - doNothing
+      - addOne
+      - addTwo
+      - '0'
+      - '1'
+      - '2'
+    defines: []
+    textGoal: ''
+    note: null
+    syntax: []
+    globals:
+      add:
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
+        repeat: >-
+          function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
+          f)(f(x)); }
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - 'repeat(_, _)'
+      - x
+      - 'function addSix(x) { return _; }'
+      - '__tests(testMe(5), testMe(9))'
+    goal:
+      - '11'
+      - '15'
+    toolbox:
+      - __unlimited; _(_)
+      - addSix
+      - addThree
+      - addTwo
+      - '1'
+      - '3'
+      - '5'
+    defines:
+      - 'function addSix(x) { return (repeat(3, addTwo))(x); }'
+    textGoal: Define a function that computes x plus 6
+    note: null
+    syntax: []
+    globals:
+      add:
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
+        repeat: >-
+          function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
+          f)(f(x)); }
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - '__tests(testMe(_), testMe(_))'
+    goal:
+      - '9'
+      - '12'
+    toolbox:
+      - __unlimited; _(_)
+      - addSix
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
+      - '6'
+    defines: []
+    textGoal: ''
+    note: null
+    syntax: []
+    globals:
+      add:
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
+        repeat: >-
+          function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
+          f)(f(x)); }
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - 'function add(a, b) { return repeat(_,addOne)( _ ); }'
+      - '__tests(testMe(_, _), testMe(_, _), testMe(1, 2))'
+      - a
+      - b
+    goal:
+      - '3'
+      - '8'
+      - '9'
+    toolbox:
+      - __unlimited; _(_)
+      - add
+      - '2'
+      - '3'
+      - '5'
+      - '7'
+    defines:
+      - 'function add(a, b) { return repeat(a, addOne)(b); }'
+    textGoal: Define a function that computes a plus b
+    note: null
+    syntax: []
+    globals:
+      add:
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
+        repeat: >-
+          function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
+          f)(f(x)); }
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - 'function add(a, b) { return _; }'
+      - '__tests(testMe(_, _), testMe(_, _), testMe(1, 2))'
+      - repeat(_)
+      - a
+      - b
+      - addOne
+    goal:
+      - '3'
+      - '8'
+      - '9'
+    toolbox:
+      - __unlimited; _(_)
+      - add
+      - '2'
+      - '3'
+      - '5'
+      - '7'
+    defines:
+      - 'function add(a, b) { return repeat(a, addOne)(b); }'
+    textGoal: Define a function that computes a plus b
+    note: null
+    syntax: []
+    globals:
+      add:
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
+        repeat: >-
+          function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
+          f)(f(x)); }
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []

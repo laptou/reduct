@@ -14,6 +14,7 @@ module.exports = {
     tsconfigRootDir: __dirname,
     project: ['./tsconfig.json'],
     sourceType: 'module',
+    extraFileExtensions: ['.mjs'],
     ecmaFeatures: {
       jsx: true
     }

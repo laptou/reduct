@@ -1,0 +1,68 @@
+levels:
+  - board:
+      - value
+      - num
+      - value
+      - __autograder(0)
+      - __autograder(1)
+      - __autograder(2)
+      - >-
+        function myRepeat(num,func,value) { return  ((num) == (0)) ? (_) :
+        ((func)(myRepeat(_, func, _))); }
+      - func
+      - _ - 1
+    goal:
+      - _
+      - _
+      - _
+    toolbox:
+      - addOne
+      - __unlimited;(_)(_)
+      - __unlimited;myRepeat
+      - '1'
+    defines: []
+    textGoal: Define your own repeat
+    note: null
+    syntax: []
+    globals:
+      add: {}
+      hide: []
+    autograder:
+      inputs:
+        - '(3, addOne, 3)'
+        - '(3, doNothing, 5)'
+        - '(4, addOne, 4)'
+      outputs:
+        - '6'
+        - '5'
+        - '8'
+  - board:
+      - 'function myRepeat(num, func, value){ return _;}'
+      - _ == _
+      - _ - _
+      - '_ ? _ : _'
+      - >-
+        __tests(testMe(2, addOne, 6), testMe(3, addOne, 12), testMe(4, addOne,
+        22))
+      - myRepeat
+    goal:
+      - '8'
+      - '15'
+      - '26'
+    toolbox:
+      - __unlimited; _(_)
+      - __unlimited; myRepeat
+      - __unlimited; func
+      - __unlimited; 1
+      - __unlimited; num
+      - __unlimited; value
+    defines: []
+    textGoal: Define your own repeat!
+    note: null
+    syntax: []
+    globals:
+      add: {}
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
