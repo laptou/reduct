@@ -5,11 +5,15 @@ levels:
       - '1'
     toolbox: []
     defines: []
-    textGoal: Use the application block
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -28,7 +32,11 @@ levels:
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -51,7 +59,11 @@ levels:
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -71,7 +83,11 @@ levels:
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -96,7 +112,11 @@ levels:
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []

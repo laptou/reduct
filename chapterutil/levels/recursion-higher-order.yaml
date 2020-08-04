@@ -21,21 +21,19 @@ levels:
       - __unlimited;myRepeat
       - '1'
     defines: []
-    textGoal: Define your own repeat
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
-      inputs:
-        - '(3, addOne, 3)'
-        - '(3, doNothing, 5)'
-        - '(4, addOne, 4)'
-      outputs:
-        - '6'
-        - '5'
-        - '8'
+      inputs: []
+      outputs: []
   - board:
       - 'function myRepeat(num, func, value){ return _;}'
       - _ == _
@@ -57,11 +55,15 @@ levels:
       - __unlimited; num
       - __unlimited; value
     defines: []
-    textGoal: Define your own repeat!
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []

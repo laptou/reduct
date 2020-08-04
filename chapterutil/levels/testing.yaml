@@ -13,7 +13,11 @@ levels:
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -33,7 +37,11 @@ levels:
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -54,11 +62,15 @@ levels:
       - '3'
     defines:
       - 'function threeify(x) { return 3; }'
-    textGoal: Define a function that outputs 3
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -79,11 +91,15 @@ levels:
       - __unlimited;doNothing;
     defines:
       - 'function addThree(x) { return addOne(addOne(addOne(x))); }'
-    textGoal: Define a function that computes x plus 3
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []

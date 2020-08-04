@@ -5,13 +5,17 @@ levels:
       - addOne
     defines:
       - 'function fold(f, a, i) { return 0;}'
-    textGoal: play
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
-      hide:
-        - addOne
+      add:
+        add:
+          add: {}
+          hide:
+            - addOne
+        hide: []
+      hide: []
     autograder:
       inputs: []
       outputs: []

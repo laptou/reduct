@@ -14,7 +14,11 @@ levels:
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -33,13 +37,15 @@ levels:
       - 'y'
       - __unlimited; isSameDay;
     defines: []
-    textGoal: >-
-      Define a function that outputs true if the x and y are the same weekday,
-      otherwise false
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -57,11 +63,15 @@ levels:
       - __unlimited; isMonday;
     defines:
       - 'function isMonday(x) { return x == mon }'
-    textGoal: 'Define a function that outputs true if x is Monday, otherwise false'
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -82,11 +92,15 @@ levels:
       - __unlimited; isFriday;
     defines:
       - 'function isFriday(x) { return x == fri }'
-    textGoal: 'Define a function that outputs true if x is Friday, otherwise false'
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -109,13 +123,15 @@ levels:
       - x
       - __unlimited; isMondayOrFriday;
     defines: []
-    textGoal: >-
-      Define a function that outputs true if x is Monday or Friday, otherwise
-      false
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -140,13 +156,15 @@ levels:
       - x
       - __unlimited; isMondayOrFriday;
     defines: []
-    textGoal: >-
-      Define a function that outputs true if x is Monday or Friday, otherwise
-      false
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -173,11 +191,15 @@ levels:
       - __unlimited; isWeekend;
     defines:
       - 'function isWeekend(x) { return x == sat ? true : x == sun }'
-    textGoal: 'Define a function that outputs true if x is the weekend, otherwise false'
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -200,13 +222,15 @@ levels:
       - 'false'
       - x
     defines: []
-    textGoal: >-
-      Define a function that outputs true if x is one of the weekdays, otherwise
-      false
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -232,13 +256,15 @@ levels:
       - _ == _
       - __unlimited; isWeekday;
     defines: []
-    textGoal: >-
-      Define a function that outputs true if x is one of the weekdays, otherwise
-      false
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -259,11 +285,15 @@ levels:
       - sat
       - __unlimited; tomorrow;
     defines: []
-    textGoal: Define the function tomorrow to compute the next day of any given day
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -284,11 +314,15 @@ levels:
       - sat
       - __unlimited; yesterday;
     defines: []
-    textGoal: Define the function yesterday to compute the previous day of any given day
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -318,14 +352,18 @@ levels:
     syntax: []
     globals:
       add:
-        tomorrow: >-
-          function tomorrow(x) { return x == mon ? tue : (x == tue ? wed : (x ==
-          wed ? thu : (x == thu ? fri : (x == fri ? sat : (x == sat ? sun :
-          mon))))); }
-        yesterday: >-
-          function yesterday(x) { return x == mon ? sun : (x == tue ? mon : (x
-          == wed ? tue : (x == thu ? wed : (x == fri ? thu : (x == sat ? fri :
-          sat))))); }
+        add:
+          add:
+            tomorrow: >-
+              function tomorrow(x) { return x == mon ? tue : (x == tue ? wed :
+              (x == wed ? thu : (x == thu ? fri : (x == fri ? sat : (x == sat ?
+              sun : mon))))); }
+            yesterday: >-
+              function yesterday(x) { return x == mon ? sun : (x == tue ? mon :
+              (x == wed ? tue : (x == thu ? wed : (x == fri ? thu : (x == sat ?
+              fri : sat))))); }
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []

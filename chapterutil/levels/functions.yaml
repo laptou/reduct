@@ -6,44 +6,18 @@ levels:
       - STAR
     toolbox: []
     defines: []
-    textGoal: 'Drop the {star} onto the function!'
+    textGoal: ''
     note: >-
       Interestingly, here I wanted to say "Apply". Also identity might not be
       the best sarting point to express that function are producing a result. It
       might also be useful to introduce the notion of argument.
     syntax: []
     globals:
-      add: {}
-      hide: []
-    autograder:
-      inputs: []
-      outputs: []
-  - board:
-      - 1
-      - 2
-      - 3
-      - 4
-      - 5
-      - 6
-      - 7
-      - 8
-      - x => x
-    goal:
-      - 1
-      - 2
-      - 3
-      - 4
-      - 5
-      - 6
-      - 7
-      - 9
-    toolbox: []
-    defines: []
-    textGoal: 'This is a dummmy level. Remove me.'
-    note: This is a dummmy level. Remove me.
-    syntax: []
-    globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -57,12 +31,15 @@ levels:
       - STAR
     toolbox: []
     defines: []
-    textGoal: 'Use these functions to get {a star}.'
+    textGoal: ''
     note: null
-    syntax:
-      - syntax-lambda
+    syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -75,11 +52,15 @@ levels:
       - a => a
     toolbox: []
     defines: []
-    textGoal: The input to a function can be another function
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -90,11 +71,15 @@ levels:
       - '2'
     toolbox: []
     defines: []
-    textGoal: This is an expression you can click on
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -109,13 +94,15 @@ levels:
       - RECT
       - STAR
     defines: []
-    textGoal: >-
-      Use the toolbox at the bottom of the screen to place two {squares} on the
-      board
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -132,10 +119,13 @@ levels:
     defines: []
     textGoal: ''
     note: null
-    syntax:
-      - syntax-add
+    syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -149,11 +139,15 @@ levels:
       - STAR
     toolbox: []
     defines: []
-    textGoal: 'Create two {stars}'
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -172,11 +166,15 @@ levels:
       - TRIANGLE
       - TRIANGLE
     defines: []
-    textGoal: 'Create a {star}, {square}, and {triangle}'
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -195,7 +193,11 @@ levels:
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -212,11 +214,15 @@ levels:
       - '5'
       - '6'
     defines: []
-    textGoal: 'Hint: you can’t add a function to a number'
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -229,11 +235,15 @@ levels:
       - something => RECT
       - dont_care => TRIANGLE
     defines: []
-    textGoal: 'Create {a square}'
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []

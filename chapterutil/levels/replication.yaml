@@ -7,11 +7,15 @@ levels:
       - CIRCLE
       - RECT
     defines: []
-    textGoal: 'Build your own function to create a {square}'
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -25,11 +29,15 @@ levels:
       - x
       - 'y'
     defines: []
-    textGoal: 'Hint: create a function that gives back the input'
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -44,11 +52,15 @@ levels:
       - RECT
     toolbox: []
     defines: []
-    textGoal: 'Create {a square} using functions'
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -63,7 +75,7 @@ levels:
       - RECT
       - TRIANGLE
     defines: []
-    textGoal: 'Create two {triangles}'
+    textGoal: ''
     note: >-
       We need a new visual for the texting bloc for sure. We discussed that it
       might be possible to have that on the side as a special area for testing.
@@ -72,7 +84,11 @@ levels:
       something special.
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -94,7 +110,11 @@ levels:
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -111,11 +131,15 @@ levels:
       - '3'
       - '4'
     defines: []
-    textGoal: Create a function to add 2 to the input
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -131,11 +155,15 @@ levels:
       - '7'
       - '8'
     defines: []
-    textGoal: Choose your functions wisely
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -154,7 +182,11 @@ levels:
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -170,11 +202,15 @@ levels:
       - '1'
       - '2'
     defines: []
-    textGoal: 'Hint: what function should you duplicate?'
+    textGoal: ''
     note: old 22
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []

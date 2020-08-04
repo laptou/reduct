@@ -8,15 +8,19 @@ levels:
       - count
       - first
     defines: []
-    textGoal: Let's count to 4!
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -33,15 +37,19 @@ levels:
       - '[]'
       - '[STAR]'
     defines: []
-    textGoal: Can you count a list with no items in it?
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -59,15 +67,19 @@ levels:
       - a
       - '0'
     defines: []
-    textGoal: Let's count to 3!
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -86,15 +98,19 @@ levels:
       - '[STAR, RECT, TRIANGLE, STAR]'
       - '[]'
     defines: []
-    textGoal: Can you count a mixed list?
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -112,15 +128,19 @@ levels:
       - RECT
       - '[STAR, RECT, STAR, STAR]'
     defines: []
-    textGoal: Can you count only one type of object?
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -142,15 +162,19 @@ levels:
       - '[]'
       - a
     defines: []
-    textGoal: Let's count a list of 0!
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -171,15 +195,19 @@ levels:
       - '[RECT, STAR, STAR]'
       - RECT
     defines: []
-    textGoal: Can you count to 1?
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -202,15 +230,19 @@ levels:
       - count_target
       - '[STAR, STAR, STAR]'
     defines: []
-    textGoal: Can we still count this list?
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -233,15 +265,19 @@ levels:
       - a
       - count_target
     defines: []
-    textGoal: Can you fill out the bottom part?
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -261,15 +297,19 @@ levels:
       - RECT
       - '[RECT, RECT, RECT, STAR]'
     defines: []
-    textGoal: Can you fill out the whole thing?
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -292,15 +332,19 @@ levels:
       - '[STAR, RECT, RECT, STAR]'
       - '[]'
     defines: []
-    textGoal: Let's fill out the whole function!
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -313,11 +357,15 @@ levels:
       - '[STAR]'
       - '[RECT, STAR]'
     defines: []
-    textGoal: 'Just as a reminder, concat glues two arrays together. '
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -334,15 +382,19 @@ levels:
       - RECT
       - '[STAR, RECT, STAR, STAR]'
     defines: []
-    textGoal: Can you remove something from this list?
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -361,15 +413,19 @@ levels:
       - '1'
       - a
     defines: []
-    textGoal: What happens when you put in an empty list?
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -391,15 +447,19 @@ levels:
       - RECT
       - '[STAR, RECT, RECT, RECT]'
     defines: []
-    textGoal: What do you want to remove?
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -420,15 +480,19 @@ levels:
       - RECT
       - '[STAR, RECT, STAR, RECT]'
     defines: []
-    textGoal: What happens when your first item is the target?
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -451,15 +515,19 @@ levels:
       - STAR
       - '[STAR, STAR, RECT, RECT]'
     defines: []
-    textGoal: What happens when your first item isn't the target?
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -481,15 +549,19 @@ levels:
       - STAR
       - '[STAR, RECT, RECT, STAR, STAR]'
     defines: []
-    textGoal: Can you fill out the entire bottom section?
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -511,15 +583,19 @@ levels:
       - '__unlimited; []'
       - __unlimited; 0
     defines: []
-    textGoal: Can you fill out the whole thing?
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -539,15 +615,19 @@ levels:
       - '8'
       - '7'
     defines: []
-    textGoal: Replace value allows you to replace one value for another.
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -567,15 +647,19 @@ levels:
       - a
       - '__unlimited; []'
     defines: []
-    textGoal: What happens when you have an empty list?
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -599,15 +683,19 @@ levels:
       - replacement
       - remove_first
     defines: []
-    textGoal: How can you make sure you are replacing the right value?
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -633,15 +721,19 @@ levels:
       - remove_first
       - target
     defines: []
-    textGoal: What happens when the first value is the target?
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -669,15 +761,19 @@ levels:
       - replacement
       - '[remove_first]'
     defines: []
-    textGoal: What happens if the first value isn't the target?
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -703,15 +799,19 @@ levels:
       - __unlimited; first
       - '__unlimited; [first]'
     defines: []
-    textGoal: Let's fill out the bottom part!
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -738,15 +838,19 @@ levels:
       - '__unlimited; [first]'
       - '__unlimited; []'
     defines: []
-    textGoal: Let's fill out the whole function!
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -763,15 +867,19 @@ levels:
     toolbox:
       - '14'
     defines: []
-    textGoal: Insert in order inserts a number so the whole list is sorted.
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -793,15 +901,19 @@ levels:
       - target
       - '[target]'
     defines: []
-    textGoal: What happens when you have an empty list?
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -823,15 +935,19 @@ levels:
       - remove_first
       - '[target]'
     defines: []
-    textGoal: How do you make sure you are inserting in the right place?
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -856,15 +972,19 @@ levels:
       - first
       - concat
     defines: []
-    textGoal: What happens when your position value is less than the target?
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -885,15 +1005,19 @@ levels:
       - target
       - '[target]'
     defines: []
-    textGoal: What happens when your position value is more than the target?
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -917,15 +1041,19 @@ levels:
       - __unlimited; target
       - '__unlimited; [target]'
     defines: []
-    textGoal: Let's fill out the bottom part!
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -950,15 +1078,19 @@ levels:
       - '__unlimited; [target]'
       - '__unlimited; []'
     defines: []
-    textGoal: Let's fill out the whole function!
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        first: 'function first(a) {return get(a,0);}'
-        remove_first: >-
-          function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
-          length(a))}
+        add:
+          add:
+            first: 'function first(a) {return get(a,0);}'
+            remove_first: >-
+              function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
+              length(a))}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []

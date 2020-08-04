@@ -6,11 +6,15 @@ levels:
     toolbox:
       - STAR
     defines: []
-    textGoal: 'Move the def block to the left box to define the word {star}!'
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -26,11 +30,15 @@ levels:
       - __unlimited;star
       - __unlimited;rect
     defines: []
-    textGoal: Reach the goal by creating new definitions!
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -46,11 +54,15 @@ levels:
     toolbox:
       - __unlimited;trianglify
     defines: []
-    textGoal: 'Define a function that takes an input and outputs {a triangle}'
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -68,11 +80,15 @@ levels:
       - _ + 1
     defines:
       - 'function addOne(x) { return x + 1; }'
-    textGoal: Define a function that computes x plus 1
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -90,7 +106,11 @@ levels:
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -109,11 +129,15 @@ levels:
       - x
     defines:
       - 'function doNothing(x) { return x; }'
-    textGoal: Define a function that outputs the input it is given
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -136,7 +160,11 @@ levels:
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []

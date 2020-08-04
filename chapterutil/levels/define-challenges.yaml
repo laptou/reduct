@@ -15,7 +15,11 @@ levels:
     syntax: []
     globals:
       add:
-        twice: 'function twice(f) { return (x) => f(f(x)); }'
+        add:
+          add:
+            twice: 'function twice(f) { return (x) => f(f(x)); }'
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -39,7 +43,11 @@ levels:
     syntax: []
     globals:
       add:
-        twice: 'function twice(f) { return (x) => f(f(x)); }'
+        add:
+          add:
+            twice: 'function twice(f) { return (x) => f(f(x)); }'
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -62,12 +70,16 @@ levels:
       - __unlimited;_(_)
     defines:
       - 'function addEight(x) { return add(8, x); }'
-    textGoal: Define a function that outputs x plus 8
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        twice: 'function twice(f) { return (x) => f(f(x)); }'
+        add:
+          add:
+            twice: 'function twice(f) { return (x) => f(f(x)); }'
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -89,12 +101,16 @@ levels:
       - '8'
       - multiplyByFour
     defines: []
-    textGoal: 'Using Repeat, define a function that multiplies a number by 4'
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        twice: 'function twice(f) { return (x) => f(f(x)); }'
+        add:
+          add:
+            twice: 'function twice(f) { return (x) => f(f(x)); }'
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -122,12 +138,16 @@ levels:
       - multiplyBySix
     defines:
       - 'function multiplyBySix(a) { return repeat(a, add(2), 0); }'
-    textGoal: 'Using Repeat, define a function that multiplies a number by 6'
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        twice: 'function twice(f) { return (x) => f(f(x)); }'
+        add:
+          add:
+            twice: 'function twice(f) { return (x) => f(f(x)); }'
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -150,12 +170,16 @@ levels:
       - '0'
       - multiplyTogether
     defines: []
-    textGoal: Define a function that computes the multiplication of a and b
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        twice: 'function twice(f) { return (x) => f(f(x)); }'
+        add:
+          add:
+            twice: 'function twice(f) { return (x) => f(f(x)); }'
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -175,12 +199,16 @@ levels:
       - '0'
       - multiplyTogether
     defines: []
-    textGoal: Define a function that computes the multiplication of a and b
+    textGoal: ''
     note: null
     syntax: []
     globals:
       add:
-        twice: 'function twice(f) { return (x) => f(f(x)); }'
+        add:
+          add:
+            twice: 'function twice(f) { return (x) => f(f(x)); }'
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []

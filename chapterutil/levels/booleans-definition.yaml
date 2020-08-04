@@ -13,7 +13,11 @@ levels:
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -33,11 +37,15 @@ levels:
       - STAR
     defines:
       - 'function isStar(x) { return x == ''STAR''; }'
-    textGoal: 'Define a function that outputs true if x is {a star}, otherwise false'
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -61,11 +69,15 @@ levels:
       - '2'
     defines:
       - 'function isZero(x) { return x == 0; }'
-    textGoal: 'Define a function that outputs true if x is 0, otherwise false'
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -86,11 +98,15 @@ levels:
       - 'y'
       - __unlimited; add;
     defines: []
-    textGoal: Define a function that adds two numbers
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -110,11 +126,15 @@ levels:
       - '0'
       - '1'
     defines: []
-    textGoal: 'Define a function that outputs true if x and y are equal, otherwise false'
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -137,11 +157,15 @@ levels:
       - '1'
     defines:
       - 'function equals(x, y) { return x == y; }'
-    textGoal: 'Define a function that outputs true if x and y are equal, otherwise false'
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -160,11 +184,15 @@ levels:
       - RECT
       - TRIANGLE
     defines: []
-    textGoal: 'Define a function that outputs 1 if x is {a star}'
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -186,11 +214,15 @@ levels:
       - '3'
     defines:
       - 'function alwaysOne(x) { return x == 1 ? x : 1; }'
-    textGoal: Define a function that always outputs 1
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -214,11 +246,15 @@ levels:
       - __unlimited; _(_)
     defines:
       - 'function firstNonZero(x, y) { return x == 0 ? x : y; }'
-    textGoal: 'Define a function that outputs x if it is non zero and y otherwise '
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []

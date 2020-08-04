@@ -8,11 +8,15 @@ levels:
       - head
     defines:
       - 'function head(a) {return get(a,0);}'
-    textGoal: First allows you to get the first item in a list.
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -30,11 +34,15 @@ levels:
       - >-
         function removeHead(a) {return length(a) < 2 ? []: slice(a, 1,
         length(a))}
-    textGoal: Remove_first allows you to remove the first item in a list.
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -53,11 +61,15 @@ levels:
     defines:
       - 'function head(list) { return get(list,0);}'
       - 'function tail(list) {return get(list,length(list)-1);}'
-    textGoal: Get the maximum number from the list
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -77,13 +89,15 @@ levels:
     defines:
       - 'function head(list) { return get(list,0);}'
       - 'function tail(list) {return get(list,length(list)-1);}'
-    textGoal: >-
-      Here's a function that gets the maximum number of a list. Study it
-      carefully.
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -105,11 +119,15 @@ levels:
     defines:
       - 'function head(list) { return get(list,0);}'
       - 'function tail(list) {return get(list,length(list)-1);}'
-    textGoal: Define a function that returns the minimum number of the list.
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -135,11 +153,15 @@ levels:
     defines:
       - 'function head(list) { return get(list,0);}'
       - 'function tail(list) {return get(list,length(list)-1);}'
-    textGoal: Define a function that returns the index of the item in the list.
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []

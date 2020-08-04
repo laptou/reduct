@@ -9,13 +9,15 @@ levels:
       - '1'
       - '2'
     defines: []
-    textGoal: >-
-      Just as a reminder, "get" gets an item from a list. Hint: the list starts
-      at position 0. 
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -29,11 +31,15 @@ levels:
       - first
     defines:
       - 'function first(a) {return get(a,0);}'
-    textGoal: First allows you to get the first item in a list.
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -50,11 +56,15 @@ levels:
       - STAR
       - '0'
     defines: []
-    textGoal: Can you get the first item from this list?
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -72,11 +82,15 @@ levels:
       - >-
         function remove_first(a) {return length(a) < 2 ? []: slice(a, 1,
         length(a))}
-    textGoal: Remove_first allows you to remove the first item in a list.
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -97,13 +111,15 @@ levels:
       - a
       - STAR
     defines: []
-    textGoal: >-
-      What happens when the list only has one item in it? Hint: length allows
-      you to find the length of a list and slice cuts up an array.
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -123,11 +139,15 @@ levels:
       - a
       - '2'
     defines: []
-    textGoal: What happens in a normal list?
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []

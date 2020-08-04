@@ -10,11 +10,15 @@ levels:
       - CIRCLE
       - '9'
     defines: []
-    textGoal: Make an array with three elements
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -33,11 +37,15 @@ levels:
       - TRIANGLE
       - '(_)(_, _)'
     defines: []
-    textGoal: '"get" can get an element from an array'
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -53,11 +61,15 @@ levels:
       - '4'
       - RECT
     defines: []
-    textGoal: '"map" applies a function to every element'
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -78,7 +90,11 @@ levels:
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -95,11 +111,15 @@ levels:
       - __unlimited; length
       - (_)(_)
     defines: []
-    textGoal: '"length" gives the number of elements'
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -114,11 +134,15 @@ levels:
       - '[STAR, RECT]'
       - '[]'
     defines: []
-    textGoal: An array can hold other arrays
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -135,11 +159,15 @@ levels:
       - STAR
       - '3'
     defines: []
-    textGoal: '"concat" glues arrays together'
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []

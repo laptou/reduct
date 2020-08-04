@@ -8,11 +8,15 @@ levels:
       - concatStrings
       - '"Science"'
     defines: []
-    textGoal: Define a function to concatenate two strings
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -32,11 +36,15 @@ levels:
       - >-
         function reverseString(str) {return str == "" ? "" : (x =>
         reverseString(slice(str,1, length(str))) + x)(get(str,0));}
-    textGoal: Define a function that reverses a string
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
@@ -55,13 +63,17 @@ levels:
       - reverseString
       - __unlimited;checkPalindrome
     defines: []
-    textGoal: Define a function that checks if  string is a palindrome
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
-      hide:
-        - reverseString
+      add:
+        add:
+          add: {}
+          hide:
+            - reverseString
+        hide: []
+      hide: []
     autograder:
       inputs: []
       outputs: []
@@ -86,11 +98,15 @@ levels:
       - '"a"'
       - '"l"'
     defines: []
-    textGoal: Define a function that counts the occurences of a given character
+    textGoal: ''
     note: null
     syntax: []
     globals:
-      add: {}
+      add:
+        add:
+          add: {}
+          hide: []
+        hide: []
       hide: []
     autograder:
       inputs: []
