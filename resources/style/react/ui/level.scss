@@ -2,15 +2,27 @@
 @use 'base';
 
 #reduct-level-select {
+  button {
+    padding: 0.75rem 0.5rem;
+  }
+}
+
+.reduct-level-select-chapter {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   row-gap: 0.5rem;
 
-  column-gap: 0.5rem;
+  margin: 1.5rem 0;
 
-  button {
-    padding: 0.75rem 0.5rem;
-  }
+  column-gap: 0.5rem;
+}
+
+.reduct-level-select-chapter-name {
+  grid-column: 1 / 5;
+
+  font-weight: 700;
+  font-size: 0.9em;
+  text-transform: uppercase;
 }
 
 #reduct-level-info {
