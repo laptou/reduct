@@ -11,10 +11,10 @@ import { Title } from './banner/title';
 import { Toolbox } from './stage/ui/tabs/toolbox';
 import { VictoryOverlay } from './banner/victory';
 import { GameMenu } from './stage/ui/tabs/menu';
+import { Docs } from './stage/ui/tabs/tutorial/docs';
 
 import { DeepReadonly } from '@/util/helper';
 import { GameMode, GlobalState } from '@/store/state';
-import { Docs } from './stage/ui/tabs/tutorial/docs';
 
 interface GameStoreProps
 {
