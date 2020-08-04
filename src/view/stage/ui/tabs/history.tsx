@@ -33,7 +33,7 @@ const HistoryImpl = (props: HistoryStoreProps & HistoryDispatchProps) => {
   );
 };
 
-export const History = connect(
+export const HistoryTab = connect(
   (store: DeepReadonly<GlobalState>) => ({
     canUndo: store.game.$past.length > 0,
     canRedo: store.game.$future.length > 0,

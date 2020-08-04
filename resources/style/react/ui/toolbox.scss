@@ -2,8 +2,7 @@
 @use 'base';
 
 #reduct-toolbox {
-  @extend %ui-panel-bottom;
-  @include base.ui-panel-bordered(theme.$accent-3-inverse-default);
+  @include base.ui-panel($accent: #305cbb);
   grid-row: 3;
   grid-column: 2 / 5;
 }

@@ -1,0 +1,71 @@
+@use '../theme';
+@use 'base';
+
+#reduct-sidebar {
+  @include base.ui-panel($accent: none);
+  flex-flow: column nowrap;
+  grid-row: 1 / 5;
+  grid-column: 1;
+  align-items: stretch;
+  justify-content: stretch;
+  overflow: hidden;
+
+  width: 30vw;
+  max-width: 20rem;
+  // to compensate for bottom margin of content sections
+  margin-bottom: -0.5rem;
+  padding: 0.25rem;
+}
+
+.reduct-sidebar-section-title {
+  position: relative;
+  flex-grow: 0;
+  flex-shrink: 0;
+
+  padding: 1rem;
+
+  border: 1.5px solid hsl(241, 60%, 70%);
+  border-radius: 0.25rem;
+
+  background: white;
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  transition: border-radius 0.5s ease-in-out, border-bottom-color 0.5s step-end;
+
+  &.reduct-sidebar-section-open {
+    border-bottom-color: transparent;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+
+    transition: border-radius 0.5s ease-in-out, border-bottom-color 0.5s step-start;
+  }
+}
+
+.reduct-sidebar-section-content {
+  flex-basis: 0;
+  overflow-y: auto;
+
+  margin-bottom: 0.5rem;
+
+  border-width: 1.5px;
+  border-style: solid;
+  border-color: transparent;
+  border-top-width: 0;
+  border-radius: 0 0 0.25rem 0.25rem;
+
+  transition: flex-basis 0.5s ease-in-out, border-color 0.5s step-end;
+
+  &.reduct-sidebar-section-open {
+    flex-basis: 100%;
+
+    border-color: hsl(241, 60%, 70%);
+
+    transition: flex-basis 0.5s ease-in-out, border-color 0.5s step-start;
+  }
+}
+

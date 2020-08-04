@@ -1,0 +1,90 @@
+levels:
+  - board:
+      - '__tests(testMe(STAR), testMe(TRIANGLE))'
+    goal:
+      - STAR
+      - STAR
+    toolbox:
+      - x => STAR
+      - x => RECT
+      - x => TRIANGLE
+    defines: []
+    textGoal: ''
+    note: null
+    syntax: []
+    globals:
+      add: {}
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - 'function starify(x) { return STAR; }'
+      - 'function squarify(x) { return RECT; }'
+      - '__tests(testMe(TRIANGLE), testMe(RECT))'
+    goal:
+      - STAR
+      - STAR
+    toolbox:
+      - __unlimited; starify
+      - __unlimited; squarify
+    defines: []
+    textGoal: ''
+    note: null
+    syntax: []
+    globals:
+      add: {}
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - '__argumentAnnotated; function threeify(x) { return _; }'
+      - '__tests(testMe(1),testMe(2),testMe(3))'
+    goal:
+      - '3'
+      - '3'
+      - '3'
+    toolbox:
+      - __unlimited; threeify
+      - x => _
+      - x
+      - '1'
+      - '2'
+      - '3'
+    defines:
+      - 'function threeify(x) { return 3; }'
+    textGoal: Define a function that outputs 3
+    note: null
+    syntax: []
+    globals:
+      add: {}
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - 'function addThree(x) { return _; }'
+      - '__tests(testMe(2), testMe(6))'
+      - x
+    goal:
+      - '5'
+      - '9'
+    toolbox:
+      - __unlimited; _(_)
+      - __unlimited; addThree
+      - addOne
+      - addOne
+      - addOne
+      - __unlimited;doNothing;
+    defines:
+      - 'function addThree(x) { return addOne(addOne(addOne(x))); }'
+    textGoal: Define a function that computes x plus 3
+    note: null
+    syntax: []
+    globals:
+      add: {}
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []

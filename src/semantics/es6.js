@@ -12,7 +12,7 @@ import * as letExpr from './defs/letExpr';
 import * as member from './defs/member';
 import * as missing from './defs/missing';
 import * as not from './defs/not';
-import * as reference from './defs/reference';
+import * as reference from './defs/identifier';
 import * as value from './defs/value';
 
 export default new Semantics({

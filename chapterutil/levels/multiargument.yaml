@@ -1,0 +1,122 @@
+levels:
+  - board:
+      - (firstNumber) => (secondNumber) => firstNumber + secondNumber
+    goal:
+      - '7'
+    toolbox:
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
+    defines: []
+    textGoal: ''
+    note: null
+    syntax: []
+    globals:
+      add: {}
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - (a) => (b) => b + a
+    goal:
+      - '12'
+    toolbox:
+      - '1'
+      - '11'
+      - '8'
+      - '4'
+      - '5'
+    defines: []
+    textGoal: ''
+    note: null
+    syntax: []
+    globals:
+      add: {}
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - (number) => (dontCare) => number + 1
+      - (dontCare) => (number) => number + 3
+    goal:
+      - '4'
+      - '6'
+    toolbox:
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+      - '5'
+    defines: []
+    textGoal: ''
+    note: null
+    syntax: []
+    globals:
+      add: {}
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - object => y => object
+      - STAR
+      - RECT
+    goal:
+      - STAR
+    toolbox: []
+    defines: []
+    textGoal: 'Create {a star}'
+    note: >-
+      This is a logic follower of 10 because like 10 it shows the use of
+      function returning function.
+    syntax: []
+    globals:
+      add: {}
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - x => y => x
+      - x => y => y
+      - STAR
+      - RECT
+      - CIRCLE
+      - TRIANGLE
+    goal:
+      - STAR
+      - TRIANGLE
+    toolbox: []
+    defines: []
+    textGoal: 'Create {a star} and {a triangle}'
+    note: Scope and how to use it...
+    syntax: []
+    globals:
+      add: {}
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - x => y => _
+    goal:
+      - STAR
+    toolbox:
+      - STAR
+      - RECT
+      - x
+      - 'y'
+    defines: []
+    textGoal: 'Create {a star}'
+    note: null
+    syntax: []
+    globals:
+      add: {}
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []

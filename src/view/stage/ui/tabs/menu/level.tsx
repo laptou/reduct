@@ -27,23 +27,41 @@ type LevelSelectProps = LevelMenuStoreProps & LevelSelectDispatchProps;
 type LevelInfoProps = LevelMenuStoreProps & LevelInfoOwnProps;
 
 const LevelSelectImpl: React.FC<LevelSelectProps> = (props) => {
-  const levels = [];
+  const chapters = [];
 
-  for (let index = 0; index < Loader.progressions['Elementary'].levels.length; index++) {
-    levels.push(index);
+  const progression = Loader.progressions['Elementary'];
+  for (const chapterKey of progression.linearChapters) { 
+    const chapter = progression.chapters[chapterKey];
+    const levels = [];
+    for (let index = chapter.startIdx; index <= chapter.endIdx; index++) {
+      levels.push(index);
+    }
+
+    chapters.push({
+      levels,
+      key: chapterKey,
+      name: chapter.name,
+    });
   }
 
   return (
     <div id='reduct-level-select'>
       {
-        levels.map(index => (
-          <button 
-            type='button' 
-            key={index} 
-            onClick={() => props.startLevel(index)}
-          >
-            {index + 1}
-          </button>
+        chapters.map(({ levels, key, name }) => (
+          <div className='reduct-level-select-chapter' key={key}>
+            <span className='reduct-level-select-chapter-name'>
+              {name}
+            </span>
+            {levels.map(index => (
+              <button 
+                type='button' 
+                key={index} 
+                onClick={() => props.startLevel(index)}
+              >
+                {index + 1}
+              </button>
+            ))}
+          </div>
         ))
       }
     </div>

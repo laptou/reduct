@@ -11,7 +11,7 @@ import {
 
 import type { Flat, NodeId, NodeMap } from '@/semantics';
 import {
-  ApplyNode, LetNode, BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NotNode, NumberNode, OpNode, PTupleNode, ReferenceNode as ReferenceNode, StrNode,
+  ApplyNode, LetNode, BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NotNode, NumberNode, OpNode, PTupleNode, IdentifierNode as IdentifierNode, StrNode,
 } from '@/semantics/defs';
 import { builtins } from '@/semantics/defs/builtins';
 import {
@@ -94,8 +94,8 @@ export function gameReducer(
     if (refNode.type === 'missing')
       throw new MissingNodeError(refNode.id);
 
-    if (refNode.type !== 'reference')
-      throw new WrongTypeError(refNode.id, 'reference', refNode.type);
+    if (refNode.type !== 'identifier')
+      throw new WrongTypeError(refNode.id, 'identifier', refNode.type);
 
     if (valueNode.type === 'missing')
       throw new MissingNodeError(valueNode.id);
@@ -175,7 +175,7 @@ export function gameReducer(
       const argNodeId = argTuple.subexpressions[0];
 
       // force references to be reduced before being used as params
-      if (paramNode.type === 'reference') {
+      if (paramNode.type === 'identifier') {
         state = gameReducer(state, createMoveNodeToBoard(paramNodeId));
         state = gameReducer(state, createEvalReference(paramNodeId));
         paramNodeId = [...state.added].find(([, source]) => source === paramNodeId)![0];
@@ -203,7 +203,7 @@ export function gameReducer(
       const referenceNodes = findNodesDeep(
         bodyNodeId,
         state.nodes,
-        (nodeToMatch) => nodeToMatch.type === 'reference' && nodeToMatch.fields.name === argName,
+        (nodeToMatch) => nodeToMatch.type === 'identifier' && nodeToMatch.fields.name === argName,
         (nodeToFilter, nodeMap) => {
           // don't bother searching inside of nodes that redefine the name in
           // their own scope, such as lambdas with the same arg name
@@ -544,7 +544,7 @@ export function gameReducer(
 
     let resultNodeId: NodeId;
 
-    if (calleeNode.type === 'builtin-reference') {
+    if (calleeNode.type === builtin) {
       const builtin = builtins[calleeNode.fields.name as keyof typeof builtins];
       const [newNode, addedNodes, newNodeMap] = builtin.impl(calleeNode, paramNodes, state.nodes);
       state = {
@@ -568,7 +568,7 @@ export function gameReducer(
       // should be the result of evaluating the lambda
       resultNodeId = [...state.added.keys()][0];
     } else {
-      throw new WrongTypeError(calleeNode.id, ['lambda', 'builtin-reference'], calleeNode.type);
+      throw new WrongTypeError(calleeNode.id, ['lambda', 'builtin'], calleeNode.type);
     }
 
     return produce(state, draft => {
@@ -606,7 +606,7 @@ export function gameReducer(
     if (!state.board.has(getRootForNode(referenceNodeId, state.nodes).id))
       throw new NotOnBoardError(referenceNodeId);
 
-    const referenceNode = state.nodes.get(referenceNodeId) as DRF<ReferenceNode>;
+    const referenceNode = state.nodes.get(referenceNodeId) as DRF<IdentifierNode>;
     const targetId = getValueForName(referenceNode.fields.name, referenceNode, state);
 
     if (targetId === undefined || targetId === null)
@@ -674,7 +674,6 @@ export function gameReducer(
 
     const node = state.nodes.get(act.nodeId)!;
 
-    state = gameReducer(state, createMoveNodeToBoard(nodeId));
     if (state.toolbox.has(act.nodeId)) {
       return produce(state, draft => {
         draft.added.clear();
@@ -758,6 +757,8 @@ export function gameReducer(
 
     const defNode = state.nodes.get(nodeId)!;
 
+    state = gameReducer(state, createMoveNodeToBoard(nodeId));
+
     if (defNode.type !== 'define')
       throw new WrongTypeError(nodeId, 'define', defNode.type);
 
@@ -807,7 +808,7 @@ export function gameReducer(
 
       // don't evaluate references unless they are being used as parameters
       // or callees
-      if (childNode.type === 'reference') {
+      if (childNode.type === 'identifier') {
         if (!(targetNode.type === 'apply' && childNode.parentField === 'callee')
             && !(targetNode.type === 'ptuple'))
           continue;
@@ -844,7 +845,7 @@ export function gameReducer(
       return gameReducer(state, createEvalConditional(targetNode.id));
     case 'not':
       return gameReducer(state, createEvalNot(targetNode.id));
-    case 'reference':
+    case 'identifier':
       return gameReducer(state, createEvalReference(targetNode.id));
     default:
       throw new Error(`Cannot step a ${targetNode.type}`);
@@ -946,6 +947,9 @@ export function gameReducer(
   
   case ActionKind.DeleteDocNodes: {
     const rootId = state.docs.get(act.key)!;
+
+    if (!state.nodes.has(rootId)) return state;
+
     const descendants = findNodesDeep(rootId, state.nodes, () => true);
   
     return produce(state, draft => {

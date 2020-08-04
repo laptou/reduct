@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 
-import { StageProjection } from '../../projection/base';
+import { StageProjection } from '../../../projection/base';
 
 import { GlobalState } from '@/store/state';
 import { createMoveNodeToDefs } from '@/store/action/game';
@@ -37,12 +37,7 @@ function onDrop(
   const nodeId = parseInt(event.dataTransfer.getData('application/reduct-node'));
   if (!nodeId || isNaN(nodeId)) return;
 
-  try {
-    props.moveNodeToDefs(nodeId);
-  } catch (e) {
-    // TODO: show toast to user
-    console.warn('could not add node to defs', e);
-  }
+  props.moveNodeToDefs(nodeId);
 
   event.preventDefault();
   event.stopPropagation();
@@ -57,7 +52,7 @@ const DefinitionsImpl: FunctionComponent<DefinitionsProps> =
     );
   };
 
-export const Definitions = connect(
+export const DefinitionsTab = connect(
   (state: DeepReadonly<GlobalState>) => ({
     // TODO: only show globals which are referenced by something on the board
     // or in the toolbox

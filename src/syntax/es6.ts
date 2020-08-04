@@ -400,7 +400,7 @@ export function serializeNode(node: ReductNode): string {
   case 'letExpr': {
     return `${node.variable} = ${serializeNode(node.e1)} in (${serializeNode(node.e2.body)})`;
   }
-  case 'reference': {
+  case 'identifier': {
     if (node.fields.params?.some((name) => node.subexpressions[`arg_${name}`].type !== 'missing')) {
       const args = node.fields.params.map((name) => serializeNode(node.subexpressions[`arg_${name}`])).join(', ');
       return `${node.fields.name}(${args})`;

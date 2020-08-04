@@ -3,7 +3,7 @@
 @use 'fx';
 @use 'sass:color';
 
-.projection.reference {
+.projection.identifier {
   @extend %projection-standalone;
   @include fx.projection-shadow-box();
   
@@ -21,7 +21,7 @@
     color: theme.$projection-foreground-inverse;
   }
 
-  .reference-name {
+  .identifier-name {
     padding: 0.25rem;
     border: 1px dashed rgba(black, 0.5);
     border-radius: 0.5rem;
