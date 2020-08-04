@@ -155,7 +155,11 @@ export function createLetNode(variable: IdentifierNode, e1: ReductNode, e2: Redu
   return {
     ...createNodeBase(),
     type: 'letExpr',
-    subexpressions: { variable, value: e1, body: e2 }
+    subexpressions: {
+      variable,
+      value: e1,
+      body: e2, 
+    },
   };
 }
 

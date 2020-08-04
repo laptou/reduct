@@ -7,7 +7,7 @@ import * as progression from '../game/progression';
 import { ReductNode } from '@/semantics';
 import { LambdaNode } from '@/semantics/defs';
 import {
-  createApplyNode, createArrayNode, createBinOpNode, createBoolNode, createConditionalNode, createDefineNode, createLambdaArgNode, createLambdaNode, createMemberNode, createMissingNode, createNotNode, createNumberNode, createOpNode, createReferenceNode, createStrNode, createSymbolNode, createVtupleNode, createPtupleNode, 
+  createApplyNode, createArrayNode, createBinOpNode, createBoolNode, createConditionalNode, createDefineNode, createLambdaArgNode, createLambdaNode, createMemberNode, createMissingNode, createNotNode, createNumberNode, createOpNode, createReferenceNode, createStrNode, createSymbolNode, createVtupleNode, createPtupleNode, createLetNode,
 } from '@/semantics/util';
 
 function modifier(ast: esprima.Program) {
@@ -89,15 +89,15 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
     }
 
     /*
-      if (node.name.startsWith('__variant')) {
-        const [variant, value] = node.name.slice(10).split('_');
-        if (!variant || !value) {
-          throw new Error(`Invalid dynamic variant ${node.name}`);
+        if (node.name.startsWith('__variant')) {
+          const [variant, value] = node.name.slice(10).split('_');
+          if (!variant || !value) {
+            throw new Error(`Invalid dynamic variant ${node.name}`);
+          }
+    
+          return this.semantics.dynamicVariant(variant, value);
         }
-  
-        return this.semantics.dynamicVariant(variant, value);
-      }
-      */
+        */
 
     return createReferenceNode(name);
   }
@@ -202,21 +202,19 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
       createOpNode(node.operator),
       parseNode(node.right, macros)
     );
-
   case 'CallExpression': {
     if (node.callee.type === 'Identifier') {
-      if (node.callee.name === '__let') {
-        throw new Error('TODO: implement let expressions');
 
-        /*
-            call let expressions in the level like this:
-            __let(3, variable, () => variable + 4)
-  
-            translate in-game to:
-            let variable = 3 in {
-              variable + 4
-            }
-          */
+      if (node.callee.name === '__let') {
+        if (node.arguments[0].type !== 'Identifier') {
+          throw new Error('A let node must have an identifier');
+        } else {
+          return createLetNode(
+            createReferenceNode(node.arguments[0].name),
+            parseNode(node.arguments[1], macros),
+            parseNode(node.arguments[2], macros)
+          );
+        }
       }
 
       if (node.callee.name === '__tuple') {
@@ -226,7 +224,6 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
 
           return parseNode(arg, macros);
         });
-
         return createVtupleNode(...children);
       }
 
@@ -239,13 +236,13 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
 
       if (node.callee.name === '__autograder') {
         /* Color for goals
-               */
+                 */
         const colors = [
           '#c0392b', '#2980b9', '#2ecc71', '#8e44ad', '#f39c12',
         ];
 
         /* Getting the alien index.
-             */
+               */
         const chapter = progression.currentChapter();
         const alienIndex = Math.floor(((progression.currentLevel() - chapter.startIdx)
             / ((chapter.endIdx - chapter.startIdx) + 1))
