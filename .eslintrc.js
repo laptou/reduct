@@ -30,6 +30,7 @@ module.exports = {
     'plugin:import/typescript',
   ],
   rules: {
+    '@typescript-eslint/no-use-before-define': ['error', 'nofunc'],
     '@typescript-eslint/explicit-function-return-type': [
       'off'
     ],
@@ -89,7 +90,7 @@ module.exports = {
     'no-continue': 'off',
     'no-restricted-syntax': 'off',
     'space-before-function-paren': 'off',
-    'no-use-before-define': 'warn',
+    'no-use-before-define': 'off',
     'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     'no-unused-expressions': 'off', // replaced by typescript-eslint variant
     'func-names': 'off',
@@ -203,7 +204,6 @@ module.exports = {
     'import/extensions': ['warn', 'never'],
     'import/prefer-default-export': ['off'],
     'import/first': ['warn'],
-    'import/exports-last': ['warn'],
     'import/no-duplicates': ['warn'],
     'import/order': ['error', { 'newlines-between': 'always' }],
     'import/newline-after-import': ['warn'],
