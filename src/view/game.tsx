@@ -30,6 +30,8 @@ function GameImpl(props: GameStoreProps) {
     );
 
   case GameMode.Gameplay:
+  case GameMode.Victory:
+  case GameMode.Defeat:
     return (
       <>
         <Board />
@@ -45,32 +47,8 @@ function GameImpl(props: GameStoreProps) {
             <DefinitionsTab />
           </Sidebar.Section>
         </Sidebar>
-      </>
-    );
-
-  case GameMode.Victory:
-    return (
-      <>
-        <Board />
-        <ToolboxTab />
-        <GoalTab />
-        <GameMenuTab />
-        <HistoryTab />
-        <Sidebar />
-        <VictoryOverlay />
-      </>
-    );
-
-  case GameMode.Defeat:
-    return (
-      <>
-        <Board />
-        <ToolboxTab />
-        <GoalTab />
-        <GameMenuTab />
-        <HistoryTab />
-        <DefinitionsTab />
-        <DefeatOverlay />
+        {props.mode === GameMode.Victory && <VictoryOverlay />}
+        {props.mode === GameMode.Defeat && <DefeatOverlay />}
       </>
     );
   }
