@@ -54,6 +54,7 @@ export function getProjectionForNode(node: DRF | null) {
   case 'symbol': return <SymbolProjection node={node} key={node.id} />;
   case 'identifier': return <IdentifierProjection node={node} key={node.id} />;
   case 'vtuple': return <VTupleProjection node={node} key={node.id} />;
+  case 'letExpr': return <span>test</span>;
   default: return <span>{`{${node.type}}`}</span>;
   }
 }
