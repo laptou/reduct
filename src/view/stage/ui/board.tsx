@@ -241,7 +241,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
 
     return (
       <div
-        id='reduct-board' 
+        id='reduct-board'
         onDragOver={onDragOver}
         onDrop={e => onDrop(e, props, boardRef, positions, setPositions)} 
         onClick={() => props.clearError()}
@@ -252,8 +252,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
             <animated.div className='projection-board-wrapper' style={props} key={key}>
               <StageProjection nodeId={id} />
             </animated.div>
-          )
-          )
+          ))
         }
       </div>
     );

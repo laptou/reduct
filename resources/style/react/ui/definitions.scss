@@ -1,1 +1,10 @@
 @use 'base';
+
+#reduct-definitions {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 1rem;
+  align-items: flex-start;
+
+  padding: 1rem;
+}

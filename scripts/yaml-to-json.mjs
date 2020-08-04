@@ -36,7 +36,16 @@ import yaml from 'js-yaml';
     const originalChapter = await fs.readJSON(jsonFilePath);
 
     levels.forEach((level, index) => {
-      const originalLevel = originalChapter.levels[index];
+      let originalLevel;
+
+      // if YAML contains more levels than JSON, add them
+      if (index in originalChapter.levels) {
+        originalLevel = originalChapter.levels[index];
+      } else {
+        originalLevel = {};
+        originalChapter.levels.push(originalLevel);
+      }
+
       originalLevel.board = level.board;
       originalLevel.goal = level.goal;
       originalLevel.syntax = level.syntax;
@@ -48,6 +57,9 @@ import yaml from 'js-yaml';
       originalLevel.output = level.autograder.output;
       originalLevel.textgoal = level.textGoal;
     });
+
+    // if JSON has more levels than YAML, cut them
+    originalChapter.levels = originalChapter.levels.slice(0, levels.length);
 
     await fs.writeJSON(jsonFilePath, originalChapter);
   }

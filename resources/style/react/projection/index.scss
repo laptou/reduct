@@ -14,6 +14,14 @@
 
   transform: var(--transform);
   transform-origin: center center;
+}
+
+.projection-interaction-container {
+  // there may be multiple interaction containers inside an animation container
+  // while the projection is transitioning; they need to appear on top of each
+  // other
+  grid-row: 1;
+  grid-column: 1;
 
   &.draggable {
     cursor: grab;
@@ -28,9 +36,19 @@
     pointer-events: none;
   }
 
+  &.locked {
+    cursor: default;
+  }
+
   .reduct-bubble-error {
     pointer-events: none;
   }
+}
+
+.projection-animation-container {
+  display: grid;
+  align-items: center;
+  justify-items: center;
 }
 
 .projection, .projection .content {
@@ -46,7 +64,7 @@
 
   transform-origin: top left;
 
-  & > .projection {
+  & > .projection-animation-container {
     transform: translate(-50%, -50%);
   }
 }

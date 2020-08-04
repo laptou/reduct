@@ -196,8 +196,8 @@ export function createStartLevel(index: number): StartLevelAction {
   // globals added for this level, and any definitions on the board.
   const prevDefinedNames = levelDefinition.extraDefines
     ? levelDefinition.extraDefines
-      .map((script: string) => {
-        const node = parseProgram(script, macros);
+      .map((script: any) => {
+        const node = parseProgram(script.toString(), macros);
 
         if (node.type !== 'define') {
           return null;
@@ -210,7 +210,7 @@ export function createStartLevel(index: number): StartLevelAction {
 
   const globalDefinedNames = Object.entries(levelDefinition.globals)
     .map(([name, script]) => {
-      const node = parseProgram(script, macros);
+      const node = parseProgram(script.toString(), macros);
 
       if (node.type !== 'define') {
         return null;
@@ -220,8 +220,8 @@ export function createStartLevel(index: number): StartLevelAction {
     });
 
   const newDefinedNames = levelDefinition.board
-    .map((script: string) => {
-      const node = parseProgram(script, macros);
+    .map((script: any) => {
+      const node = parseProgram(script.toString(), macros);
 
       if (node.type !== 'define') {
         return null;
@@ -241,14 +241,14 @@ export function createStartLevel(index: number): StartLevelAction {
   }
 
   // parse the goal, board, and toolbox
-  const goalNodes = levelDefinition.goal.map((script) => parseProgram(script, macros));
-  const boardNodes = levelDefinition.board.map((script) => parseProgram(script, macros));
-  const toolboxNodes = levelDefinition.toolbox.map((script) => parseProgram(script, macros));
+  const goalNodes = levelDefinition.goal.map((script) => parseProgram(script.toString(), macros));
+  const boardNodes = levelDefinition.board.map((script) => parseProgram(script.toString(), macros));
+  const toolboxNodes = levelDefinition.toolbox.map((script) => parseProgram(script.toString(), macros));
 
   // Go back and parse the globals as well.
   const globals = new Map();
   levelDefinition.extraDefines
-    .map((script) => parseProgram(script, macros))
+    .map((script) => parseProgram(script.toString(), macros))
     .forEach((node) => {
       if (node.type !== 'define') {
         return;
@@ -263,7 +263,7 @@ export function createStartLevel(index: number): StartLevelAction {
     // TODO: remove override for builtins, remove defs for builtin methods in levels
     if (name in builtins) continue;
 
-    const node = parseProgram(script, macros);
+    const node = parseProgram(script.toString(), macros);
 
     if (node.type !== 'define')
       continue;

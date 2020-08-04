@@ -6,14 +6,14 @@ import { IdentifierNode } from '@/semantics/defs';
 import { DRF, DeepReadonly } from '@/util/helper';
 import { getDefinitionForName } from '@/semantics/util';
 import { GlobalState } from '@/store/state';
-import '@resources/style/react/projection/reference.scss';
+import '@resources/style/react/projection/identifier.scss';
 
 interface IdentifierProjectionOwnProps {
   node: DRF<IdentifierNode>;
 }
 
 interface IdentifierProjectionStoreProps {
-  /** Is true when the name of this reference is found in the current scope. */
+  /** Is true when the name of this identifier is found in the current scope. */
   valid: boolean;
 }
 

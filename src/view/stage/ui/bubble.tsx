@@ -53,25 +53,18 @@ export const Bubble: React.FC<BubbleProps> = ({
     },
   });
   
-  return (
-    <>
-      {
-        // eslint-disable-next-line operator-linebreak
-        transition.map(({ item, key, props }) => item && 
-          <animated.div 
-            style={props}
-            key={key} 
-            className={`reduct-bubble reduct-bubble-${type}`}
-          >
-            <svg className='reduct-bubble-pointer' viewBox='0 0 32 16'>
-              <polygon points='16 0 0 16 32 16' />
-            </svg>
-            <div className='reduct-bubble-inner'>
-              {children}
-            </div>
-          </animated.div>
-        )
-      }
-    </>
-  );
+  return transition.map(({ item, key, props }) => item && (
+    <animated.div 
+      style={props}
+      key={key} 
+      className={`reduct-bubble reduct-bubble-${type}`}
+    >
+      <svg className='reduct-bubble-pointer' viewBox='0 0 32 16'>
+        <polygon points='16 0 0 16 32 16' />
+      </svg>
+      <div className='reduct-bubble-inner'>
+        {children}
+      </div>
+    </animated.div>
+  ));
 };
