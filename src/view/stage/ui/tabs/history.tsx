@@ -23,10 +23,10 @@ interface HistoryDispatchProps {
 const HistoryImpl = (props: HistoryStoreProps & HistoryDispatchProps) => {
   return (
     <div id='reduct-history'>
-      <button type='button' disabled={!props.canUndo} onClick={() => props.undo()}>
+      <button type='button' disabled={!props.canUndo} onClick={() => props.undo()} className='btn btn-default'>
         Undo
       </button>
-      <button type='button' disabled={!props.canRedo} onClick={() => props.redo()}>
+      <button type='button' disabled={!props.canRedo} onClick={() => props.redo()} className='btn btn-default'>
         Redo
       </button>
     </div>
