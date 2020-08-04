@@ -1,6 +1,6 @@
 {
   "name": "reduct-redux",
-  "version": "7.0.2-alpha",
+  "version": "7.0.5-alpha",
   "main": "src/index.js",
   "repository": "https://github.coecis.cornell.edu/Reduct/reduct-redux.git",
   "author": "David Li <li.davidm96@gmail.com>, Ibiyemi Abiodun <iaa34@cornell.edu>",
@@ -105,6 +105,9 @@
     "lint:check:style": "stylelint --color .",
     "lint:fix": "run-p --continue-on-error --aggregate-output lint:fix:*",
     "lint:fix:script": "eslint --color --fix --ext .ts,.tsx,.js .",
-    "lint:fix:style": "stylelint --color --fix ."
+    "lint:fix:style": "stylelint --color --fix .",
+    "levels:to-csv": "node scripts/yaml-to-csv.mjs",
+    "levels:to-json": "node scripts/yaml-to-json.mjs",
+    "levels:from-csv": "node scripts/csv-to-yaml.mjs"
   }
 }
