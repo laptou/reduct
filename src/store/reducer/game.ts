@@ -674,7 +674,6 @@ export function gameReducer(
 
     const node = state.nodes.get(act.nodeId)!;
 
-    state = gameReducer(state, createMoveNodeToBoard(nodeId));
     if (state.toolbox.has(act.nodeId)) {
       return produce(state, draft => {
         draft.added.clear();
@@ -757,6 +756,8 @@ export function gameReducer(
     const { nodeId } = act;
 
     const defNode = state.nodes.get(nodeId)!;
+
+    state = gameReducer(state, createMoveNodeToBoard(nodeId));
 
     if (defNode.type !== 'define')
       throw new WrongTypeError(nodeId, 'define', defNode.type);

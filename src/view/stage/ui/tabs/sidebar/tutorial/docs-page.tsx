@@ -11,21 +11,34 @@ import { createCreateDocs, createDeleteDocs } from '@/store/action/game';
 import { GlobalState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
 import { StageProjection } from '@/view/stage/projection/base';
-import doc from '@resources/docs/node/binop.md';
 
-interface DocsStoreProps {
+export interface DocAttributes {
+  type: string;
+  name: string;
+  example: string;
+}
+
+interface DocsPageOwnProps {
+  /**
+   * The documentation page to show.
+   */
+  doc: { html: string; attributes: DocAttributes };
+}
+
+interface DocsPageStoreProps {
   rootNodeIds: number[];
 }
 
-interface DocsDispatchProps {
+interface DocsPageDispatchProps {
   createDocs(key: string, script: string): void;
   deleteDocs(key: string): void;
 }
 
-type DocsProps = DocsStoreProps & DocsDispatchProps;
+type DocsPageProps = 
+  DocsPageOwnProps & DocsPageStoreProps & DocsPageDispatchProps;
 
-const DocsImpl: React.FC<DocsProps> = (props) => {
-  const { html, attributes } = doc;
+const DocsPageImpl: React.FC<DocsPageProps> = (props) => {
+  const { html, attributes } = props.doc;
   const { rootNodeIds, createDocs, deleteDocs } = props;
 
   // we use Portals to inject React content (our stage projections) into
@@ -43,7 +56,7 @@ const DocsImpl: React.FC<DocsProps> = (props) => {
     
     const codeElements = element.current.getElementsByTagName('code');
 
-    const prefix = 'binop';
+    const prefix = attributes.name;
     const newScripts = new Map();
 
     Array.from(codeElements).forEach((codeElement, index) => {
@@ -61,7 +74,7 @@ const DocsImpl: React.FC<DocsProps> = (props) => {
     });
 
     setScripts(newScripts);
-  }, [html]);
+  }, [html, attributes]);
 
   useEffect(() => {
     for (const [key, { script }] of scripts) {
@@ -100,7 +113,7 @@ const DocsImpl: React.FC<DocsProps> = (props) => {
   );
 };
 
-export const Docs = connect(
+export const DocsPage = connect(
   (state: DeepReadonly<GlobalState>) => ({
     rootNodeIds: [...state.game.$present.docs.values()],
   }),
@@ -112,4 +125,4 @@ export const Docs = connect(
       dispatch(createDeleteDocs(key)); 
     },
   })
-)(DocsImpl);
+)(DocsPageImpl);

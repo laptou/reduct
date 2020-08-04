@@ -1,6 +1,37 @@
 @use '../theme';
 @use 'base';
 
-.docs-container {
+.docs-listing-container {
+  display: grid;
+  align-content: stretch;
+  justify-content: stretch;
+  overflow: hidden;
+}
+
+.docs-listing-list, .docs-listing-view {
+  grid-row: 1;
+  grid-column: 1;
+
   padding: 1rem;
+
+  background: white;
+}
+
+.docs-listing-list {
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.docs-listing-item {
+  margin: 0 0.25rem;
+  padding: 1rem;
+  border-top: 1px dashed rgba(black, 0.5);
+
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(black, 0.125);
+  }
 }
