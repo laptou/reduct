@@ -2,8 +2,8 @@ import React, { FunctionComponent } from 'react';
 
 import { StageProjection } from './base';
 
-import { Flat } from '@/semantics';
-import { ConditionalNode } from '@/semantics/defs';
+import type { Flat } from '@/semantics';
+import type { ConditionalNode } from '@/semantics/defs';
 
 import '@resources/style/react/projection/conditional.scss';
 
