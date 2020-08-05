@@ -39,7 +39,7 @@ levels:
       - 9
     toolbox: []
     defines: []
-    textGoal: 'This is a dummmy level. Remove me.'
+    textGoal: This is a dummmy level. Remove me.
     note: This is a dummmy level. Remove me.
     syntax: []
     globals:
@@ -59,8 +59,7 @@ levels:
     defines: []
     textGoal: 'Use these functions to get {a star}.'
     note: null
-    syntax:
-      - syntax-lambda
+    syntax: []
     globals:
       add: {}
       hide: []
@@ -132,8 +131,7 @@ levels:
     defines: []
     textGoal: ''
     note: null
-    syntax:
-      - syntax-add
+    syntax: []
     globals:
       add: {}
       hide: []
