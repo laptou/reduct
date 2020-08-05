@@ -35,7 +35,7 @@ import yaml from 'js-yaml';
       'hideGlobals',
       'input',
       'output',
-      'textgoal', 
+      'textGoal', 
       'note',
     ];
 
@@ -57,12 +57,12 @@ import yaml from 'js-yaml';
         defines: level.defines,
         globals: level.globals.add,
         hideGlobals: level.globals.hide,
-        input: level.autograder && level.autograder.input,
-        output: level.autograder && level.autograder.output,
-        textgoal: level.textgoal,
+        input: level.autograder && level.autograder.inputs,
+        output: level.autograder && level.autograder.outputs,
+        textGoal: level.textGoal,
         note: level.note,
       };
-      
+
       writer.write(csvLevel);
     }
 
