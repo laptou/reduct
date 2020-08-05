@@ -33,7 +33,7 @@ export enum ActionKind {
   EvalConditional = 'eval-conditional',
   EvalNot = 'eval-not',
   EvalApply = 'eval-apply',
-  EvalReference = 'eval-reference',
+  EvalIdentifier = 'eval-reference',
   EvalLet = 'eval-let',
 
   Execute = 'exec',
@@ -531,7 +531,7 @@ export function createEvalApply(
 }
 
 export interface EvalReferenceAction {
-  type: ActionKind.EvalReference;
+  type: ActionKind.EvalIdentifier;
   referenceNodeId: NodeId;
 }
 
@@ -544,13 +544,13 @@ export function createEvalReference(
   referenceNodeId: NodeId,
 ): EvalReferenceAction {
   return {
-    type: ActionKind.EvalReference,
+    type: ActionKind.EvalIdentifier,
     referenceNodeId,
   };
 }
 
 export interface EvalInvocationAction {
-  type: ActionKind.EvalReference;
+  type: ActionKind.EvalIdentifier;
   referenceNodeId: NodeId;
   paramNodeId: NodeId;
 }
@@ -565,7 +565,7 @@ export function createEvalInvocation(
   paramNodeId: NodeId
 ): EvalInvocationAction {
   return {
-    type: ActionKind.EvalReference,
+    type: ActionKind.EvalIdentifier,
     referenceNodeId,
     paramNodeId,
   };

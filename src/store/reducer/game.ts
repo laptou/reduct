@@ -6,7 +6,7 @@ import {
 import { checkDefeat, checkVictory } from '../helper';
 import { GameMode, GameState } from '../state';
 import {
-  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference, createMoveNodeToBoard, createStep, ReductAction, createEvalLet, 
+  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference as createEvalIdentifier, createMoveNodeToBoard, createStep, ReductAction, createEvalLet, 
 } from '../action/game';
 
 import type { Flat, NodeId, NodeMap } from '@/semantics';
@@ -15,7 +15,7 @@ import {
 } from '@/semantics/defs';
 import { builtins } from '@/semantics/defs/builtins';
 import {
-  createBoolNode, createMissingNode, createNumberNode, createStrNode, getKindForNode, getValueForName, iterateTuple, createLetNode,
+  createBoolNode, createMissingNode, createNumberNode, createStrNode, getKindForNode, getValueForName, iterateTuple, createLetNode, getReductionOrderForNode,
 } from '@/semantics/util';
 import {
   DeepReadonly, DRF, mapIterable, withoutParent, withParent,
@@ -177,7 +177,7 @@ export function gameReducer(
       // force references to be reduced before being used as params
       if (paramNode.type === 'identifier') {
         state = gameReducer(state, createMoveNodeToBoard(paramNodeId));
-        state = gameReducer(state, createEvalReference(paramNodeId));
+        state = gameReducer(state, createEvalIdentifier(paramNodeId));
         paramNodeId = [...state.added].find(([, source]) => source === paramNodeId)![0];
       }
 
@@ -219,7 +219,7 @@ export function gameReducer(
 
       // eval all relevant references and keep track of which nodes are destroyed
       for (const referenceNode of referenceNodes) {
-        state = gameReducer(state, createEvalReference(referenceNode.id));
+        state = gameReducer(state, createEvalIdentifier(referenceNode.id));
         removed.push(...state.removed.keys());
       }
 
@@ -600,7 +600,7 @@ export function gameReducer(
     });
   }
 
-  case ActionKind.EvalReference: {
+  case ActionKind.EvalIdentifier: {
     const { referenceNodeId } = act;
 
     if (!state.board.has(getRootForNode(referenceNodeId, state.nodes).id))
@@ -611,6 +611,9 @@ export function gameReducer(
 
     if (targetId === undefined || targetId === null)
       throw new UnknownNameError(referenceNode.id, referenceNode.fields.name);
+
+    if (state.nodes.get(targetId)!.type === 'missing')
+      throw new MissingNodeError(targetId);
 
     const [clonedNode, , newNodeMap] =
         cloneNodeDeep(targetId, state.nodes);
@@ -795,25 +798,10 @@ export function gameReducer(
     let stepped = false;
     const parallel = targetNode.type === 'vtuple' || targetNode.type === 'ptuple';
 
-    for (const [name, childId] of Object.entries(targetNode.subexpressions)) {
+    for (const name of getReductionOrderForNode(targetNode)) {
+      const childId = targetNode.subexpressions[name];
       const childNode = state.nodes.get(childId)!;
       const childNodeKind = getKindForNode(childNode, state.nodes);
-
-      // for conditional nodes, we don't want to step the contents of the if
-      // block or the else block, we just want to evaluate the condition and
-      // then return one of the blocks
-      if (targetNode.type === 'conditional' && name !== 'condition') {
-        continue;
-      }
-
-      // don't evaluate references unless they are being used as parameters
-      // or callees
-      if (childNode.type === 'identifier') {
-        if (!(targetNode.type === 'apply' && childNode.parentField === 'callee')
-            && !(targetNode.type === 'ptuple'))
-          continue;
-      }
-
 
       // this is a child node that needs further evaluation, return the result
       // of stepping it once
@@ -846,7 +834,7 @@ export function gameReducer(
     case 'not':
       return gameReducer(state, createEvalNot(targetNode.id));
     case 'identifier':
-      return gameReducer(state, createEvalReference(targetNode.id));
+      return gameReducer(state, createEvalIdentifier(targetNode.id));
     default:
       throw new Error(`Cannot step a ${targetNode.type}`);
     }
