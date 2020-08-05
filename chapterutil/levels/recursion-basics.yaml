@@ -7,7 +7,7 @@ levels:
     toolbox:
       - countDown
     defines: []
-    textGoal: ''
+    textGoal: This function uses recursion to count down to 0
     note: null
     syntax: []
     globals:
@@ -28,7 +28,7 @@ levels:
       - '1'
       - 'n'
     defines: []
-    textGoal: ''
+    textGoal: Define a function that counts down to 1
     note: null
     syntax: []
     globals:
@@ -48,7 +48,7 @@ levels:
       - '1'
       - 'n'
     defines: []
-    textGoal: ''
+    textGoal: We can use recursion to count up too.
     note: null
     syntax: []
     globals:
@@ -98,15 +98,27 @@ levels:
       - __unlimited;countAboveFive
     defines:
       - 'function countToFive(x) { return x == 5 ? x : countToFive(x + 1); }'
-    textGoal: ''
+    textGoal: Define a function that outputs the difference between x and 5
     note: null
     syntax: []
     globals:
       add: {}
       hide: []
     autograder:
-      inputs: []
-      outputs: []
+      inputs:
+        - '10'
+        - '15'
+        - '13'
+        - '11'
+        - '7'
+        - '5'
+      outputs:
+        - '5'
+        - '10'
+        - '8'
+        - '6'
+        - '2'
+        - '0'
   - board:
       - 'function countAboveTen(x) { return _; }'
       - __autograder(0)
@@ -130,15 +142,21 @@ levels:
       - >-
         function howFarFromTen(x) { return x == 10 ? 0 : 1 + howFarFromTen(x +
         1); }
-    textGoal: ''
+    textGoal: Define a function that outputs the difference between x and 10
     note: null
     syntax: []
     globals:
       add: {}
       hide: []
     autograder:
-      inputs: []
-      outputs: []
+      inputs:
+        - '20'
+        - '12'
+        - '16'
+      outputs:
+        - '10'
+        - '2'
+        - '6'
   - board:
       - >-
         function difference(num, target){ return num == target ? 0 :
@@ -153,15 +171,23 @@ levels:
     toolbox:
       - __unlimited;difference
     defines: []
-    textGoal: ''
+    textGoal: Define a function that outputs the difference between two numbers
     note: null
     syntax: []
     globals:
       add: {}
       hide: []
     autograder:
-      inputs: []
-      outputs: []
+      inputs:
+        - '(5, 5)'
+        - '(57, 55)'
+        - '(59, 45)'
+        - '(239, 234)'
+      outputs:
+        - '0'
+        - '2'
+        - '14'
+        - '5'
   - board:
       - 'function difference(x,y) { return _; }'
       - '_ == _ ? _ : _'
@@ -181,12 +207,18 @@ levels:
       - >-
         function howFarFromTen(x) { return x == 10 ? 0 : 1 + howFarFromTen(x +
         1); }
-    textGoal: ''
+    textGoal: Define a function that outputs the difference between two numbers
     note: null
     syntax: []
     globals:
       add: {}
       hide: []
     autograder:
-      inputs: []
-      outputs: []
+      inputs:
+        - '(20, 10)'
+        - '(12, 5)'
+        - '(16, 15)'
+      outputs:
+        - '10'
+        - '7'
+        - '1'

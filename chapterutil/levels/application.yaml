@@ -5,7 +5,7 @@ levels:
       - '1'
     toolbox: []
     defines: []
-    textGoal: ''
+    textGoal: Use the application block
     note: null
     syntax: []
     globals:

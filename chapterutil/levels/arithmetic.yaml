@@ -92,7 +92,7 @@ levels:
       - x
       - 'y'
     defines: []
-    textGoal: ''
+    textGoal: Create a function to output 8
     note: null
     syntax: []
     globals:

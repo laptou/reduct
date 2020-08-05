@@ -9,7 +9,7 @@ levels:
     toolbox:
       - RECT
     defines: []
-    textGoal: ''
+    textGoal: 'Create {a square} and {a triangle}'
     note: null
     syntax: []
     globals:
@@ -33,7 +33,7 @@ levels:
       - x
       - 'y'
     defines: []
-    textGoal: ''
+    textGoal: 'Create {a star} and {a square}'
     note: null
     syntax: []
     globals:

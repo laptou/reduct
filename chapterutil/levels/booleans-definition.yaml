@@ -33,7 +33,7 @@ levels:
       - STAR
     defines:
       - 'function isStar(x) { return x == ''STAR''; }'
-    textGoal: ''
+    textGoal: 'Define a function that outputs true if x is {a star}, otherwise false'
     note: null
     syntax: []
     globals:
@@ -61,7 +61,7 @@ levels:
       - '2'
     defines:
       - 'function isZero(x) { return x == 0; }'
-    textGoal: ''
+    textGoal: 'Define a function that outputs true if x is 0, otherwise false'
     note: null
     syntax: []
     globals:
@@ -86,7 +86,7 @@ levels:
       - 'y'
       - __unlimited; add;
     defines: []
-    textGoal: ''
+    textGoal: Define a function that adds two numbers
     note: null
     syntax: []
     globals:
@@ -110,7 +110,7 @@ levels:
       - '0'
       - '1'
     defines: []
-    textGoal: ''
+    textGoal: 'Define a function that outputs true if x and y are equal, otherwise false'
     note: null
     syntax: []
     globals:
@@ -137,7 +137,7 @@ levels:
       - '1'
     defines:
       - 'function equals(x, y) { return x == y; }'
-    textGoal: ''
+    textGoal: 'Define a function that outputs true if x and y are equal, otherwise false'
     note: null
     syntax: []
     globals:
@@ -160,7 +160,7 @@ levels:
       - RECT
       - TRIANGLE
     defines: []
-    textGoal: ''
+    textGoal: 'Define a function that outputs 1 if x is {a star}'
     note: null
     syntax: []
     globals:
@@ -186,7 +186,7 @@ levels:
       - '3'
     defines:
       - 'function alwaysOne(x) { return x == 1 ? x : 1; }'
-    textGoal: ''
+    textGoal: Define a function that always outputs 1
     note: null
     syntax: []
     globals:
@@ -214,7 +214,7 @@ levels:
       - __unlimited; _(_)
     defines:
       - 'function firstNonZero(x, y) { return x == 0 ? x : y; }'
-    textGoal: ''
+    textGoal: 'Define a function that outputs x if it is non zero and y otherwise '
     note: null
     syntax: []
     globals:

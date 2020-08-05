@@ -14,7 +14,7 @@ levels:
       - '5'
       - '6'
     defines: []
-    textGoal: ''
+    textGoal: Define a function to add 2 to a number.
     note: null
     syntax: []
     globals:
@@ -38,7 +38,7 @@ levels:
       - '9'
       - '10'
     defines: []
-    textGoal: ''
+    textGoal: Define a function to use a function 3 times in a row.
     note: null
     syntax: []
     globals:
@@ -59,12 +59,12 @@ levels:
       - '5'
       - '9'
     defines: []
-    textGoal: ''
+    textGoal: "\U0001F346"
     note: null
     syntax: []
     globals:
       add:
-            twice: 'function twice(f) { return (x) => f(f(x)); }'
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
       hide: []
     autograder:
       inputs: []
@@ -84,12 +84,12 @@ levels:
       - addOne
     defines:
       - 'function addTwo(x) { return (twice(addOne))(x); }'
-    textGoal: ''
+    textGoal: Use twice to define a function that computes x plus 2
     note: null
     syntax: []
     globals:
       add:
-            twice: 'function twice(f) { return (x) => f(f(x)); }'
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
       hide: []
     autograder:
       inputs: []
@@ -105,15 +105,15 @@ levels:
       - '3'
       - '4'
     defines: []
-    textGoal: ''
+    textGoal: The repeat function lets you use the same function many times!
     note: null
     syntax: []
     globals:
       add:
-            twice: 'function twice(f) { return (x) => f(f(x)); }'
-            repeat: >-
-              function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
-              f)(f(x)); }
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
+        repeat: >-
+          function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
+          f)(f(x)); }
       hide: []
     autograder:
       inputs: []
@@ -134,10 +134,10 @@ levels:
     syntax: []
     globals:
       add:
-            twice: 'function twice(f) { return (x) => f(f(x)); }'
-            repeat: >-
-              function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
-              f)(f(x)); }
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
+        repeat: >-
+          function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
+          f)(f(x)); }
       hide: []
     autograder:
       inputs: []
@@ -160,10 +160,10 @@ levels:
     syntax: []
     globals:
       add:
-            twice: 'function twice(f) { return (x) => f(f(x)); }'
-            repeat: >-
-              function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
-              f)(f(x)); }
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
+        repeat: >-
+          function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
+          f)(f(x)); }
       hide: []
     autograder:
       inputs: []
@@ -186,15 +186,15 @@ levels:
       - '5'
     defines:
       - 'function addSix(x) { return (repeat(3, addTwo))(x); }'
-    textGoal: ''
+    textGoal: Define a function that computes x plus 6
     note: null
     syntax: []
     globals:
       add:
-            twice: 'function twice(f) { return (x) => f(f(x)); }'
-            repeat: >-
-              function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
-              f)(f(x)); }
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
+        repeat: >-
+          function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
+          f)(f(x)); }
       hide: []
     autograder:
       inputs: []
@@ -219,10 +219,10 @@ levels:
     syntax: []
     globals:
       add:
-            twice: 'function twice(f) { return (x) => f(f(x)); }'
-            repeat: >-
-              function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
-              f)(f(x)); }
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
+        repeat: >-
+          function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
+          f)(f(x)); }
       hide: []
     autograder:
       inputs: []
@@ -245,15 +245,15 @@ levels:
       - '7'
     defines:
       - 'function add(a, b) { return repeat(a, addOne)(b); }'
-    textGoal: ''
+    textGoal: Define a function that computes a plus b
     note: null
     syntax: []
     globals:
       add:
-            twice: 'function twice(f) { return (x) => f(f(x)); }'
-            repeat: >-
-              function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
-              f)(f(x)); }
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
+        repeat: >-
+          function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
+          f)(f(x)); }
       hide: []
     autograder:
       inputs: []
@@ -278,15 +278,15 @@ levels:
       - '7'
     defines:
       - 'function add(a, b) { return repeat(a, addOne)(b); }'
-    textGoal: ''
+    textGoal: Define a function that computes a plus b
     note: null
     syntax: []
     globals:
       add:
-            twice: 'function twice(f) { return (x) => f(f(x)); }'
-            repeat: >-
-              function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
-              f)(f(x)); }
+        twice: 'function twice(f) { return (x) => f(f(x)); }'
+        repeat: >-
+          function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
+          f)(f(x)); }
       hide: []
     autograder:
       inputs: []

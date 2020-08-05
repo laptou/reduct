@@ -54,7 +54,7 @@ levels:
       - '3'
     defines:
       - 'function threeify(x) { return 3; }'
-    textGoal: ''
+    textGoal: Define a function that outputs 3
     note: null
     syntax: []
     globals:
@@ -79,7 +79,7 @@ levels:
       - __unlimited;doNothing;
     defines:
       - 'function addThree(x) { return addOne(addOne(addOne(x))); }'
-    textGoal: ''
+    textGoal: Define a function that computes x plus 3
     note: null
     syntax: []
     globals:

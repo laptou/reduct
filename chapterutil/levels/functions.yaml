@@ -6,11 +6,41 @@ levels:
       - STAR
     toolbox: []
     defines: []
-    textGoal: ''
+    textGoal: 'Drop the {star} onto the function!'
     note: >-
       Interestingly, here I wanted to say "Apply". Also identity might not be
       the best sarting point to express that function are producing a result. It
       might also be useful to introduce the notion of argument.
+    syntax: []
+    globals:
+      add: {}
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - x => x
+    goal:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 9
+    toolbox: []
+    defines: []
+    textGoal: 'This is a dummmy level. Remove me.'
+    note: This is a dummmy level. Remove me.
     syntax: []
     globals:
       add: {}
@@ -27,9 +57,10 @@ levels:
       - STAR
     toolbox: []
     defines: []
-    textGoal: ''
+    textGoal: 'Use these functions to get {a star}.'
     note: null
-    syntax: []
+    syntax:
+      - syntax-lambda
     globals:
       add: {}
       hide: []
@@ -44,7 +75,7 @@ levels:
       - a => a
     toolbox: []
     defines: []
-    textGoal: ''
+    textGoal: The input to a function can be another function
     note: null
     syntax: []
     globals:
@@ -59,7 +90,7 @@ levels:
       - '2'
     toolbox: []
     defines: []
-    textGoal: ''
+    textGoal: This is an expression you can click on
     note: null
     syntax: []
     globals:
@@ -78,7 +109,9 @@ levels:
       - RECT
       - STAR
     defines: []
-    textGoal: ''
+    textGoal: >-
+      Use the toolbox at the bottom of the screen to place two {squares} on the
+      board
     note: null
     syntax: []
     globals:
@@ -99,7 +132,8 @@ levels:
     defines: []
     textGoal: ''
     note: null
-    syntax: []
+    syntax:
+      - syntax-add
     globals:
       add: {}
       hide: []
@@ -115,7 +149,7 @@ levels:
       - STAR
     toolbox: []
     defines: []
-    textGoal: ''
+    textGoal: 'Create two {stars}'
     note: null
     syntax: []
     globals:
@@ -138,7 +172,7 @@ levels:
       - TRIANGLE
       - TRIANGLE
     defines: []
-    textGoal: ''
+    textGoal: 'Create a {star}, {square}, and {triangle}'
     note: null
     syntax: []
     globals:
@@ -178,7 +212,7 @@ levels:
       - '5'
       - '6'
     defines: []
-    textGoal: ''
+    textGoal: 'Hint: you can’t add a function to a number'
     note: null
     syntax: []
     globals:
@@ -195,7 +229,7 @@ levels:
       - something => RECT
       - dont_care => TRIANGLE
     defines: []
-    textGoal: ''
+    textGoal: 'Create {a square}'
     note: null
     syntax: []
     globals:
