@@ -1,6 +1,6 @@
 levels:
   - board:
-      - '__let(x, _, () => ((x) + (x))'
+      - __let(x, _, () => x + x)
     goal:
       - '4'
     toolbox:
@@ -12,17 +12,13 @@ levels:
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
-      - '__let(x, _, () => (__let(x, (x) + (x), () => ((x) + (x)))'
+      - __let(x, _, () => __let(x, x + x, () => x + x))
     goal:
       - '4'
     toolbox:
@@ -35,38 +31,30 @@ levels:
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
-      - '__let(f, _, () => ((((f)(3))(4)) + (((f)(4))(3)))'
+      - __let(f, _, () => f(3)(4) + f(4)(3))
     goal:
       - '0'
     toolbox:
-      - (x) => (y) => (x) + (y)
-      - (x) => (y) => (x) - (y)
+      - x => y => x + y
+      - x => y => x - y
     defines: []
     textGoal: ''
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
-      - '__let(x, _, () => (__let(y, _, () => ((x) == (y))'
+      - __let(x, _, () => __let(y, _, () => x == y))
     goal:
       - 'false'
     toolbox:
@@ -79,19 +67,15 @@ levels:
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []
       outputs: []
   - board:
       - >-
-        __let(x, _, () => (__let(y, _, () => (function countUpTo(x, n) { return
-        x == _ ? x : countUpTo(x + 1, n); }))
+        __let(x, _, () => __let(y, _, () => (function countUpTo(x, n) { return
+        x == _ ? x : countUpTo(x + 1, n); })))
     goal:
       - '5'
     toolbox:
@@ -105,11 +89,7 @@ levels:
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []

@@ -14,11 +14,7 @@ levels:
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []
@@ -38,11 +34,7 @@ levels:
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []
@@ -64,11 +56,7 @@ levels:
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []
@@ -87,11 +75,7 @@ levels:
       function returning function.
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []
@@ -112,11 +96,7 @@ levels:
     note: Scope and how to use it...
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []
@@ -135,11 +115,7 @@ levels:
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []

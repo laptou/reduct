@@ -68,8 +68,8 @@ import yaml from 'js-yaml';
         },
         autograder: {
           inputs: autograderInputs,
-          outputs: autograderOutputs
-        }
+          outputs: autograderOutputs,
+        },
       });
     }
 

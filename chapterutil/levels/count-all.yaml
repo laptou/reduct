@@ -13,14 +13,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -42,14 +38,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -72,14 +64,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -103,14 +91,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -133,14 +117,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -167,14 +147,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -200,14 +176,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -235,14 +207,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -270,14 +238,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -302,14 +266,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -337,14 +297,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -361,11 +317,7 @@ levels:
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []
@@ -387,14 +339,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -418,14 +366,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -452,14 +396,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -485,14 +425,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -520,14 +456,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -554,14 +486,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -588,14 +516,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -620,14 +544,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -652,14 +572,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -688,14 +604,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -726,14 +638,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -766,14 +674,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -804,14 +708,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -843,14 +743,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -872,14 +768,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -906,14 +798,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -940,14 +828,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -977,14 +861,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -1010,14 +890,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -1046,14 +922,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -1083,14 +955,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             first: 'function first(a) {return get(a,0);}'
             remove_first: >-
               function remove_first(a) {return length(a) < 2 ? [] : slice(a, 1,
               length(a))}
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []

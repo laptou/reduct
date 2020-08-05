@@ -33,7 +33,13 @@ import yaml from 'js-yaml';
     // this script should just update the existing JSON definitions, not
     // overwrite them
     const jsonFilePath = resolve(levelDirectory, `${chapterName}.json`);
-    const originalChapter = await fs.readJSON(jsonFilePath);
+    let originalChapter;
+    
+    try {
+      originalChapter = await fs.readJSON(jsonFilePath);
+    } catch {
+      originalChapter = {};
+    }
 
     levels.forEach((level, index) => {
       let originalLevel;

@@ -9,13 +9,9 @@ levels:
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide:
-            - addOne
-        hide: []
-      hide: []
+      add: {}
+      hide:
+        - addOne
     autograder:
       inputs: []
       outputs: []

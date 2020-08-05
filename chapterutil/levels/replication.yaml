@@ -11,11 +11,7 @@ levels:
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []
@@ -33,11 +29,7 @@ levels:
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []
@@ -56,11 +48,7 @@ levels:
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []
@@ -84,11 +72,7 @@ levels:
       something special.
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []
@@ -110,11 +94,7 @@ levels:
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []
@@ -135,11 +115,7 @@ levels:
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []
@@ -159,11 +135,7 @@ levels:
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []
@@ -182,11 +154,7 @@ levels:
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []
@@ -206,11 +174,7 @@ levels:
     note: old 22
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []

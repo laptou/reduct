@@ -208,7 +208,7 @@ export function createStartLevel(index: number): StartLevelAction {
       .filter((define) => define !== null)
     : [];
 
-  const globalDefinedNames = Object.entries(levelDefinition.globals)
+  const globalDefinedNames = Object.entries(levelDefinition.globals.add)
     .map(([name, script]) => {
       const node = parseProgram(script.toString(), macros);
 

@@ -13,11 +13,7 @@ levels:
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []
@@ -37,11 +33,7 @@ levels:
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []
@@ -66,11 +58,7 @@ levels:
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []
@@ -95,11 +83,7 @@ levels:
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []

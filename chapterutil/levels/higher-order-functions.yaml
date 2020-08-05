@@ -18,11 +18,7 @@ levels:
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []
@@ -46,11 +42,7 @@ levels:
     note: null
     syntax: []
     globals:
-      add:
-        add:
-          add: {}
-          hide: []
-        hide: []
+      add: {}
       hide: []
     autograder:
       inputs: []
@@ -72,11 +64,7 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             twice: 'function twice(f) { return (x) => f(f(x)); }'
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -101,11 +89,7 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             twice: 'function twice(f) { return (x) => f(f(x)); }'
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -126,14 +110,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             twice: 'function twice(f) { return (x) => f(f(x)); }'
             repeat: >-
               function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
               f)(f(x)); }
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -154,14 +134,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             twice: 'function twice(f) { return (x) => f(f(x)); }'
             repeat: >-
               function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
               f)(f(x)); }
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -184,14 +160,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             twice: 'function twice(f) { return (x) => f(f(x)); }'
             repeat: >-
               function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
               f)(f(x)); }
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -219,14 +191,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             twice: 'function twice(f) { return (x) => f(f(x)); }'
             repeat: >-
               function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
               f)(f(x)); }
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -251,14 +219,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             twice: 'function twice(f) { return (x) => f(f(x)); }'
             repeat: >-
               function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
               f)(f(x)); }
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -286,14 +250,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             twice: 'function twice(f) { return (x) => f(f(x)); }'
             repeat: >-
               function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
               f)(f(x)); }
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []
@@ -323,14 +283,10 @@ levels:
     syntax: []
     globals:
       add:
-        add:
-          add:
             twice: 'function twice(f) { return (x) => f(f(x)); }'
             repeat: >-
               function repeat(n, f) { return (x) => n == 0 ? x : repeat(n - 1,
               f)(f(x)); }
-          hide: []
-        hide: []
       hide: []
     autograder:
       inputs: []

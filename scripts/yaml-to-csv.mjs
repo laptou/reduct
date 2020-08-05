@@ -32,22 +32,39 @@ import yaml from 'js-yaml';
       'toolbox',
       'defines',
       'globals',
+      'hideGlobals',
+      'input',
+      'output',
       'textgoal', 
       'note',
     ];
 
     const writer = csv.stringify({ 
       columns,
-      header: true
+      header: true,
     });
 
     const csvFileName = `${basename(fileName)}.csv`;
     const csvFilePath = resolve(chapterDirectory, csvFileName);
 
-    writer.pipe(fs.createWriteStream(csvFilePath))
+    writer.pipe(fs.createWriteStream(csvFilePath));
 
-    for (const level of levels)
-      writer.write(level);
+    for (const level of levels) {
+      const csvLevel = {
+        board: level.board,
+        goal: level.goal,
+        toolbox: level.toolbox,
+        defines: level.defines,
+        globals: level.globals.add,
+        hideGlobals: level.globals.hide,
+        input: level.autograder && level.autograder.input,
+        output: level.autograder && level.autograder.output,
+        textgoal: level.textgoal,
+        note: level.note,
+      };
+      
+      writer.write(csvLevel);
+    }
 
     await new Promise(resolve => writer.end(resolve));
   }
