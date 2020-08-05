@@ -51,7 +51,7 @@ import yaml from 'js-yaml';
       // not blocks
       const globals = eval(`(${record.globals})`) || {};
 
-      const textGoal = record.textgoal;
+      const textGoal = record.textGoal;
       const note = record.note || record['FVG note'] || null;
 
       levels.push({
@@ -68,8 +68,8 @@ import yaml from 'js-yaml';
         },
         autograder: {
           inputs: autograderInputs,
-          outputs: autograderOutputs
-        }
+          outputs: autograderOutputs,
+        },
       });
     }
 
