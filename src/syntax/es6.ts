@@ -206,15 +206,25 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
     if (node.callee.type === 'Identifier') {
 
       if (node.callee.name === '__let') {
-        if (node.arguments[0].type !== 'Identifier') {
-          throw new Error('A let node must have an identifier');
-        } else {
-          return createLetNode(
-            createReferenceNode(node.arguments[0].name),
-            parseNode(node.arguments[1], macros),
-            parseNode(node.arguments[2], macros)
-          );
+        const [ident, value, block] = node.arguments;
+
+        if (ident?.type !== 'Identifier') {
+          throw new Error('First parameter of a let expression must be an identifier.');
         }
+
+        if (block?.type !== 'ArrowFunctionExpression') {
+          throw new Error('Third parameter of a let expression must be an arrow function.');
+        }
+
+        if (node.arguments.length > 3) {
+          throw new Error('Let expressions only require 3 arguments.'); 
+        }
+
+        return createLetNode(
+          createReferenceNode(ident.name),
+          parseNode(value, macros),
+          parseNode(block.body, macros)
+        );
       }
 
       if (node.callee.name === '__tuple') {
@@ -397,7 +407,7 @@ export function serializeNode(node: ReductNode): string {
   case 'lambda': {
     return `(${serializeNode(node.subexpressions.arg)}) => ${serializeNode(node.subexpressions.body)}`;
   }
-  case 'letExpr': {
+  case 'let': {
     return `${node.variable} = ${serializeNode(node.e1)} in (${serializeNode(node.e2.body)})`;
   }
   case 'identifier': {
