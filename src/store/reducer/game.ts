@@ -835,7 +835,7 @@ export function gameReducer(
     // if we are here, all of the child nodes are fully stepped so we should
     // just step this node
     switch (targetNode.type) {
-    case 'letExpr':
+    case 'let':
       return gameReducer(state, createEvalLet(targetNode.id));
     case 'apply':
       return gameReducer(state, createEvalApply(targetNode.id));

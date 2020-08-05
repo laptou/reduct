@@ -154,7 +154,7 @@ export function createLambdaNode(arg: PTupleNode, body: ReductNode): LambdaNode 
 export function createLetNode(variable: IdentifierNode, e1: ReductNode, e2: ReductNode): LetNode {
   return {
     ...createNodeBase(),
-    type: 'letExpr',
+    type: 'let',
     subexpressions: {
       variable,
       value: e1,
@@ -268,7 +268,7 @@ export type NodeKind = 'expression' | 'placeholder' | 'value' | 'statement' | 's
 export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKind {
   switch (node.type) {
   case 'apply':
-  case 'letExpr':
+  case 'let':
   case 'binop':
   case 'conditional':
   case 'member': 
@@ -366,7 +366,7 @@ export function getDefinitionForName(
       }
     }
 
-    if (current.type === 'letExpr') {
+    if (current.type === 'let') {
       const varNode = state.nodes.get(current.subexpressions.variable)! as DRF<IdentifierNode>;
       if (varNode.fields.name === name) {
         return varNode.id;

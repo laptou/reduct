@@ -8,7 +8,7 @@ import * as binop from './defs/binop';
 import * as conditional from './defs/conditional';
 import * as define from './defs/define';
 import * as lambda from './defs/lambda';
-import * as letExpr from './defs/letExpr';
+import * as letExpr from './defs/let';
 import * as member from './defs/member';
 import * as missing from './defs/missing';
 import * as not from './defs/not';
