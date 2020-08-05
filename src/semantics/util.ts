@@ -369,7 +369,7 @@ export function getDefinitionForName(
     if (current.type === 'let') {
       const varNode = state.nodes.get(current.subexpressions.variable)! as DRF<IdentifierNode>;
       if (varNode.fields.name === name) {
-        return varNode.id;
+        return current.id;
       }
     }
 
@@ -385,6 +385,7 @@ export function getDefinitionForName(
 
   return null;
 }
+
 /**
  * Searches for `name` in the scope of `node`. If it is found, returns the
  * corresponding value. This is different from getDefinitionForName because it
@@ -407,11 +408,41 @@ export function getValueForName(
   if (definitionId === null) return null;
 
   const definitionNode = state.nodes.get(definitionId)!;
+
   if (definitionNode.type === 'define')
     return definitionNode.subexpressions.body;
 
   if (definitionNode.type === 'lambdaArg')
     return definitionNode.fields.value;
 
+  if (definitionNode.type === 'let')
+    return definitionNode.subexpressions.value;
+
   return definitionNode.id;
+}
+
+/**
+ * Gets the order in which a node's children should be reduced before the node
+ * itself is reduced.
+ * 
+ * @param node The node whose children are being reduced.
+ * @returns An array of child fields to be reduced, in order.
+ */
+export function getReductionOrderForNode<N extends DRF>(node: N): string[] {
+  switch (node.type) {
+  case 'apply':
+    return ['callee', 'argument'];
+
+  case 'let':
+    return ['body'];
+  
+  // for conditional nodes, we don't want to step the contents of the if
+  // block or the else block, we just want to evaluate the condition and
+  // then return one of the blocks
+  case 'conditional':
+    return ['condition'];
+  
+  default:
+    return Object.keys(node.subexpressions);
+  }
 }
