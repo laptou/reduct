@@ -7,22 +7,30 @@ import { GlobalState } from '@/store/state';
 import { NodeId } from '@/semantics';
 import { DeepReadonly } from '@/util/helper';
 import '@resources/style/react/ui/goal.scss';
+import Loader from '@/loader';
 
 interface GoalStoreProps {
-  nodeIds: DeepReadonly<Set<NodeId>>;
+  nodeIds: ReadonlySet<NodeId>;
+  levelIndex: number;
 }
 
 type GoalProps = GoalStoreProps;
 
 const GoalImpl: FunctionComponent<GoalProps> = 
   (props) => {
+    const progression = Loader.progressions['Elementary'];
+    const level = progression.levels[props.levelIndex];
+
     return (
       <div id='reduct-goal'>
-        <div id='reduct-goal-text'>
-          GOAL:
+        <div id='reduct-goal-header'>
+          Goal
         </div>
-        <div id='reduct-goal-items'>
+        <div id='reduct-goal-content'>
           {[...props.nodeIds].map(nodeId => <StageProjection nodeId={nodeId} key={nodeId} frozen />)}
+        </div>
+        <div id='reduct-goal-hint'>
+          Hint: {level.textgoal}
         </div>
       </div>
     );
@@ -31,5 +39,6 @@ const GoalImpl: FunctionComponent<GoalProps> =
 export const GoalTab = connect(
   (state: DeepReadonly<GlobalState>) => ({
     nodeIds: state.game.$present.goal,
+    levelIndex: state.game.$present.level,
   })
 )(GoalImpl);

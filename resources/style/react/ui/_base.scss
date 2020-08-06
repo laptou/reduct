@@ -1,4 +1,5 @@
 @mixin ui-panel($accent) {
+  --ui-panel-accent: $accent;
   position: relative;
   display: flex;
   flex-flow: row nowrap;
