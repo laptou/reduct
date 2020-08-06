@@ -4,7 +4,7 @@ levels:
     goal:
       - STAR
     toolbox:
-      - STAR
+      - star
     defines: []
     hint: 'Move the def block to the left box to define the word {star}!'
     note: null

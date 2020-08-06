@@ -40,10 +40,10 @@ function GameImpl(props: GameStoreProps) {
         <GameMenuTab />
         <HistoryTab />
         <Sidebar>
-          <Sidebar.Section title='Tutorial'>
+          <Sidebar.Section title='Tutorial' isOpen={true}>
             <TutorialTab />
           </Sidebar.Section>
-          <Sidebar.Section title='Definitions'>
+          <Sidebar.Section title='Global Scope' isOpen={true}>
             <DefinitionsTab />
           </Sidebar.Section>
         </Sidebar>
