@@ -7,7 +7,7 @@ levels:
       - CIRCLE
       - RECT
     defines: []
-    textGoal: 'Build your own function to create a {square}'
+    hint: 'Build your own function to create a {square}'
     note: null
     syntax: []
     globals:
@@ -25,7 +25,7 @@ levels:
       - x
       - 'y'
     defines: []
-    textGoal: 'Hint: create a function that gives back the input'
+    hint: 'Hint: create a function that gives back the input'
     note: null
     syntax: []
     globals:
@@ -44,7 +44,7 @@ levels:
       - RECT
     toolbox: []
     defines: []
-    textGoal: 'Create {a square} using functions'
+    hint: 'Create {a square} using functions'
     note: null
     syntax: []
     globals:
@@ -63,7 +63,7 @@ levels:
       - RECT
       - TRIANGLE
     defines: []
-    textGoal: 'Create two {triangles}'
+    hint: 'Create two {triangles}'
     note: >-
       We need a new visual for the texting bloc for sure. We discussed that it
       might be possible to have that on the side as a special area for testing.
@@ -90,7 +90,7 @@ levels:
       - '2'
       - '3'
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -111,7 +111,7 @@ levels:
       - '3'
       - '4'
     defines: []
-    textGoal: Create a function to add 2 to the input
+    hint: Create a function to add 2 to the input
     note: null
     syntax: []
     globals:
@@ -131,7 +131,7 @@ levels:
       - '7'
       - '8'
     defines: []
-    textGoal: Choose your functions wisely
+    hint: Choose your functions wisely
     note: null
     syntax: []
     globals:
@@ -150,7 +150,7 @@ levels:
       - '3'
       - y => y + y
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -170,7 +170,7 @@ levels:
       - '1'
       - '2'
     defines: []
-    textGoal: 'Hint: what function should you duplicate?'
+    hint: 'Hint: what function should you duplicate?'
     note: old 22
     syntax: []
     globals:

@@ -6,7 +6,7 @@ levels:
     toolbox:
       - STAR
     defines: []
-    textGoal: 'Move the def block to the left box to define the word {star}!'
+    hint: 'Move the def block to the left box to define the word {star}!'
     note: null
     syntax: []
     globals:
@@ -26,7 +26,7 @@ levels:
       - __unlimited;star
       - __unlimited;rect
     defines: []
-    textGoal: Reach the goal by creating new definitions!
+    hint: Reach the goal by creating new definitions!
     note: null
     syntax: []
     globals:
@@ -46,7 +46,7 @@ levels:
     toolbox:
       - __unlimited;trianglify
     defines: []
-    textGoal: 'Define a function that takes an input and outputs {a triangle}'
+    hint: 'Define a function that takes an input and outputs {a triangle}'
     note: null
     syntax: []
     globals:
@@ -68,7 +68,7 @@ levels:
       - _ + 1
     defines:
       - 'function addOne(x) { return x + 1; }'
-    textGoal: Define a function that computes x plus 1
+    hint: Define a function that computes x plus 1
     note: null
     syntax: []
     globals:
@@ -86,7 +86,7 @@ levels:
     toolbox:
       - __unlimited;addOne;
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -109,7 +109,7 @@ levels:
       - x
     defines:
       - 'function doNothing(x) { return x; }'
-    textGoal: Define a function that outputs the input it is given
+    hint: Define a function that outputs the input it is given
     note: null
     syntax: []
     globals:
@@ -132,7 +132,7 @@ levels:
       - doNothing
       - doNothing
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:

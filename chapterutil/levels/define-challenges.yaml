@@ -10,7 +10,7 @@ levels:
       - '5'
       - '6'
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -34,7 +34,7 @@ levels:
       - '7'
       - '8'
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -62,7 +62,7 @@ levels:
       - __unlimited;_(_)
     defines:
       - 'function addEight(x) { return add(8, x); }'
-    textGoal: Define a function that outputs x plus 8
+    hint: Define a function that outputs x plus 8
     note: null
     syntax: []
     globals:
@@ -89,7 +89,7 @@ levels:
       - '8'
       - multiplyByFour
     defines: []
-    textGoal: 'Using Repeat, define a function that multiplies a number by 4'
+    hint: 'Using Repeat, define a function that multiplies a number by 4'
     note: null
     syntax: []
     globals:
@@ -122,7 +122,7 @@ levels:
       - multiplyBySix
     defines:
       - 'function multiplyBySix(a) { return repeat(a, add(2), 0); }'
-    textGoal: 'Using Repeat, define a function that multiplies a number by 6'
+    hint: 'Using Repeat, define a function that multiplies a number by 6'
     note: null
     syntax: []
     globals:
@@ -150,7 +150,7 @@ levels:
       - '0'
       - multiplyTogether
     defines: []
-    textGoal: Define a function that computes the multiplication of a and b
+    hint: Define a function that computes the multiplication of a and b
     note: null
     syntax: []
     globals:
@@ -175,7 +175,7 @@ levels:
       - '0'
       - multiplyTogether
     defines: []
-    textGoal: Define a function that computes the multiplication of a and b
+    hint: Define a function that computes the multiplication of a and b
     note: null
     syntax: []
     globals:

@@ -10,7 +10,7 @@ levels:
       - sat
       - sun
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -33,7 +33,7 @@ levels:
       - 'y'
       - __unlimited; isSameDay;
     defines: []
-    textGoal: >-
+    hint: >-
       Define a function that outputs true if the x and y are the same weekday,
       otherwise false
     note: null
@@ -57,7 +57,7 @@ levels:
       - __unlimited; isMonday;
     defines:
       - 'function isMonday(x) { return x == mon }'
-    textGoal: 'Define a function that outputs true if x is Monday, otherwise false'
+    hint: 'Define a function that outputs true if x is Monday, otherwise false'
     note: null
     syntax: []
     globals:
@@ -82,7 +82,7 @@ levels:
       - __unlimited; isFriday;
     defines:
       - 'function isFriday(x) { return x == fri }'
-    textGoal: 'Define a function that outputs true if x is Friday, otherwise false'
+    hint: 'Define a function that outputs true if x is Friday, otherwise false'
     note: null
     syntax: []
     globals:
@@ -109,7 +109,7 @@ levels:
       - x
       - __unlimited; isMondayOrFriday;
     defines: []
-    textGoal: >-
+    hint: >-
       Define a function that outputs true if x is Monday or Friday, otherwise
       false
     note: null
@@ -140,7 +140,7 @@ levels:
       - x
       - __unlimited; isMondayOrFriday;
     defines: []
-    textGoal: >-
+    hint: >-
       Define a function that outputs true if x is Monday or Friday, otherwise
       false
     note: null
@@ -173,7 +173,7 @@ levels:
       - __unlimited; isWeekend;
     defines:
       - 'function isWeekend(x) { return x == sat ? true : x == sun }'
-    textGoal: 'Define a function that outputs true if x is the weekend, otherwise false'
+    hint: 'Define a function that outputs true if x is the weekend, otherwise false'
     note: null
     syntax: []
     globals:
@@ -200,7 +200,7 @@ levels:
       - 'false'
       - x
     defines: []
-    textGoal: >-
+    hint: >-
       Define a function that outputs true if x is one of the weekdays, otherwise
       false
     note: null
@@ -232,7 +232,7 @@ levels:
       - _ == _
       - __unlimited; isWeekday;
     defines: []
-    textGoal: >-
+    hint: >-
       Define a function that outputs true if x is one of the weekdays, otherwise
       false
     note: null
@@ -259,7 +259,7 @@ levels:
       - sat
       - __unlimited; tomorrow;
     defines: []
-    textGoal: Define the function tomorrow to compute the next day of any given day
+    hint: Define the function tomorrow to compute the next day of any given day
     note: null
     syntax: []
     globals:
@@ -284,7 +284,7 @@ levels:
       - sat
       - __unlimited; yesterday;
     defines: []
-    textGoal: Define the function yesterday to compute the previous day of any given day
+    hint: Define the function yesterday to compute the previous day of any given day
     note: null
     syntax: []
     globals:
@@ -313,7 +313,7 @@ levels:
         function yesterday(x) { return x == mon ? sun : (x == tue ? mon : (x ==
         wed ? tue : (x == thu ? wed : (x == fri ? thu : (x == sat ? fri :
         sat))))); }
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:

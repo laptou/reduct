@@ -6,7 +6,7 @@ levels:
       - STAR
     toolbox: []
     defines: []
-    textGoal: 'Drop the {star} onto the function!'
+    hint: 'Drop the {star} onto the function!'
     note: >-
       Interestingly, here I wanted to say "Apply". Also identity might not be
       the best sarting point to express that function are producing a result. It
@@ -39,7 +39,7 @@ levels:
       - 9
     toolbox: []
     defines: []
-    textGoal: This is a dummmy level. Remove me.
+    hint: This is a dummmy level. Remove me.
     note: This is a dummmy level. Remove me.
     syntax: []
     globals:
@@ -57,7 +57,7 @@ levels:
       - STAR
     toolbox: []
     defines: []
-    textGoal: 'Use these functions to get {a star}.'
+    hint: 'Use these functions to get {a star}.'
     note: null
     syntax: []
     globals:
@@ -74,7 +74,7 @@ levels:
       - a => a
     toolbox: []
     defines: []
-    textGoal: The input to a function can be another function
+    hint: The input to a function can be another function
     note: null
     syntax: []
     globals:
@@ -89,7 +89,7 @@ levels:
       - '2'
     toolbox: []
     defines: []
-    textGoal: This is an expression you can click on
+    hint: This is an expression you can click on
     note: null
     syntax: []
     globals:
@@ -108,7 +108,7 @@ levels:
       - RECT
       - STAR
     defines: []
-    textGoal: >-
+    hint: >-
       Use the toolbox at the bottom of the screen to place two {squares} on the
       board
     note: null
@@ -129,7 +129,7 @@ levels:
       - 4 + 2
       - 1 + 4
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -147,7 +147,7 @@ levels:
       - STAR
     toolbox: []
     defines: []
-    textGoal: 'Create two {stars}'
+    hint: 'Create two {stars}'
     note: null
     syntax: []
     globals:
@@ -170,7 +170,7 @@ levels:
       - TRIANGLE
       - TRIANGLE
     defines: []
-    textGoal: 'Create a {star}, {square}, and {triangle}'
+    hint: 'Create a {star}, {square}, and {triangle}'
     note: null
     syntax: []
     globals:
@@ -189,7 +189,7 @@ levels:
       - '4'
       - '5'
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -210,7 +210,7 @@ levels:
       - '5'
       - '6'
     defines: []
-    textGoal: 'Hint: you can’t add a function to a number'
+    hint: 'Hint: you can’t add a function to a number'
     note: null
     syntax: []
     globals:
@@ -227,7 +227,7 @@ levels:
       - something => RECT
       - dont_care => TRIANGLE
     defines: []
-    textGoal: 'Create {a square}'
+    hint: 'Create {a square}'
     note: null
     syntax: []
     globals:

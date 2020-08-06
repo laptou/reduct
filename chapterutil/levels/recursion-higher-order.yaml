@@ -21,7 +21,7 @@ levels:
       - __unlimited;myRepeat
       - '1'
     defines: []
-    textGoal: Define your own repeat
+    hint: Define your own repeat
     note: null
     syntax: []
     globals:
@@ -57,7 +57,7 @@ levels:
       - __unlimited; num
       - __unlimited; value
     defines: []
-    textGoal: Define your own repeat!
+    hint: Define your own repeat!
     note: null
     syntax: []
     globals:

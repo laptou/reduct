@@ -10,7 +10,7 @@ levels:
       - '4'
       - '5'
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -30,7 +30,7 @@ levels:
       - '4'
       - '5'
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -52,7 +52,7 @@ levels:
       - '4'
       - '5'
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -69,7 +69,7 @@ levels:
       - STAR
     toolbox: []
     defines: []
-    textGoal: 'Create {a star}'
+    hint: 'Create {a star}'
     note: >-
       This is a logic follower of 10 because like 10 it shows the use of
       function returning function.
@@ -92,7 +92,7 @@ levels:
       - TRIANGLE
     toolbox: []
     defines: []
-    textGoal: 'Create {a star} and {a triangle}'
+    hint: 'Create {a star} and {a triangle}'
     note: Scope and how to use it...
     syntax: []
     globals:
@@ -111,7 +111,7 @@ levels:
       - x
       - 'y'
     defines: []
-    textGoal: 'Create {a star}'
+    hint: 'Create {a star}'
     note: null
     syntax: []
     globals:

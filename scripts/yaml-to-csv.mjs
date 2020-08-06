@@ -59,7 +59,7 @@ import yaml from 'js-yaml';
         hideGlobals: level.globals.hide,
         input: level.autograder && level.autograder.inputs,
         output: level.autograder && level.autograder.outputs,
-        textGoal: level.textGoal,
+        textGoal: level.hint,
         note: level.note,
       };
 
