@@ -31,9 +31,9 @@ interface AreaRange {
   col: LinearRange;
 }
 
-let rows: number[];
-let cols: number[];
-let cells: boolean[][];
+function clamp(min: number, max: number, value: number) {
+  return Math.min(max, Math.max(min, value));
+}
 
 /**
  * Places rectangles in a bounding box so that they do not overlap and are as
@@ -56,9 +56,9 @@ export function placeRects(
   const boundsCenterX = bounds.w / 2;
   const boundsCenterY = bounds.h / 2;
 
-  rows = [bounds.h];
-  cols = [bounds.w];
-  cells = [[false]];
+  const rows = [bounds.h];
+  const cols = [bounds.w];
+  const cells = [[false]];
 
   for (const placedRect of rectsToAvoid) {
     const area = getOverlappingArea(rows, cols, placedRect);
@@ -84,8 +84,6 @@ export function placeRects(
       boundsCenterX,
       boundsCenterY);
     
-    console.log(area, potentialRowChunks, potentialColChunks);
-
     if (!area) {
       // no more cell chunks found, exit
       break;
@@ -113,7 +111,7 @@ function getPotentialRanges(segments: number[], size: number): LinearRange[] {
   let start = 0;
   let end = 0;
 
-  while (start <= end) {
+  while (start < segments.length) {
     while (end < segments.length && currentSize < size) {
       const newSegment = segments[end];
       currentChunk.push(newSegment);
@@ -224,17 +222,22 @@ function getBestArea(
 
       if (!empty) continue;
 
-      const chunkCenterX = potentialColChunk.offset + potentialColChunk.size / 2;
-      const chunkCenterY = potentialRowChunk.offset + potentialRowChunk.size / 2;
-      const chunkCenterDistance = Math.sqrt(
-        (chunkCenterX - boundsCenterX) ** 2 + (chunkCenterY - boundsCenterY) ** 2
+      const chunkLeft = potentialColChunk.offset;
+      const chunkRight = chunkLeft + potentialColChunk.size;
+      const chunkTop = potentialRowChunk.offset;
+      const chunkBottom = chunkTop + potentialRowChunk.size;
+      // measure distance from closest corner of chunk to center
+      const chunkCornerX = clamp(chunkLeft, chunkRight, boundsCenterX);
+      const chunkCornerY = clamp(chunkTop, chunkBottom, boundsCenterY);
+      const chunkDistance = Math.sqrt(
+        (chunkCornerX - boundsCenterX) ** 2 + (chunkCornerY - boundsCenterY) ** 2
       );
 
-      if (cellChunk === null || cellChunk.dist > chunkCenterDistance) {
+      if (cellChunk === null || cellChunk.dist > chunkDistance) {
         cellChunk = {
           col: potentialColChunk,
           row: potentialRowChunk,
-          dist: chunkCenterDistance, 
+          dist: chunkDistance,
         }; 
       }
     }
@@ -249,15 +252,14 @@ function placeRectInArea(
   boundsCenterX: number,
   boundsCenterY: number
 ): PlacedRect {
-  const { min, max } = Math;
   const areaX = area.col.offset;
   const areaW = area.col.size;
   const areaY = area.row.offset;
   const areaH = area.row.size;
 
   // get x and y within cell chunk
-  const x = max(areaX, min(areaX + areaW - rect.w, boundsCenterX - rect.w / 2));
-  const y = max(areaY, min(areaY + areaH - rect.h, boundsCenterY - rect.h / 2));
+  const x = clamp(areaX, areaX + areaW - rect.w, boundsCenterX - rect.w / 2);
+  const y = clamp(areaY, areaY + areaH - rect.h, boundsCenterY - rect.h / 2);
 
   return {
     x,
