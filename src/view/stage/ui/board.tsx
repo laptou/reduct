@@ -141,7 +141,9 @@ const BoardImpl: FunctionComponent<BoardProps> =
       [board]
     );
     
-    useLayoutEffect(() => {
+    // use useLayoutEffect instead of useEffect b/c this needs to execute after
+    // React has created elements; use setTimeout so it doesn't block rendering
+    useLayoutEffect(() => void setTimeout(() => {
       const updatedPositions = new Map();
 
       const padding = 10;
@@ -206,11 +208,6 @@ const BoardImpl: FunctionComponent<BoardProps> =
         }
       }
 
-      console.log({
-        movableNodeBounds, 
-        fixedNodeBounds, 
-      });
-
       const results = placeRects(
         {
           w: boardBounds.width,
@@ -219,10 +216,6 @@ const BoardImpl: FunctionComponent<BoardProps> =
         movableNodeBounds, 
         fixedNodeBounds
       );
-
-      console.log(results);
-
-      console.log(updatedPositions);
 
       for (const placed of results) {
         const {
@@ -238,13 +231,11 @@ const BoardImpl: FunctionComponent<BoardProps> =
         });
       }
 
-      console.log(updatedPositions);
-
       setPositions(positions => new Map([...positions, ...updatedPositions]));
       
       // do not want to include positions to avoid infinite loop of updates
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [added]);
+    }, 0), [added]);
 
     useEffect(() => {  
       setPositions(positions => {
