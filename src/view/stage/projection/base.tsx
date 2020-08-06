@@ -218,7 +218,10 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
               && !locked
               && !frozen;
 
-            const steppable = kind === 'expression';
+            const steppable = 
+              kind === 'expression' 
+              && !locked 
+              && !frozen;
 
             return (
               <animated.div 

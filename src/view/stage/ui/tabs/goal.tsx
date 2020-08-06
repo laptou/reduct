@@ -29,9 +29,15 @@ const GoalImpl: FunctionComponent<GoalProps> =
         <div id='reduct-goal-content'>
           {[...props.nodeIds].map(nodeId => <StageProjection nodeId={nodeId} key={nodeId} frozen />)}
         </div>
-        <div id='reduct-goal-hint'>
-          Hint: {level.textgoal}
-        </div>
+        {
+          level.textgoal 
+            ? (
+              <div id='reduct-goal-hint'>
+                Hint: {level.textgoal}
+              </div>
+            )
+            : null
+        }
       </div>
     );
   };

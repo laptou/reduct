@@ -6,7 +6,7 @@ import type {
   BaseNode, Flat, FlatReductNode, NodeId, NodeMap, ReductNode, 
 } from '@/semantics';
 
-let idCounter = 0;
+let idCounter = 1;
 
 /**
  * Restores an ID counter that was saved to storage. This is necessary to avoid
