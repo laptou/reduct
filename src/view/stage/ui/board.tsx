@@ -41,7 +41,13 @@ type BoardProps = BoardStoreProps & BoardDispatchProps;
 
 // source prop indicates whether this node was moved by the user
 // if it was, then we shouldn't automatically reposition it
-type NodePos = { x: number; y: number; mode: 'user' | 'auto' | null };
+interface NodePos {
+  nodeId: NodeId;
+  x: number;
+  y: number;
+  isUserPositioned: boolean;
+  isAutoPositioned: boolean;
+}
 
 function onDragOver(event: React.DragEvent<HTMLDivElement>) {
   if (!event.dataTransfer.types.includes('application/reduct-node')) return;
@@ -90,9 +96,11 @@ function onDrop(
   
   const newPositions = new Map(positions);
   newPositions.set(nodeId, {
+    nodeId,
     x,
     y,
-    mode: 'user', 
+    isAutoPositioned: false,
+    isUserPositioned: true,
   });
   setPositions(newPositions);
 }
@@ -113,36 +121,9 @@ const BoardImpl: FunctionComponent<BoardProps> =
       [...board],
       id => id,
       {
-        enter: (id) => {
-          const { x, y } = positions.get(id) ?? {
-            x: 0,
-            y: 0, 
-          };
-          return {
-            opacity: 0,
-            transform: `translate(${x}px, ${y}px)`, 
-          };
-        },
-        update: (id) => {
-          const { x, y } = positions.get(id) ?? {
-            x: 0,
-            y: 0, 
-          };
-          return {
-            opacity: 1,
-            transform: `translate(${x}px, ${y}px)`, 
-          };
-        },
-        leave: (id) => {
-          const { x, y } = positions.get(id) ?? {
-            x: 0,
-            y: 0, 
-          };
-          return {
-            opacity: 0,
-            transform: `translate(${x}px, ${y}px)`, 
-          };
-        },
+        from: { opacity: 0 },
+        enter: { opacity: 1 },
+        leave: { opacity: 0 },
       }
     );
 
@@ -160,140 +141,121 @@ const BoardImpl: FunctionComponent<BoardProps> =
       [board]
     );
     
-    // newly added nodes should have same position as their source nodes
-    // and removed nodes should have their positions deleted
     useLayoutEffect(() => {
-      const newPositions = new Map(positions);
-      
-      // nodes which have been moved by the user should not be moved
-      // automatically
-      const fixedNodeBounds = [];
+      const updatedPositions = new Map();
 
       const padding = 10;
-
-      for (const nodeId of board) {
-        const positionInfo = newPositions.get(nodeId);
-        if (positionInfo?.mode !== 'user') continue;
-
-        const ref = boardItemDivRefs.get(nodeId)!;
-        const boardItemDiv = ref.current;
-        if (!boardItemDiv) continue;
-
-        const {
-          x, y, width, height, 
-        } = boardItemDiv.getBoundingClientRect();
-  
-        fixedNodeBounds.push({
-          x,
-          y,
-          w: width + padding * 2,
-          h: height + padding * 2, 
-        });
-      }
-
-      console.log(fixedNodeBounds);
-
-
       const boardDiv = boardRef.current!;
       const boardBounds = boardDiv.getBoundingClientRect();
       const boardScroll = {
         x: boardDiv.scrollLeft,
         y: boardDiv.scrollTop, 
       };
+      
+      const fixedNodeBounds = [];
+      const movableNodeBounds = [];
 
-      const movableNodeBounds = new Map();
+      for (const [nodeId, sourceNodeId] of added) {
+        const positionInfo = updatedPositions.get(nodeId);
+        const sourcePositionInfo = sourceNodeId && positions.get(sourceNodeId);
 
-      for (const nodeId of board) {
-        const ref = boardItemDivRefs.get(nodeId)!;
-        const boardItemDiv = ref.current;
+        const ref = boardItemDivRefs.get(nodeId);
+        const boardItemDiv = ref?.current;
         if (!boardItemDiv) continue;
 
         const {
           x, y, width, height, 
         } = boardItemDiv.getBoundingClientRect();
   
-        movableNodeBounds.set({
-          w: width + padding * 2,
-          h: height + padding * 2, 
-        }, nodeId);
+        if (positionInfo?.isUserPositioned || positionInfo?.isAutoPositioned) {
+          // this node already has a position, do not move it
+          fixedNodeBounds.push({
+            id: nodeId,
+            x: x + boardScroll.x - padding,
+            y: y + boardScroll.y - padding,
+            w: width + padding * 2,
+            h: height + padding * 2, 
+          });
+        } else if (sourcePositionInfo) {
+          // this node was the result of stepping another node, place it on top
+          // of the node that created it
+          const newNodePosition = {
+            nodeId,
+            x: sourcePositionInfo.x + Math.random() * 40 - 20,
+            y: sourcePositionInfo.y + Math.random() * 40 - 20,
+            isAutoPositioned: false,
+            isUserPositioned: true,
+          };
+
+          updatedPositions.set(nodeId, newNodePosition);
+
+          fixedNodeBounds.push({
+            id: nodeId,
+            x: newNodePosition.x + boardScroll.x - padding,
+            y: newNodePosition.y + boardScroll.y - padding,
+            w: width + padding * 2,
+            h: height + padding * 2, 
+          });
+        } else {
+          // this node doesn't have an assigned position, add it to the movable nodes
+          movableNodeBounds.push({
+            id: nodeId,
+            w: width + padding * 2,
+            h: height + padding * 2, 
+          });
+        }
       }
 
-      const results = placeRects({
-        w: boardBounds.width,
-        h: boardBounds.height,
-      }, [...movableNodeBounds.keys()]);
+      console.log({
+        movableNodeBounds, 
+        fixedNodeBounds, 
+      });
 
-      for (const [original, placed] of results) {
-        const nodeId = movableNodeBounds.get(original);
+      const results = placeRects(
+        {
+          w: boardBounds.width,
+          h: boardBounds.height,
+        }, 
+        movableNodeBounds, 
+        fixedNodeBounds
+      );
+
+      console.log(results);
+
+      console.log(updatedPositions);
+
+      for (const placed of results) {
         const {
-          x, y, w, h, 
+          id, x, y, w, h, 
         } = placed;
 
-        newPositions.set(nodeId, {
+        updatedPositions.set(id, {
+          nodeId: id,
           x: x - boardBounds.width / 2 + w / 2 + padding,
           y: y - boardBounds.height / 2 + h / 2 + padding,
-          mode: 'auto', 
+          isAutoPositioned: true,
+          isUserPositioned: false, 
         });
       }
 
-      console.log(boardBounds, results);
+      console.log(updatedPositions);
 
-      // for (const [newNodeId, sourceNodeId] of added) {
-      //   if (!board.has(newNodeId))
-      //     continue;
-
-      //   if (newPositions.has(newNodeId))
-      //     continue;
-
-      //   const ref = boardItemDivRefs.get(newNodeId)!;
-      //   const boardItemDiv = ref.current;
-      //   if (!boardItemDiv) continue;
-  
-      //   const {
-      //     x, y, width, height, 
-      //   } = boardItemDiv.getBoundingClientRect();
-  
-      //   const rect = {
-      //     x,
-      //     y,
-      //     w: width,
-      //     h: height, 
-      //   };
-
-      //   const sourceNodePosition = sourceNodeId && newPositions.get(sourceNodeId);
-
-      //   if (!sourceNodePosition) {
-      //     continue;
-      //   }
-
-      //   // add random jitter so that new nodes don't appear in exact same location
-      //   // this will also make it less likely that vtuple nodes will appear directly
-      //   // on top of each other
-
-      //   const jitterX = Math.random() * 40 - 20;
-      //   const jitterY = Math.random() * 40 - 20;
-
-      //   newPositions.set(newNodeId, {
-      //     x: sourceNodePosition.x + jitterX,
-      //     y: sourceNodePosition.y + jitterY,
-      //     mode: sourceNodePosition.mode,
-      //   });
-      // }
-
-      setPositions(newPositions);
+      setPositions(positions => new Map([...positions, ...updatedPositions]));
       
       // do not want to include positions to avoid infinite loop of updates
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [added]);
 
-    useEffect(() => {
-      const newPositions = new Map(positions);
+    useEffect(() => {  
+      setPositions(positions => {
+        const newPositions = new Map(positions);
 
-      for (const deadNode of removed.keys()) {
-        newPositions.delete(deadNode);
-      }
+        for (const deadNode of removed.keys()) {
+          newPositions.delete(deadNode);
+        }
 
-      setPositions(newPositions);
+        return newPositions;
+      });
 
       // do not want to include positions to avoid infinite loop of updates
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -308,16 +270,26 @@ const BoardImpl: FunctionComponent<BoardProps> =
         ref={boardRef}
       >
         {
-          transitions.map(({ item: id, key, props }) => (
-            <animated.div
-              className='projection-board-wrapper'
-              style={props} 
-              key={key}
-              ref={boardItemDivRefs.get(id)}
-            >
-              <StageProjection nodeId={id} />
-            </animated.div>
-          ))
+          transitions.map(({ item: id, key, props }) => {
+            const { x, y } = positions.get(id) ?? {
+              x: 0,
+              y: 0, 
+            };
+
+            return (
+              <animated.div
+                className='projection-board-wrapper'
+                style={{
+                  ...props,
+                  transform: `translate(${x}px, ${y}px)`, 
+                }}
+                key={key}
+                ref={boardItemDivRefs.get(id)}
+              >
+                <StageProjection nodeId={id} />
+              </animated.div>
+            ); 
+          })
         }
       </div>
     );

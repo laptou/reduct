@@ -3,9 +3,14 @@
  * close to the center as possible, but not overlapping.
  */
 
-interface Rect {
+
+interface Bounds {
   w: number;
   h: number;
+}
+
+interface Rect extends Bounds {
+  id: number;
 }
 
 interface PlacedRect extends Rect {
@@ -45,13 +50,13 @@ function clamp(min: number, max: number, value: number) {
  * cannot be moved or overlapped.
  */
 export function placeRects(
-  bounds: Rect, 
+  bounds: Bounds, 
   rectsToPlace: Rect[], 
-  rectsToAvoid: PlacedRect[] = []): Map<Rect, PlacedRect> {
+  rectsToAvoid: PlacedRect[] = []): PlacedRect[] {
   // place rects with largest area first
   rectsToPlace.sort((r1, r2) => r2.w * r2.h - r1.w * r1.h);
 
-  const placedRects = new Map<Rect, PlacedRect>();
+  const placedRects = [];
 
   const boundsCenterX = bounds.w / 2;
   const boundsCenterY = bounds.h / 2;
@@ -97,7 +102,7 @@ export function placeRects(
       area, placedRect, rows, cols, cells
     );
     
-    placedRects.set(rect, placedRect);
+    placedRects.push(placedRect);
   }
 
   return placedRects;
@@ -262,6 +267,7 @@ function placeRectInArea(
   const y = clamp(areaY, areaY + areaH - rect.h, boundsCenterY - rect.h / 2);
 
   return {
+    id: rect.id,
     x,
     y,
     w: rect.w,
