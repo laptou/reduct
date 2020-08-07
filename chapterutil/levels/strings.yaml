@@ -8,7 +8,7 @@ levels:
       - concatStrings
       - '"Science"'
     defines: []
-    textGoal: Define a function to concatenate two strings
+    hint: Define a function to concatenate two strings
     note: null
     syntax: []
     globals:
@@ -32,7 +32,7 @@ levels:
       - >-
         function reverseString(str) {return str == "" ? "" : (x =>
         reverseString(slice(str,1, length(str))) + x)(get(str,0));}
-    textGoal: Define a function that reverses a string
+    hint: Define a function that reverses a string
     note: null
     syntax: []
     globals:
@@ -55,7 +55,7 @@ levels:
       - reverseString
       - __unlimited;checkPalindrome
     defines: []
-    textGoal: Define a function that checks if  string is a palindrome
+    hint: Define a function that checks if  string is a palindrome
     note: null
     syntax: []
     globals:
@@ -86,7 +86,7 @@ levels:
       - '"a"'
       - '"l"'
     defines: []
-    textGoal: Define a function that counts the occurences of a given character
+    hint: Define a function that counts the occurences of a given character
     note: null
     syntax: []
     globals:

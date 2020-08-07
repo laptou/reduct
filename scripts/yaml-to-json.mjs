@@ -61,7 +61,7 @@ import yaml from 'js-yaml';
       originalLevel.hideGlobals = level.globals.hide;
       originalLevel.input = level.autograder.input;
       originalLevel.output = level.autograder.output;
-      originalLevel.textgoal = level.textGoal;
+      originalLevel.textgoal = level.hint;
     });
 
     // if JSON has more levels than YAML, cut them

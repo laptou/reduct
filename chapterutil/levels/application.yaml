@@ -5,7 +5,7 @@ levels:
       - '1'
     toolbox: []
     defines: []
-    textGoal: Use the application block
+    hint: Use the application block
     note: null
     syntax: []
     globals:
@@ -24,7 +24,7 @@ levels:
       - '3'
       - '4'
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -47,7 +47,7 @@ levels:
       - x => x
       - x => x + 3
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -67,7 +67,7 @@ levels:
       - '3'
       - '4'
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -92,7 +92,7 @@ levels:
       - y => y + 3
       - x => x
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:

@@ -10,7 +10,7 @@ levels:
       - TRIANGLE
       - RECT
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -31,7 +31,7 @@ levels:
       - '3'
       - '4'
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -51,7 +51,7 @@ levels:
       - '3'
       - '2'
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -70,7 +70,7 @@ levels:
       - '2'
       - '3'
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -90,7 +90,7 @@ levels:
       - STAR
       - RECT
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -111,7 +111,7 @@ levels:
       - 'true'
       - 'false'
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -129,7 +129,7 @@ levels:
       - '3'
       - '3'
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -150,7 +150,7 @@ levels:
       - '3'
       - '4'
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -170,7 +170,7 @@ levels:
       - TRIANGLE
       - _ == _
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -188,7 +188,7 @@ levels:
       - __unlimited;'STAR'
       - __unlimited;'TRIANGLE'
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -205,7 +205,7 @@ levels:
       - 'true'
       - 'false'
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:

@@ -10,7 +10,7 @@ levels:
       - CIRCLE
       - '9'
     defines: []
-    textGoal: Make an array with three elements
+    hint: Make an array with three elements
     note: null
     syntax: []
     globals:
@@ -33,7 +33,7 @@ levels:
       - TRIANGLE
       - '(_)(_, _)'
     defines: []
-    textGoal: '"get" can get an element from an array'
+    hint: '"get" can get an element from an array'
     note: null
     syntax: []
     globals:
@@ -53,7 +53,7 @@ levels:
       - '4'
       - RECT
     defines: []
-    textGoal: '"map" applies a function to every element'
+    hint: '"map" applies a function to every element'
     note: null
     syntax: []
     globals:
@@ -74,7 +74,7 @@ levels:
       - x
       - '16'
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -95,7 +95,7 @@ levels:
       - __unlimited; length
       - (_)(_)
     defines: []
-    textGoal: '"length" gives the number of elements'
+    hint: '"length" gives the number of elements'
     note: null
     syntax: []
     globals:
@@ -114,7 +114,7 @@ levels:
       - '[STAR, RECT]'
       - '[]'
     defines: []
-    textGoal: An array can hold other arrays
+    hint: An array can hold other arrays
     note: null
     syntax: []
     globals:
@@ -135,7 +135,7 @@ levels:
       - STAR
       - '3'
     defines: []
-    textGoal: '"concat" glues arrays together'
+    hint: '"concat" glues arrays together'
     note: null
     syntax: []
     globals:

@@ -8,7 +8,7 @@ levels:
       - '3'
       - '5'
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -27,7 +27,7 @@ levels:
       - '3'
       - '4'
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -44,7 +44,7 @@ levels:
       - x => y => x + y
       - x => y => x - y
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -63,7 +63,7 @@ levels:
       - 'false'
       - 'true'
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
@@ -85,7 +85,7 @@ levels:
       - '1'
       - 'n'
     defines: []
-    textGoal: ''
+    hint: ''
     note: null
     syntax: []
     globals:
