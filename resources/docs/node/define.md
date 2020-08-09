@@ -1,29 +1,27 @@
 ---
 type: define
-name: Define
+name: Definition
 example: 'function identity(x) {return x;}'
 ---
 
-A **define** represents the defenition of a new function. A new fucntion has 
-a name, zero or more arguments, and returns some value, based on the function
-body.
+A **define** represents the definition of a new function. It gives a name to a
+function, so that you can refer to it by name later. 
 
-Here, we have the defenition of the identity function, or the function that 
-simply returns that which its given.
+You can drag them into the "definitions" box in the bottom right to put them in the
+global scope.
 
 ```javascript
 function identity(x) { return x; }
 ```
 
-Functions can also be defined to take multiple arguments, such as the following
-one.
+Functions can take multiple arguments and have complex logic.
 
 ```javascript
-function add(x, y) { return x + y; }
+function max(x, y) { return (x > y ? x : y); }
 ```
 
-Some fucntions will always return the same thing, no matter the argument.
+Or, they can be simple.
 
 ```javascript
-function AlwaysBlue(x) { return blue  ; }
+function star() { return STAR; }
 ```

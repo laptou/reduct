@@ -1,27 +1,22 @@
 ---
 type: let
 name: Let
-example: '__let(x, _, () => x + x)'
+example: '__let(x, 5, () => x + x)'
 ---
 
-The **let** expression has an identifier, a value, and a body expression. During
-execution, the value is bound to the identifier, and then the body expression is
-evaluated with all cases of the identifier being evaluated to the value to which
-it was bound.
+The **let** node lets you give a value to a name.
 
 ```javascript
-__let(x, _, () => x + x)
+__let(x, 5, () => x + x)
 ```
 
-For example. let expressions can bind variables to be used in conditional
-expressions
+Inside of this `let` node's body, `x` will evaluate to `5`.
+
+The body can be as complex or as simple as you want.
+
 ```javascript
-__let(x, _, () => x < 0 ? 'negative' : 'posiitve')
+__let(x, -4, () => x < 0 ? 'negative' : 'posiitve')
 ```
-
-Note: the body expression could be any expression, not necessarily just one that
-contains the indentifier.
-
 ```javascript
-__let(x, _, () => true)
+__let(food, "egg", () => true)
 ```

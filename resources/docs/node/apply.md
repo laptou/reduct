@@ -1,24 +1,29 @@
 ---
 type: apply
-name: Apply
-example: 'x => x ()'
+name: Applier
+example: '(x => x) (_)'
 ---
 
-The **apply** represents a function, and an argument that is passed to,
-or "applied" to that function.
+An **applier** passes a parameter to a function.
 
 ```javascript
 (number => number)(1)
 ```
-The value it returns can be composed of almost any other nodes. For example, a
-boolean.
+
+The left hand side can be as complex as you want, as long as it still reduces to a function.
 
 ```javascript
 (boolean => boolean)(true)
 ```
+```javascript
+(x => x > 1 ? 'big number' : 'little number')(3 + 1)
+```
+```javascript
+(true ? (x => x + 1) : (y => y - 1))(4)
+```
 
-Or a [conditional](nodes/conditional):
+And sometimes you can pass multiple parameters:
 
 ```javascript
-(x => x > 1 ? 'big number' : 'little number' )(x)
+((x, y) => x + y)(3, 2)
 ```

@@ -1,21 +1,22 @@
 ---
 type: conditional
-name: Conditional
-example: ' 1 == 2 ? 5 : 6'
+name: If-Else
+example: '1 == 2 ? 5 : 6'
 ---
 
-The **conditional** represents an if-else block. This block contains a
-condition, positive, and negative block. If the condition is met, the positive
-block is executed. If not, the negative block is executed.
+The **if-else block** or **conditional** will give you the first item it
+contains if its condition is true, and the second item otherwise.
 
 ```javascript
 1 == 2 ? 5 : 6
 ```
 
-Note: The conditional block is evaluated to a boolean, and
-therefore booleans themselves
-may be supplanted as a condition.
+The condition can be as simple or complex as you want, as long as it evaluates
+to a boolean.
 
 ```javascript
 true ? 3 : 2
+```
+```javascript
+((3 + 2 - 3) == 2 || false) ? 3 : 2
 ```
