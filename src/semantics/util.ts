@@ -63,7 +63,9 @@ export function createStrNode(value: string): StrNode {
   };
 }
 
-export function createVtupleNode(...children: ReductNode[]): VTupleNode {
+export function createVtupleNode(...children: NodeId[]): Flat<VTupleNode>;
+export function createVtupleNode(...children: ReductNode[]): VTupleNode;
+export function createVtupleNode(...children: ReductNode[] | NodeId[]): VTupleNode | Flat<VTupleNode> {
   return {
     ...createNodeBase(),
     type: 'vtuple',
@@ -73,7 +75,9 @@ export function createVtupleNode(...children: ReductNode[]): VTupleNode {
   };
 }
 
-export function createPtupleNode(...children: ReductNode[]): PTupleNode {
+export function createPtupleNode(...children: NodeId[]): Flat<PTupleNode>;
+export function createPtupleNode(...children: ReductNode[]): PTupleNode;
+export function createPtupleNode(...children: ReductNode[] | NodeId[]): PTupleNode | Flat<PTupleNode> {
   return {
     ...createNodeBase(),
     type: 'ptuple',
@@ -163,7 +167,12 @@ export function createLetNode(variable: IdentifierNode, e1: ReductNode, e2: Redu
   };
 }
 
-export function createApplyNode(callee: ReductNode, argument: PTupleNode): ApplyNode {
+export function createApplyNode(callee: ReductNode, argument: PTupleNode): ApplyNode;
+export function createApplyNode(callee: NodeId, argument: NodeId): Flat<ApplyNode>;
+export function createApplyNode(
+  callee: NodeId | ReductNode, 
+  argument: NodeId | PTupleNode
+): ApplyNode | Flat<ApplyNode> {
   return {
     ...createNodeBase(),
     type: 'apply',
@@ -174,7 +183,21 @@ export function createApplyNode(callee: ReductNode, argument: PTupleNode): Apply
   };
 }
 
-export function createConditionalNode(condition: ReductNode, positive: ReductNode, negative: ReductNode): ConditionalNode {
+export function createConditionalNode(
+  condition: ReductNode, 
+  positive: ReductNode, 
+  negative: ReductNode
+): ConditionalNode;
+export function createConditionalNode(
+  condition: NodeId, 
+  positive: NodeId, 
+  negative: NodeId
+): Flat<ConditionalNode>;
+export function createConditionalNode(
+  condition: ReductNode | NodeId, 
+  positive: ReductNode | NodeId, 
+  negative: ReductNode | NodeId
+): ConditionalNode | Flat<ConditionalNode> {
   return {
     ...createNodeBase(),
     type: 'conditional',
@@ -186,9 +209,15 @@ export function createConditionalNode(condition: ReductNode, positive: ReductNod
   };
 }
 
-export function createArrayNode(...items: Array<NodeId>): Flat<ArrayNode>;
-export function createArrayNode(...items: Array<DeepReadonly<ReductNode>>): ArrayNode;
-export function createArrayNode(...items: Array<NodeId | DeepReadonly<ReductNode>>): ArrayNode | Flat<ArrayNode> {
+export function createArrayNode(
+  ...items: Array<NodeId>
+): Flat<ArrayNode>;
+export function createArrayNode(
+  ...items: Array<DeepReadonly<ReductNode>>
+): ArrayNode;
+export function createArrayNode(
+  ...items: Array<NodeId | DeepReadonly<ReductNode>>
+): ArrayNode | Flat<ArrayNode> {
   return {
     ...createNodeBase(),
     type: 'array',
@@ -197,7 +226,9 @@ export function createArrayNode(...items: Array<NodeId | DeepReadonly<ReductNode
   };
 }
 
-export function createNotNode(value: ReductNode): NotNode {
+export function createNotNode(value: ReductNode): NotNode;
+export function createNotNode(value: NodeId): Flat<NotNode>;
+export function createNotNode(value: ReductNode | NodeId): NotNode | Flat<NotNode> {
   return {
     ...createNodeBase(),
     type: 'not',

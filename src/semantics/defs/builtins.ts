@@ -1,64 +1,65 @@
-import { current } from 'immer';
-
-import { BaseNode, NodeMap, NodeId } from '..';
-import { createArrayNode, iterateTuple, createNumberNode } from '../util';
-
-import { LambdaArgNode, PTupleNode, LambdaNode } from '.';
-
-import { DRF, DeepReadonly, withParent } from '@/util/helper';
-import {
-  WrongBuiltInParamsCountError, WrongTypeError, BuiltInError, AlreadyFullyBoundError, 
-} from '@/store/errors';
+import { BuiltInError, WrongBuiltInParamsCountError, WrongTypeError } from '@/store/errors';
+import { GameState } from '@/store/state';
+import { DeepReadonly, DRF, withChild, withParent } from '@/util/helper';
 import { cloneNodeDeep, CloneResult, mapNodeDeep } from '@/util/nodes';
+import { BaseNode, NodeMap } from '..';
+import { createApplyNode, createArrayNode, createNumberNode, createPtupleNode } from '../util';
 
-const VALID = null;
 
-function hydrateLocked(expr, semant, nodes) {
-  return semant.lockSubexprs(semant.hydrate(nodes, expr), nodes);
-}
 
-function hydrateInput(expr, semant, nodes) {
-  const result = semant.lockSubexprs(semant.hydrate(nodes, expr), nodes);
-  result.locked = true;
-  return result;
-}
 
-function builtinRepeat(expr, semant, nodes) {
-  // Black-box repeat
-  const times = nodes.get(expr.subexpressions.arg_n);
-  const fn = nodes.get(expr.subexpressions.arg_f);
-  if (times.type !== 'number') return null;
-
-  let resultExpr = semant.lambdaVar('x');
-  for (let i = 0; i < times.value; i++) {
-    // Rehydrate each time to get a new copy
-    const hydratedFn = hydrateInput(fn, semant, nodes);
-    delete hydratedFn.parent;
-    delete hydratedFn.parentField;
-    // If hydrated function is a
-    // reference-with-holes, apply directly
-    if (Array.isArray(hydratedFn.params) && hydratedFn.params.length > 0) {
-      const arg = {};
-      arg.subexpressions[`arg_${hydratedFn.params[0]}`] = resultExpr;
-      resultExpr = Object.assign(hydratedFn, arg);
-    } else {
-      resultExpr = semant.apply(hydratedFn, resultExpr);
-    }
-    delete resultExpr.parent;
-    delete resultExpr.parentField;
-    resultExpr.locked = true;
-  }
-  return semant.lambda(semant.lambdaArg('x'), resultExpr);
-}
-
-// Evaluate the "length" function. Return null if failure.
-function builtinLength(
-  node: DRF<BuiltInIdentifierNode>, 
+type BuiltinFn = (self: DRF<BuiltInIdentifierNode>, 
   args: DRF[], 
-  nodes: DeepReadonly<NodeMap>
-): CloneResult {
+  state: DeepReadonly<GameState>
+) => DeepReadonly<GameState>;
+
+/**
+ * Helper function that will construct a new game state with cloned nodes added.
+ *
+ * @param self The builtin identifier node which was called.
+ * @param cloneResult The result of calling cloneNodesDeep or mapNodesDeep. 
+ * @param state The current game state.
+ * @returns A new game state where the cloned/mapped nodes have been added to
+ * the game.
+ */
+function addClonedNodes(
+  self: DRF, 
+  [clonedRoot, clonedNodes, newNodeMap]: CloneResult, 
+  state: DeepReadonly<GameState>
+): DeepReadonly<GameState> {
+  const added = new Map();
+
+  if (self.parent && self.parentField) {
+    if (self.parent !== clonedRoot.parent || self.parentField !== clonedRoot.parentField) {
+      clonedRoot = withParent(clonedRoot, self.parent, self.parentField);
+
+      let parent = state.nodes.get(clonedRoot.parent!)!;
+      parent = withChild(parent, clonedRoot.id, self.parentField);
+
+      newNodeMap = new Map([
+        ...newNodeMap,
+        [clonedRoot.id, clonedRoot],
+        [parent.id, parent],
+      ]);
+    }
+  }
+
+  added.set(clonedRoot.id, self.id);
+
+  return {
+    ...state,
+    added,
+    nodes: newNodeMap,
+  };
+}
+
+function builtinLength(
+  self: DRF<BuiltInIdentifierNode>, 
+  args: DRF[], 
+  state: DeepReadonly<GameState>
+): DeepReadonly<GameState> {
   if (args.length !== 1)
-    throw new WrongBuiltInParamsCountError(node.id, 1, args.length);
+    throw new WrongBuiltInParamsCountError(self.id, 1, args.length);
   
   const arrayOrString = args[0];
 
@@ -66,21 +67,29 @@ function builtinLength(
   case 'array': {
     const result = createNumberNode(arrayOrString.fields.length);
 
-    return [
-      result,
-      [],
-      new Map([...nodes, [result.id, result]]),
-    ]; 
+    return addClonedNodes(
+      self,
+      [
+        result,
+        [],
+        new Map([...state.nodes, [result.id, result]]),
+      ],
+      state
+    ); 
   }
 
   case 'string': {
     const result = createNumberNode(arrayOrString.fields.value.length);
 
-    return [
-      result,
-      [],
-      new Map([...nodes, [result.id, result]]),
-    ]; 
+    return addClonedNodes(
+      self,
+      [
+        result,
+        [],
+        new Map([...state.nodes, [result.id, result]]),
+      ],
+      state
+    );
   }
 
   default:
@@ -93,12 +102,12 @@ function builtinLength(
 }
 
 function builtinGet(
-  node: DRF<BuiltInIdentifierNode>, 
+  self: DRF<BuiltInIdentifierNode>, 
   args: DRF[], 
-  nodes: DeepReadonly<NodeMap>
-): CloneResult {
+  state: DeepReadonly<GameState>
+): DeepReadonly<GameState> {
   if (args.length !== 2)
-    throw new WrongBuiltInParamsCountError(node.id, 2, args.length);
+    throw new WrongBuiltInParamsCountError(self.id, 2, args.length);
   
   const arrayNode = args[0];
   const indexNode = args[1];
@@ -115,7 +124,8 @@ function builtinGet(
   if (index >= length)
     throw new BuiltInError(indexNode.id, `You tried to get item ${index} of an array with only ${length} items`);
 
-  return cloneNodeDeep(arrayNode.subexpressions[index], nodes);
+  const result = cloneNodeDeep(arrayNode.subexpressions[index], state.nodes);
+  return addClonedNodes(self, result, state);
 }
 
 // Evaluate the "set" function, which nondestructively
@@ -179,12 +189,12 @@ function builtinConcat(expr, semant, nodes) {
 }
 
 function builtinMap(
-  node: DRF<BuiltInIdentifierNode>, 
+  self: DRF<BuiltInIdentifierNode>, 
   args: DRF[], 
-  nodes: DeepReadonly<NodeMap>
-): CloneResult {
+  state: DeepReadonly<GameState>
+): DeepReadonly<GameState> {
   if (args.length !== 2)
-    throw new WrongBuiltInParamsCountError(node.id, 2, args.length);
+    throw new WrongBuiltInParamsCountError(self.id, 2, args.length);
   
   const arr = args[0];
   const fn = args[1];
@@ -192,56 +202,47 @@ function builtinMap(
   if (arr.type !== 'array')
     throw new WrongTypeError(arr.id, 'array', arr.type);
 
-  if (fn.type !== 'lambda')
-    throw new WrongTypeError(fn.id, 'number', fn.type);
+  if (fn.type !== 'lambda' && fn.type !== 'builtin')
+    throw new WrongTypeError(fn.id, ['lambda', 'builtin'], fn.type);
 
-  const boundLambdas: DRF[] = [];
+  // create an apply node for each item in the array
+
+  let newNodeMap: DeepReadonly<NodeMap> = state.nodes;
+  const applyNodes: DRF[] = [];
+  const ptupleNodes: DRF[] = [];
   const newNodes: DRF[] = [];
   const newArr = createArrayNode();
-
-  for (const [index, itemId] of Object.entries(arr.subexpressions)) {
-    const [clonedLambda, clonedNodes, newNodeMap1] = cloneNodeDeep<LambdaNode>(fn.id, nodes);
-    const newNodeMap2 = new Map(newNodeMap1);
-
-    let argNodeId: NodeId;
-    let foundUnbound = false;
-
-    // use the first unbound argument
-    for (const argNode of iterateTuple<LambdaArgNode>(clonedLambda.subexpressions.arg, newNodeMap1)) {
-      if (argNode.fields.value === null) {
-        argNodeId = argNode.id;
-        foundUnbound = true;
-
-        newNodeMap2.set(argNodeId, {
-          ...argNode,
-          fields: {
-            ...argNode.fields,
-            value: itemId, 
-          }, 
-        });
-        break;
-      }
-    }
-
-    const boundLambda = withParent(clonedLambda, newArr.id, index);
-    newNodeMap2.set(boundLambda.id, boundLambda);
-    
-    newArr.subexpressions[index] = boundLambda.id;
-
-    if (!foundUnbound) 
-      throw new AlreadyFullyBoundError(fn.id);
-
-    nodes = newNodeMap2;
-    boundLambdas.push(boundLambda);
-    newNodes.push(boundLambda, ...clonedNodes);
-  }
-
   newArr.fields.length = arr.fields.length;
 
-  const newNodeMap = new Map(nodes);
-  newNodeMap.set(newArr.id, newArr);
+  for (const [index, itemId] of Object.entries(arr.subexpressions)) {
+    const [clonedFn, clonedFnChildren, nodeMapWithClone] = cloneNodeDeep(fn.id, newNodeMap);
+    const ptupleNode = createPtupleNode(itemId);
+    const applyNode = createApplyNode(clonedFn.id, ptupleNode.id);
 
-  return [newArr, newNodes, newNodeMap];
+    ptupleNode.parent = applyNode.id;
+    ptupleNode.parentField = 'callee';
+    applyNode.parent = newArr.id;
+    applyNode.parentField = index;
+    newArr.subexpressions[index] = applyNode.id;
+
+    newNodes.push(clonedFn, ...clonedFnChildren, ptupleNode, applyNode);
+    ptupleNodes.push(ptupleNode);
+    applyNodes.push(applyNode);
+    newNodeMap = nodeMapWithClone;
+  }
+
+  newNodeMap = new Map([
+    ...newNodeMap, 
+    ...applyNodes.map(applyNode => [applyNode.id, applyNode] as const),
+    ...ptupleNodes.map(ptupleNode => [ptupleNode.id, ptupleNode] as const),
+    [newArr.id, newArr],
+  ]);
+
+  return addClonedNodes(
+    self,
+    [newArr, newNodes, newNodeMap],
+    state
+  );
 }
 
 // fold a f init = f(a[n-1], ..., f(a[2], f(a[1], f(a[0], init))))
@@ -277,12 +278,12 @@ function builtinFold(expr, semant, nodes) {
 }
 
 function builtinSlice(
-  node: DRF<BuiltInIdentifierNode>, 
+  self: DRF<BuiltInIdentifierNode>, 
   args: DRF[], 
-  nodes: DeepReadonly<NodeMap>
-): CloneResult {
+  state: DeepReadonly<GameState>
+): DeepReadonly<GameState> {
   if (args.length !== 3)
-    throw new WrongBuiltInParamsCountError(node.id, 2, args.length);
+    throw new WrongBuiltInParamsCountError(self.id, 2, args.length);
   
   const arrayNode = args[0];
   const indexStartNode = args[1];
@@ -308,7 +309,7 @@ function builtinSlice(
     throw new BuiltInError(indexEndNode.id, `You tried to get item ${indexEnd - 1} of an array with only ${length} items`);
 
   const clonedNodes: DRF[] = [];
-  let currentNodeMap = nodes;
+  let currentNodeMap = state.nodes;
 
   for (let i = indexStart; i < indexEnd; i++) {
     const [clone, descendants, newNodeMap] = cloneNodeDeep(
@@ -323,40 +324,22 @@ function builtinSlice(
   const newArrayNode = createArrayNode(...clonedNodes.map(n => n.id));
   currentNodeMap = new Map([...currentNodeMap, [newArrayNode.id, newArrayNode]]);
 
-  return [newArrayNode, clonedNodes, currentNodeMap];
+  return addClonedNodes(
+    self,
+    [newArrayNode, clonedNodes, currentNodeMap],
+    state
+  );
 }
 
-export const builtins = {
-  // repeat: {params: [{n: 'number'}, {f: 'function'}], impl: builtinRepeat},
-  length: {
-    params: [{ a: 'any' }],
-    impl: builtinLength, 
-  },
-  get: {
-    params: [{ a: 'any' }, { i: 'number' }],
-    impl: builtinGet, 
-  },
-  set: {
-    params: [{ a: 'array' }, { i: 'number' }, { v: 'any' }],
-    impl: builtinSet,
-  },
-  map: {
-    params: [{ f: 'function' }, { a: 'array' }],
-    impl: builtinMap, 
-  },
-  fold: {
-    params: [{ f: 'function' }, { a: 'array' }, { init: 'any' }],
-    impl: builtinFold, 
-  },
-  concat: {
-    params: [{ left: 'array' }, { right: 'array' }],
-    impl: builtinConcat, 
-  },
-  slice: {
-    params: [{ array: 'any' }, { begin: 'number' }, { end: 'number' }],
-    impl: builtinSlice,
-  },
-} as const;
+export const builtins: Record<string, BuiltinFn> = {
+  length: builtinLength,
+  get: builtinGet,
+  set: builtinSet,
+  map: builtinMap,
+  slice: builtinSlice,
+  // fold: builtinFold,
+  // concat: builtinConcat,
+};
 
 /**
  * Represents an identifier for a function or object that is built into the game
@@ -365,66 +348,4 @@ export const builtins = {
 export interface BuiltInIdentifierNode extends BaseNode {
   type: 'builtin';
   fields: { name: string };
-}
-
-function nth(i) {
-  switch (i) {
-  case 1: return 'first';
-  case 2: return 'second';
-  case 3: return 'third';
-  case 4: return 'fourth';
-  case 5: return 'fifth';
-  default: return '';
-  }
-}
-
-function article(n) {
-  return (n.match(/[aeio]/).index == 0)
-    ? `an ${n}`
-    : `a ${n}`;
-}
-
-function compatible(ty, expected) {
-  if (ty == 'missing') return false;
-  if (expected == ty) return true;
-  if (expected == 'function' && ty == 'lambda') return true;
-  if (expected == 'any') return true;
-  return false;
-}
-
-export function genericValidate(expr, semant, state) {
-  const name = expr.name;
-  const sig = builtins.get(name);
-  const { params } = sig;
-  const nodes = state.nodes;
-
-  for (let i = 0; i < params.length; i++) {
-    const n = Object.getOwnPropertyNames(params[i]);
-    const expected = params[i][n];
-    const actual = nodes.get(expr.get(`arg_${n}`));
-    let ty = actual.type;
-    if (ty == 'identifier') {
-      const r = actual.name;
-      if (builtins.has(r)) {
-        ty = 'lambda';
-      } else {
-        const id = state.globals.get(r);
-        if (!id) {
-          return {
-            subexpr: `arg_${n}`,
-            msg: `The name ${r} is not defined`,
-          };
-        }
-        const body = nodes.get(nodes.get(id).body);
-        ty = body.type;
-      }
-    }
-    if (!compatible(ty, expected)) {
-      return {
-        subexpr: `arg_${n}`,
-        msg: `The ${nth(i + 1)} argument to \"${name}\" must be ${article(expected)}!`,
-      };
-    }
-  }
-  return null;
 }

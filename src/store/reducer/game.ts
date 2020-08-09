@@ -6,7 +6,7 @@ import {
 import { checkDefeat, checkVictory } from '../helper';
 import { GameMode, GameState } from '../state';
 import {
-  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalIdentifier, createMoveNodeToBoard, createStep, ReductAction, createEvalLet, 
+  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalIdentifier, createMoveNodeToBoard, createStep, ReductAction, createEvalLet, createDetectCompetion, 
 } from '../action/game';
 
 import type { Flat, NodeId, NodeMap } from '@/semantics';
@@ -542,18 +542,9 @@ export function gameReducer(
     if (calleeNode.type === 'missing')
       throw new MissingNodeError(calleeNode.id);
 
-    let resultNodeId: NodeId;
-
     if (calleeNode.type === 'builtin') {
-      const builtin = builtins[calleeNode.fields.name as keyof typeof builtins];
-      const [newNode, addedNodes, newNodeMap] = builtin.impl(calleeNode, paramNodes, state.nodes);
-      state = {
-        ...state,
-        added: new Map([newNode, ...addedNodes].map(({ id }) => [id, calleeNode.id])),
-        nodes: newNodeMap,
-      };
-
-      resultNodeId = newNode.id;
+      const builtin = builtins[calleeNode.fields.name];
+      state = builtin(calleeNode, paramNodes, state);
     } else if (calleeNode.type === 'lambda') {
       let paramIdx = 0;
 
@@ -562,14 +553,13 @@ export function gameReducer(
         state = gameReducer(state, createEvalLambda(calleeNode.id, paramNode.id));
         paramIdx++;
       }
-
-
-      // there should only be one added node after evaluating the lambda, and it
-      // should be the result of evaluating the lambda
-      resultNodeId = [...state.added.keys()][0];
     } else {
       throw new WrongTypeError(calleeNode.id, ['lambda', 'builtin'], calleeNode.type);
     }
+
+    // there should only be one added node after evaluating the function, and it
+    // should be the result of evaluating the lambda
+    const resultNodeId = [...state.added.keys()][0];
 
     return produce(state, draft => {
       draft.board.delete(applyNode.id);
@@ -844,6 +834,19 @@ export function gameReducer(
     const { targetNodeId } = act;
 
     const executing = new Set(state.executing);
+
+    const targetNode = state.nodes.get(targetNodeId)!;
+    if (getKindForNode(targetNode, state.nodes) !== 'expression') {
+      executing.delete(targetNodeId);
+
+      state = {
+        ...state,
+        executing,
+      };
+
+      return gameReducer(state, createDetectCompetion());
+    }
+
     executing.add(targetNodeId);
 
     try {
@@ -871,11 +874,6 @@ export function gameReducer(
 
     for (const [nodeId, sourceId] of state.added) {
       if (sourceId !== targetNodeId) continue;
-
-      const node = state.nodes.get(nodeId)!;
-
-      if (getKindForNode(node, state.nodes) !== 'expression') continue;
-
       executing.add(nodeId);
     }
 
