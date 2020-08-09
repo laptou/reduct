@@ -6,7 +6,7 @@ import {
 import { checkDefeat, checkVictory } from '../helper';
 import { GameMode, GameState } from '../state';
 import {
-  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference as createEvalIdentifier, createMoveNodeToBoard, createStep, ReductAction, createEvalLet, 
+  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalIdentifier, createMoveNodeToBoard, createStep, ReductAction, createEvalLet, 
 } from '../action/game';
 
 import type { Flat, NodeId, NodeMap } from '@/semantics';
@@ -15,7 +15,7 @@ import {
 } from '@/semantics/defs';
 import { builtins } from '@/semantics/defs/builtins';
 import {
-  createBoolNode, createMissingNode, createNumberNode, createStrNode, getKindForNode, getValueForName, iterateTuple, createLetNode, getReductionOrderForNode,
+  createBoolNode, createMissingNode, createNumberNode, createStrNode, getKindForNode, getValueForName, iterateTuple, getReductionOrderForNode,
 } from '@/semantics/util';
 import {
   DeepReadonly, DRF, mapIterable, withoutParent, withParent,
@@ -601,7 +601,7 @@ export function gameReducer(
   }
 
   case ActionKind.EvalIdentifier: {
-    const { referenceNodeId } = act;
+    const { identifierNodeId: referenceNodeId } = act;
 
     if (!state.board.has(getRootForNode(referenceNodeId, state.nodes).id))
       throw new NotOnBoardError(referenceNodeId);

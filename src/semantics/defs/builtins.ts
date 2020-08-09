@@ -1,5 +1,7 @@
+import { current } from 'immer';
+
 import { BaseNode, NodeMap, NodeId } from '..';
-import { createArrayNode, iterateTuple } from '../util';
+import { createArrayNode, iterateTuple, createNumberNode } from '../util';
 
 import { LambdaArgNode, PTupleNode, LambdaNode } from '.';
 
@@ -50,24 +52,85 @@ function builtinRepeat(expr, semant, nodes) {
 }
 
 // Evaluate the "length" function. Return null if failure.
-function builtinLength(expr, semant, nodes) {
-  const arr = nodes.get(expr.subexpressions.arg_a);
-  if (arr.type === 'array') {
-    return semant.number(arr.fields.length);
-  }
-  if (arr.type === 'string') {
-    return semant.number(arr.fields.value.length);
+function builtinLength(
+  node: DRF<BuiltInIdentifierNode>, 
+  args: DRF[], 
+  nodes: DeepReadonly<NodeMap>
+): CloneResult {
+  if (args.length !== 1)
+    throw new WrongBuiltInParamsCountError(node.id, 1, args.length);
+  
+  const arrayOrString = args[0];
+
+  switch (arrayOrString.type) {
+  case 'array': {
+    const result = createNumberNode(arrayOrString.fields.length);
+
+    return [
+      result,
+      [],
+      new Map([...nodes, [result.id, result]]),
+    ]; 
   }
 
-  console.error('Bad call to length');
+  case 'string': {
+    const result = createNumberNode(arrayOrString.fields.value.length);
+
+    return [
+      result,
+      [],
+      new Map([...nodes, [result.id, result]]),
+    ]; 
+  }
+
+  default:
+    throw new WrongTypeError(
+      arrayOrString.id, 
+      ['array', 'string'], 
+      arrayOrString.type
+    );
+  }
 }
 
-function builtinGet(node: DRF<BuiltInIdentifierNode>, args: DRF[], nodes: DeepReadonly<NodeMap>): CloneResult {
+function builtinGet(
+  node: DRF<BuiltInIdentifierNode>, 
+  args: DRF[], 
+  nodes: DeepReadonly<NodeMap>
+): CloneResult {
   if (args.length !== 2)
     throw new WrongBuiltInParamsCountError(node.id, 2, args.length);
   
+  const arrayNode = args[0];
+  const indexNode = args[1];
+
+  if (arrayNode.type !== 'array')
+    throw new WrongTypeError(arrayNode.id, 'array', arrayNode.type);
+
+  if (indexNode.type !== 'number')
+    throw new WrongTypeError(indexNode.id, 'number', indexNode.type);
+
+  const index = indexNode.fields.value;
+  const length = arrayNode.fields.length;
+
+  if (index >= length)
+    throw new BuiltInError(indexNode.id, `You tried to get item ${index} of an array with only ${length} items`);
+
+  return cloneNodeDeep(arrayNode.subexpressions[index], nodes);
+}
+
+// Evaluate the "set" function, which nondestructively
+// updates an array element. Return null if failure.
+function builtinSet(
+  node: DRF<BuiltInIdentifierNode>, 
+  args: DRF[], 
+  nodes: DeepReadonly<NodeMap>
+): CloneResult {
+  if (args.length !== 3)
+    throw new WrongBuiltInParamsCountError(node.id, 3, args.length);
+  
   const arr = args[0];
   const index = args[1];
+  const value = args[2];
 
   if (arr.type !== 'array')
     throw new WrongTypeError(arr.id, 'array', arr.type);
@@ -78,48 +141,22 @@ function builtinGet(node: DRF<BuiltInIdentifierNode>, args: DRF[], nodes: DeepRe
   const indexValue = index.fields.value;
 
   if (indexValue >= arr.fields.length)
-    throw new BuiltInError(node.id, `You tried to get item ${indexValue} of an array with only ${arr.fields.length} items`);
+    throw new BuiltInError(node.id, `You tried to set item ${indexValue} of an array with only ${arr.fields.length} items`);
 
-  return cloneNodeDeep(arr.subexpressions[indexValue], nodes);
-}
+  const nodeToReplace = arr.subexpressions[indexValue];
 
-// Evaluate the "set" function, which nondestructively
-// updates an array element. Return null if failure.
-function builtinSet(expr, semant, nodes) {
-  const arr = nodes.get(expr.subexpressions.arg_a);
-  const i = nodes.get(expr.subexpressions.arg_i);
-  const v = nodes.get(expr.subexpressions.arg_v);
-  if (arr.type !== 'array') return null;
-  if (i.type !== 'number') return null;
-  const iv = i.value;
-  const n = arr.length;
-  if (iv < 0 || iv >= n) return null;
-  const elems = [];
-  const new_elem = hydrateInput(v, semant, nodes);
-  for (let j = 0; j < n; j++) {
-    elems.push(iv == j
-      ? new_elem
-      : hydrateLocked(nodes.get(arr.subexpressions[`elem${j}`]), semant, nodes));
-  }
-  return semant.array(n, ...elems);
-}
+  return mapNodeDeep(
+    arr.subexpressions[indexValue],
+    nodes,
+    (node, nodeMap) => {
+      if (node.id === nodeToReplace) {
+        const [valueClone, , newNodeMap] = cloneNodeDeep(value.id, nodeMap);
+        return [valueClone, newNodeMap];
+      }
 
-function validateSet(expr, semant, state) {
-  const gval = genericValidate(expr, semant, state);
-  if (gval) return gval;
-
-  const nodes = state.nodes;
-  const arr = nodes.get(expr.subexpressions.arg_a);
-  const i = nodes.get(expr.subexpressions.arg_i);
-  const iv = i.value;
-  const n = arr.length;
-  if (iv < 0 || iv >= n) {
-    return {
-      subexpr: 'arg_i',
-      msg: `This array index must be between 0 and ${n - 1}, because the array only has ${n} elements!`,
-    };
-  }
-  return VALID;
+      return [node, nodeMap];
+    }
+  );
 }
 
 function builtinConcat(expr, semant, nodes) {
@@ -141,7 +178,11 @@ function builtinConcat(expr, semant, nodes) {
   return semant.array(nl + nr, ...elems);
 }
 
-function builtinMap(node: DRF<BuiltInIdentifierNode>, args: DRF[], nodes: DeepReadonly<NodeMap>): CloneResult {
+function builtinMap(
+  node: DRF<BuiltInIdentifierNode>, 
+  args: DRF[], 
+  nodes: DeepReadonly<NodeMap>
+): CloneResult {
   if (args.length !== 2)
     throw new WrongBuiltInParamsCountError(node.id, 2, args.length);
   
@@ -235,46 +276,54 @@ function builtinFold(expr, semant, nodes) {
   return semant.reference('fold', ['f', 'a', 'init'], f1, a_tail, fncall);
 }
 
-function builtinSlice(expr, semant, nodes) {
-  const a = hydrateInput(nodes.get(expr.subexpressions.arg_array), semant, nodes);
-  const b = nodes.get(expr.subexpressions.arg_begin).value;
-  const e = nodes.get(expr.subexpressions.arg_end).value;
-  const n = a.length; // arr.get("length");
+function builtinSlice(
+  node: DRF<BuiltInIdentifierNode>, 
+  args: DRF[], 
+  nodes: DeepReadonly<NodeMap>
+): CloneResult {
+  if (args.length !== 3)
+    throw new WrongBuiltInParamsCountError(node.id, 2, args.length);
+  
+  const arrayNode = args[0];
+  const indexStartNode = args[1];
+  const indexEndNode = args[2];
 
-  if (a.type === 'array') {
-    const slice = [];
-    for (let i = b; i < e; i++) {
-      slice.push(a.subexpressions[`elem${i}`]);
-    }
-    return semant.array(e - b, ...slice);
-  }
-  if (a.type === 'string') {
-    return semant.string(a.value.slice(b, e));
-  }
-}
+  if (arrayNode.type !== 'array')
+    throw new WrongTypeError(arrayNode.id, 'array', arrayNode.type);
 
-function validateSlice(expr, semant, state) {
-  const gval = genericValidate(expr, semant, state);
-  if (gval) return gval;
+  if (indexStartNode.type !== 'number')
+    throw new WrongTypeError(indexStartNode.id, 'number', indexStartNode.type);
 
-  const nodes = state.nodes;
-  const arr = nodes.get(expr.arg_array);
-  const b = nodes.get(expr.arg_begin).value;
-  const e = nodes.get(expr.arg_end).value;
-  const n = arr.length;
-  if (b < 0 || b >= n) {
-    return {
-      subexpr: 'arg_begin',
-      msg: `The array index of the beginning of the slice must be between 0 and ${n - 1}, because the array only has ${n} elements!`,
-    };
+  if (indexEndNode.type !== 'number')
+    throw new WrongTypeError(indexEndNode.id, 'number', indexStartNode.type);
+
+  const indexStart = indexStartNode.fields.value;
+  const indexEnd = indexEndNode.fields.value;
+  const length = arrayNode.fields.length;
+
+  if (indexStart >= length)
+    throw new BuiltInError(indexStartNode.id, `You tried to get item ${indexStart} of an array with only ${length} items`);
+
+  if (indexEnd > length)
+    throw new BuiltInError(indexEndNode.id, `You tried to get item ${indexEnd - 1} of an array with only ${length} items`);
+
+  const clonedNodes: DRF[] = [];
+  let currentNodeMap = nodes;
+
+  for (let i = indexStart; i < indexEnd; i++) {
+    const [clone, descendants, newNodeMap] = cloneNodeDeep(
+      arrayNode.subexpressions[i],
+      currentNodeMap
+    );
+
+    clonedNodes.push(clone, ...descendants);
+    currentNodeMap = newNodeMap;
   }
-  if (e < 0 || e > n) {
-    return {
-      subexpr: 'arg_begin',
-      msg: `The end of the slice must be between 0 and ${n}, because the array only has ${n} elements!`,
-    };
-  }
-  return VALID;
+
+  const newArrayNode = createArrayNode(...clonedNodes.map(n => n.id));
+  currentNodeMap = new Map([...currentNodeMap, [newArrayNode.id, newArrayNode]]);
+
+  return [newArrayNode, clonedNodes, currentNodeMap];
 }
 
 export const builtins = {
@@ -290,7 +339,6 @@ export const builtins = {
   set: {
     params: [{ a: 'array' }, { i: 'number' }, { v: 'any' }],
     impl: builtinSet,
-    validate: validateSet, 
   },
   map: {
     params: [{ f: 'function' }, { a: 'array' }],
@@ -307,7 +355,6 @@ export const builtins = {
   slice: {
     params: [{ array: 'any' }, { begin: 'number' }, { end: 'number' }],
     impl: builtinSlice,
-    validate: validateSlice, 
   },
 } as const;
 
