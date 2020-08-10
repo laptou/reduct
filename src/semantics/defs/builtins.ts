@@ -1,4 +1,4 @@
-import produce, { castDraft } from 'immer';
+import { produce, castDraft } from 'immer';
 
 import { BaseNode, NodeMap } from '..';
 import {
@@ -12,10 +12,8 @@ import {
 } from '@/util/helper';
 import { cloneNodeDeep, CloneResult, mapNodeDeep } from '@/util/nodes';
 
-
-
-
-type BuiltinFn = (self: DRF<BuiltInIdentifierNode>, 
+type BuiltinFn = (
+  self: DRF<BuiltInIdentifierNode>, 
   args: DRF[], 
   state: DeepReadonly<GameState>
 ) => DeepReadonly<GameState>;
@@ -31,7 +29,7 @@ type BuiltinFn = (self: DRF<BuiltInIdentifierNode>,
  */
 function addClonedNodes(
   self: DRF, 
-  [clonedRoot, clonedNodes, newNodeMap]: CloneResult, 
+  [clonedRoot, , newNodeMap]: CloneResult, 
   state: DeepReadonly<GameState>
 ): DeepReadonly<GameState> {
   const added = new Map();
@@ -338,38 +336,6 @@ function builtinSlice(
     [newArrayNode, clonedNodes, currentNodeMap],
     state
   );
-}
-
-// fold a f init = f(a[n-1], ..., f(a[2], f(a[1], f(a[0], init))))
-//    let b = f(a[0], init) in
-//      fold(a[1..], f, b)
-//     = fold(a[1..], f, f(a[0], init))
-// fold [] f init = init
-function builtinFold(expr, semant, nodes) {
-  const a = hydrateInput(nodes.get(expr.subexpressions.arg_a), semant, nodes);
-  const n = a.length;
-  const init = hydrateInput(nodes.get(expr.subexpressions.arg_init), semant, nodes);
-  const f = nodes.get(expr.subexpressions.arg_f);
-  const f1 = hydrateInput(f, semant, nodes);
-  const f2 = hydrateInput(f, semant, nodes);
-
-  if (n == 0) return init;
-
-  const tail = [];
-  for (let j = 1; j < n; j++) {
-    tail.push(a.subexpressions[`elem${j}`]);
-  }
-  const a_tail = semant.array(n - 1, ...tail);
-  let fncall;
-  if (f2.type == 'identifier' && f2.fields.params?.length >= 2) {
-    fncall = f2;
-    f2.subexpressions[`arg_${f2.params[0]}`] = a.elem0;
-    f2.subexpressions[`arg_${f2.params[1]}`] = init;
-  } else {
-    fncall = semant.apply(semant.apply(f2, a.subexpressions.elem0), init);
-  }
-
-  return semant.reference('fold', ['f', 'a', 'init'], f1, a_tail, fncall);
 }
 
 export const builtins: Record<string, BuiltinFn> = {
