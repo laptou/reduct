@@ -1,9 +1,16 @@
+import produce, { castDraft } from 'immer';
+
+import { BaseNode, NodeMap } from '..';
+import {
+  createApplyNode, createArrayNode, createNumberNode, createPtupleNode, 
+} from '../util';
+
 import { BuiltInError, WrongBuiltInParamsCountError, WrongTypeError } from '@/store/errors';
 import { GameState } from '@/store/state';
-import { DeepReadonly, DRF, withChild, withParent } from '@/util/helper';
+import {
+  DeepReadonly, DRF, withChild, withParent, 
+} from '@/util/helper';
 import { cloneNodeDeep, CloneResult, mapNodeDeep } from '@/util/nodes';
-import { BaseNode, NodeMap } from '..';
-import { createApplyNode, createArrayNode, createNumberNode, createPtupleNode } from '../util';
 
 
 
@@ -128,15 +135,13 @@ function builtinGet(
   return addClonedNodes(self, result, state);
 }
 
-// Evaluate the "set" function, which nondestructively
-// updates an array element. Return null if failure.
 function builtinSet(
-  node: DRF<BuiltInIdentifierNode>, 
+  self: DRF<BuiltInIdentifierNode>, 
   args: DRF[], 
-  nodes: DeepReadonly<NodeMap>
-): CloneResult {
+  state: DeepReadonly<GameState>
+): DeepReadonly<GameState> {
   if (args.length !== 3)
-    throw new WrongBuiltInParamsCountError(node.id, 3, args.length);
+    throw new WrongBuiltInParamsCountError(self.id, 3, args.length);
   
   const arr = args[0];
   const index = args[1];
@@ -151,41 +156,77 @@ function builtinSet(
   const indexValue = index.fields.value;
 
   if (indexValue >= arr.fields.length)
-    throw new BuiltInError(node.id, `You tried to set item ${indexValue} of an array with only ${arr.fields.length} items`);
+    throw new BuiltInError(self.id, `You tried to set item ${indexValue} of an array with only ${arr.fields.length} items`);
 
   const nodeToReplace = arr.subexpressions[indexValue];
 
-  return mapNodeDeep(
-    arr.subexpressions[indexValue],
-    nodes,
-    (node, nodeMap) => {
-      if (node.id === nodeToReplace) {
-        const [valueClone, , newNodeMap] = cloneNodeDeep(value.id, nodeMap);
-        return [valueClone, newNodeMap];
-      }
+  return addClonedNodes(
+    self,
+    mapNodeDeep(
+      arr.subexpressions[indexValue],
+      nodes,
+      (node, nodeMap) => {
+        if (node.id === nodeToReplace) {
+          const [valueClone, , newNodeMap] = cloneNodeDeep(value.id, nodeMap);
+          return [valueClone, newNodeMap];
+        }
 
-      return [node, nodeMap];
-    }
+        return [node, nodeMap];
+      }
+    ),
+    state
   );
 }
 
-function builtinConcat(expr, semant, nodes) {
-  const left = nodes.get(expr.subexpressions.arg_left);
-  const right = nodes.get(expr.subexpressions.arg_right);
+function builtinConcat(
+  self: DRF<BuiltInIdentifierNode>, 
+  args: DRF[], 
+  state: DeepReadonly<GameState>
+): DeepReadonly<GameState> {
+  if (args.length !== 2)
+    throw new WrongBuiltInParamsCountError(self.id, 2, args.length);
+  
+  const [left, right] = args;
 
-  if (left.type !== 'array') return null;
-  if (right.type !== 'array') return null;
-  const nl = left.length;
-  const nr = right.length;
-  const elems = [];
-  for (let j = 0; j < nl + nr; j++) {
-    const id = j < nl ? left.subexpressions[`elem${j}`]
-      : right.subexpressions[`elem${j - nl}`];
-    const e = hydrateLocked(nodes.get(id), semant, nodes);
-    e.locked = true;
-    elems.push(e);
-  }
-  return semant.array(nl + nr, ...elems);
+  if (left.type !== 'array')
+    throw new WrongTypeError(left.id, 'array', left.type);
+
+  if (right.type !== 'array')
+    throw new WrongTypeError(right.id, 'array', right.type);
+
+  return produce(state, draft => {
+    const newArr = createArrayNode();
+    newArr.fields.length = left.fields.length + right.fields.length;
+    newArr.parent = self.parent;
+    newArr.parentField = self.parentField;
+
+    draft.nodes.set(newArr.id, newArr);
+    draft.added.set(newArr.id, self.id);
+    
+    let i = 0;
+
+    for (let j = 0; j < left.fields.length; j++) {
+      let [childClone, , newNodeMap] = 
+        cloneNodeDeep(left.subexpressions[j], draft.nodes);
+
+      childClone = withParent(childClone, newArr.id, i.toString(10));
+      draft.nodes = castDraft(newNodeMap);
+      
+      newArr.subexpressions[i] = childClone.id;
+      i++;
+    }
+
+    for (let k = 0; k < right.fields.length; k++) {
+      let [childClone, , newNodeMap] = 
+        cloneNodeDeep(right.subexpressions[k], draft.nodes);
+
+      childClone = withParent(childClone, newArr.id, i.toString(10));
+      draft.nodes = castDraft(newNodeMap);
+      
+      newArr.subexpressions[i] = childClone.id;
+      i++;
+    }
+  });
 }
 
 function builtinMap(
@@ -245,38 +286,6 @@ function builtinMap(
   );
 }
 
-// fold a f init = f(a[n-1], ..., f(a[2], f(a[1], f(a[0], init))))
-//    let b = f(a[0], init) in
-//      fold(a[1..], f, b)
-//     = fold(a[1..], f, f(a[0], init))
-// fold [] f init = init
-function builtinFold(expr, semant, nodes) {
-  const a = hydrateInput(nodes.get(expr.subexpressions.arg_a), semant, nodes);
-  const n = a.length;
-  const init = hydrateInput(nodes.get(expr.subexpressions.arg_init), semant, nodes);
-  const f = nodes.get(expr.subexpressions.arg_f);
-  const f1 = hydrateInput(f, semant, nodes);
-  const f2 = hydrateInput(f, semant, nodes);
-
-  if (n == 0) return init;
-
-  const tail = [];
-  for (let j = 1; j < n; j++) {
-    tail.push(a.subexpressions[`elem${j}`]);
-  }
-  const a_tail = semant.array(n - 1, ...tail);
-  let fncall;
-  if (f2.type == 'identifier' && f2.fields.params?.length >= 2) {
-    fncall = f2;
-    f2.subexpressions[`arg_${f2.params[0]}`] = a.elem0;
-    f2.subexpressions[`arg_${f2.params[1]}`] = init;
-  } else {
-    fncall = semant.apply(semant.apply(f2, a.subexpressions.elem0), init);
-  }
-
-  return semant.reference('fold', ['f', 'a', 'init'], f1, a_tail, fncall);
-}
-
 function builtinSlice(
   self: DRF<BuiltInIdentifierNode>, 
   args: DRF[], 
@@ -331,14 +340,46 @@ function builtinSlice(
   );
 }
 
+// fold a f init = f(a[n-1], ..., f(a[2], f(a[1], f(a[0], init))))
+//    let b = f(a[0], init) in
+//      fold(a[1..], f, b)
+//     = fold(a[1..], f, f(a[0], init))
+// fold [] f init = init
+function builtinFold(expr, semant, nodes) {
+  const a = hydrateInput(nodes.get(expr.subexpressions.arg_a), semant, nodes);
+  const n = a.length;
+  const init = hydrateInput(nodes.get(expr.subexpressions.arg_init), semant, nodes);
+  const f = nodes.get(expr.subexpressions.arg_f);
+  const f1 = hydrateInput(f, semant, nodes);
+  const f2 = hydrateInput(f, semant, nodes);
+
+  if (n == 0) return init;
+
+  const tail = [];
+  for (let j = 1; j < n; j++) {
+    tail.push(a.subexpressions[`elem${j}`]);
+  }
+  const a_tail = semant.array(n - 1, ...tail);
+  let fncall;
+  if (f2.type == 'identifier' && f2.fields.params?.length >= 2) {
+    fncall = f2;
+    f2.subexpressions[`arg_${f2.params[0]}`] = a.elem0;
+    f2.subexpressions[`arg_${f2.params[1]}`] = init;
+  } else {
+    fncall = semant.apply(semant.apply(f2, a.subexpressions.elem0), init);
+  }
+
+  return semant.reference('fold', ['f', 'a', 'init'], f1, a_tail, fncall);
+}
+
 export const builtins: Record<string, BuiltinFn> = {
   length: builtinLength,
   get: builtinGet,
   set: builtinSet,
   map: builtinMap,
   slice: builtinSlice,
+  concat: builtinConcat,
   // fold: builtinFold,
-  // concat: builtinConcat,
 };
 
 /**
