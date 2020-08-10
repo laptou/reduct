@@ -18,7 +18,7 @@ import type {
   Flat, NodeId, NodeMap, ReductNode, 
 } from '.';
 
-import { nextId } from '@/util/nodes';
+import { nextId, isAncestorOf } from '@/util/nodes';
 import type { DeepReadonly, DRF } from '@/util/helper';
 import type { GameState } from '@/store/state';
 
@@ -366,7 +366,10 @@ export function getDefinitionForName(
       }
     }
 
-    if (current.type === 'let') {
+    // example: let x = (x + x) in { ... }
+    // should not cause recursion, which means that we skip the let node if the node we 
+    // started at is part of the let node's value
+    if (current.type === 'let' && !isAncestorOf(node.id, current.subexpressions.value, state.nodes)) {
       const varNode = state.nodes.get(current.subexpressions.variable)! as DRF<IdentifierNode>;
       if (varNode.fields.name === name) {
         return current.id;
@@ -434,7 +437,7 @@ export function getReductionOrderForNode<N extends DRF>(node: N): string[] {
     return ['callee', 'argument'];
 
   case 'let':
-    return ['body'];
+    return ['value', 'body'];
   
   // for conditional nodes, we don't want to step the contents of the if
   // block or the else block, we just want to evaluate the condition and
