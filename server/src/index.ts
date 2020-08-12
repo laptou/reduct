@@ -28,9 +28,12 @@ server.use(KoaPassport.session());
 
 const router = new KoaRouter();
 
-router.get('/', KoaPassport.authenticate('saml'), async ctx => {
-  ctx.response.body = 'welcome to reduct';
-});
+router.get('/',
+  KoaPassport.authenticate('saml'),
+  ctx => {
+    ctx.response.body = 'welcome to reduct';
+  }
+);
 
 router.post('/login/callback',
   KoaPassport.authenticate('saml', {
