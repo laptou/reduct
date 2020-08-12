@@ -142,11 +142,8 @@ module.exports = {
     // comma rules
     'comma-dangle': [
       'error',
+      'always-multiline',
       {
-        objects: 'only-multiline',
-        arrays: 'only-multiline',
-        imports: 'only-multiline',
-        exports: 'only-multiline',
         functions: 'never'
       }
     ],
@@ -169,4 +166,4 @@ module.exports = {
     'import/newline-after-import': ['warn'],
     'max-classes-per-file': ['warn', 2]
   }
-};
+}
