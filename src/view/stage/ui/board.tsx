@@ -111,7 +111,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
     const [positions, setPositions] = useState(new Map<NodeId, NodePos>());
 
     const {
-      board, added, removed, detectCompletion, clearError
+      board, added, removed, detectCompletion, clearError,
     } = props;
 
     // when the board changes, check if the level has been completed
@@ -123,7 +123,18 @@ const BoardImpl: FunctionComponent<BoardProps> =
       {
         from: { opacity: 0 },
         enter: { opacity: 1 },
-        leave: { opacity: 0 },
+        leave: {
+          opacity: 0,
+          transform: 'scale(0)', 
+        },
+        onDestroyed: (id: NodeId) => {
+          setPositions(positions => {
+            const newPositions = new Map(positions);
+            newPositions.delete(id);
+            console.log('num positions:', newPositions.size);
+            return newPositions;
+          });
+        },
       }
     );
 
@@ -154,6 +165,13 @@ const BoardImpl: FunctionComponent<BoardProps> =
         x: boardDiv.scrollLeft,
         y: boardDiv.scrollTop, 
       };
+
+      // placement algorithm doesn't like negative coordinates so we need to
+      // temporarily offset everything into positive coordinates
+      const topLeft = {
+        x: 0,
+        y: 0, 
+      };
       
       const fixedNodeBounds = [];
       const movableNodeBounds = [];
@@ -172,13 +190,18 @@ const BoardImpl: FunctionComponent<BoardProps> =
   
         if (positionInfo?.isUserPositioned || positionInfo?.isAutoPositioned) {
           // this node already has a position, do not move it
-          fixedNodeBounds.push({
+          const fixedRect = {
             id: nodeId,
             x: x + boardScroll.x - padding,
             y: y + boardScroll.y - padding,
             w: width + padding * 2,
             h: height + padding * 2, 
-          });
+          };
+
+          fixedNodeBounds.push(fixedRect);
+
+          topLeft.x = Math.min(topLeft.x, fixedRect.x);
+          topLeft.y = Math.min(topLeft.y, fixedRect.y);
         } else if (sourcePositionInfo) {
           // this node was the result of stepping another node, place it on top
           // of the node that created it
@@ -192,13 +215,18 @@ const BoardImpl: FunctionComponent<BoardProps> =
 
           updatedPositions.set(nodeId, newNodePosition);
 
-          fixedNodeBounds.push({
+          const fixedRect = {
             id: nodeId,
             x: newNodePosition.x + boardScroll.x - padding,
             y: newNodePosition.y + boardScroll.y - padding,
             w: width + padding * 2,
             h: height + padding * 2, 
-          });
+          };
+
+          fixedNodeBounds.push(fixedRect);
+
+          topLeft.x = Math.min(topLeft.x, fixedRect.x);
+          topLeft.y = Math.min(topLeft.y, fixedRect.y);
         } else {
           // this node doesn't have an assigned position, add it to the movable nodes
           movableNodeBounds.push({
@@ -215,7 +243,11 @@ const BoardImpl: FunctionComponent<BoardProps> =
           h: boardBounds.height,
         }, 
         movableNodeBounds, 
-        fixedNodeBounds
+        fixedNodeBounds.map(fixedRect => {
+          fixedRect.x -= topLeft.x;
+          fixedRect.y -= topLeft.y;
+          return fixedRect;
+        })
       );
 
       for (const placed of results) {
@@ -225,8 +257,8 @@ const BoardImpl: FunctionComponent<BoardProps> =
 
         updatedPositions.set(id, {
           nodeId: id,
-          x: x - boardBounds.width / 2 + w / 2 + padding,
-          y: y - boardBounds.height / 2 + h / 2 + padding,
+          x: x - boardBounds.width / 2 + w / 2 + padding + topLeft.x,
+          y: y - boardBounds.height / 2 + h / 2 + padding + topLeft.y,
           isAutoPositioned: true,
           isUserPositioned: false, 
         });
@@ -238,20 +270,9 @@ const BoardImpl: FunctionComponent<BoardProps> =
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [added]);
 
-    useEffect(() => {  
-      setPositions(positions => {
-        const newPositions = new Map(positions);
-
-        for (const deadNode of removed.keys()) {
-          newPositions.delete(deadNode);
-        }
-
-        return newPositions;
-      });
-
-      // do not want to include positions to avoid infinite loop of updates
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [removed]);
+    // positions are removed from dictionary in the onDestroyed option of
+    // useTransition, so that the position is not deleted before the element
+    // disappears
 
     return (
       <div
@@ -267,9 +288,13 @@ const BoardImpl: FunctionComponent<BoardProps> =
             const pos = positions.get(id);
             
             if (pos) {
+              const translate = `translate(${pos.x}px, ${pos.y}px)`;
               style = {
                 ...props,
-                transform: `translate(${pos.x}px, ${pos.y}px)`, 
+                transform: 
+                  props.transform 
+                    ? props.transform + ' ' + translate
+                    : translate, 
               };
             } else {
               style = {
