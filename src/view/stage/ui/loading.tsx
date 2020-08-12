@@ -4,7 +4,7 @@ import '@resources/style/react/ui/loading.scss';
 export const LoadingAnimation: React.FC = () => {
   return (
     <svg className='reduct-loading-anim' viewBox='0 0 32 32'>
-      <rect 
+      <rect
         className='reduct-loading-anim-square'
         x='8' y='8'
         width='16' height='16'

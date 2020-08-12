@@ -36,7 +36,7 @@ export type ReductSymbol = 'star' | 'circle' | 'triangle' | 'rect';
 
 export interface SymbolNode extends BaseNode {
   type: 'symbol';
-  fields: { 
+  fields: {
     name: ReductSymbol;
   };
 }

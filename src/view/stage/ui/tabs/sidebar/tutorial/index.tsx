@@ -7,7 +7,7 @@ import '@resources/style/react/ui/tutorial.scss';
 import { gameReducer } from '@/store/reducer/game';
 import { undoableReducer } from '@/store/reducer/undo';
 
-const DocsListing = React.lazy(() => 
+const DocsListing = React.lazy(() =>
   import('./docs-listing').then(({ DocsListing }) => ({ default: DocsListing }))
 );
 

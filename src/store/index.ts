@@ -10,7 +10,7 @@ let composer;
 
 if (PKG_ENV === 'development') {
   if (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) {
-    composer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ 
+    composer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
       serialize: true,
       actionsBlacklist: [ActionKind.Raise, ActionKind.DetectCompletion],
     });
@@ -20,7 +20,7 @@ if (PKG_ENV === 'development') {
 } else {
   composer = compose;
 }
-    
+
 export const store = createStore(
   createReducer(),
   composer(applyMiddleware(logMiddleware))

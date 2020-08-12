@@ -42,7 +42,8 @@
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
 
-    transition: border-radius 0.5s ease-in-out, border-bottom-color 0.5s step-start;
+    transition: border-radius 0.5s ease-in-out,
+      border-bottom-color 0.5s step-start;
   }
 }
 

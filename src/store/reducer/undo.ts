@@ -87,7 +87,7 @@ export function undoableReducer(reducer: typeof gameReducer) {
         $error: null,
       };
     }
-    
+
     default: {
       try {
         let newPresent = reducer(state.$present, action);
@@ -102,7 +102,7 @@ export function undoableReducer(reducer: typeof gameReducer) {
             draft.$error = error;
             newPresent = newPresentWithoutError;
           }
-  
+
           // don't store these actions in the undo history
           if (action.type === ActionKind.Cleanup
             || action.type === ActionKind.DetectCompletion
@@ -119,7 +119,7 @@ export function undoableReducer(reducer: typeof gameReducer) {
         if (error instanceof GameError) {
           return {
             ...state,
-            $error: error, 
+            $error: error,
           };
         } else {
           throw error;

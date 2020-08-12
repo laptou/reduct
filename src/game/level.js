@@ -11,7 +11,7 @@ export let MACROS;
 export function startLevel(index, description, parse, store, stage) {
   animate.replaceDurationScales(description.animationScales);
 
-  /** 
+  /**
   // console.log(description);
   const macros = { ...description.macros };
   for (const macroName of Object.keys(macros)) {
@@ -177,15 +177,15 @@ export function startLevel(index, description, parse, store, stage) {
   for (const nodeId of stage.getState().board) {
     stage.views[nodeId].scale = {
       x: 0.0,
-      y: 0.0, 
+      y: 0.0,
     };
     stage.views[nodeId].anchor = {
       x: 0.5,
-      y: 0.5, 
+      y: 0.5,
     };
     animate.tween(stage.views[nodeId].scale, {
       x: 1.0,
-      y: 1.0, 
+      y: 1.0,
     }, {
       duration: 500,
       easing: animate.Easing.Anticipate.BackOut(1.01),
@@ -275,6 +275,6 @@ export function serialize(state, semantics) {
   return {
     board,
     goal,
-    toolbox, 
+    toolbox,
   };
 }

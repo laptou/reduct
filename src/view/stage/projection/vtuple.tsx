@@ -10,7 +10,7 @@ interface VTupleProjectionOwnProps {
   node: Flat<VTupleNode>;
 }
 
-export const VTupleProjection: FunctionComponent<VTupleProjectionOwnProps> = 
+export const VTupleProjection: FunctionComponent<VTupleProjectionOwnProps> =
   (props) => {
     const childIds = [];
 

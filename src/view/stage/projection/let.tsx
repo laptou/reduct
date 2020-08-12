@@ -14,7 +14,7 @@ interface LetProjectionOwnProps {
 type LetProjectionProps =
   LetProjectionOwnProps;
 
-export const LetProjection: FunctionComponent<LetProjectionProps> = 
+export const LetProjection: FunctionComponent<LetProjectionProps> =
   (props) => {
     return (
       <div className='projection let'>

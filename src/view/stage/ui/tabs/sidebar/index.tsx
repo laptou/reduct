@@ -46,17 +46,17 @@ interface SidebarSectionProps {
 }
 
 const Section: React.FC<SidebarSectionProps> = ({
-  title, isOpen, onOpen, onClose, children, 
+  title, isOpen, onOpen, onClose, children,
 }) => {
   return (
     <>
-      <div 
+      <div
         className={cx('reduct-sidebar-section-title', { 'reduct-sidebar-section-open': isOpen })}
         onClick={() => isOpen ? onClose?.() : onOpen?.()}
       >
         {title}
       </div>
-      <div 
+      <div
         className={cx('reduct-sidebar-section-content', { 'reduct-sidebar-section-open': isOpen })}
       >
         {children}

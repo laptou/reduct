@@ -6,7 +6,7 @@ const initialState: PreferenceState = {
 };
 
 export const preferencesReducer = (
-  state: PreferenceState = initialState, 
+  state: PreferenceState = initialState,
   act?: PreferenceAction
 ): PreferenceState => {
   if (!act) return state;
@@ -15,7 +15,7 @@ export const preferencesReducer = (
   case PreferenceActionKind.EnableSound:
     return {
       ...state,
-      enableSounds: act.enabled, 
+      enableSounds: act.enabled,
     };
   default:
     return state;

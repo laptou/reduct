@@ -16,11 +16,11 @@ export function checkVictory(state: DeepReadonly<GameState>): boolean {
   const board = new Set(Array.from(state.board).filter((id) => {
     const node = state.nodes.get(id)!;
     if (getKindForNode(node, state.nodes) === 'syntax') return false;
-    return true; 
+    return true;
   }));
 
   const goal = state.goal;
-  
+
   if (board.size !== goal.size) {
     return false;
   }

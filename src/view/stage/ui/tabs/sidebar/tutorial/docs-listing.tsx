@@ -22,8 +22,8 @@ export const DocsListing = () => {
     <div className='docs-listing-container'>
       <ul className='docs-listing-list'>
         {docs.map(doc => (
-          <li 
-            key={doc.attributes.type} 
+          <li
+            key={doc.attributes.type}
             className='docs-listing-item'
             onClick={() => setActiveDoc(doc)}
           >

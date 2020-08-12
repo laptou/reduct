@@ -21,7 +21,7 @@ const VictoryImpl = (props: VictoryStoreProps & VictoryDispatchProps) => {
   return (
     <div className='reduct-banner-page'>
       <h1 id='victory-message'>You win!</h1>
-      
+
       <div className='reduct-banner-actions'>
         <button type='button' onClick={() => props.startLevel(props.nextLevel)}>
           Next level

@@ -122,6 +122,7 @@ module.exports = {
     'space-in-parens': ['error', 'never'],
     'space-before-blocks': ['error', 'always'],
     'no-whitespace-before-property': ['error'],
+    'no-trailing-spaces': ['warn'],
     'func-call-spacing': ['error', 'never'],
     'generator-star-spacing': ['error', 'both'],
     'yield-star-spacing': ['error', 'both'],

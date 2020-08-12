@@ -22,13 +22,13 @@ import type { ReductSymbol } from './defs/value';
 import makeInterpreter from './interpreter';
 
 import {
-  BaseNode, NodeId, NodeMap, ReductNode, 
+  BaseNode, NodeId, NodeMap, ReductNode,
 } from '.';
 
 import { DeepReadonly, dethunk, DRF } from '@/util/helper';
 import BaseStage from '@/stage/basestage';
 import {
-  genericClone, genericEqual, genericFlatten, genericMap, genericSearch, 
+  genericClone, genericEqual, genericFlatten, genericMap, genericSearch,
 } from '@/semantics/core';
 import { GameState } from '@/store/state';
 
@@ -167,9 +167,9 @@ export class Semantics {
           fadeLevel += 1;
           const ctor = (...params: any[]) => {
             const result: ReductNode = {
-              type: exprName, 
-              locked: true, 
-              fields: {}, 
+              type: exprName,
+              locked: true,
+              fields: {},
               subexpressions: {},
               parent: null,
               parentField: null,
@@ -189,11 +189,11 @@ export class Semantics {
             }
 
             const subexprs = dethunk(exprDefinition.subexpressions, result);
-            
+
             for (const fieldName of subexprs) {
               result.subexpressions[fieldName] = params[argPointer++];
             }
-            
+
             result.fadeLevel = innerFadeLevel;
             return result;
           };
@@ -315,7 +315,7 @@ export class Semantics {
 
       return {
         types: result,
-        completeness, 
+        completeness,
       };
     }
 
@@ -612,7 +612,7 @@ export class Semantics {
 
     /** Check for equality of fields (but not of subexpressions). */
     public shallowEqual<
-      T1 extends ReductNode, 
+      T1 extends ReductNode,
       T2 extends ReductNode
     >(n1: DeepReadonly<T1>, n2: DeepReadonly<T2>) {
       if (n1.type !== n2.type) return false;
@@ -646,7 +646,7 @@ export class Semantics {
       }
 
       const defn = this.definitionOf(expr.type, expr.fadeLevel);
-      if (!defn) 
+      if (!defn)
         throw new Error(`semantics.subexpressions: Unrecognized expression type ${expr.type}`);
 
       const subexprBase = defn.reductionOrder || defn.subexpressions;

@@ -105,7 +105,7 @@ export const define: NodeDef<DefineNode> = {
               cols: [
                 {
                   type: 'text',
-                  text: '{name} ', 
+                  text: '{name} ',
                 },
                 {
                   type: 'generic',

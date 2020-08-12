@@ -8,7 +8,7 @@ interface SymbolProjectionOwnProps {
   node: Flat<SymbolNode>;
 }
 
-export const SymbolProjection: FunctionComponent<SymbolProjectionOwnProps> = 
+export const SymbolProjection: FunctionComponent<SymbolProjectionOwnProps> =
   (props) => {
     switch (props.node.fields.name) {
     case 'circle':

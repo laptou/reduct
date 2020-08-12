@@ -54,7 +54,7 @@ function GameImpl(props: GameStoreProps) {
       </>
     );
   }
-  
+
 }
 
 export const Game = connect((state: DeepReadonly<GlobalState>) => ({

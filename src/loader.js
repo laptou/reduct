@@ -84,7 +84,7 @@ export class LoaderClass {
     await new Promise((resolve, reject) => {
       this.audioVolumes = {
         ...this.audioVolumes,
-        ...data.volumes, 
+        ...data.volumes,
       };
 
       this.audioSprites[alias] = new Howl({

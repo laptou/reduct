@@ -20,7 +20,7 @@ const gameStateTransform = createTransform(
   ($present: GameState) => {
     if (!$present) return $present;
 
-    return { 
+    return {
       level: $present.level,
     } as SerializedState;
   },
@@ -39,8 +39,8 @@ export function createReducer() {
   const version = parseInt(PKG_VERSION.replace(/\D/g, '')); // 7.0.0-alpha = 700
 
   const gameReducerPersisted = persistReducer(
-    { 
-      key: 'reduct/game', 
+    {
+      key: 'reduct/game',
       storage,
       version,
       transforms: [gameStateTransform],
@@ -49,8 +49,8 @@ export function createReducer() {
   );
 
   const preferencesReducerPersisted = persistReducer(
-    { 
-      key: 'reduct/preferences', 
+    {
+      key: 'reduct/preferences',
       storage,
       version,
     },

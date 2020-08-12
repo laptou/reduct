@@ -5,7 +5,7 @@ import { LambdaArgNode, PTupleNode, LambdaNode } from '.';
 
 import { DRF, DeepReadonly, withParent } from '@/util/helper';
 import {
-  WrongBuiltInParamsCountError, WrongTypeError, BuiltInError, AlreadyFullyBoundError, 
+  WrongBuiltInParamsCountError, WrongTypeError, BuiltInError, AlreadyFullyBoundError,
 } from '@/store/errors';
 import { cloneNodeDeep, CloneResult, mapNodeDeep } from '@/util/nodes';
 
@@ -65,7 +65,7 @@ function builtinLength(expr, semant, nodes) {
 function builtinGet(node: DRF<BuiltInIdentifierNode>, args: DRF[], nodes: DeepReadonly<NodeMap>): CloneResult {
   if (args.length !== 2)
     throw new WrongBuiltInParamsCountError(node.id, 2, args.length);
-  
+
   const arr = args[0];
   const index = args[1];
 
@@ -144,7 +144,7 @@ function builtinConcat(expr, semant, nodes) {
 function builtinMap(node: DRF<BuiltInIdentifierNode>, args: DRF[], nodes: DeepReadonly<NodeMap>): CloneResult {
   if (args.length !== 2)
     throw new WrongBuiltInParamsCountError(node.id, 2, args.length);
-  
+
   const arr = args[0];
   const fn = args[1];
 
@@ -175,8 +175,8 @@ function builtinMap(node: DRF<BuiltInIdentifierNode>, args: DRF[], nodes: DeepRe
           ...argNode,
           fields: {
             ...argNode.fields,
-            value: itemId, 
-          }, 
+            value: itemId,
+          },
         });
         break;
       }
@@ -184,10 +184,10 @@ function builtinMap(node: DRF<BuiltInIdentifierNode>, args: DRF[], nodes: DeepRe
 
     const boundLambda = withParent(clonedLambda, newArr.id, index);
     newNodeMap2.set(boundLambda.id, boundLambda);
-    
+
     newArr.subexpressions[index] = boundLambda.id;
 
-    if (!foundUnbound) 
+    if (!foundUnbound)
       throw new AlreadyFullyBoundError(fn.id);
 
     nodes = newNodeMap2;
@@ -281,33 +281,33 @@ export const builtins = {
   // repeat: {params: [{n: 'number'}, {f: 'function'}], impl: builtinRepeat},
   length: {
     params: [{ a: 'any' }],
-    impl: builtinLength, 
+    impl: builtinLength,
   },
   get: {
     params: [{ a: 'any' }, { i: 'number' }],
-    impl: builtinGet, 
+    impl: builtinGet,
   },
   set: {
     params: [{ a: 'array' }, { i: 'number' }, { v: 'any' }],
     impl: builtinSet,
-    validate: validateSet, 
+    validate: validateSet,
   },
   map: {
     params: [{ f: 'function' }, { a: 'array' }],
-    impl: builtinMap, 
+    impl: builtinMap,
   },
   fold: {
     params: [{ f: 'function' }, { a: 'array' }, { init: 'any' }],
-    impl: builtinFold, 
+    impl: builtinFold,
   },
   concat: {
     params: [{ left: 'array' }, { right: 'array' }],
-    impl: builtinConcat, 
+    impl: builtinConcat,
   },
   slice: {
     params: [{ array: 'any' }, { begin: 'number' }, { end: 'number' }],
     impl: builtinSlice,
-    validate: validateSlice, 
+    validate: validateSlice,
   },
 } as const;
 

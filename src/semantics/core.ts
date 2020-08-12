@@ -3,7 +3,7 @@ import { produce } from 'immer';
 import { Semantics } from './transform';
 
 import type {
-  NodeId, NodeMap, ReductNode, Flat, 
+  NodeId, NodeMap, ReductNode, Flat,
 } from '.';
 
 import type { GameState } from '@/store/state';
@@ -58,7 +58,7 @@ export const genericMap: GenericNodeTransformer<(
       currentNode = produce(currentNode, draft => {
         for (const field of getSubExpressions(currentNode)) {
           const [newNode, newNodeMap] = map(nodeMap, currentNode.subexpressions[field], mapper, filter, false);
-        
+
           draft.subexpressions[field] = newNode.id;
           nodeMap = newNodeMap;
         }
@@ -128,20 +128,20 @@ export const genericClone: GenericNodeCreator<(
         for (const field of getSubExpressions(root)) {
           let [childClone, descendantClones, descendantNodeMap] = clone(root.subexpressions[field], nodeMap, locked);
           nodeMap = descendantNodeMap;
-  
+
           childClone = produce(childClone, childCloneDraft => {
             childCloneDraft.parent = newId;
             childCloneDraft.parentField = field;
             childCloneDraft.locked = locked;
           });
-  
+
           clonedNodes.push(...descendantClones, childClone);
-  
+
           draft.subexpressions[field] = childClone.id;
           // TODO: delete any cached __missing fields
         }
       });
-    
+
       nodeMap = produce(nodeMap, draft => draft.set(clonedRoot.id, clonedRoot as ReductNode));
 
       return [clonedRoot, clonedNodes, nodeMap];
