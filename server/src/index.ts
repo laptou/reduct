@@ -5,7 +5,7 @@ const server = new Koa();
 const router = new KoaRouter();
 
 router.get('/', async ctx => {
-  ctx.response = 'welcome to reduct';
-})
+  ctx.response.body = 'welcome to reduct';
+});
 
-server.listen()
+server.listen(process.env.PORT || 8080);

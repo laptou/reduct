@@ -1,6 +1,7 @@
 const { resolve } = require('path');
 
 module.exports = {
+  parser: '@typescript-eslint/parser',
   plugins: [
     'react'
   ],
