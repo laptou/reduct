@@ -21,9 +21,11 @@
     }
   },
   "include": [
+    "src/**/*.tsx",
     "src/**/*.ts",
     "src/**/*.js",
     "scripts/**/*.js",
-    "scripts/**/*.mjs"
+    "scripts/**/*.mjs",
+    "webpack.config.js"
   ]
 }

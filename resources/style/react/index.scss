@@ -8,6 +8,10 @@
   font-size: 16px;
 }
 
+body, html {
+  overflow: hidden;
+}
+
 #reduct-react {
   display: grid;
   grid-template-rows: 6rem 1fr 8rem;

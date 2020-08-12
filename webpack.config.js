@@ -75,7 +75,7 @@ exports.default = (env) => ({
               esModule: true,
               hmr: env.development,
             },
-          }, 
+          },
           {
             loader: 'css-loader',
             options: {
@@ -96,7 +96,7 @@ exports.default = (env) => ({
         ],
       },
       {
-        test: /\.(mp3|mp4|ogg|opus|wav|png)$/i,
+        test: /\.(mp3|mp4|ogg|opus|wav|png|svg)$/i,
         use: ['file-loader'],
       },
       {

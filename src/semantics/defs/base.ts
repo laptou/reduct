@@ -1,5 +1,5 @@
 import type {
-  BaseNode, Flat, NodeId, NodeType, NodeMap, 
+  BaseNode, Flat, NodeId, NodeType, NodeMap,
 } from '..';
 import type { Semantics } from '../transform';
 import type { NodeKind } from '../util';

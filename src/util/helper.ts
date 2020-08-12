@@ -1,7 +1,7 @@
 import { produce } from 'immer';
 
 import type {
-  Flat, BaseNode, ReductNode, NodeId, 
+  Flat, BaseNode, ReductNode, NodeId,
 } from '@/semantics';
 
 /**
@@ -44,7 +44,7 @@ export type DeepReadonly<T> =
 
 /**
  * Stands for deep readonly & flat.
- * 
+ *
  * A Reduct node that is completely read-only (attempting to write to it or any
  * of its property values will give an error) and flat (the subexpressions
  * property contains node IDs instead of the nodes themselves).
@@ -54,7 +54,7 @@ export type DRF<T extends BaseNode = ReductNode> = DeepReadonly<Flat<T>>;
 
 /**
  * Returns a version of the node that has no reference to its parent (parent and parentField are set to null).
- * @param node 
+ * @param node
  */
 export function withoutParent<N extends DeepReadonly<ReductNode> | DRF>(node: N): N {
   return {

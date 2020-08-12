@@ -25,10 +25,10 @@ type ToolboxProps = ToolboxStoreProps;
 
 function onDragOver(event: React.DragEvent<HTMLDivElement>) {
   if (!event.dataTransfer.types.includes('application/reduct-node')) return;
-  
+
   // dropping in the toolbox is not allowed
   event.dataTransfer.dropEffect = 'none';
-  
+
   event.preventDefault();
   event.stopPropagation();
 }
@@ -43,7 +43,7 @@ function onDrop(event: React.DragEvent<HTMLDivElement>) {
   event.stopPropagation();
 }
 
-const ToolboxImpl: FunctionComponent<ToolboxProps> = 
+const ToolboxImpl: FunctionComponent<ToolboxProps> =
   (props) => {
     return (
       <div id='reduct-toolbox' onDragOver={onDragOver} onDrop={onDrop}>
@@ -58,7 +58,7 @@ const ToolboxImpl: FunctionComponent<ToolboxProps> =
               <div className={cx('reduct-toolbox-item', { unlimited })} key={nodeId}>
                 <StageProjection nodeId={nodeId} />
               </div>
-            ); 
+            );
           })}
         </div>
       </div>

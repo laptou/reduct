@@ -14,7 +14,7 @@ interface ConditionalProjectionOwnProps {
 type ConditionalProjectionProps =
   ConditionalProjectionOwnProps;
 
-export const ConditionalProjection: FunctionComponent<ConditionalProjectionProps> = 
+export const ConditionalProjection: FunctionComponent<ConditionalProjectionProps> =
   (props) => {
     return (
       <div className='projection conditional'>

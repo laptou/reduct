@@ -10,10 +10,10 @@ interface BuiltInReferenceProjectionOwnProps {
   node: DRF<BuiltInReferenceNode>;
 }
 
-type BuiltInReferenceProjectionProps = 
+type BuiltInReferenceProjectionProps =
   BuiltInReferenceProjectionOwnProps;
 
-export const BuiltInReferenceProjection: FunctionComponent<BuiltInReferenceProjectionProps> = 
+export const BuiltInReferenceProjection: FunctionComponent<BuiltInReferenceProjectionProps> =
   (props) => {
     return (
       <div className={cx('projection builtin')}>

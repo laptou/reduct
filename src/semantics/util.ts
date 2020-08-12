@@ -11,11 +11,11 @@ import type { MissingNode } from './defs/missing';
 import type { NotNode } from './defs/not';
 import type { IdentifierNode } from './defs/identifier';
 import type {
-  BoolNode, NumberNode, ReductSymbol, StrNode, SymbolNode, 
+  BoolNode, NumberNode, ReductSymbol, StrNode, SymbolNode,
 } from './defs/value';
 
 import type {
-  Flat, NodeId, NodeMap, ReductNode, 
+  Flat, NodeId, NodeMap, ReductNode,
 } from '.';
 
 import { nextId } from '@/util/nodes';
@@ -114,7 +114,7 @@ export function createLambdaArgNode(name: string): LambdaArgNode {
     fields: {
       name,
       functionHole: false,
-      value: null, 
+      value: null,
     },
   };
 }
@@ -126,7 +126,7 @@ export function createBinOpNode(left: ReductNode, op: OpNode, right: ReductNode)
     subexpressions: {
       left,
       op,
-      right, 
+      right,
     },
   };
 }
@@ -146,7 +146,7 @@ export function createLambdaNode(arg: PTupleNode, body: ReductNode): LambdaNode 
     type: 'lambda',
     subexpressions: {
       arg,
-      body, 
+      body,
     },
   };
 }
@@ -158,7 +158,7 @@ export function createLetNode(variable: IdentifierNode, e1: ReductNode, e2: Redu
     subexpressions: {
       variable,
       value: e1,
-      body: e2, 
+      body: e2,
     },
   };
 }
@@ -169,7 +169,7 @@ export function createApplyNode(callee: ReductNode, argument: PTupleNode): Apply
     type: 'apply',
     subexpressions: {
       callee,
-      argument, 
+      argument,
     },
   };
 }
@@ -181,7 +181,7 @@ export function createConditionalNode(condition: ReductNode, positive: ReductNod
     subexpressions: {
       condition,
       positive,
-      negative, 
+      negative,
     },
   };
 }
@@ -211,7 +211,7 @@ export function createMemberNode(array: ReductNode, index: ReductNode): MemberNo
     type: 'member',
     subexpressions: {
       array,
-      index, 
+      index,
     },
   };
 }
@@ -222,7 +222,7 @@ export function createDefineNode(name: string, params: string[], body: LambdaNod
     type: 'define',
     fields: {
       name,
-      params, 
+      params,
     },
     subexpressions: { body },
   };
@@ -271,7 +271,7 @@ export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKin
   case 'let':
   case 'binop':
   case 'conditional':
-  case 'member': 
+  case 'member':
   case 'not':
   case 'identifier':
     return 'expression';
@@ -316,18 +316,18 @@ export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKin
   case 'builtin':
     return 'value';
 
-  case 'define': 
+  case 'define':
     return 'statement';
-  
-  case 'lambdaArg': 
+
+  case 'lambdaArg':
   case 'op':
     return 'syntax';
-    
-  case 'missing': 
+
+  case 'missing':
     return 'placeholder';
 
   default: throw new Error(`unknown node of type ${node.type}`);
-  
+
   // TODO: reintroduce autograder?
   // case 'autograder': return dethunk(autograder.kind, node, nodes);
   }
@@ -424,7 +424,7 @@ export function getValueForName(
 /**
  * Gets the order in which a node's children should be reduced before the node
  * itself is reduced.
- * 
+ *
  * @param node The node whose children are being reduced.
  * @returns An array of child fields to be reduced, in order.
  */
@@ -435,13 +435,13 @@ export function getReductionOrderForNode<N extends DRF>(node: N): string[] {
 
   case 'let':
     return ['body'];
-  
+
   // for conditional nodes, we don't want to step the contents of the if
   // block or the else block, we just want to evaluate the condition and
   // then return one of the blocks
   case 'conditional':
     return ['condition'];
-  
+
   default:
     return Object.keys(node.subexpressions);
   }

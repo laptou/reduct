@@ -1,12 +1,12 @@
 import { castDraft, produce } from 'immer';
 
 import {
-  CircularCallError, GameError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, 
+  CircularCallError, GameError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError,
 } from '../errors';
 import { checkDefeat, checkVictory } from '../helper';
 import { GameMode, GameState } from '../state';
 import {
-  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference as createEvalIdentifier, createMoveNodeToBoard, createStep, ReductAction, createEvalLet, 
+  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalReference as createEvalIdentifier, createMoveNodeToBoard, createStep, ReductAction, createEvalLet,
 } from '../action/game';
 
 import type { Flat, NodeId, NodeMap } from '@/semantics';
@@ -56,7 +56,7 @@ function markDirty(nodes: NodeMap, id: NodeId) {
 }
 
 export function gameReducer(
-  state: DeepReadonly<GameState> = initialProgram, 
+  state: DeepReadonly<GameState> = initialProgram,
   act?: ReductAction
 ): DeepReadonly<GameState> {
   if (!act) return state;
@@ -203,8 +203,8 @@ export function gameReducer(
       const referenceNodes = findNodesDeep(
         bodyNodeId,
         state.nodes,
-        (nodeToMatch) => 
-          nodeToMatch.type === 'identifier' 
+        (nodeToMatch) =>
+          nodeToMatch.type === 'identifier'
           && nodeToMatch.fields.name === argName
       );
 
@@ -212,7 +212,7 @@ export function gameReducer(
         // evaluate references which point to the arg
         const targetNodeId = getDefinitionForName(argName, referenceNode, state);
         if (targetNodeId !== argNodeId) continue;
-          
+
         // keep track of which nodes are destroyed
         state = gameReducer(state, createEvalIdentifier(referenceNode.id));
         removed.push(...state.removed.keys());
@@ -678,7 +678,7 @@ export function gameReducer(
       return produce(state, draft => {
         draft.added.clear();
 
-        // if there is a meta tag that specifies unlimited uses, clone the node 
+        // if there is a meta tag that specifies unlimited uses, clone the node
         // instead of moving it
         if (node.__meta?.toolbox?.unlimited) {
           const [clonedNode, clonedDescendants, newNodeMap] = cloneNodeDeep(act.nodeId, state.nodes);
@@ -921,7 +921,7 @@ export function gameReducer(
 
     return state;
   }
-  
+
   case ActionKind.CreateDocNodes: {
     return {
       ...state,
@@ -929,19 +929,19 @@ export function gameReducer(
       docs: new Map([...state.docs, [act.key, act.rootId]]),
     };
   }
-  
+
   case ActionKind.DeleteDocNodes: {
     const rootId = state.docs.get(act.key)!;
 
     if (!state.nodes.has(rootId)) return state;
 
     const descendants = findNodesDeep(rootId, state.nodes, () => true);
-  
+
     return produce(state, draft => {
       for (const descendant of descendants) {
         draft.nodes.delete(descendant.id);
       }
-  
+
       draft.docs.delete(act.key);
     });
   }
