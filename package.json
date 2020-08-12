@@ -3,7 +3,18 @@
   "version": "7.0.6-alpha",
   "main": "index.js",
   "repository": "git@github.coecis.cornell.edu:Reduct/reduct-redux.git",
-  "author": "Ibiyemi Abiodun <iaa34@cornell.edu>",
-  "license": "MIT",
-  "private": true
+  "author": "David Li <li.davidm96@gmail.com>, Ibiyemi Abiodun <iaa34@cornell.edu>",
+  "license": "MPL-2.0",
+  "private": true,
+  "workspaces": [
+    "server/",
+    "client/"
+  ],
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^3.9.0",
+    "@typescript-eslint/parser": "^3.9.0",
+    "eslint": "^7.6.0",
+    "eslint-plugin-import": "^2.22.0",
+    "typescript": "^3.9.7"
+  }
 }
