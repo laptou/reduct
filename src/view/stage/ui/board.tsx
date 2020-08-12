@@ -111,7 +111,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
     const [positions, setPositions] = useState(new Map<NodeId, NodePos>());
 
     const {
-      board, added, removed, detectCompletion, 
+      board, added, removed, detectCompletion, clearError
     } = props;
 
     // when the board changes, check if the level has been completed
@@ -128,7 +128,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
     );
 
     // create a map to use to store references to divs
-    const boardItemDivRefs = useMemo(
+    const boardItemRefs = useMemo(
       () => {
         const refsMap = new Map<NodeId, React.RefObject<HTMLDivElement>>();
 
@@ -142,8 +142,9 @@ const BoardImpl: FunctionComponent<BoardProps> =
     );
     
     // use useLayoutEffect instead of useEffect b/c this needs to execute after
-    // React has created elements; use setTimeout so it doesn't block rendering
-    useLayoutEffect(() => void setTimeout(() => {
+    // React has created elements but before the browser can paint (to avoid
+    // elements "jumping" around)
+    useLayoutEffect(() => {
       const updatedPositions = new Map();
 
       const padding = 10;
@@ -161,7 +162,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
         const positionInfo = updatedPositions.get(nodeId);
         const sourcePositionInfo = sourceNodeId && positions.get(sourceNodeId);
 
-        const ref = boardItemDivRefs.get(nodeId);
+        const ref = boardItemRefs.get(nodeId);
         const boardItemDiv = ref?.current;
         if (!boardItemDiv) continue;
 
@@ -235,7 +236,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
       
       // do not want to include positions to avoid infinite loop of updates
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, 0), [added]);
+    }, [added]);
 
     useEffect(() => {  
       setPositions(positions => {
@@ -257,25 +258,32 @@ const BoardImpl: FunctionComponent<BoardProps> =
         id='reduct-board'
         onDragOver={onDragOver}
         onDrop={e => onDrop(e, props, boardRef, positions, setPositions)} 
-        onClick={() => props.clearError()}
+        onClick={() => clearError()}
         ref={boardRef}
       >
         {
           transitions.map(({ item: id, key, props }) => {
-            const { x, y } = positions.get(id) ?? {
-              x: 0,
-              y: 0, 
-            };
+            let style: React.CSSProperties;
+            const pos = positions.get(id);
+            
+            if (pos) {
+              style = {
+                ...props,
+                transform: `translate(${pos.x}px, ${pos.y}px)`, 
+              };
+            } else {
+              style = {
+                ...props,
+                visibility: 'hidden',
+              };
+            }
 
             return (
               <animated.div
                 className='projection-board-wrapper'
-                style={{
-                  ...props,
-                  transform: `translate(${x}px, ${y}px)`, 
-                }}
+                style={style}
                 key={key}
-                ref={boardItemDivRefs.get(id)}
+                ref={boardItemRefs.get(id)}
               >
                 <StageProjection nodeId={id} />
               </animated.div>
