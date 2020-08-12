@@ -162,24 +162,25 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
 
     // whether execution is being fast-forwarded or not
     const [isFast, setFast] = useState(false);
-    const timer = useRef(null);
+    const timer = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
       const runner = () => {
         console.log(`execute ${timer.current} run for node ${node?.id}`);
         exec();
-
-        timer.current = setTimeout(runner, isFast ? 500 : 1000);
-        console.log(`execute ${timer.current} scheduled for node ${node?.id}`);
       };
 
       if (executing) {
-        timer.current = setTimeout(runner, isFast ? 500 : 1000);
+        timer.current = setInterval(runner, isFast ? 500 : 1000);
         console.log(`execute ${timer.current} scheduled for node ${node?.id}`);
 
         return () => {
-          console.log(`execute ${timer.current} unscheduled for node ${node?.id}`);
-          clearTimeout(timer.current);
+          if (timer.current !== null) {
+            console.log(`execute ${timer.current} unscheduled for node ${node?.id}`);
+            clearInterval(timer.current);
+          }
+
+          console.log(`clean up for ${node?.id}`);
         };
       }
     }, [executing, exec, isFast]);
