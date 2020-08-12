@@ -131,7 +131,6 @@ const BoardImpl: FunctionComponent<BoardProps> =
           setPositions(positions => {
             const newPositions = new Map(positions);
             newPositions.delete(id);
-            console.log('num positions:', newPositions.size);
             return newPositions;
           });
         },
