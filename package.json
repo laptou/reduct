@@ -1,0 +1,13 @@
+{
+  "name": "reduct-redux",
+  "version": "7.0.6-alpha",
+  "main": "index.js",
+  "repository": "git@github.coecis.cornell.edu:Reduct/reduct-redux.git",
+  "author": "Ibiyemi Abiodun <iaa34@cornell.edu>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@reduct/client": "file:client",
+    "@reduct/server": "file:server"
+  }
+}
