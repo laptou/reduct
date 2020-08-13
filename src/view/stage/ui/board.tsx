@@ -1,5 +1,5 @@
 import React, {
-  FunctionComponent, RefObject, useEffect, useRef, useState, 
+  FunctionComponent, RefObject, useEffect, useRef, useState, useMemo, useLayoutEffect, 
 } from 'react';
 import { connect } from 'react-redux';
 import { animated, useTransition } from 'react-spring';
@@ -11,6 +11,7 @@ import { createClearError, createDetectCompetion, createMoveNodeToBoard } from '
 import { GlobalState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
 import '@resources/style/react/ui/board.scss';
+import { placeRects } from '@/view/layout/grid';
 
 interface BoardStoreProps {
   board: DeepReadonly<Set<NodeId>>;
@@ -40,7 +41,13 @@ type BoardProps = BoardStoreProps & BoardDispatchProps;
 
 // source prop indicates whether this node was moved by the user
 // if it was, then we shouldn't automatically reposition it
-type NodePos = { x: number; y: number; source: 'user' | 'auto' | null };
+interface NodePos {
+  nodeId: NodeId;
+  x: number;
+  y: number;
+  isUserPositioned: boolean;
+  isAutoPositioned: boolean;
+}
 
 function onDragOver(event: React.DragEvent<HTMLDivElement>) {
   if (!event.dataTransfer.types.includes('application/reduct-node')) return;
@@ -89,9 +96,11 @@ function onDrop(
   
   const newPositions = new Map(positions);
   newPositions.set(nodeId, {
+    nodeId,
     x,
     y,
-    source: 'user', 
+    isAutoPositioned: false,
+    isUserPositioned: true,
   });
   setPositions(newPositions);
 }
@@ -102,157 +111,208 @@ const BoardImpl: FunctionComponent<BoardProps> =
     const [positions, setPositions] = useState(new Map<NodeId, NodePos>());
 
     const {
-      board, added, removed, detectCompletion, 
+      board, added, removed, detectCompletion, clearError,
     } = props;
 
     // when the board changes, check if the level has been completed
     useEffect(() => detectCompletion(), [board, detectCompletion]);
 
-    // newly added nodes should have same position as their source nodes
-    // and removed nodes should have their positions deleted
-    useEffect(() => {
-      const newPositions = new Map(positions);
-
-      for (const [newNode, sourceNode] of added) {
-        if (!board.has(newNode))
-          continue;
-
-        if (newPositions.has(newNode))
-          continue;
-
-        if (!sourceNode) {
-          const x = (Math.random() - 0.5) * 400;
-          const y = (Math.random() - 0.5) * 400;
-          newPositions.set(newNode, {
-            x,
-            y,
-            source: null, 
-          });
-          continue;
-        }
-        
-        const sourceNodePosition = newPositions.get(sourceNode);
-        if (!sourceNodePosition) {
-          const x = (Math.random() - 0.5) * 400;
-          const y = (Math.random() - 0.5) * 400;
-          newPositions.set(newNode, {
-            x,
-            y,
-            source: null, 
-          });
-          continue;
-        }
-
-        // add random jitter so that new nodes don't appear in exact same location
-        // this will also make it less likely that vtuple nodes will appear directly
-        // on top of each other
-
-        const jitterX = Math.random() * 40 - 20;
-        const jitterY = Math.random() * 40 - 20;
-
-        newPositions.set(newNode, {
-          x: sourceNodePosition.x + jitterX,
-          y: sourceNodePosition.y + jitterY,
-          source: sourceNodePosition.source,
-        });
-      }
-
-      for (const deadNode of removed.keys()) {
-        newPositions.delete(deadNode);
-      }
-
-      setPositions(newPositions);
-      
-      // we do not want this effect to re-run when positions is changed b/c 
-      // that would cause an infinite loop; we do not want this effect to re-run
-      // when board is changed b/c added and removed are always updated when
-      // board is updated anyway
-
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [added, removed]);
-
-
     const transitions = useTransition(
       [...board],
       id => id,
       {
-        from: (id) => {
-          let position;
-
-          if (positions.has(id)) {
-            position = positions.get(id)!;
-          }
-
-          if (!position && props.added.has(id)) {
-            const source = props.added.get(id)!;
-            if (positions.has(source))
-              position = positions.get(source);
-          }
-          
-          if (!position) {
-            position = {
-              x: 0,
-              y: 0,
-              source: null, 
-            };
+        from: { opacity: 0 },
+        enter: { opacity: 1 },
+        leave: {
+          opacity: 0,
+          transform: 'scale(0)', 
+        },
+        onDestroyed: (id: NodeId) => {
+          setPositions(positions => {
             const newPositions = new Map(positions);
-            newPositions.set(id, position);
-            setPositions(newPositions);
-          }
-
-          const { x, y } = position;
-          return {
-            opacity: 0,
-            transform: `translate(${x}px, ${y}px) scale(0)`, 
-          };
-        },
-        enter: (id) => {
-          const { x, y } = positions.get(id) ?? {
-            x: 0,
-            y: 0, 
-          };
-          return {
-            opacity: 1,
-            transform: `translate(${x}px, ${y}px) scale(1)`, 
-          };
-        },
-        update: (id) => {
-          const { x, y } = positions.get(id) ?? {
-            x: 0,
-            y: 0, 
-          };
-          return {
-            opacity: 1,
-            transform: `translate(${x}px, ${y}px) scale(1)`, 
-          };
-        },
-        leave: (id) => {
-          const { x, y } = positions.get(id) ?? {
-            x: 0,
-            y: 0, 
-          };
-          return {
-            opacity: 0,
-            transform: `translate(${x}px, ${y}px) scale(0)`, 
-          };
+            newPositions.delete(id);
+            return newPositions;
+          });
         },
       }
     );
+
+    // create a map to use to store references to divs
+    const boardItemRefs = useMemo(
+      () => {
+        const refsMap = new Map<NodeId, React.RefObject<HTMLDivElement>>();
+
+        for (const id of board) {
+          refsMap.set(id, React.createRef<HTMLDivElement>());
+        }
+
+        return refsMap;
+      },
+      [board]
+    );
+    
+    // use useLayoutEffect instead of useEffect b/c this needs to execute after
+    // React has created elements but before the browser can paint (to avoid
+    // elements "jumping" around)
+    useLayoutEffect(() => {
+      const updatedPositions = new Map();
+
+      const padding = 10;
+      const boardDiv = boardRef.current!;
+      const boardBounds = boardDiv.getBoundingClientRect();
+      const boardScroll = {
+        x: boardDiv.scrollLeft,
+        y: boardDiv.scrollTop, 
+      };
+
+      // placement algorithm doesn't like negative coordinates so we need to
+      // temporarily offset everything into positive coordinates
+      const topLeft = {
+        x: 0,
+        y: 0, 
+      };
+      
+      const fixedNodeBounds = [];
+      const movableNodeBounds = [];
+
+      for (const [nodeId, sourceNodeId] of added) {
+        const positionInfo = updatedPositions.get(nodeId);
+        const sourcePositionInfo = sourceNodeId && positions.get(sourceNodeId);
+
+        const ref = boardItemRefs.get(nodeId);
+        const boardItemDiv = ref?.current;
+        if (!boardItemDiv) continue;
+
+        const {
+          x, y, width, height, 
+        } = boardItemDiv.getBoundingClientRect();
+  
+        if (positionInfo?.isUserPositioned || positionInfo?.isAutoPositioned) {
+          // this node already has a position, do not move it
+          const fixedRect = {
+            id: nodeId,
+            x: x + boardScroll.x - padding,
+            y: y + boardScroll.y - padding,
+            w: width + padding * 2,
+            h: height + padding * 2, 
+          };
+
+          fixedNodeBounds.push(fixedRect);
+
+          topLeft.x = Math.min(topLeft.x, fixedRect.x);
+          topLeft.y = Math.min(topLeft.y, fixedRect.y);
+        } else if (sourcePositionInfo) {
+          // this node was the result of stepping another node, place it on top
+          // of the node that created it
+          const newNodePosition = {
+            nodeId,
+            x: sourcePositionInfo.x + Math.random() * 40 - 20,
+            y: sourcePositionInfo.y + Math.random() * 40 - 20,
+            isAutoPositioned: false,
+            isUserPositioned: true,
+          };
+
+          updatedPositions.set(nodeId, newNodePosition);
+
+          const fixedRect = {
+            id: nodeId,
+            x: newNodePosition.x + boardScroll.x - padding,
+            y: newNodePosition.y + boardScroll.y - padding,
+            w: width + padding * 2,
+            h: height + padding * 2, 
+          };
+
+          fixedNodeBounds.push(fixedRect);
+
+          topLeft.x = Math.min(topLeft.x, fixedRect.x);
+          topLeft.y = Math.min(topLeft.y, fixedRect.y);
+        } else {
+          // this node doesn't have an assigned position, add it to the movable nodes
+          movableNodeBounds.push({
+            id: nodeId,
+            w: width + padding * 2,
+            h: height + padding * 2, 
+          });
+        }
+      }
+
+      const results = placeRects(
+        {
+          w: boardBounds.width,
+          h: boardBounds.height,
+        }, 
+        movableNodeBounds, 
+        fixedNodeBounds.map(fixedRect => {
+          fixedRect.x -= topLeft.x;
+          fixedRect.y -= topLeft.y;
+          return fixedRect;
+        })
+      );
+
+      for (const placed of results) {
+        const {
+          id, x, y, w, h, 
+        } = placed;
+
+        updatedPositions.set(id, {
+          nodeId: id,
+          x: x - boardBounds.width / 2 + w / 2 + padding + topLeft.x,
+          y: y - boardBounds.height / 2 + h / 2 + padding + topLeft.y,
+          isAutoPositioned: true,
+          isUserPositioned: false, 
+        });
+      }
+
+      setPositions(positions => new Map([...positions, ...updatedPositions]));
+      
+      // do not want to include positions to avoid infinite loop of updates
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [added]);
+
+    // positions are removed from dictionary in the onDestroyed option of
+    // useTransition, so that the position is not deleted before the element
+    // disappears
 
     return (
       <div
         id='reduct-board'
         onDragOver={onDragOver}
         onDrop={e => onDrop(e, props, boardRef, positions, setPositions)} 
-        onClick={() => props.clearError()}
+        onClick={() => clearError()}
         ref={boardRef}
       >
         {
-          transitions.map(({ item: id, key, props }) => (
-            <animated.div className='projection-board-wrapper' style={props} key={key}>
-              <StageProjection nodeId={id} />
-            </animated.div>
-          ))
+          transitions.map(({ item: id, key, props }) => {
+            let style: React.CSSProperties;
+            const pos = positions.get(id);
+            
+            if (pos) {
+              const translate = `translate(${pos.x}px, ${pos.y}px)`;
+              style = {
+                ...props,
+                transform: 
+                  props.transform 
+                    ? props.transform + ' ' + translate
+                    : translate, 
+              };
+            } else {
+              style = {
+                ...props,
+                visibility: 'hidden',
+              };
+            }
+
+            return (
+              <animated.div
+                className='projection-board-wrapper'
+                style={style}
+                key={key}
+                ref={boardItemRefs.get(id)}
+              >
+                <StageProjection nodeId={id} />
+              </animated.div>
+            ); 
+          })
         }
       </div>
     );

@@ -4,9 +4,9 @@ levels:
     goal:
       - STAR
     toolbox:
-      - STAR
+      - star
     defines: []
-    hint: 'Move the def block to the left box to define the word {star}!'
+    hint: Move that def block into the global scope!
     note: null
     syntax: []
     globals:
@@ -26,7 +26,7 @@ levels:
       - __unlimited;star
       - __unlimited;rect
     defines: []
-    hint: Reach the goal by creating new definitions!
+    hint: You have unlimited copies of `star` and `rect` in this level.
     note: null
     syntax: []
     globals:

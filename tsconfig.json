@@ -21,6 +21,7 @@
     }
   },
   "include": [
+    "src/**/*.tsx",
     "src/**/*.ts",
     "src/**/*.js",
     "scripts/**/*.js",

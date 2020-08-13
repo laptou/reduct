@@ -12,6 +12,7 @@ import { ToolboxTab } from './stage/ui/tabs/toolbox';
 import { Sidebar } from './stage/ui/tabs/sidebar';
 import { TutorialTab } from './stage/ui/tabs/sidebar/tutorial';
 import { DefinitionsTab } from './stage/ui/tabs/sidebar/definitions';
+import { FeedbackCollectorPopup } from './stage/ui/feedback-collector';
 
 import { DeepReadonly } from '@/util/helper';
 import { GameMode, GlobalState } from '@/store/state';
@@ -40,13 +41,14 @@ function GameImpl(props: GameStoreProps) {
         <GameMenuTab />
         <HistoryTab />
         <Sidebar>
-          <Sidebar.Section title='Tutorial'>
+          <Sidebar.Section title='Tutorial' isOpen={true}>
             <TutorialTab />
           </Sidebar.Section>
-          <Sidebar.Section title='Definitions'>
+          <Sidebar.Section title='Global Scope' isOpen={true}>
             <DefinitionsTab />
           </Sidebar.Section>
         </Sidebar>
+        <FeedbackCollectorPopup />
         {props.mode === GameMode.Victory && <VictoryOverlay />}
         {props.mode === GameMode.Defeat && <DefeatOverlay />}
       </>
