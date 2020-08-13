@@ -54,7 +54,7 @@ const DocsPageImpl: React.FC<DocsPageProps> = (props) => {
 
     element.current.innerHTML = html;
 
-    const codeElements = element.current.getElementsByTagName('code');
+    const codeElements = element.current.querySelectorAll('pre code.language-javascript');
 
     const prefix = attributes.name;
     const newScripts = new Map();
