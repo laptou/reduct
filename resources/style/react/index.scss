@@ -10,7 +10,7 @@
 
 #reduct-react {
   display: grid;
-  grid-template-rows: 6rem 1fr 8rem;
+  grid-template-rows: 6rem 1fr minmax(8rem, auto);
   grid-template-columns: auto 1fr auto 25rem;
 
   width: 100%;

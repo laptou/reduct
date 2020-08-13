@@ -23,5 +23,21 @@
 #reduct-toolbox-content {
   display: flex;
   flex-flow: row wrap;
-  gap: 1rem;
+  row-gap: 2rem;
+  align-items: center;
+
+  column-gap: 1rem;
+}
+
+.reduct-toolbox-item {
+  text-align: center;
+
+  &.unlimited {
+    &::after {
+      content: '\221e'; // infinity symbol
+      display: block;
+
+      opacity: 0.56;
+    }
+  }
 }
