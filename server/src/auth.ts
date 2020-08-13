@@ -1,6 +1,8 @@
 
-import type { default as Koa, DefaultState, Context } from 'koa';
-import type KoaRouter from 'koa-router';
+import type {
+  default as Koa, DefaultState, Context, Middleware,
+} from 'koa';
+import KoaTreeRouter from 'koa-tree-router';
 import KoaSession from 'koa-session';
 import KoaPassport from 'koa-passport';
 import {
@@ -12,13 +14,15 @@ import {
 // derived from https://it.cornell.edu/shibboleth/shibboleth-faq
 const NETID_URN = 'urn:oid:0.9.2342.19200300.100.1.1';
 
+const LOGIN_PATH = '/auth/login';
+const CALLBACK_PATH_SAML = '/auth/saml/callback';
+
 KoaPassport.use(new SamlStrategy({
-  path: '/login/callback',
+  path: CALLBACK_PATH_SAML,
   entryPoint: 'https://shibidp-test.cit.cornell.edu/idp/profile/SAML2/Redirect/SSO',
   issuer: 'reduct',
   name: 'saml',
 }, (profile: SamlProfile, callback: SamlVerifiedCallback) => {
-  console.log('verified');
   const netId = profile[NETID_URN];
   callback(null, { netId });
 }));
@@ -31,27 +35,34 @@ KoaPassport.deserializeUser((netId: string, callback) => {
   callback(null, { netId });
 });
 
-export function initializeAuth(server: Koa, router: KoaRouter<DefaultState, Context>) {
+export function initializeAuth(server: Koa) {
   server.keys = ['secret key, change me before deploying'];
   server.use(KoaSession({}, server));
   server.use(KoaPassport.initialize());
   server.use(KoaPassport.session());
 
-  router.get('/login', KoaPassport.authenticate('saml'));
+  const authRouter = new KoaTreeRouter<DefaultState, Context>();
 
-  router.post(
-    '/login/callback',
-    KoaPassport.authenticate('saml', {
-      successRedirect: '/',
-      failureRedirect: '/login',
-    }),
+  authRouter.get(
+    LOGIN_PATH,
+    KoaPassport.authenticate('saml')
   );
 
-  router.use((ctx, next) => {
-    if (ctx.isAuthenticated()) {
-      return next();
-    } else {
-      ctx.redirect('/login');
-    }
-  });
+  authRouter.post(
+    CALLBACK_PATH_SAML,
+    KoaPassport.authenticate('saml', {
+      failureRedirect: LOGIN_PATH,
+      successRedirect: '/',
+    })
+  );
+
+  server.use(authRouter.routes());
 }
+
+export const authMiddleware: Middleware = (ctx, next) => {
+  if (ctx.isAuthenticated()) {
+    return next();
+  } else {
+    ctx.redirect(LOGIN_PATH);
+  }
+};
