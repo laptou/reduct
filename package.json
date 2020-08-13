@@ -11,6 +11,7 @@
     "@reduct/server": "file:server"
   },
   "devDependencies": {
+    "lerna": "^3.22.1",
     "@babel/cli": "^7.10.5",
     "@babel/core": "^7.10.5",
     "@babel/parser": "7.7.5",
@@ -35,9 +36,11 @@
     "@types/estree": "0.0.44",
     "@types/koa": "^2.11.3",
     "@types/koa-bodyparser": "^4.3.0",
+    "@types/koa-mount": "^4.0.0",
     "@types/koa-passport": "^4.0.2",
     "@types/koa-router": "^7.4.1",
     "@types/koa-session": "^5.10.2",
+    "@types/koa-static": "^4.0.1",
     "@types/koa-webpack": "^5.0.1",
     "@types/passport-saml": "^1.1.2",
     "@types/react": "^16.9.43",

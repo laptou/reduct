@@ -2,6 +2,7 @@ import Koa, { Context, DefaultState } from 'koa';
 import KoaRouter from 'koa-router';
 import KoaBodyParser from 'koa-bodyparser';
 
+import { initializeProdServer } from './prod';
 import { initializeDevServer } from './dev';
 import { initializeAuth } from './auth';
 
@@ -9,17 +10,21 @@ import { initializeAuth } from './auth';
   const server = new Koa();
   const router = new KoaRouter<DefaultState, Context>();
 
-  initializeAuth(server, router);
-  await initializeDevServer(server);
+  if (process.env.NODE_ENV === 'development') {
+    await initializeDevServer(server);
+    console.log('initialized dev server');
+  } else {
+    initializeProdServer(server);
+    console.log('initialized production server');
+  }
 
-  router.get(
-    '/',
-    ctx => {
-      ctx.response.body = `welcome ${JSON.stringify(ctx.state.user)}`;
-    }
-  );
+  initializeAuth(server, router);
+  console.log('initialized authentication');
 
   server.use(KoaBodyParser());
   server.use(router.routes());
-  server.listen(process.env.PORT || 8080);
+
+  const port = process.env.PORT || 8080;
+  server.listen(port);
+  console.log(`listening on port ${port}`);
 })();
