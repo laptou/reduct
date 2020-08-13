@@ -21,33 +21,35 @@ interface LogEntry {
 }
 
 // attempt to upload logs every 30 seconds
-const UPLOAD_INTERVAL = 3 * 1000;
+const UPLOAD_INTERVAL = 30 * 1000;
 
 const sessionId = uuid();
 let pendingLogTimer: NodeJS.Timeout | null = null;
 const pendingLogEntries: LogEntry[] = [];
 
+async function trySendLogs() {
+  if (pendingLogEntries.length === 0) return;
+
+  const sendingLogEntries = pendingLogEntries.splice(0, pendingLogEntries.length);
+  const body = JSON.stringify(sendingLogEntries);
+
+  try {
+    await fetch('/logs/action', {
+      method: 'POST',
+      body,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  } catch {
+    pendingLogEntries.unshift(...sendingLogEntries);
+  }
+}
+
 export function startLogging() {
   stopLogging();
 
-  pendingLogTimer = setInterval(async () => {
-    if (pendingLogEntries.length === 0) return;
-
-    const sendingLogEntries = pendingLogEntries.splice(0, pendingLogEntries.length);
-    const body = JSON.stringify(sendingLogEntries);
-
-    try {
-      await fetch('/logs/action', {
-        method: 'POST',
-        body,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-    } catch {
-      pendingLogEntries.unshift(...sendingLogEntries);
-    }
-  }, UPLOAD_INTERVAL);
+  pendingLogTimer = setInterval(() => void trySendLogs(), UPLOAD_INTERVAL);
 }
 
 export function stopLogging() {
@@ -55,6 +57,10 @@ export function stopLogging() {
     clearInterval(pendingLogTimer);
 
   pendingLogTimer = null;
+}
+
+export function flushLogs() {
+  void trySendLogs();
 }
 
 export function log(action: string, extra: Record<string, any> = {}) {

@@ -1,7 +1,7 @@
 import { Datacenter, datadogRum } from '@datadog/browser-rum';
 import type { Middleware } from 'redux';
 
-import { log } from './logger';
+import { log, flushLogs } from './logger';
 
 import { ActionKind, ReductAction } from '@/store/action/game';
 import { GameMode, GlobalState } from '@/store/state';
@@ -74,6 +74,7 @@ export const logMiddleware: Middleware = (api) => (next) => (act: ReductAction) 
     log('game:start-level', {
       level: presentState.level,
     });
+    flushLogs();
     break;
 
   case ActionKind.MoveNodeToBoard:
@@ -123,10 +124,13 @@ document.addEventListener('visibilitychange', () => {
     log('window:focus');
   else
     log('window:blur');
+
+  flushLogs();
 });
 
 window.addEventListener('beforeunload', () => {
   log('session:end');
+  flushLogs();
 });
 
 log('session:start');
