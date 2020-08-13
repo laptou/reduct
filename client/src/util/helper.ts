@@ -76,7 +76,7 @@ export function withParent<N extends DeepReadonly<ReductNode> | DRF>(
   };
 }
 
-export function withChild<N extends DRF>(node: N, childId: NodeId, field: keyof N['subexpressions']): N {
+export function withChild<N extends DRF = DRF>(node: N, childId: NodeId, field: keyof N['subexpressions']): N {
   return produce(node, draft => {
     (draft.subexpressions as Record<typeof field, any>)[field] = childId;
   });
