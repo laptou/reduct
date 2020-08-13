@@ -8,7 +8,7 @@ interface OpProjectionOwnProps {
   node: Flat<OpNode>;
 }
 
-export const OpProjection: FunctionComponent<OpProjectionOwnProps> = 
+export const OpProjection: FunctionComponent<OpProjectionOwnProps> =
   (props) => {
     return (
       <div className='projection op'>

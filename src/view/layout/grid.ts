@@ -31,8 +31,8 @@ interface LinearRange {
 /**
  * A range of rows and of columns that defines a 2D range of cells.
  */
-interface AreaRange { 
-  row: LinearRange; 
+interface AreaRange {
+  row: LinearRange;
   col: LinearRange;
 }
 
@@ -50,8 +50,8 @@ function clamp(min: number, max: number, value: number) {
  * cannot be moved or overlapped.
  */
 export function placeRects(
-  bounds: Bounds, 
-  rectsToPlace: Rect[], 
+  bounds: Bounds,
+  rectsToPlace: Rect[],
   rectsToAvoid: PlacedRect[] = []): PlacedRect[] {
   // place rects with largest area first
   rectsToPlace.sort((r1, r2) => r2.w * r2.h - r1.w * r1.h);
@@ -72,7 +72,7 @@ export function placeRects(
       area, placedRect, rows, cols, cells
     );
   }
-  
+
   for (const rect of rectsToPlace) {
     // find contiguous chunks of rows that are as small as possible
     // while being able to contain this rect's height
@@ -83,25 +83,25 @@ export function placeRects(
     // locate the range of cells that is completely empty and is closest to the
     // center of the bounding box
     const area = getBestArea(
-      cells, 
-      potentialRowChunks, 
+      cells,
+      potentialRowChunks,
       potentialColChunks,
       boundsCenterX,
       boundsCenterY);
-    
+
     if (!area) {
       // no more cell chunks found, exit
       break;
     }
 
     const placedRect = placeRectInArea(
-      area, rect, boundsCenterX, boundsCenterY 
+      area, rect, boundsCenterX, boundsCenterY
     );
 
     subdivideCells(
       area, placedRect, rows, cols, cells
     );
-    
+
     placedRects.push(placedRect);
   }
 
@@ -125,7 +125,7 @@ function getPotentialRanges(segments: number[], size: number): LinearRange[] {
     }
 
     chunks.push({
-      start, 
+      start,
       end,
       offset: currentOffset,
       size: currentSize,
@@ -141,8 +141,8 @@ function getPotentialRanges(segments: number[], size: number): LinearRange[] {
 }
 
 function getOverlappingArea(
-  rows: number[], 
-  cols: number[], 
+  rows: number[],
+  cols: number[],
   rect: PlacedRect
 ): AreaRange {
   let x = 0;
@@ -162,26 +162,26 @@ function getOverlappingArea(
   // iterate until we would do right edge of rect
   while (x + w < rect.x + rect.w) {
     w += cols[i];
-    i++; 
-  } 
+    i++;
+  }
 
   const lastCol = i;
 
   i = 0;
-    
+
   // iterate until we would cross top edge of rect
   while (y + rows[i] <= rect.y) {
     y += rows[i];
-    i++; 
+    i++;
   }
-    
+
   const firstRow = i;
 
   // iterate until we do cross bottom edge of rect
   while (y + h < rect.y + rect.h) {
     h += rows[i];
-    i++; 
-  } 
+    i++;
+  }
 
   const lastRow = i;
 
@@ -202,8 +202,8 @@ function getOverlappingArea(
 }
 
 function getBestArea(
-  cells: boolean[][], 
-  potentialRowChunks: LinearRange[], 
+  cells: boolean[][],
+  potentialRowChunks: LinearRange[],
   potentialColChunks: LinearRange[],
   boundsCenterX: number,
   boundsCenterY: number) {
@@ -243,7 +243,7 @@ function getBestArea(
           col: potentialColChunk,
           row: potentialRowChunk,
           dist: chunkDistance,
-        }; 
+        };
       }
     }
   }
@@ -276,21 +276,21 @@ function placeRectInArea(
 }
 
 function subdivideCells(
-  area: AreaRange, 
-  rect: PlacedRect, 
-  rows: number[], 
+  area: AreaRange,
+  rect: PlacedRect,
+  rows: number[],
   cols: number[],
-  cells: boolean[][], 
+  cells: boolean[][],
 ) {
   const {
-    x, y, w, h, 
+    x, y, w, h,
   } = rect;
-  
+
   const areaX = area.col.offset;
   const areaW = area.col.size;
   const areaY = area.row.offset;
   const areaH = area.row.size;
-  
+
   const spaceOnLeft = x - areaX;
   const spaceOnTop = y - areaY;
   const spaceOnRight = (areaX + areaW) - (x + w);

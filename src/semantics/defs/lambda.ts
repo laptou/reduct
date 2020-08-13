@@ -1,5 +1,5 @@
 import type {
-  BaseNode, Flat, FlatReductNode, NodeId, ReductNode, 
+  BaseNode, Flat, FlatReductNode, NodeId, ReductNode,
 } from '..';
 import * as fx from '../../gfx/fx';
 import { genericBetaReduce } from '../core';

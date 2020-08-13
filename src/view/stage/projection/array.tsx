@@ -13,10 +13,10 @@ interface ArrayProjectionOwnProps {
   node: DRF<ArrayNode>;
 }
 
-export const ArrayProjection: FunctionComponent<ArrayProjectionOwnProps> = 
+export const ArrayProjection: FunctionComponent<ArrayProjectionOwnProps> =
   (props) => {
     const itemIds: Array<NodeId | null> = [];
-    
+
     for (let i = 0; i < props.node.fields.length; i++) {
       itemIds.push(props.node.subexpressions[i] ?? null);
     }
@@ -24,7 +24,7 @@ export const ArrayProjection: FunctionComponent<ArrayProjectionOwnProps> =
     return (
       <div className='projection array'>
         {
-          itemIds.map((itemId, index) => 
+          itemIds.map((itemId, index) =>
             <div className='array-item' key={index}><StageProjection nodeId={itemId} /></div>
           )
         }

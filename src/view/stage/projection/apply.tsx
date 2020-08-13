@@ -12,7 +12,7 @@ interface ApplyProjectionOwnProps {
   node: DRF<ApplyNode>;
 }
 
-export const ApplyProjection: FunctionComponent<ApplyProjectionOwnProps> = 
+export const ApplyProjection: FunctionComponent<ApplyProjectionOwnProps> =
   (props) => {
     return (
       <div className='projection apply'>

@@ -3,7 +3,7 @@ import { castDraft, produce } from 'immer';
 import { DeepReadonly, DRF } from './helper';
 
 import type {
-  BaseNode, Flat, FlatReductNode, NodeId, NodeMap, ReductNode, 
+  BaseNode, Flat, FlatReductNode, NodeId, NodeMap, ReductNode,
 } from '@/semantics';
 
 let idCounter = 1;
@@ -25,15 +25,15 @@ export function nextId(): NodeId {
 
 export type CloneResult<N extends ReductNode = ReductNode> = [
   /** cloned root node */
-  DRF<N>, 
+  DRF<N>,
   /** cloned descendant nodes */
-  Array<DeepReadonly<Flat<ReductNode>>>, 
+  Array<DeepReadonly<Flat<ReductNode>>>,
   /** modified node map containing both cloned nodes and originals */
   DeepReadonly<NodeMap>
 ];
 
 /**
- * Clones the node given by `id` and all of its descendants. Returns 
+ * Clones the node given by `id` and all of its descendants. Returns
  *
  * @param id The ID of the node to clone.
  * @param nodeMap A map from IDs to nodes.
@@ -49,7 +49,7 @@ export function cloneNodeDeep<N extends ReductNode = ReductNode>(id: NodeId, nod
 
   const clonedRoot: DRF = produce(root, (draft) => {
     draft.id = newId;
-    
+
     // delete cached holes
     if (draft.__meta?.slots) {
       delete draft.__meta.slots;
@@ -112,13 +112,13 @@ type MapResult = [
  */
 export function mapNodeDeep(
   id: NodeId,
-  nodeMap: DeepReadonly<NodeMap>, 
+  nodeMap: DeepReadonly<NodeMap>,
   mapper: (
-    node: DRF, 
+    node: DRF,
     nodeMap: DeepReadonly<NodeMap>
   ) => [DRF, DeepReadonly<NodeMap>],
   filter: (
-    node: DRF, 
+    node: DRF,
     nodeMap: DeepReadonly<NodeMap>
   ) => boolean = () => true
 ): MapResult {
@@ -144,10 +144,10 @@ export function mapNodeDeep(
 
   const [mappedRoot, mappedNodeMap] = mapper(rootWithMappedDescendants, nodeMap);
 
-  const reparentedChildren = Array.from(mappedChildren).map(([childPath, mappedChild]) => ({ 
-    ...mappedChild, 
+  const reparentedChildren = Array.from(mappedChildren).map(([childPath, mappedChild]) => ({
+    ...mappedChild,
     parent: mappedRoot.id,
-    parentField: childPath, 
+    parentField: childPath,
   } as DRF));
 
   const finalNodeMap = produce(mappedNodeMap, draft => {
@@ -183,7 +183,7 @@ export function findNodesDeep(
     nodeMap: DeepReadonly<NodeMap>
   ) => boolean,
   filter: (
-    node: DRF, 
+    node: DRF,
     nodeMap: DeepReadonly<NodeMap>
   ) => boolean = () => true
 ): DRF[] {
@@ -208,7 +208,7 @@ export function findNodesDeep(
 
 /**
  * Comapares two nodes and all of their descendants for equality.
- * 
+ *
  * @param left The ID of the first node to compare.
  * @param right The ID of the second node to compare.
  * @param nodes A map from IDs to nodes.
@@ -268,13 +268,13 @@ export function flatten(
 
 /**
  * Traverses up the node graph until this node's parent is found.
- * 
+ *
  * @param id The node whose root should be found.
  * @param nodes A map from IDs to nodes.
  */
 export function getRootForNode(id: NodeId, nodes: DeepReadonly<NodeMap>): DRF {
   let current = nodes.get(id)!;
-  
+
   while (current.parent) {
     current = nodes.get(current.parent)!;
   }

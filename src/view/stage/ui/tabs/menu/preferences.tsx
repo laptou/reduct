@@ -25,8 +25,8 @@ const PreferencesImpl: React.FC<PreferencesProps> = (props) => {
   return (
     <div>
       sound enabled: <input
-        type='checkbox' 
-        checked={isSoundEnabled} 
+        type='checkbox'
+        checked={isSoundEnabled}
         onChange={e => enableSound(e.target.checked)}
       />
     </div>

@@ -17,11 +17,11 @@ interface IdentifierProjectionStoreProps {
   valid: boolean;
 }
 
-type IdentifierProjectionProps = 
+type IdentifierProjectionProps =
   IdentifierProjectionOwnProps &
   IdentifierProjectionStoreProps;
 
-const IdentifierProjectionImpl: FunctionComponent<IdentifierProjectionProps> = 
+const IdentifierProjectionImpl: FunctionComponent<IdentifierProjectionProps> =
   (props) => {
     const { valid } = props;
 
@@ -36,10 +36,9 @@ const IdentifierProjectionImpl: FunctionComponent<IdentifierProjectionProps> =
 
 export const IdentifierProjection = connect(
   (
-    store: DeepReadonly<GlobalState>, 
+    store: DeepReadonly<GlobalState>,
     ownProps: IdentifierProjectionOwnProps
   ) => ({
     valid: getDefinitionForName(ownProps.node.fields.name, ownProps.node, store.game.$present) !== null,
   })
 )(IdentifierProjectionImpl);
-  

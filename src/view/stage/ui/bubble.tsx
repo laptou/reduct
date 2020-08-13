@@ -15,11 +15,11 @@ interface BubbleProps {
   children: ReactChild;
 }
 
-export const Bubble: React.FC<BubbleProps> = ({ 
+export const Bubble: React.FC<BubbleProps> = ({
   children, type, show,
 }) => {
   const [side, setSide] = useState('bottom');
-  
+
   let style;
   let translate;
 
@@ -36,27 +36,27 @@ export const Bubble: React.FC<BubbleProps> = ({
   }
 
   const transition = useTransition(show, null, {
-    from: { 
-      opacity: 0, 
-      transform: translate + 'scale(0)', 
-      ...style, 
+    from: {
+      opacity: 0,
+      transform: translate + 'scale(0)',
+      ...style,
     },
-    enter: { 
-      opacity: 1, 
-      transform: translate + 'scale(1)', 
-      ...style, 
+    enter: {
+      opacity: 1,
+      transform: translate + 'scale(1)',
+      ...style,
     },
-    leave: { 
-      opacity: 0, 
-      transform: translate + 'scale(0)', 
-      ...style, 
+    leave: {
+      opacity: 0,
+      transform: translate + 'scale(0)',
+      ...style,
     },
   });
-  
+
   return transition.map(({ item, key, props }) => item && (
-    <animated.div 
+    <animated.div
       style={props}
-      key={key} 
+      key={key}
       className={`reduct-bubble reduct-bubble-${type}`}
     >
       <svg className='reduct-bubble-pointer' viewBox='0 0 32 16'>

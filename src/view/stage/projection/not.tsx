@@ -18,10 +18,10 @@ interface NotProjectionOwnProps {
   node: DRF<NotNode>;
 }
 
-type NotProjectionProps = 
+type NotProjectionProps =
   NotProjectionOwnProps;
 
-export const NotProjection: FunctionComponent<NotProjectionProps> = 
+export const NotProjection: FunctionComponent<NotProjectionProps> =
   (props) => {
     return (
       <div className='projection not'>

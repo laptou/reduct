@@ -30,7 +30,7 @@ const LevelSelectImpl: React.FC<LevelSelectProps> = (props) => {
   const chapters = [];
 
   const progression = Loader.progressions['Elementary'];
-  for (const chapterKey of progression.linearChapters) { 
+  for (const chapterKey of progression.linearChapters) {
     const chapter = progression.chapters[chapterKey];
     const levels = [];
     for (let index = chapter.startIdx; index <= chapter.endIdx; index++) {
@@ -53,13 +53,13 @@ const LevelSelectImpl: React.FC<LevelSelectProps> = (props) => {
               {name}
             </span>
             {levels.map(index => (
-              <button 
-                type='button' 
-                key={index} 
+              <button
+                type='button'
+                key={index}
                 onClick={() => props.startLevel(index)}
                 className={
-                  index === props.levelIndex 
-                    ? 'btn btn-primary' 
+                  index === props.levelIndex
+                    ? 'btn btn-primary'
                     : 'btn btn-primary-inv'
                 }
               >
@@ -92,8 +92,8 @@ const LevelInfoImpl: React.FC<LevelInfoProps> = ({ levelIndex, onToggleLevelSele
         <span>{chapter.name}</span>
       </span>
       <button
-        id='reduct-level-info-expander' 
-        type='button' 
+        id='reduct-level-info-expander'
+        type='button'
         onClick={() => onToggleLevelSelect()}
         className='btn btn-primary'
       >

@@ -29,14 +29,14 @@ interface BinOpProjectionStoreProps {
   op: OpNode['fields']['name'] | null;
 }
 
-type BinOpProjectionProps = 
-  BinOpProjectionOwnProps & 
+type BinOpProjectionProps =
+  BinOpProjectionOwnProps &
   BinOpProjectionStoreProps;
 
 // TODO: why do we need a separate node for the operation?
 // Not Doing That seems simpler
 
-const BinOpProjectionImpl: FunctionComponent<BinOpProjectionProps> = 
+const BinOpProjectionImpl: FunctionComponent<BinOpProjectionProps> =
   (props) => {
     switch (props.op) {
     case '+':

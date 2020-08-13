@@ -2,19 +2,19 @@ import { produce, castDraft } from 'immer';
 
 import { BaseNode, NodeMap } from '..';
 import {
-  createApplyNode, createArrayNode, createNumberNode, createPtupleNode, 
+  createApplyNode, createArrayNode, createNumberNode, createPtupleNode,
 } from '../util';
 
 import { BuiltInError, WrongBuiltInParamsCountError, WrongTypeError } from '@/store/errors';
 import { GameState } from '@/store/state';
 import {
-  DeepReadonly, DRF, withChild, withParent, 
+  DeepReadonly, DRF, withChild, withParent,
 } from '@/util/helper';
 import { cloneNodeDeep, CloneResult, mapNodeDeep } from '@/util/nodes';
 
 type BuiltinFn = (
-  self: DRF<BuiltInIdentifierNode>, 
-  args: DRF[], 
+  self: DRF<BuiltInIdentifierNode>,
+  args: DRF[],
   state: DeepReadonly<GameState>
 ) => DeepReadonly<GameState>;
 
@@ -22,14 +22,14 @@ type BuiltinFn = (
  * Helper function that will construct a new game state with cloned nodes added.
  *
  * @param self The builtin identifier node which was called.
- * @param cloneResult The result of calling cloneNodesDeep or mapNodesDeep. 
+ * @param cloneResult The result of calling cloneNodesDeep or mapNodesDeep.
  * @param state The current game state.
  * @returns A new game state where the cloned/mapped nodes have been added to
  * the game.
  */
 function addClonedNodes(
-  self: DRF, 
-  [clonedRoot, , newNodeMap]: CloneResult, 
+  self: DRF,
+  [clonedRoot, , newNodeMap]: CloneResult,
   state: DeepReadonly<GameState>
 ): DeepReadonly<GameState> {
   const added = new Map();
@@ -59,13 +59,13 @@ function addClonedNodes(
 }
 
 function builtinLength(
-  self: DRF<BuiltInIdentifierNode>, 
-  args: DRF[], 
+  self: DRF<BuiltInIdentifierNode>,
+  args: DRF[],
   state: DeepReadonly<GameState>
 ): DeepReadonly<GameState> {
   if (args.length !== 1)
     throw new WrongBuiltInParamsCountError(self.id, 1, args.length);
-  
+
   const arrayOrString = args[0];
 
   switch (arrayOrString.type) {
@@ -80,7 +80,7 @@ function builtinLength(
         new Map([...state.nodes, [result.id, result]]),
       ],
       state
-    ); 
+    );
   }
 
   case 'string': {
@@ -99,21 +99,21 @@ function builtinLength(
 
   default:
     throw new WrongTypeError(
-      arrayOrString.id, 
-      ['array', 'string'], 
+      arrayOrString.id,
+      ['array', 'string'],
       arrayOrString.type
     );
   }
 }
 
 function builtinGet(
-  self: DRF<BuiltInIdentifierNode>, 
-  args: DRF[], 
+  self: DRF<BuiltInIdentifierNode>,
+  args: DRF[],
   state: DeepReadonly<GameState>
 ): DeepReadonly<GameState> {
   if (args.length !== 2)
     throw new WrongBuiltInParamsCountError(self.id, 2, args.length);
-  
+
   const arrayNode = args[0];
   const indexNode = args[1];
 
@@ -134,13 +134,13 @@ function builtinGet(
 }
 
 function builtinSet(
-  self: DRF<BuiltInIdentifierNode>, 
-  args: DRF[], 
+  self: DRF<BuiltInIdentifierNode>,
+  args: DRF[],
   state: DeepReadonly<GameState>
 ): DeepReadonly<GameState> {
   if (args.length !== 3)
     throw new WrongBuiltInParamsCountError(self.id, 3, args.length);
-  
+
   const arr = args[0];
   const index = args[1];
   const value = args[2];
@@ -177,13 +177,13 @@ function builtinSet(
 }
 
 function builtinConcat(
-  self: DRF<BuiltInIdentifierNode>, 
-  args: DRF[], 
+  self: DRF<BuiltInIdentifierNode>,
+  args: DRF[],
   state: DeepReadonly<GameState>
 ): DeepReadonly<GameState> {
   if (args.length !== 2)
     throw new WrongBuiltInParamsCountError(self.id, 2, args.length);
-  
+
   const [left, right] = args;
 
   if (left.type !== 'array')
@@ -200,27 +200,27 @@ function builtinConcat(
 
     draft.nodes.set(newArr.id, newArr);
     draft.added.set(newArr.id, self.id);
-    
+
     let i = 0;
 
     for (let j = 0; j < left.fields.length; j++) {
-      let [childClone, , newNodeMap] = 
+      let [childClone, , newNodeMap] =
         cloneNodeDeep(left.subexpressions[j], draft.nodes);
 
       childClone = withParent(childClone, newArr.id, i.toString(10));
       draft.nodes = castDraft(newNodeMap);
-      
+
       newArr.subexpressions[i] = childClone.id;
       i++;
     }
 
     for (let k = 0; k < right.fields.length; k++) {
-      let [childClone, , newNodeMap] = 
+      let [childClone, , newNodeMap] =
         cloneNodeDeep(right.subexpressions[k], draft.nodes);
 
       childClone = withParent(childClone, newArr.id, i.toString(10));
       draft.nodes = castDraft(newNodeMap);
-      
+
       newArr.subexpressions[i] = childClone.id;
       i++;
     }
@@ -228,13 +228,13 @@ function builtinConcat(
 }
 
 function builtinMap(
-  self: DRF<BuiltInIdentifierNode>, 
-  args: DRF[], 
+  self: DRF<BuiltInIdentifierNode>,
+  args: DRF[],
   state: DeepReadonly<GameState>
 ): DeepReadonly<GameState> {
   if (args.length !== 2)
     throw new WrongBuiltInParamsCountError(self.id, 2, args.length);
-  
+
   const arr = args[0];
   const fn = args[1];
 
@@ -271,7 +271,7 @@ function builtinMap(
   }
 
   newNodeMap = new Map([
-    ...newNodeMap, 
+    ...newNodeMap,
     ...applyNodes.map(applyNode => [applyNode.id, applyNode] as const),
     ...ptupleNodes.map(ptupleNode => [ptupleNode.id, ptupleNode] as const),
     [newArr.id, newArr],
@@ -285,13 +285,13 @@ function builtinMap(
 }
 
 function builtinSlice(
-  self: DRF<BuiltInIdentifierNode>, 
-  args: DRF[], 
+  self: DRF<BuiltInIdentifierNode>,
+  args: DRF[],
   state: DeepReadonly<GameState>
 ): DeepReadonly<GameState> {
   if (args.length !== 3)
     throw new WrongBuiltInParamsCountError(self.id, 2, args.length);
-  
+
   const arrayNode = args[0];
   const indexStartNode = args[1];
   const indexEndNode = args[2];

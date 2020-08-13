@@ -75,7 +75,7 @@ exports.default = (env) => ({
               esModule: true,
               hmr: env.development,
             },
-          }, 
+          },
           {
             loader: 'css-loader',
             options: {

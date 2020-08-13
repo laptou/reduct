@@ -7,7 +7,7 @@ interface Window {
 
 // format of markdown given by frontmatter-markdown-loader
 declare module '*.md' {
-  const info: { 
+  const info: {
     attributes: Record<string, any>;
     html: string;
   };
