@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import React, {
-  FunctionComponent, useEffect, useState, useRef, 
+  FunctionComponent, useEffect, useState, useRef,
 } from 'react';
 import { connect } from 'react-redux';
 import { useTransition, animated } from 'react-spring';
@@ -13,7 +13,7 @@ import { getProjectionForNode } from '.';
 import { NodeId } from '@/semantics';
 import { getKindForNode, NodeKind } from '@/semantics/util';
 import {
-  createCleanup, createClearError, createExecute, createRaise, createStop, 
+  createCleanup, createClearError, createExecute, createRaise, createStop,
 } from '@/store/action/game';
 import { GameError } from '@/store/errors';
 import { GlobalState } from '@/store/state';
@@ -24,7 +24,7 @@ import Audio from '@/resource/audio';
 /**
  * Props retrieved from Redux.
  */
-interface StageProjectionStoreProps { 
+interface StageProjectionStoreProps {
   /**
    * The node to display here.
    */
@@ -50,7 +50,7 @@ interface StageProjectionStoreProps {
 /**
  * Methods that dispatch Redux actions.
  */
-interface StageProjectionDispatchProps { 
+interface StageProjectionDispatchProps {
   /**
    * Executes this node. See ExecuteAction for more info.
    */
@@ -76,7 +76,7 @@ interface StageProjectionDispatchProps {
 /**
  * Props provided directly.
  */
-interface StageProjectionOwnProps { 
+interface StageProjectionOwnProps {
   /**
    * The ID of the node to display in this projection.
    */
@@ -89,8 +89,8 @@ interface StageProjectionOwnProps {
   frozen?: boolean;
 }
 
-type StageProjectionProps = 
-  StageProjectionOwnProps & 
+type StageProjectionProps =
+  StageProjectionOwnProps &
   StageProjectionDispatchProps &
   StageProjectionStoreProps;
 
@@ -99,21 +99,21 @@ function onDragStart(
   props: StageProjectionProps
 ) {
   props.clearErrorAndRaise();
-  
+
   if (!props.nodeId) return;
   if (props.frozen) return;
 
   event.dataTransfer.setData('application/reduct-node', props.nodeId.toString());
   event.dataTransfer.dropEffect = 'move';
-  
+
 
   // get offset from top left of node
   const {
-    top, left, width, height, 
+    top, left, width, height,
   } = event.currentTarget.getBoundingClientRect();
   const offset = {
     x: event.clientX - left,
-    y: event.clientY - top, 
+    y: event.clientY - top,
   };
 
   // set drag image position to get rid of weird bug in Firefox where drag image
@@ -123,7 +123,7 @@ function onDragStart(
   // get offset from center, since nodes are positioned by their center
   const offsetCenter = {
     x: offset.x - width / 2,
-    y: offset.y - height / 2, 
+    y: offset.y - height / 2,
   };
   event.dataTransfer.setData('application/reduct-node-offset', JSON.stringify(offsetCenter));
 
@@ -137,8 +137,8 @@ function onClick(
 ) {
   props.clearErrorAndRaise();
 
-  if (props.kind !== 'expression') return; 
-  if (props.node && props.node.parent && props.node.locked) return; 
+  if (props.kind !== 'expression') return;
+  if (props.node && props.node.parent && props.node.locked) return;
   if (props.frozen) return;
 
   props.exec();
@@ -147,15 +147,15 @@ function onClick(
   event.stopPropagation();
 }
 
-const StageProjectionImpl: FunctionComponent<StageProjectionProps> = 
+const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
   (props) => {
     const {
-      node, 
-      kind, 
-      frozen, 
-      error, 
-      executing, 
-      cleanup: disposeNode, 
+      node,
+      kind,
+      frozen,
+      error,
+      executing,
+      cleanup: disposeNode,
       exec,
       stopExec,
     } = props;
@@ -190,12 +190,12 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
 
     // transition for when this projection's node is changed
     const transition = useTransition(
-      node, 
+      node,
       (n) => n?.id,
       {
         from: {
           transform: 'scale(0)',
-          opacity: 0, 
+          opacity: 0,
         },
         enter: {
           transform: 'scale(1)',
@@ -204,12 +204,12 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
         leave: {
           transform: 'scale(0)',
           filter: 'brightness(1)',
-          opacity: 0, 
+          opacity: 0,
         },
       });
     return (
       <div className='projection-animation-container'>
-        { 
+        {
           transition.map(({ item: node, props: style, key }) => {
             if (!node) return null;
 
@@ -217,20 +217,20 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
             // TODO: don't mark top level nodes as locked in the first place?
             const locked = node.parent ? node.locked : false;
 
-            const draggable = 
+            const draggable =
               // can't drag slots
-              node.type !== 'missing' 
+              node.type !== 'missing'
               // can't drag locked nodes
               && !locked
               && !frozen;
 
-            const steppable = 
-              kind === 'expression' 
-              && !locked 
+            const steppable =
+              kind === 'expression'
+              && !locked
               && !frozen;
 
             return (
-              <animated.div 
+              <animated.div
                 id={`projection-${node.id}`}
                 key={key}
                 style={style}
@@ -238,7 +238,7 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
                   locked,
                   draggable,
                   steppable,
-                  frozen, 
+                  frozen,
                 })}
                 draggable={draggable}
                 data-node-id={node.id}
@@ -247,14 +247,14 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
               >
                 {getProjectionForNode(node)}
                 <ErrorBubble error={error} />
-                <ExecBubble 
-                  executing={executing} 
-                  onStop={() => stopExec()} 
+                <ExecBubble
+                  executing={executing}
+                  onStop={() => stopExec()}
                   onSkip={() => setFast(true)}
                 />
               </animated.div>
-            ); 
-          }) 
+            );
+          })
         }
       </div>
     );
@@ -277,10 +277,10 @@ export const StageProjection = connect(
 
       if (!node)
         return {
-          node: null, 
-          kind: null, 
-          error, 
-          executing, 
+          node: null,
+          kind: null,
+          error,
+          executing,
         };
 
       const kind = getKindForNode(node, presentState.nodes);
@@ -292,35 +292,35 @@ export const StageProjection = connect(
         executing,
       };
     }
-    
+
     return {
-      node: null, 
-      kind: null, 
-      error: null, 
-      executing: false, 
+      node: null,
+      kind: null,
+      error: null,
+      executing: false,
     };
   },
-  (dispatch, ownProps) => ({ 
-    cleanup() { 
+  (dispatch, ownProps) => ({
+    cleanup() {
       if (ownProps.nodeId) {
-        dispatch(createCleanup(ownProps.nodeId)); 
+        dispatch(createCleanup(ownProps.nodeId));
       }
     },
-    clearErrorAndRaise() { 
-      dispatch(createClearError()); 
+    clearErrorAndRaise() {
+      dispatch(createClearError());
       if (ownProps.nodeId) {
-        dispatch(createRaise(ownProps.nodeId)); 
+        dispatch(createRaise(ownProps.nodeId));
       }
     },
-    exec() { 
+    exec() {
       if (ownProps.nodeId) {
-        dispatch(createExecute(ownProps.nodeId)); 
+        dispatch(createExecute(ownProps.nodeId));
       }
     },
-    stopExec() { 
+    stopExec() {
       if (ownProps.nodeId) {
-        dispatch(createStop(ownProps.nodeId)); 
+        dispatch(createStop(ownProps.nodeId));
       }
-    }, 
+    },
   })
 )(StageProjectionImpl);

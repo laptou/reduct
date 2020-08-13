@@ -17,15 +17,15 @@ interface DefinitionsDispatchProps {
   moveNodeToDefs(id: NodeId): void;
 }
 
-type DefinitionsProps = 
-  DefinitionsStoreProps & 
+type DefinitionsProps =
+  DefinitionsStoreProps &
   DefinitionsDispatchProps;
 
 function onDragOver(event: React.DragEvent<HTMLDivElement>) {
   if (!event.dataTransfer.types.includes('application/reduct-node')) return;
-  
+
   event.dataTransfer.dropEffect = 'move';
-  
+
   event.preventDefault();
   event.stopPropagation();
 }
@@ -43,7 +43,7 @@ function onDrop(
   event.stopPropagation();
 }
 
-const DefinitionsImpl: FunctionComponent<DefinitionsProps> = 
+const DefinitionsImpl: FunctionComponent<DefinitionsProps> =
   (props) => {
     return (
       <div id='reduct-definitions' onDragOver={onDragOver} onDrop={e => onDrop(e, props)}>

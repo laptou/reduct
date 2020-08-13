@@ -33,7 +33,7 @@ const path = require('path');
     const dstAudioPath = path.resolve(audioDir, `${name}.mp3`);
 
     const proc = child.spawn(
-      'ffmpeg', 
+      'ffmpeg',
       [
         '-y', '-i', srcAudioPath, '-ss', start, '-t', duration, dstAudioPath,
       ]

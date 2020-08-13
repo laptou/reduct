@@ -9,7 +9,7 @@ import { LoadingPage } from './stage/ui/loading';
 
 import * as progression from '@/game/progression';
 
-const assetsPromise = 
+const assetsPromise =
   import(/* webpackChunkName: "loader" */ '@/loader')
     .then(({ default: loader }) => Promise.all([
       loader.loadAudioSprite('sounds', 'output'),
@@ -45,7 +45,7 @@ const Game = React.lazy(async () => {
       </Provider>
     );
   };
-  
+
   return { default: GameWithProvider };
 });
 

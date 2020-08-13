@@ -122,7 +122,7 @@ export const conditional: NodeDef<ConditionalNode> = {
 
     view.stroke = {
       lineWidth: 1,
-      color, 
+      color,
     };
     const reset = [];
     const speed = animate.scaleDuration(300, 'expr-conditional');
@@ -137,7 +137,7 @@ export const conditional: NodeDef<ConditionalNode> = {
       .then(() => {
         branch.stroke = {
           lineWidth: 1,
-          color, 
+          color,
         };
         return animate.tween(branch, { stroke: { lineWidth: 4 } }, {
           duration: animate.scaleDuration(700, 'expr-conditional'),

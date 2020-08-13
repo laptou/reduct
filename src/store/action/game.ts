@@ -96,13 +96,13 @@ export interface CleanupAction {
  * from the game, to facilitate animation. Cleanup is called when the
  * animation is finished, to delete a removed node from the node map. Has no
  * effect if the target node is not removed.
- * 
+ *
  * @param target The node to delete.
  */
 export function createCleanup(target: NodeId): CleanupAction {
   return {
     type: ActionKind.Cleanup,
-    target, 
+    target,
   };
 }
 
@@ -119,7 +119,7 @@ export interface MoveNodeToBoardAction {
 export function createMoveNodeToBoard(nodeId: NodeId): MoveNodeToBoardAction {
   return {
     type: ActionKind.MoveNodeToBoard,
-    nodeId, 
+    nodeId,
   };
 }
 
@@ -170,7 +170,7 @@ export interface StartLevelAction {
 
 /**
  * Redux action to start a new level.
- * 
+ *
  * @param index The index of the level to start.
  */
 export function createStartLevel(index: number): StartLevelAction {
@@ -341,7 +341,7 @@ export function createCreateDocs(key: string, docScript: string): CreateDocsActi
   for (const name of Object.keys(builtins)) {
     macros.set(name, () => createBuiltInReferenceNode(name));
   }
-  
+
   const node = parseProgram(docScript, macros);
 
   const flatNodes = new Map();
@@ -414,7 +414,7 @@ export interface EvalLetAction {
 /**
  * Returns an action which will evaluate the variable to the first
  * expression inside of the second expression.
- * 
+ *
  * @param letNodeId The ID of the node that represents the let expression
 
  */

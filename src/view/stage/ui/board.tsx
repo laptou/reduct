@@ -1,5 +1,5 @@
 import React, {
-  FunctionComponent, RefObject, useEffect, useRef, useState, useMemo, useLayoutEffect, 
+  FunctionComponent, RefObject, useEffect, useRef, useState, useMemo, useLayoutEffect,
 } from 'react';
 import { connect } from 'react-redux';
 import { animated, useTransition } from 'react-spring';
@@ -55,7 +55,7 @@ function onDragOver(event: React.DragEvent<HTMLDivElement>) {
 }
 
 function onDrop(
-  event: React.DragEvent<HTMLDivElement>, 
+  event: React.DragEvent<HTMLDivElement>,
   props: BoardProps,
   board: RefObject<HTMLDivElement>,
   positions: Map<NodeId, NodePos>,
@@ -80,12 +80,12 @@ function onDrop(
   const serializedOffset = event.dataTransfer.getData('application/reduct-node-offset');
   const offset = serializedOffset ? JSON.parse(serializedOffset) : {
     x: 0,
-    y: 0, 
+    y: 0,
   };
 
   const boardEl = board.current!;
   const {
-    top: boardTop, left: boardLeft, height: boardHeight, width: boardWidth, 
+    top: boardTop, left: boardLeft, height: boardHeight, width: boardWidth,
   } = boardEl.getBoundingClientRect();
 
   const boardCenterX = boardLeft + boardWidth / 2;
@@ -93,7 +93,7 @@ function onDrop(
 
   const x = Math.max(-boardWidth / 2, Math.min(boardWidth / 2, event.clientX - boardCenterX - offset.x));
   const y = Math.max(-boardHeight / 2, Math.min(boardHeight / 2, event.clientY - boardCenterY - offset.y));
-  
+
   const newPositions = new Map(positions);
   newPositions.set(nodeId, {
     nodeId,
@@ -105,13 +105,13 @@ function onDrop(
   setPositions(newPositions);
 }
 
-const BoardImpl: FunctionComponent<BoardProps> = 
+const BoardImpl: FunctionComponent<BoardProps> =
   (props) => {
     const boardRef = useRef<HTMLDivElement>(null);
     const [positions, setPositions] = useState(new Map<NodeId, NodePos>());
 
     const {
-      board, added, removed, detectCompletion, clearError,
+      board, added, detectCompletion, clearError,
     } = props;
 
     // when the board changes, check if the level has been completed
@@ -125,7 +125,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
         enter: { opacity: 1 },
         leave: {
           opacity: 0,
-          transform: 'scale(0)', 
+          transform: 'scale(0)',
         },
         onDestroyed: (id: NodeId) => {
           setPositions(positions => {
@@ -150,7 +150,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
       },
       [board]
     );
-    
+
     // use useLayoutEffect instead of useEffect b/c this needs to execute after
     // React has created elements but before the browser can paint (to avoid
     // elements "jumping" around)
@@ -162,16 +162,16 @@ const BoardImpl: FunctionComponent<BoardProps> =
       const boardBounds = boardDiv.getBoundingClientRect();
       const boardScroll = {
         x: boardDiv.scrollLeft,
-        y: boardDiv.scrollTop, 
+        y: boardDiv.scrollTop,
       };
 
       // placement algorithm doesn't like negative coordinates so we need to
       // temporarily offset everything into positive coordinates
       const topLeft = {
         x: 0,
-        y: 0, 
+        y: 0,
       };
-      
+
       const fixedNodeBounds = [];
       const movableNodeBounds = [];
 
@@ -184,9 +184,9 @@ const BoardImpl: FunctionComponent<BoardProps> =
         if (!boardItemDiv) continue;
 
         const {
-          x, y, width, height, 
+          x, y, width, height,
         } = boardItemDiv.getBoundingClientRect();
-  
+
         if (positionInfo?.isUserPositioned || positionInfo?.isAutoPositioned) {
           // this node already has a position, do not move it
           const fixedRect = {
@@ -194,7 +194,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
             x: x + boardScroll.x - padding,
             y: y + boardScroll.y - padding,
             w: width + padding * 2,
-            h: height + padding * 2, 
+            h: height + padding * 2,
           };
 
           fixedNodeBounds.push(fixedRect);
@@ -219,7 +219,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
             x: newNodePosition.x + boardScroll.x - padding,
             y: newNodePosition.y + boardScroll.y - padding,
             w: width + padding * 2,
-            h: height + padding * 2, 
+            h: height + padding * 2,
           };
 
           fixedNodeBounds.push(fixedRect);
@@ -231,7 +231,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
           movableNodeBounds.push({
             id: nodeId,
             w: width + padding * 2,
-            h: height + padding * 2, 
+            h: height + padding * 2,
           });
         }
       }
@@ -240,8 +240,8 @@ const BoardImpl: FunctionComponent<BoardProps> =
         {
           w: boardBounds.width,
           h: boardBounds.height,
-        }, 
-        movableNodeBounds, 
+        },
+        movableNodeBounds,
         fixedNodeBounds.map(fixedRect => {
           fixedRect.x -= topLeft.x;
           fixedRect.y -= topLeft.y;
@@ -251,7 +251,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
 
       for (const placed of results) {
         const {
-          id, x, y, w, h, 
+          id, x, y, w, h,
         } = placed;
 
         updatedPositions.set(id, {
@@ -259,12 +259,12 @@ const BoardImpl: FunctionComponent<BoardProps> =
           x: x - boardBounds.width / 2 + w / 2 + padding + topLeft.x,
           y: y - boardBounds.height / 2 + h / 2 + padding + topLeft.y,
           isAutoPositioned: true,
-          isUserPositioned: false, 
+          isUserPositioned: false,
         });
       }
 
       setPositions(positions => new Map([...positions, ...updatedPositions]));
-      
+
       // do not want to include positions to avoid infinite loop of updates
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [added]);
@@ -277,7 +277,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
       <div
         id='reduct-board'
         onDragOver={onDragOver}
-        onDrop={e => onDrop(e, props, boardRef, positions, setPositions)} 
+        onDrop={e => onDrop(e, props, boardRef, positions, setPositions)}
         onClick={() => clearError()}
         ref={boardRef}
       >
@@ -285,15 +285,15 @@ const BoardImpl: FunctionComponent<BoardProps> =
           transitions.map(({ item: id, key, props }) => {
             let style: React.CSSProperties;
             const pos = positions.get(id);
-            
+
             if (pos) {
               const translate = `translate(${pos.x}px, ${pos.y}px)`;
               style = {
                 ...props,
-                transform: 
-                  props.transform 
+                transform:
+                  props.transform
                     ? props.transform + ' ' + translate
-                    : translate, 
+                    : translate,
               };
             } else {
               style = {
@@ -311,7 +311,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
               >
                 <StageProjection nodeId={id} />
               </animated.div>
-            ); 
+            );
           })
         }
       </div>

@@ -13,7 +13,7 @@ interface ValueProjectionOwnProps {
     node: Flat<StrNode> | Flat<BoolNode> | Flat<NumberNode>;
 }
 
-export const ValueProjection: FunctionComponent<ValueProjectionOwnProps> = 
+export const ValueProjection: FunctionComponent<ValueProjectionOwnProps> =
   (props) => {
     switch (props.node.type) {
     case 'boolean':

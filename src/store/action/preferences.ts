@@ -4,7 +4,7 @@ export enum PreferenceActionKind {
   EnableSound = 'enable-sound'
 }
 
-export type PreferenceAction = 
+export type PreferenceAction =
   EnableSoundAction;
 
 export interface EnableSoundAction {
@@ -15,6 +15,6 @@ export interface EnableSoundAction {
 export function createEnableSound(enabled: boolean): EnableSoundAction {
   return {
     type: PreferenceActionKind.EnableSound,
-    enabled, 
+    enabled,
   };
 }

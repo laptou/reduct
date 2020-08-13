@@ -8,7 +8,7 @@ import { initReactApp } from './view';
 
 if (PKG_ENV === 'production') {
   // initialize Sentry (logging + error tracking)
-  Sentry.init({ 
+  Sentry.init({
     dsn: 'https://4960b765fb5d4f269fe7abc68734abfd@o190059.ingest.sentry.io/5310258',
     environment: PKG_ENV,
   });
@@ -23,6 +23,6 @@ try {
 } catch (error) {
   if (PKG_ENV === 'production')
     Sentry.captureException(error);
-  else 
+  else
     console.error(error);
 }

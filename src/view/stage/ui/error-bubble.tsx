@@ -3,7 +3,7 @@ import React from 'react';
 import { Bubble } from './bubble';
 
 import {
-  MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, GameError, CircularCallError, BuiltInError, WrongBuiltInParamsCountError, AlreadyFullyBoundError, 
+  MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, GameError, CircularCallError, BuiltInError, WrongBuiltInParamsCountError, AlreadyFullyBoundError,
 } from '@/store/errors';
 
 interface ErrorBubbleProps {

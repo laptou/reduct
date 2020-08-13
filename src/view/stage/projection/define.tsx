@@ -11,7 +11,7 @@ interface DefineProjectionOwnProps {
   node: DRF<DefineNode>;
 }
 
-export const DefineProjection: FunctionComponent<DefineProjectionOwnProps> = 
+export const DefineProjection: FunctionComponent<DefineProjectionOwnProps> =
   (props) => {
     return (
       <div className='projection define'>
@@ -32,4 +32,3 @@ export const DefineProjection: FunctionComponent<DefineProjectionOwnProps> =
       </div>
     );
   };
-  

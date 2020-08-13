@@ -10,7 +10,7 @@ interface PTupleProjectionOwnProps {
   node: Flat<PTupleNode>;
 }
 
-export const PTupleProjection: FunctionComponent<PTupleProjectionOwnProps> = 
+export const PTupleProjection: FunctionComponent<PTupleProjectionOwnProps> =
   (props) => {
     const children = [];
 

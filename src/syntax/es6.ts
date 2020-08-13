@@ -94,7 +94,7 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
           if (!variant || !value) {
             throw new Error(`Invalid dynamic variant ${node.name}`);
           }
-    
+
           return this.semantics.dynamicVariant(variant, value);
         }
         */
@@ -217,7 +217,7 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
         }
 
         if (node.arguments.length > 3) {
-          throw new Error('Let expressions only require 3 arguments.'); 
+          throw new Error('Let expressions only require 3 arguments.');
         }
 
         return createLetNode(

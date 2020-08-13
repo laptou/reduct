@@ -17,12 +17,12 @@ interface MissingProjectionDispatchProps {
   clearError(): void;
 }
 
-type MissingProjectionProps = 
-  MissingProjectionOwnProps & 
+type MissingProjectionProps =
+  MissingProjectionOwnProps &
   MissingProjectionDispatchProps;
 
 function onDragOver(
-  event: React.DragEvent<HTMLDivElement>, 
+  event: React.DragEvent<HTMLDivElement>,
   setHover: (hover: boolean) => void
 ) {
   if (!event.dataTransfer.types.includes('application/reduct-node')) return;
@@ -60,8 +60,8 @@ function onDrop(
   // fill this slot with the node that was dropped on it
   props.fill(nodeId);
 }
-  
-export const MissingProjectionImpl: FunctionComponent<MissingProjectionProps> = 
+
+export const MissingProjectionImpl: FunctionComponent<MissingProjectionProps> =
   (props) => {
     const [hover, setHover] = useState(false);
 
@@ -75,9 +75,9 @@ export const MissingProjectionImpl: FunctionComponent<MissingProjectionProps> =
       </div>
     );
   };
-  
+
 export const MissingProjection = connect(
-  null, 
+  null,
   (dispatch, ownProps: MissingProjectionOwnProps) => ({
     fill: (id: NodeId) => dispatch(moveNodeToSlot(ownProps.node.id, id)),
     clearError: () => dispatch(createClearError()),

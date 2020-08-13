@@ -16,7 +16,7 @@ interface GoalStoreProps {
 
 type GoalProps = GoalStoreProps;
 
-const GoalImpl: FunctionComponent<GoalProps> = 
+const GoalImpl: FunctionComponent<GoalProps> =
   (props) => {
     const progression = Loader.progressions['Elementary'];
     const level = progression.levels[props.levelIndex];
@@ -30,7 +30,7 @@ const GoalImpl: FunctionComponent<GoalProps> =
           {[...props.nodeIds].map(nodeId => <StageProjection nodeId={nodeId} key={nodeId} frozen />)}
         </div>
         {
-          level.textgoal 
+          level.textgoal
             ? (
               <div id='reduct-goal-hint'>
                 Hint: {level.textgoal}

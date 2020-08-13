@@ -19,7 +19,7 @@ export const FeedbackCollectorPopup: React.FC = () => {
         setTimeout(
           () => {
             setIsVisible(true);
-          }, 
+          },
           FEEDBACK_COLLECTOR_INTERVAL
         )
       );
@@ -29,7 +29,7 @@ export const FeedbackCollectorPopup: React.FC = () => {
   useEffect(() => {
     if (timer !== null) {
       return () => clearInterval(timer);
-    } 
+    }
   }, [timer]);
 
   const transition = useTransition(isVisible, null, {
@@ -56,22 +56,22 @@ export const FeedbackCollectorPopup: React.FC = () => {
             <p id="reduct-feedback-collector-prompt">
               Hey, can you tell us how you&apos;re feeling?
             </p>
-            <button 
-              type='button' 
+            <button
+              type='button'
               className='btn btn-flat reduct-feedback-collector-button'
               onClick={() => setIsVisible(false)}
             >
               <img src={SatisfiedFace} />
             </button>
-            <button 
-              type='button' 
+            <button
+              type='button'
               className='btn btn-flat reduct-feedback-collector-button'
               onClick={() => setIsVisible(false)}
             >
               <img src={NeutralFace} />
             </button>
-            <button 
-              type='button' 
+            <button
+              type='button'
               className='btn btn-flat reduct-feedback-collector-button'
               onClick={() => setIsVisible(false)}
             >

@@ -17,7 +17,7 @@ export const GameMenuTab: React.FC = () => {
     config: {
       mass: 1,
       tension: 180,
-      friction: 14, 
+      friction: 14,
     },
   });
 
@@ -31,8 +31,8 @@ export const GameMenuTab: React.FC = () => {
     <div id='reduct-game-menu'>
       {
         /* this element detects if the user clicks outside the dialog */
-        dismissTransition.map(({ item, key, props: style }) => 
-          item && <animated.div 
+        dismissTransition.map(({ item, key, props: style }) =>
+          item && <animated.div
             id='reduct-game-menu-dismiss'
             key={key}
             style={style}
@@ -51,7 +51,7 @@ export const GameMenuTab: React.FC = () => {
         </div>
         <div id='reduct-game-menu-tab'>
           <LevelInfo onToggleLevelSelect={() => setOpen(!isOpen)} />
-        </div> 
+        </div>
       </animated.div>
     </div>
   );

@@ -16,7 +16,7 @@ datadogRum.init({
 /**
  * Serializes an object into a format that can be sent to DataDog; primarily by
  * turning any iterables (Map, Set) into arrays and objects.
- * 
+ *
  * @param obj The object to serialize.
  */
 function serialize(obj: any): any {
@@ -25,7 +25,7 @@ function serialize(obj: any): any {
   {
     if (obj === null)
       return obj;
-    
+
     if (obj instanceof Map)
       return Object.fromEntries([...obj.entries()].map(([k, v]) => [serialize(k), serialize(v)]));
 
@@ -59,11 +59,11 @@ export const logMiddleware: Middleware = (api) => (next) => (act) => {
   case ActionKind.MoveNodeToBoard:
   case ActionKind.MoveNodeToDefs:
   case ActionKind.MoveNodeToSlot:
-    datadogRum.addUserAction(act.type, { 
-      action: serialize(act), 
+    datadogRum.addUserAction(act.type, {
+      action: serialize(act),
       result: serialize(newState.game.$present),
       error: serialize(newState.game.$error),
-      level: serialize(newState.level), 
+      level: serialize(newState.level),
     });
     break;
   case ActionKind.DetectCompletion:

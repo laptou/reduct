@@ -90,7 +90,7 @@ export class AlreadyFullyBoundError extends GameError {
 
 /**
  * This error is thrown when a user tries to call a built-in function with the
- * wrong number of parameters. 
+ * wrong number of parameters.
  */
 export class WrongBuiltInParamsCountError extends GameError {
   public expected: number;

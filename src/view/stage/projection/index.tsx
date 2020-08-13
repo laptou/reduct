@@ -42,7 +42,7 @@ export function getProjectionForNode(node: DRF | null) {
   case 'op': return <OpProjection node={node} key={node.id} />;
   case 'conditional': return <ConditionalProjection node={node} key={node.id} />;
   case 'define': return <DefineProjection node={node} key={node.id} />;
-  case 'boolean': 
+  case 'boolean':
   case 'number':
   case 'string':
     return <ValueProjection node={node} key={node.id} />;

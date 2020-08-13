@@ -81,6 +81,7 @@ button, .btn {
   }
 }
 
+// stylelint-disable max-line-length
 @include btn('default', theme.$accent-1-default, theme.$accent-1-highlight, false);
 @include btn('default-inv', theme.$accent-1-inverse-default, theme.$accent-1-inverse-highlight, true);
 @include btn('primary', theme.$accent-2-default, theme.$accent-2-highlight, false);
@@ -91,7 +92,7 @@ button, .btn {
 @include btn('special-inv', theme.$accent-4-inverse-default, theme.$accent-4-inverse-highlight, true);
 @include btn('danger', theme.$accent-5-default, theme.$accent-5-highlight, false);
 @include btn('danger-inv', theme.$accent-5-inverse-default, theme.$accent-5-inverse-highlight, true);
-
+// stylelint-enable max-line-length
 
 .btn-flat {
   border: none;
