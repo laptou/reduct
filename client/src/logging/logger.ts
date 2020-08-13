@@ -8,23 +8,20 @@ interface LogEntry {
   action: string;
 
   /**
-   * Metadata giving more info about the user's action.
+   * Timestamp for this action.
    */
-  meta: {
-    /**
-     * Unix timestamp for this action.
-     */
-    timestamp: number;
+  timestamp: Date;
 
-    /**
-     * UUID for the current session.
-     */
-    sessionId: string;
-  } & Record<string, any>;
+  /**
+   * UUID for the current session.
+   */
+  sessionId: string;
+
+  [extra: string]: any;
 }
 
 // attempt to upload logs every 30 seconds
-const UPLOAD_INTERVAL = 30 * 1000;
+const UPLOAD_INTERVAL = 3 * 1000;
 
 const sessionId = uuid();
 let pendingLogTimer: NodeJS.Timeout | null = null;
@@ -60,13 +57,11 @@ export function stopLogging() {
   pendingLogTimer = null;
 }
 
-export function log(action: string, meta: Record<string, any> = {}) {
+export function log(action: string, extra: Record<string, any> = {}) {
   pendingLogEntries.push({
     action,
-    meta: {
-      sessionId,
-      timestamp: +new Date(),
-      ...meta,
-    },
+    sessionId,
+    timestamp: new Date(),
+    ...extra,
   });
 }
