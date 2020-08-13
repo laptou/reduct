@@ -1,15 +1,15 @@
 import Koa from 'koa';
 import KoaBodyParser from 'koa-bodyparser';
 
+import { userLoggingRouter } from './logging/user';
 import { initializeAuth, authMiddleware } from './auth';
 import { initializeDevServer } from './dev';
 import { initializeProdServer } from './prod';
 import { serverLogger } from './logging/server';
-
-const mode = process.env.NODE_ENV === 'development' ? 'dev' : 'prod';
+import { environment } from './config';
 
 (async () => {
-  serverLogger.info(`starting server in ${mode} mode`);
+  serverLogger.info(`starting server in ${environment} mode`);
 
   const server = new Koa();
 
@@ -23,7 +23,9 @@ const mode = process.env.NODE_ENV === 'development' ? 'dev' : 'prod';
   // all middleware after this point will be authentication-gated
   server.use(authMiddleware);
 
-  if (mode === 'dev') {
+  server.use(userLoggingRouter.routes());
+
+  if (environment === 'dev') {
     await initializeDevServer(server);
     serverLogger.debug('initialized dev server');
   } else {

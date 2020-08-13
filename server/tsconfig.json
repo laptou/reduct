@@ -12,9 +12,7 @@
     "baseUrl": "./src",
     "outDir": "./dist",
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "paths": {
-    }
+    "resolveJsonModule": true
   },
   "include": [
     "src/**/*.ts"
