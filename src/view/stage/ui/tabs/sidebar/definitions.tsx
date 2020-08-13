@@ -48,6 +48,14 @@ const DefinitionsImpl: FunctionComponent<DefinitionsProps> =
     return (
       <div id='reduct-definitions' onDragOver={onDragOver} onDrop={e => onDrop(e, props)}>
         {props.nodeIds.map(nodeId => <StageProjection nodeId={nodeId} key={nodeId} frozen />)}
+        {props.nodeIds.length === 0 && (
+          <div id='reduct-definitions-empty-state'>
+            <p>
+              Drag a <code>def</code> or <code>let</code> node in
+              here to add it to the global scope.
+            </p>
+          </div>
+        )}
       </div>
     );
   };

@@ -4,29 +4,28 @@ import React, { useState } from 'react';
 
 const SidebarImpl: React.FC = ({ children }) => {
   const [expandedChildren, setExpandedChildren] = useState<boolean[]>(
-    new Array(React.Children.count(children)).fill(false)
+    new Array(React.Children.count(children)).fill(true)
   );
 
   const newChildren = React.Children.map(children, (child, index) => {
     if (!React.isValidElement(child)) return child;
 
-    const isOpen = expandedChildren[index];
-    const onOpen = () => {
-      const newExpandedChildren = [...expandedChildren];
-      newExpandedChildren[index] = true;
-      setExpandedChildren(newExpandedChildren);
-    };
-
-    const onClose = () => {
-      const newExpandedChildren = [...expandedChildren];
-      newExpandedChildren[index] = false;
-      setExpandedChildren(newExpandedChildren);
-    };
+    const { onOpen, onClose } = child.props as SidebarSectionProps;
 
     const newChild = React.cloneElement(child, {
-      onOpen,
-      onClose,
-      isOpen,
+      onOpen: () => {
+        const newExpandedChildren = [...expandedChildren];
+        newExpandedChildren[index] = true;
+        setExpandedChildren(newExpandedChildren);
+        onOpen?.();
+      },
+      onClose: () => {
+        const newExpandedChildren = [...expandedChildren];
+        newExpandedChildren[index] = false;
+        setExpandedChildren(newExpandedChildren);
+        onClose?.();
+      },
+      isOpen: expandedChildren[index],
     });
 
     return newChild;
