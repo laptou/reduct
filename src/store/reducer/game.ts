@@ -15,7 +15,7 @@ import {
 } from '@/semantics/defs';
 import { builtins } from '@/semantics/defs/builtins';
 import {
-  createBoolNode, createMissingNode, createNumberNode, createStrNode, getKindForNode, getValueForName, iterateTuple, getReductionOrderForNode,
+  createBoolNode, createMissingNode, createNumberNode, createStrNode, getKindForNode, getValueForName, iterateTuple, createLetNode, getReductionOrderForNode, getDefinitionForName,
 } from '@/semantics/util';
 import {
   DeepReadonly, DRF, mapIterable, withoutParent, withParent,
@@ -203,22 +203,17 @@ export function gameReducer(
       const referenceNodes = findNodesDeep(
         bodyNodeId,
         state.nodes,
-        (nodeToMatch) => nodeToMatch.type === 'identifier' && nodeToMatch.fields.name === argName,
-        (nodeToFilter, nodeMap) => {
-          // don't bother searching inside of nodes that redefine the name in
-          // their own scope, such as lambdas with the same arg name
-          if (nodeToFilter.type === 'lambda') {
-            const argTuple = nodeMap.get(nodeToFilter.subexpressions.arg) as DRF<PTupleNode>;
-            for (const nodeToFilterArg of iterateTuple<LambdaArgNode>(argTuple, nodeMap))
-              if (nodeToFilterArg.fields.name === argName) return false;
-          }
+        (nodeToMatch) => 
+          nodeToMatch.type === 'identifier' 
+          && nodeToMatch.fields.name === argName
+      );
 
-          return true;
-        });
-
-
-      // eval all relevant references and keep track of which nodes are destroyed
       for (const referenceNode of referenceNodes) {
+        // evaluate references which point to the arg
+        const targetNodeId = getDefinitionForName(argName, referenceNode, state);
+        if (targetNodeId !== argNodeId) continue;
+          
+        // keep track of which nodes are destroyed
         state = gameReducer(state, createEvalIdentifier(referenceNode.id));
         removed.push(...state.removed.keys());
       }
@@ -256,8 +251,8 @@ export function gameReducer(
           draft.removed.set(paramNodeDescendant.id, false);
         }
 
-        // move the body outwards if no more params
         if (newArgTuple.fields.size === 0) {
+          // move the body outwards if no more params
           const bodyNode = draft.nodes.get(newLambdaNode.subexpressions.body)!;
 
           if (newLambdaNode.parent) {
@@ -293,6 +288,8 @@ export function gameReducer(
 
           if (oldArgNodeId !== null)
             draft.removed.set(oldArgNodeId, false);
+        } else {
+          draft.added.set(newLambdaNode.id, newLambdaNode.id);
         }
       });
     }
