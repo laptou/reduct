@@ -289,11 +289,12 @@ export function getRootForNode(id: NodeId, nodes: DeepReadonly<NodeMap>): DRF {
  * @param nodes A map from IDs to nodes.
  */
 export function isAncestorOf(node: NodeId, ancestor: NodeId, nodes: DeepReadonly<NodeMap>): boolean {
-  let current = nodes.get(node)!;
-  
-  while (current.parent) {
-    if (current.parent === ancestor) return true;
-    current = nodes.get(current.parent)!;
+  let current = nodes.get(node);
+  current = current?.parent ? nodes.get(current.parent) : undefined;
+
+  while (current) {
+    if (current.id === ancestor) return true;
+    current = current?.parent ? nodes.get(current.parent) : undefined;
   }
 
   return false;
