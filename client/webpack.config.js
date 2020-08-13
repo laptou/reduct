@@ -18,8 +18,8 @@ const { DefinePlugin } = require('webpack');
 
 /** @param {Env} env Current environment.
  *  @returns {webpack.Configuration} */
-exports.default = (env) => ({
-  context: __dirname,
+module.exports = (env) => ({
+  context: path.resolve(__dirname),
   entry: ['react-hot-loader/patch', './src/index.ts'],
   devtool: env.development ? 'eval-source-map' : 'source-map',
   devServer: {
@@ -35,6 +35,7 @@ exports.default = (env) => ({
   output: {
     path: path.resolve(__dirname, 'dist'),
     crossOriginLoading: 'anonymous',
+    publicPath: '/',
   },
   module: {
     rules: [
@@ -46,8 +47,34 @@ exports.default = (env) => ({
             loader: 'babel-loader',
             options: {
               cacheDirectory: true,
-              // JSX line numbers should not be included in production mode
-              plugins: env.development ? ['@babel/plugin-transform-react-jsx-source'] : [],
+              presets: [
+                [
+                  require('@babel/preset-env'),
+                  {
+                    modules: false,
+                    // "targets": "> 0.25%, not dead",
+                    targets: 'Chrome 78',
+                    useBuiltIns: 'usage',
+                    corejs: 3,
+                    shippedProposals: true,
+                  },
+                ],
+                [
+                  require('@babel/preset-typescript'),
+                  {
+                    onlyRemoveTypeImports: true,
+                  },
+                ],
+                [require('@babel/preset-react')],
+              ],
+              plugins: [
+                require('@babel/plugin-proposal-optional-chaining'),
+                require('@babel/plugin-proposal-class-properties'),
+                require('@babel/plugin-proposal-object-rest-spread'),
+                require('react-hot-loader/babel'),
+                // JSX line numbers should not be included in production mode
+                ...(env.development ? [require('@babel/plugin-transform-react-jsx-source')] : []),
+              ],
             },
           },
         ],
@@ -159,5 +186,9 @@ exports.default = (env) => ({
       '@': path.resolve(__dirname, 'src/'),
       'react-dom$': '@hot-loader/react-dom',
     },
+    modules: [
+      path.resolve(__dirname, 'node_modules'),
+      'node_modules',
+    ],
   },
 });

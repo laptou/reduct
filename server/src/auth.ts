@@ -1,5 +1,5 @@
 
-import type Koa, { DefaultState, Context } from 'koa';
+import type { default as Koa, DefaultState, Context } from 'koa';
 import type KoaRouter from 'koa-router';
 import KoaSession from 'koa-session';
 import KoaPassport from 'koa-passport';
