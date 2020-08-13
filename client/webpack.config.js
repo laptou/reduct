@@ -186,9 +186,5 @@ module.exports = (env) => ({
       '@': path.resolve(__dirname, 'src/'),
       'react-dom$': '@hot-loader/react-dom',
     },
-    modules: [
-      path.resolve(__dirname, 'node_modules'),
-      'node_modules',
-    ],
   },
 });
