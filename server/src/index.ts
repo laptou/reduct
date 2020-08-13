@@ -1,14 +1,23 @@
-import Koa, { Context, DefaultState } from 'koa';
-import KoaRouter from 'koa-router';
+import Koa from 'koa';
 import KoaBodyParser from 'koa-bodyparser';
 
-import { initializeProdServer } from './prod';
+import { initializeAuth, authMiddleware } from './auth';
 import { initializeDevServer } from './dev';
-import { initializeAuth } from './auth';
+import { initializeProdServer } from './prod';
+
 
 (async () => {
   const server = new Koa();
-  const router = new KoaRouter<DefaultState, Context>();
+
+  // body parser MUST be initialized for auth middleware
+  // to work correctly
+  server.use(KoaBodyParser());
+
+  initializeAuth(server);
+  console.log('initialized authentication');
+
+  // all middleware after this point will be authentication-gated
+  server.use(authMiddleware);
 
   if (process.env.NODE_ENV === 'development') {
     await initializeDevServer(server);
@@ -17,12 +26,6 @@ import { initializeAuth } from './auth';
     initializeProdServer(server);
     console.log('initialized production server');
   }
-
-  initializeAuth(server, router);
-  console.log('initialized authentication');
-
-  server.use(KoaBodyParser());
-  server.use(router.routes());
 
   const port = process.env.PORT || 8080;
   server.listen(port);
