@@ -1,5 +1,7 @@
 import cx from 'classnames';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, {
+  FunctionComponent, useEffect, useState, useRef, 
+} from 'react';
 import { connect } from 'react-redux';
 import { useTransition, animated } from 'react-spring';
 
@@ -43,14 +45,6 @@ interface StageProjectionStoreProps {
    * intervention).
    */
   executing: boolean;
-
-  /**
-   * True if this node is executing and all deleted children of this node have
-   * been cleaned up (i.e., their animations have finished, they have been
-   * eliminated from the node tree, and their React components have been
-   * unmounted).
-   */
-  settled: boolean;
 }
 
 /**
@@ -160,7 +154,6 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
       kind, 
       frozen, 
       error, 
-      settled, 
       executing, 
       cleanup: disposeNode, 
       exec,
@@ -169,15 +162,28 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
 
     // whether execution is being fast-forwarded or not
     const [isFast, setFast] = useState(false);
+    const timer = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
-      if (settled && executing) {
-        const timer = setTimeout(exec, isFast ? 500 : 1000);
-        return () => clearTimeout(timer);
+      const runner = () => {
+        console.log(`execute ${timer.current} run for node ${node?.id}`);
+        exec();
+      };
+
+      if (executing) {
+        timer.current = setInterval(runner, isFast ? 500 : 1000);
+        console.log(`execute ${timer.current} scheduled for node ${node?.id}`);
+
+        return () => {
+          if (timer.current !== null) {
+            console.log(`execute ${timer.current} unscheduled for node ${node?.id}`);
+            clearInterval(timer.current);
+          }
+
+          console.log(`clean up for ${node?.id}`);
+        };
       }
-    }, [
-      settled, executing, exec, isFast,
-    ]);
+    }, [executing, exec, isFast]);
 
     // run when this component is unmounted
     useEffect(() => () => disposeNode(), [disposeNode]);
@@ -268,26 +274,6 @@ export const StageProjection = connect(
       const node = presentState.nodes.get(ownProps.nodeId) ?? null;
       const error = state.game.$error?.target === ownProps.nodeId ? state.game.$error : null;
       const executing = presentState.executing.has(ownProps.nodeId);
-      let settled;
-
-      // if we are executing, settled is true iff there are no descendant nodes
-      // that are waiting to be cleaned up
-      if (executing) {
-        settled = true;
-
-        for (const [id, isCleanedUp] of presentState.removed) {
-          if (!isAncestorOf(id, ownProps.nodeId, presentState.nodes))
-            continue;
-
-          if (isCleanedUp)
-            continue;
-
-          settled = false;
-          break;
-        }
-      } else {
-        settled = false;
-      }
 
       if (!node)
         return {
@@ -295,7 +281,6 @@ export const StageProjection = connect(
           kind: null, 
           error, 
           executing, 
-          settled,
         };
 
       const kind = getKindForNode(node, presentState.nodes);
@@ -305,7 +290,6 @@ export const StageProjection = connect(
         kind,
         error,
         executing,
-        settled, 
       };
     }
     
@@ -314,7 +298,6 @@ export const StageProjection = connect(
       kind: null, 
       error: null, 
       executing: false, 
-      settled: false, 
     };
   },
   (dispatch, ownProps) => ({ 
