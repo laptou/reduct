@@ -43,6 +43,9 @@ export function startLogging() {
       await fetch('/logs/action', {
         method: 'POST',
         body,
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
     } catch {
       pendingLogEntries.unshift(...sendingLogEntries);
