@@ -117,3 +117,16 @@ export const logMiddleware: Middleware = (api) => (next) => (act: ReductAction) 
 
   return nextAct;
 };
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible')
+    log('window:focus');
+  else
+    log('window:blur');
+});
+
+window.addEventListener('beforeunload', () => {
+  log('session:end');
+});
+
+log('session:start');
