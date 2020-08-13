@@ -61,7 +61,7 @@ export type ReductAction =
   EvalConditionalAction |
   EvalNotAction |
   EvalApplyAction |
-  EvalReferenceAction |
+  EvalIdentifierAction |
   ExecuteAction |
   StopAction |
   StepAction |
@@ -530,44 +530,22 @@ export function createEvalApply(
   };
 }
 
-export interface EvalReferenceAction {
+export interface EvalIdentifierAction {
   type: ActionKind.EvalIdentifier;
-  referenceNodeId: NodeId;
+  identifierNodeId: NodeId;
 }
 
 /**
  * Returns an action which will evaluate an application node.
  *
- * @param referenceNodeId The ID of the node that represents the application.
+ * @param identifierNodeId The ID of the node that represents the application.
  */
-export function createEvalReference(
-  referenceNodeId: NodeId,
-): EvalReferenceAction {
+export function createEvalIdentifier(
+  identifierNodeId: NodeId,
+): EvalIdentifierAction {
   return {
     type: ActionKind.EvalIdentifier,
-    referenceNodeId,
-  };
-}
-
-export interface EvalInvocationAction {
-  type: ActionKind.EvalIdentifier;
-  referenceNodeId: NodeId;
-  paramNodeId: NodeId;
-}
-
-/**
- * Returns an action which will evaluate an application node.
- *
- * @param referenceNodeId The ID of the node that represents the application.
- */
-export function createEvalInvocation(
-  referenceNodeId: NodeId,
-  paramNodeId: NodeId
-): EvalInvocationAction {
-  return {
-    type: ActionKind.EvalIdentifier,
-    referenceNodeId,
-    paramNodeId,
+    identifierNodeId: identifierNodeId,
   };
 }
 
