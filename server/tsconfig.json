@@ -2,7 +2,7 @@
   "compilerOptions": {
     "experimentalDecorators": true,
     "allowJs": true,
-    "module": "ESNext",
+    "module": "CommonJS",
     "target": "ES2015",
     "strict": true,
     "strictNullChecks": true,
