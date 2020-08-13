@@ -1,5 +1,5 @@
 # Reduct React
-<small>v7.0.2-alpha</small>
+<small>v7.0.6-alpha</small>
 
 This is Ibiyemi Abiodun's fork of the project. It has been ported to TypeScript
 and uses a completely new renderer written in React.
@@ -27,6 +27,7 @@ akin to the CASE exam.
 
 - Install Node.js v13 or higher.
 - `npm install` to install dependencies.
+- `cd client`
 - `npm run serve` to start the development web server.
 - Go to http://localhost:1234/ to view the development web server.
 
