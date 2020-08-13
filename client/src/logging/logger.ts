@@ -57,7 +57,7 @@ export function stopLogging() {
   pendingLogTimer = null;
 }
 
-export function log(action: string, meta: Record<string, any>) {
+export function log(action: string, meta: Record<string, any> = {}) {
   pendingLogEntries.push({
     action,
     meta: {
