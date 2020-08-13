@@ -1,18 +1,36 @@
-import { createLogger, transports } from 'winston';
+import { createLogger, transports, format } from 'winston';
 import { LoggingWinston as GCloudLogging } from '@google-cloud/logging-winston';
 import KoaTreeRouter from 'koa-tree-router';
 import { Context } from 'koa';
+
+import { useRemoteLogging, environment } from '../config';
 
 export const userLogger = createLogger({
   level: 'verbose',
 });
 
-userLogger.add(new GCloudLogging({
-  logName: 'user',
-}));
+if (useRemoteLogging) {
+  userLogger.add(new GCloudLogging({
+    logName: 'user',
+  }));
+}
 
-userLogger.add(new transports.Console({
-}));
+if (environment === 'dev') {
+  userLogger.add(new transports.Console({
+    level: 'debug',
+    format: format.combine(
+      format.align(),
+      format.label({ label: 'user' }),
+      format.printf(({ level, message, label }) => {
+        return `[${label}] ${level}: ${message}`;
+      }),
+      format.colorize({
+        colors: { info: 'gray' },
+        all: true,
+      }),
+    ),
+  }));
+}
 
 export const userLoggingRouter = new KoaTreeRouter<any, Context>();
 
