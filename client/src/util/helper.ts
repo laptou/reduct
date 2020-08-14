@@ -37,9 +37,12 @@ export function dethunk<A extends Array<unknown>, T extends Primitive | object>(
  */
 export type DeepReadonly<T> =
   T extends Primitive | Function ? T :
-  T extends Array<infer U> ? ReadonlyArray<DeepReadonly<U>> :
+  T extends ReadonlySet<unknown> ? T :
+  T extends ReadonlyMap<unknown, unknown> ? T :
+  T extends ReadonlyArray<unknown> ? T :
   T extends Set<infer U> ? ReadonlySet<DeepReadonly<U>> :
   T extends Map<infer U, infer V> ? ReadonlyMap<U, DeepReadonly<V>> :
+  T extends Array<infer U> ? ReadonlyArray<DeepReadonly<U>> :
   { readonly [K in keyof T]: DeepReadonly<T[K]> };
 
 /**
