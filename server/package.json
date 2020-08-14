@@ -12,28 +12,26 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/logging-winston": "^4.0.0",
     "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",
     "koa-passport": "^4.1.3",
-    "koa-tree-router": "^0.6.0",
     "koa-session": "^6.0.0",
-    "koa-webpack": "^5.3.0",
     "koa-static": "^5.0.0",
+    "koa-tree-router": "^0.6.0",
+    "koa-webpack": "^5.3.0",
     "passport-saml": "^1.3.4",
     "typescript": "^3.9.7",
-    "winston": "^3.3.3",
-    "@google-cloud/logging-winston": "^4.0.0"
+    "winston": "^3.3.3"
   },
   "devDependencies": {
-    "@types/koa": "^2.11.3",
-    "@types/koa-bodyparser": "^4.3.0",
-    "@types/koa-passport": "^4.0.2",
-    "@types/koa-router": "^7.4.1",
-    "@types/koa-session": "^5.10.2",
-    "@types/koa-static": "^4.0.1",
-    "@types/koa-webpack": "^5.0.1",
-    "@types/passport-saml": "^1.1.2",
-    "eslint": "^6.8.0",
+    "@typescript-eslint/eslint-plugin": "^3.9.0",
+    "@typescript-eslint/parser": "^3.9.0",
+    "eslint": "^7.6.0",
+    "eslint-import-resolver-node": "^0.3.4",
+    "eslint-plugin-import": "^2.22.0",
+    "nodemon": "^2.0.4",
+    "typescript": "^3.9.7",
     "webpack": "^4.44.1"
   }
 }

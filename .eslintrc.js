@@ -141,8 +141,11 @@ module.exports = {
     // comma rules
     'comma-dangle': [
       'error',
-      'always-multiline',
       {
+        objects: 'always-multiline',
+        arrays: 'always-multiline',
+        imports: 'always-multiline',
+        exports: 'always-multiline',
         functions: 'never'
       }
     ],

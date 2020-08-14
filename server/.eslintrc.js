@@ -9,4 +9,9 @@ module.exports = {
     'node_modules/',
     'dist/',
   ],
+  settings: {
+    'import/parsers': {
+      '@typescript-eslint/parser': [ '.ts', '.tsx' ]
+    }
+  }
 };
