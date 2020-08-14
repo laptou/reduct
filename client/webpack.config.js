@@ -8,7 +8,6 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const SriPlugin = require('webpack-subresource-integrity');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { DefinePlugin } = require('webpack');
-const PnpWebpackPlugin = require(`pnp-webpack-plugin`);
 
 /**
  * @typedef {Object} Env
@@ -187,8 +186,5 @@ module.exports = (env) => ({
       '@': path.resolve(__dirname, 'src/'),
       'react-dom$': '@hot-loader/react-dom',
     },
-    plugins: [
-      PnpWebpackPlugin,
-    ],
   },
 });
