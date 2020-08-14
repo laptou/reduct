@@ -16,6 +16,14 @@ interface GoalStoreProps {
 
 type GoalProps = GoalStoreProps;
 
+function getRandomAlien() {
+  const alienContext = require.context('@resources/graphics/assets', false, /alien[-a-z0-9]+\.png$/);
+  const alienResourceKeys = alienContext.keys();
+  const index = Math.floor(Math.random() * alienResourceKeys.length);
+
+  return alienContext.resolve(alienResourceKeys[index]);
+}
+
 const GoalImpl: FunctionComponent<GoalProps> =
   (props) => {
     const progression = Loader.progressions['Elementary'];
@@ -23,6 +31,9 @@ const GoalImpl: FunctionComponent<GoalProps> =
 
     return (
       <div id='reduct-goal'>
+        <div id='reduct-goal-alien'>
+          <img src={getRandomAlien()} />
+        </div>
         <div id='reduct-goal-header'>
           Goal
         </div>
