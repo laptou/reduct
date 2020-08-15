@@ -428,7 +428,7 @@ export interface EvalLetAction {
 
  */
 export function createEvalLet(
-  letNodeId: NodeId,
+  letNodeId: NodeId
 ): EvalLetAction {
   return {
     type: ActionKind.EvalLet,
@@ -454,7 +454,7 @@ export interface EvalLambdaAction {
  */
 export function createEvalLambda(
   lambdaNodeId: NodeId,
-  paramNodeId: NodeId,
+  paramNodeId: NodeId
 ): EvalLambdaAction {
   return {
     type: ActionKind.EvalLambda,
@@ -474,7 +474,7 @@ export interface EvalOperatorAction {
  * @param operatorNodeId The ID of the node that represents the binary operator.
  */
 export function createEvalOperator(
-  operatorNodeId: NodeId,
+  operatorNodeId: NodeId
 ): EvalOperatorAction {
   return {
     type: ActionKind.EvalOperator,
@@ -493,7 +493,7 @@ export interface EvalConditionalAction {
  * @param operatorNodeId The ID of the node that represents the conditional.
  */
 export function createEvalConditional(
-  conditionalNodeId: NodeId,
+  conditionalNodeId: NodeId
 ): EvalConditionalAction {
   return {
     type: ActionKind.EvalConditional,
@@ -512,7 +512,7 @@ export interface EvalNotAction {
  * @param notNodeId The ID of the node that represents the conditional.
  */
 export function createEvalNot(
-  notNodeId: NodeId,
+  notNodeId: NodeId
 ): EvalNotAction {
   return {
     type: ActionKind.EvalNot,
@@ -531,7 +531,7 @@ export interface EvalApplyAction {
  * @param applyNodeId The ID of the node that represents the application.
  */
 export function createEvalApply(
-  applyNodeId: NodeId,
+  applyNodeId: NodeId
 ): EvalApplyAction {
   return {
     type: ActionKind.EvalApply,
@@ -550,7 +550,7 @@ export interface EvalIdentifierAction {
  * @param identifierNodeId The ID of the node that represents the application.
  */
 export function createEvalIdentifier(
-  identifierNodeId: NodeId,
+  identifierNodeId: NodeId
 ): EvalIdentifierAction {
   return {
     type: ActionKind.EvalIdentifier,

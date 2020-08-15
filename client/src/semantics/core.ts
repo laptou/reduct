@@ -11,13 +11,13 @@ import { DeepReadonly, withoutParent } from '@/util/helper';
 
 type GenericNodeCreator<F> =
     (
-        getNextId: () => number,
-        getSubExpressions: (node: DeepReadonly<Flat<ReductNode> | ReductNode>) => string[]
+      getNextId: () => number,
+      getSubExpressions: (node: DeepReadonly<Flat<ReductNode> | ReductNode>) => string[]
     ) => F;
 
 type GenericNodeTransformer<F> =
     (
-        getSubExpressions: (node: DeepReadonly<Flat<ReductNode> | ReductNode>) => string[]
+      getSubExpressions: (node: DeepReadonly<Flat<ReductNode> | ReductNode>) => string[]
     ) => F;
 
 export const genericFlatten: GenericNodeCreator<(expr: ReductNode) => Array<Flat<ReductNode>>> =
@@ -42,11 +42,11 @@ export const genericFlatten: GenericNodeCreator<(expr: ReductNode) => Array<Flat
 * subexpressions.
 */
 export const genericMap: GenericNodeTransformer<(
-    nodes: DeepReadonly<NodeMap>,
-    nodeId: NodeId,
-    mapper: (nodeMap: DeepReadonly<NodeMap>, id: NodeId) => [ReductNode, NodeMap],
-    filter?: (nodes: DeepReadonly<NodeMap>, node: DeepReadonly<Flat<ReductNode>>) => boolean,
-    top?: boolean
+  nodes: DeepReadonly<NodeMap>,
+  nodeId: NodeId,
+  mapper: (nodeMap: DeepReadonly<NodeMap>, id: NodeId) => [ReductNode, NodeMap],
+  filter?: (nodes: DeepReadonly<NodeMap>, node: DeepReadonly<Flat<ReductNode>>) => boolean,
+  top?: boolean
 ) => [ReductNode, NodeMap]> =
     (getSubExpressions) => function map(nodeMap, nodeId, mapper, filter?, top = true) {
       let currentNode = nodeMap.get(nodeId)!;
@@ -75,9 +75,9 @@ export const genericMap: GenericNodeTransformer<(
 * that return true when passed into the function f.
 */
 export const genericSearch: GenericNodeTransformer<(
-    nodes: DeepReadonly<NodeMap>,
-    nodeId: NodeId,
-    predicate: (nodes: DeepReadonly<NodeMap>, nodeId: NodeId) => boolean
+  nodes: DeepReadonly<NodeMap>,
+  nodeId: NodeId,
+  predicate: (nodes: DeepReadonly<NodeMap>, nodeId: NodeId) => boolean
 ) => NodeId[]> =
     (getSubExpressions) => (nodes, nodeId, predicate) => {
       const queue = [nodeId];
@@ -113,9 +113,9 @@ export const genericEqual = (
 };
 
 export const genericClone: GenericNodeCreator<(
-    id: NodeId,
-    nodeMap: DeepReadonly<NodeMap>,
-    locked?: boolean
+  id: NodeId,
+  nodeMap: DeepReadonly<NodeMap>,
+  locked?: boolean
 ) => [ReductNode, ReductNode[], NodeMap]> =
     (nextId, getSubExpressions) => function clone(id, nodeMap, locked = true) {
       const root = nodeMap.get(id)!;

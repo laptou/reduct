@@ -17,7 +17,7 @@ if (environment === 'dev') {
     format: format.combine(
       format.label({ label: 'server' }),
       format.printf(({ level, message, label }) => {
-        return `[${label}] ${level}: ${message}`;
+        return `[${label as string}] ${level}: ${message}`;
       }),
       format.colorize({
         colors: {
@@ -30,7 +30,7 @@ if (environment === 'dev') {
           error: 'red',
         },
         all: true,
-      }),
+      })
     ),
   }));
 }

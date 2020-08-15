@@ -5,7 +5,7 @@ import KoaStatic from 'koa-static';
 
 import { serverLogger } from './logging/server';
 
-export function initializeProdServer(server: Koa) {
+export function initializeProdServer(server: Koa): void {
   const staticFileDir = resolve(__dirname, '../../client/dist');
   serverLogger.info(`serving production assets from ${staticFileDir}`);
 

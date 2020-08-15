@@ -25,18 +25,29 @@ module.exports = {
   ],
   rules: {
     '@typescript-eslint/no-use-before-define': ['error', 'nofunc'],
-    '@typescript-eslint/explicit-function-return-type': [
-      'off'
-    ],
-    '@typescript-eslint/no-var-requires': [
-      'off'
-    ],
-    '@typescript-eslint/no-non-null-assertion': [
-      'off'
-    ],
-    '@typescript-eslint/no-explicit-any': [
-      'off'
-    ],
+    '@typescript-eslint/explicit-function-return-type': ['off'],
+    '@typescript-eslint/no-var-requires': ['off'],
+    '@typescript-eslint/no-non-null-assertion': ['off'],
+    '@typescript-eslint/no-explicit-any': ['off'],
+    '@typescript-eslint/unbound-method': ['off'],
+    '@typescript-eslint/no-unnecessary-condition': ['warn', { allowConstantLoopConditions: true }],
+    '@typescript-eslint/restrict-template-expressions': ['warn', {
+      allowNumber: true,
+      allowBoolean: true,
+      allowAny: true,
+    }],
+    '@typescript-eslint/prefer-for-of': ['warn'],
+    '@typescript-eslint/prefer-regexp-exec': ['warn'],
+    '@typescript-eslint/prefer-function-type': ['error'],
+    '@typescript-eslint/prefer-optional-chain': ['error'],
+    '@typescript-eslint/no-unnecessary-boolean-literal-compare': ['error'],
+    
+    // consider turning these on in the future to make the code tighter
+    '@typescript-eslint/no-unsafe-assignment': ['off'],
+    '@typescript-eslint/no-unsafe-call': ['off'],
+    '@typescript-eslint/no-unsafe-member-access': ['off'],
+    '@typescript-eslint/no-unsafe-return': ['off'],
+
     '@typescript-eslint/member-ordering': [
       'error',
       {
@@ -78,7 +89,6 @@ module.exports = {
       }
     ],
     '@typescript-eslint/prefer-readonly': ['warn'],
-    '@typescript-eslint/unbound-method': ['warn'],
     '@typescript-eslint/no-unused-expressions': ['warn'],
     '@typescript-eslint/no-misused-promises': ['warn', { checksVoidReturn: false }],
     
@@ -110,7 +120,7 @@ module.exports = {
     'key-spacing': ['error'],
     'semi-spacing': ['error', { before: false, after: true }],
     'comma-spacing': ['error', { before: false, after: true }],
-    'keyword-spacing': ['error', { before: true, after: true }],
+    '@typescript-eslint/keyword-spacing': ['error', { before: true, after: true }],
     'object-curly-spacing': ['error', 'always'],
     'array-bracket-spacing': ['error', 'never'],
     'computed-property-spacing': ['error', 'never'],
@@ -118,10 +128,10 @@ module.exports = {
     'space-before-blocks': ['error', 'always'],
     'no-whitespace-before-property': ['error'],
     'no-trailing-spaces': ['warn'],
-    'func-call-spacing': ['error', 'never'],
+    '@typescript-eslint/func-call-spacing': ['error', 'never'],
     'generator-star-spacing': ['error', 'both'],
     'yield-star-spacing': ['error', 'both'],
-    'indent': [
+    '@typescript-eslint/indent': [
       'error',
       2,
       {
@@ -142,21 +152,24 @@ module.exports = {
     // comma rules
     'comma-dangle': [
       'error',
-      'always-multiline',
       {
+        objects: 'always-multiline',
+        arrays: 'always-multiline',
+        imports: 'always-multiline',
+        exports: 'always-multiline',
         functions: 'never'
       }
     ],
-    'comma-spacing': ['error', { before: false, after: true }],
-    'semi': ['error', 'always'],
-    'no-extra-semi': ['error'],
+    '@typescript-eslint/comma-spacing': ['error', { before: false, after: true }],
+    '@typescript-eslint/semi': ['error', 'always'],
+    '@typescript-eslint/no-extra-semi': ['error'],
 
     // braces
     'brace-style': ['error', '1tbs', { allowSingleLine: true }],
     
     // quote rules
     'quote-props': ['error', 'consistent-as-needed'],
-    'quotes': ['error', 'single'],
+    '@typescript-eslint/quotes': ['error', 'single'],
     
     'import/extensions': ['warn', 'never'],
     'import/prefer-default-export': ['off'],

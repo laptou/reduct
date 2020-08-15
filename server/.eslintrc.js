@@ -1,4 +1,5 @@
 module.exports = {
+  root: true,
   extends: [
     '../.eslintrc.js',
   ],
@@ -9,4 +10,9 @@ module.exports = {
     'node_modules/',
     'dist/',
   ],
+  settings: {
+    'import/parsers': {
+      '@typescript-eslint/parser': [ '.ts', '.tsx' ]
+    }
+  }
 };

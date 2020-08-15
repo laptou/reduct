@@ -1,13 +1,13 @@
 
 import type {
-  default as Koa, DefaultState, Context, Middleware,
+  Context, default as Koa, DefaultState, Middleware,
 } from 'koa';
-import KoaTreeRouter from 'koa-tree-router';
-import KoaSession from 'koa-session';
 import KoaPassport from 'koa-passport';
+import KoaSession from 'koa-session';
+import KoaTreeRouter from 'koa-tree-router';
 import {
-  Strategy as SamlStrategy,
-  Profile as SamlProfile,
+  Profile as SamlProfile, Strategy as SamlStrategy,
+
   VerifiedCallback as SamlVerifiedCallback,
 } from 'passport-saml';
 
@@ -35,7 +35,7 @@ KoaPassport.deserializeUser((netId: string, callback) => {
   callback(null, { netId });
 });
 
-export function initializeAuth(server: Koa) {
+export function initializeAuth(server: Koa): void {
   server.keys = ['secret key, change me before deploying'];
   server.use(KoaSession({}, server));
   server.use(KoaPassport.initialize());
@@ -59,7 +59,7 @@ export function initializeAuth(server: Koa) {
   server.use(authRouter.routes());
 }
 
-export const authMiddleware: Middleware = (ctx, next) => {
+export const authMiddleware: Middleware<any, Context> = (ctx, next) => {
   if (ctx.isAuthenticated()) {
     return next();
   } else {

@@ -133,12 +133,12 @@ function onDragStart(
 
 function onClick(
   event: React.MouseEvent<HTMLDivElement>,
-  props: StageProjectionProps,
+  props: StageProjectionProps
 ) {
   props.clearErrorAndRaise();
 
   if (props.kind !== 'expression') return;
-  if (props.node && props.node.parent && props.node.locked) return;
+  if (props.node?.parent && props.node.locked) return;
   if (props.frozen) return;
 
   props.exec();
@@ -162,25 +162,20 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
 
     // whether execution is being fast-forwarded or not
     const [isFast, setFast] = useState(false);
-    const timer = useRef<NodeJS.Timeout | null>(null);
+    const timer = useRef<number | null>(null);
 
     useEffect(() => {
       const runner = () => {
-        console.log(`execute ${timer.current} run for node ${node?.id}`);
         exec();
       };
 
       if (executing) {
-        timer.current = setInterval(runner, isFast ? 500 : 1000);
-        console.log(`execute ${timer.current} scheduled for node ${node?.id}`);
+        timer.current = setInterval(runner, isFast ? 500 : 1000) as unknown as number;
 
         return () => {
           if (timer.current !== null) {
-            console.log(`execute ${timer.current} unscheduled for node ${node?.id}`);
             clearInterval(timer.current);
           }
-
-          console.log(`clean up for ${node?.id}`);
         };
       }
     }, [executing, exec, isFast]);
@@ -191,7 +186,7 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
     // transition for when this projection's node is changed
     const transition = useTransition(
       node,
-      (n) => n?.id,
+      (n) => n.id,
       {
         from: {
           transform: 'scale(0)',
@@ -211,6 +206,8 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
       <div className='projection-animation-container'>
         {
           transition.map(({ item: node, props: style, key }) => {
+            // node can be null, despite what type definitions say
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (!node) return null;
 
             // top level nodes (nodes w/o parents) should not be considered locked

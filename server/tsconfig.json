@@ -12,7 +12,8 @@
     "baseUrl": "./src",
     "outDir": "./dist",
     "moduleResolution": "node",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "types": ["node"]
   },
   "include": [
     "src/**/*.ts"

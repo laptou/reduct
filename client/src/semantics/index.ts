@@ -21,7 +21,6 @@ import { BuiltInIdentifierNode } from './defs/builtins';
 
 import { DRF } from '@/util/helper';
 
-
 export type NodeId = number;
 
 /**
@@ -52,7 +51,7 @@ export interface BaseNode {
 
   fields: Record<string | number, any>;
 
-  subexpressions: {};
+  subexpressions: Record<string, unknown>;
 
   /** a map from node names to their ids in the current scope of a given
    * node */
@@ -90,7 +89,7 @@ export interface NodeMetadata {
 export type NodeType = {
   types: Map<NodeId, any>;
   complete: boolean;
-}
+};
 
 export type NodeMap = Map<NodeId, DRF>;
 
