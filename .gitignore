@@ -80,7 +80,8 @@ dist/
 *.mov
 
 # VSCode
-.vscode
+.vscode/*
+!.vscode/settings.json
 
 # gitconfig
 .gitconfig
