@@ -19,6 +19,7 @@ const { DefinePlugin } = require('webpack');
 /** @param {Env} env Current environment.
  *  @returns {webpack.Configuration} */
 module.exports = (env) => ({
+  mode: env.production ? 'production' : 'development',
   context: path.resolve(__dirname),
   entry: ['react-hot-loader/patch', './src/index.ts'],
   devtool: env.development ? 'eval-source-map' : 'source-map',

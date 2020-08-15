@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTransition, animated, config } from 'react-spring';
 
 import SatisfiedFace from '@resources/icon/sentiment_satisfied-24px.svg';
 import NeutralFace from '@resources/icon/sentiment_neutral-24px.svg';
 import DissatisfiedFace from '@resources/icon/sentiment_dissatisfied-24px.svg';
 import '@resources/style/react/ui/feedback.scss';
+import { log } from '@/logging/logger';
 
 // interval at which the feedback collector appears in ms
 const FEEDBACK_COLLECTOR_INTERVAL = 15 * 60 * 1000;
@@ -12,6 +13,10 @@ const FEEDBACK_COLLECTOR_INTERVAL = 15 * 60 * 1000;
 export const FeedbackCollectorPopup: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
+  const sendFeedback = useCallback((affect: string) => {
+    log('user:feedback', { affect });
+    setIsVisible(false);
+  }, [setIsVisible]);
 
   useEffect(() => {
     if (!isVisible) {
@@ -59,21 +64,21 @@ export const FeedbackCollectorPopup: React.FC = () => {
             <button
               type='button'
               className='btn btn-flat reduct-feedback-collector-button'
-              onClick={() => setIsVisible(false)}
+              onClick={() => sendFeedback('positive')}
             >
               <img src={SatisfiedFace} />
             </button>
             <button
               type='button'
               className='btn btn-flat reduct-feedback-collector-button'
-              onClick={() => setIsVisible(false)}
+              onClick={() => sendFeedback('neutral')}
             >
               <img src={NeutralFace} />
             </button>
             <button
               type='button'
               className='btn btn-flat reduct-feedback-collector-button'
-              onClick={() => setIsVisible(false)}
+              onClick={() => sendFeedback('negative')}
             >
               <img src={DissatisfiedFace} />
             </button>

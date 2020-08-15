@@ -90,6 +90,7 @@ module.exports = {
     ],
     '@typescript-eslint/prefer-readonly': ['warn'],
     '@typescript-eslint/no-unused-expressions': ['warn'],
+    '@typescript-eslint/no-misused-promises': ['warn', { checksVoidReturn: false }],
     
     'no-continue': 'off',
     'no-restricted-syntax': 'off',

@@ -27,7 +27,7 @@ export enum ActionKind {
   MoveNodeToDefs = 'move-node-to-defs',
 
   Cleanup = 'cleanup',
-  Eval = 'eval',
+
   EvalLambda = 'eval-lambda',
   EvalOperator = 'eval-operator',
   EvalConditional = 'eval-conditional',
@@ -62,6 +62,7 @@ export type ReductAction =
   EvalNotAction |
   EvalApplyAction |
   EvalIdentifierAction |
+  EvalLetAction |
   ExecuteAction |
   StopAction |
   StepAction |
@@ -70,10 +71,18 @@ export type ReductAction =
   ClearErrorAction |
   RaiseAction |
   DetachAction |
-  EvalLetAction |
   CreateDocsAction |
-  DeleteDocsAction;
+  DeleteDocsAction |
+  UndoAction |
+  RedoAction;
 
+export interface UndoAction {
+  type: ActionKind.Undo;
+}
+
+export interface RedoAction {
+  type: ActionKind.Redo;
+}
 
 export interface ClearErrorAction {
   type: ActionKind.ClearError;

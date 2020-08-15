@@ -1,8 +1,11 @@
 import { Datacenter, datadogRum } from '@datadog/browser-rum';
 import type { Middleware } from 'redux';
 
+import { log, flushLogs } from './logger';
+
 import { ActionKind, ReductAction } from '@/store/action/game';
 import { GameMode, GlobalState } from '@/store/state';
+import { unflatten } from '@/util/nodes';
 
 datadogRum.init({
   applicationId: 'e09f9042-041e-41a9-9166-c6be692e800e',
@@ -13,66 +16,101 @@ datadogRum.init({
   version: PKG_VERSION,
 });
 
-/**
- * Serializes an object into a format that can be sent to DataDog; primarily by
- * turning any iterables (Map, Set) into arrays and objects.
- *
- * @param obj The object to serialize.
- */
-function serialize(obj: any): any {
-  switch (typeof obj) {
-  case 'object':
-  {
-    if (obj === null)
-      return obj;
-
-    if (obj instanceof Map)
-      return Object.fromEntries([...obj.entries()].map(([k, v]) => [serialize(k), serialize(v)]));
-
-    if (typeof obj[Symbol.iterator] === 'function')
-      return [...obj].map(serialize);
-
-    return Object.fromEntries(Object.entries(obj).map(([k, v]) => [serialize(k), serialize(v)]));
-  }
-  case 'symbol': return '[symbol]';
-  case 'function': return '[function]';
-  case 'undefined':
-  case 'string':
-  case 'boolean':
-  case 'number':
-    return obj;
-  }
-}
-
-export const logMiddleware: Middleware = (api) => (next) => (act) => {
+export const logMiddleware: Middleware = (api) => (next) => (act: ReductAction) => {
   const nextAct = next(act) as unknown as ReductAction;
   const newState = api.getState() as unknown as GlobalState;
+  const lastState = newState.game.$past.length > 0 ? newState.game.$past[0] : null;
+  const presentState = newState.game.$present;
+  const errorState = newState.game.$error;
 
   switch (act.type) {
+  case ActionKind.Undo: log('game:undo'); break;
+  case ActionKind.Redo: log('game:redo'); break;
+
   case ActionKind.Detach:
-  case ActionKind.Eval:
-  case ActionKind.Execute:
-  case ActionKind.Undo:
-  case ActionKind.Redo:
-  case ActionKind.StartLevel:
-  case ActionKind.Step:
-  case ActionKind.MoveNodeToBoard:
-  case ActionKind.MoveNodeToDefs:
-  case ActionKind.MoveNodeToSlot:
-    datadogRum.addUserAction(act.type, {
-      action: serialize(act),
-      result: serialize(newState.game.$present),
-      error: serialize(newState.game.$error),
-      level: serialize(newState.level),
+    // use version from lastState so we have access to parent and parentField
+    const detachedNode = unflatten(act.nodeId, lastState!.nodes);
+
+    log('game:detach', {
+      nodes: {
+        detached: detachedNode,
+      },
+      error: errorState,
     });
     break;
+
+  case ActionKind.Execute:
+    const added = Array
+      .from(presentState.added)
+      .map(([addedNodeId, sourceNodeId]) => ({
+        node: unflatten(addedNodeId, presentState.nodes),
+        source: sourceNodeId,
+      }));
+
+    const removed = Array
+      .from(presentState.removed)
+      .map(([removedNodeId]) => ({
+        node: unflatten(removedNodeId, presentState.nodes),
+      }));
+
+    log('game:execute', {
+      nodes: {
+        // use version from lastState b/c targetNode might have been deleted as
+        // a result of executing it
+        executed: unflatten(act.targetNodeId, lastState!.nodes),
+        added,
+        removed,
+      },
+      error: errorState,
+    });
+    break;
+
+  case ActionKind.Stop: {
+    log('game:stop');
+    break;
+  }
+
+  case ActionKind.StartLevel:
+    log('game:start-level', {
+      level: presentState.level,
+    });
+    flushLogs();
+    break;
+
+  case ActionKind.MoveNodeToBoard:
+    log('game:move-node-to-board', {
+      nodes: {
+        moved: unflatten(act.nodeId, presentState.nodes),
+      },
+      error: errorState,
+    });
+    break;
+
+  case ActionKind.MoveNodeToDefs:
+    log('game:move-node-to-defs', {
+      nodes: {
+        moved: unflatten(act.nodeId, presentState.nodes),
+      },
+      error: errorState,
+    });
+    break;
+
+  case ActionKind.MoveNodeToSlot:
+    log('game:move-node-to-slot', {
+      nodes: {
+        moved: unflatten(act.nodeId, presentState.nodes),
+      },
+      error: errorState,
+    });
+    break;
+
   case ActionKind.DetectCompletion:
-    switch (newState.game.$present.mode) {
+    switch (presentState.mode) {
     case GameMode.Victory:
-      datadogRum.addUserAction('victory', { });
+      log('game:victory');
       break;
     case GameMode.Defeat:
-      datadogRum.addUserAction('defeat', { });
+      log('game:defeat');
       break;
     }
     break;
@@ -80,3 +118,19 @@ export const logMiddleware: Middleware = (api) => (next) => (act) => {
 
   return nextAct;
 };
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible')
+    log('window:focus');
+  else
+    log('window:blur');
+
+  flushLogs();
+});
+
+window.addEventListener('beforeunload', () => {
+  log('session:end');
+  flushLogs();
+});
+
+log('session:start');

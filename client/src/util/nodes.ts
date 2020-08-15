@@ -267,6 +267,31 @@ export function flatten(
 }
 
 /**
+ * Unflattens a node. This replaces all of the IDs of its children with
+ * references to the child node objects.
+ *
+ * @param id The ID of the node to unflatten.
+ * @param map A map from IDs to nodes.
+ * @returns An unflattened version of this node.
+ */
+export function unflatten(
+  id: NodeId,
+  map: DeepReadonly<NodeMap>
+): BaseNode {
+  const flatNode = map.get(id)!;
+  const subexpressions: Record<string | number, BaseNode> = {};
+
+  for (const [path, childId] of Object.entries(flatNode.subexpressions)) {
+    subexpressions[path] = unflatten(childId, map);
+  }
+
+  return {
+    ...flatNode,
+    subexpressions,
+  };
+}
+
+/**
  * Traverses up the node graph until this node's parent is found.
  *
  * @param id The node whose root should be found.

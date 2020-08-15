@@ -1,10 +1,12 @@
 {
   "name": "@reduct/server",
-  "version": "1.0.0",
+  "version": "7.0.6-alpha",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
+    "build": "tsc",
     "build:watch": "tsc --watch",
+    "serve": "node dist/index.js",
     "serve:watch": "nodemon --watch dist dist/index.js",
     "lint:check": "eslint --color --ext .ts .",
     "lint:fix": "eslint --color --fix --ext .ts ."

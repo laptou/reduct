@@ -4,6 +4,7 @@ import { enableMapSet } from 'immer';
 
 import 'react-hot-loader';
 import { initReactApp } from './view';
+import { startLogging } from './logging/logger';
 
 
 if (PKG_ENV === 'production') {
@@ -16,6 +17,7 @@ if (PKG_ENV === 'production') {
 
 // initialize Immer (immutable state creation)
 enableMapSet();
+startLogging();
 
 try {
   console.log(`Reduct v${PKG_VERSION} ${PKG_ENV}`);
