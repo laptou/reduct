@@ -12673,6 +12673,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["react-redux", "virtual:de8946229e7bc7bdc26ed8f1fb8a7e0bcdcb1ead74a267820894500bbf5b5eee32c988e3ca28f98b614b172bea1a37c1bcab48bb6cad1183f800b067371db3a4#npm:7.2.1"],
             ["@babel/runtime", "npm:7.11.2"],
+            ["@hot-loader/react-dom", "virtual:de8946229e7bc7bdc26ed8f1fb8a7e0bcdcb1ead74a267820894500bbf5b5eee32c988e3ca28f98b614b172bea1a37c1bcab48bb6cad1183f800b067371db3a4#npm:16.13.0"],
             ["hoist-non-react-statics", "npm:3.3.2"],
             ["loose-envify", "npm:1.4.0"],
             ["prop-types", "npm:15.7.2"],
@@ -12685,6 +12686,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packagePeers": [
             "react",
             "react-dom",
+            "@hot-loader/react-dom",
             "react-native",
             "redux"
           ],

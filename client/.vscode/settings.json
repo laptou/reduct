@@ -1,0 +1,7 @@
+{
+  "eslint.enable": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "restructuredtext.confPath": "${workspaceFolder}/docs",
+  "editor.detectIndentation": false,
+  "editor.tabSize": 2
+}

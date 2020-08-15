@@ -1,0 +1,56 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "chapterutil",
+      "type": "python",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/chapterutil",
+      "program": "${workspaceFolder}/chapterutil/chapterutil.py",
+      "args": [
+        "levels/functions.csv",
+        "../resources/levels-progression/functions.json"
+      ],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "chapterutil 2",
+      "port": 9229,
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/csv-to-yaml.mjs",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "node"
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "chrome",
+      "url": "http://localhost:1234",
+      "webRoot": "${workspaceFolder}",
+      "runtimeExecutable": "/usr/bin/chromium",
+      "userDataDir": false,
+      "skipFiles": [
+        "node_modules/**",
+        "https://gdiac.cs.cornell.edu/research_games/php/reduct/**"
+      ]
+    },
+    {
+      "name": "firefox",
+      "type": "firefox",
+      "request": "launch",
+      "reAttach": true,
+      "url": "http://localhost:1234",
+      "profile": "dev-edition-default",
+      "webRoot": "${workspaceFolder}",
+      "skipFiles": [
+        "**/node_modules/**",
+        "http?(s):/**"
+      ]
+    }
+  ]
+}
