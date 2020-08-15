@@ -31,9 +31,7 @@ const GoalImpl: FunctionComponent<GoalProps> =
 
     return (
       <div id='reduct-goal'>
-        <div id='reduct-goal-alien'>
-          <img src={getRandomAlien()} />
-        </div>
+        <img id='reduct-goal-alien' src={getRandomAlien()} />
         <div id='reduct-goal-header'>
           Goal
         </div>
