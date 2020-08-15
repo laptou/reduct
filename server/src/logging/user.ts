@@ -22,12 +22,12 @@ if (environment === 'dev') {
       format.align(),
       format.label({ label: 'user' }),
       format.printf(({ level, message, label }) => {
-        return `[${label}] ${level}: ${message}`;
+        return `[${label as string}] ${level}: ${message}`;
       }),
       format.colorize({
         colors: { info: 'gray' },
         all: true,
-      }),
+      })
     ),
   }));
 }
@@ -35,6 +35,7 @@ if (environment === 'dev') {
 export const userLoggingRouter = new KoaTreeRouter<any, Context>();
 
 userLoggingRouter.post('/logs/action', (ctx) => {
+  /* eslint-disable @typescript-eslint/no-unsafe-assignment */
   const data = ctx.request.body;
   const user = ctx.state.user;
 
@@ -44,5 +45,6 @@ userLoggingRouter.post('/logs/action', (ctx) => {
   });
 
   ctx.response.status = 200;
+  /* eslint-enable @typescript-eslint/no-unsafe-assignment */
 });
 
