@@ -29,7 +29,7 @@ module.exports = {
     '@typescript-eslint/no-var-requires': ['off'],
     '@typescript-eslint/no-non-null-assertion': ['off'],
     '@typescript-eslint/no-explicit-any': ['off'],
-    '@typescript-eslint/no-unnecessary-boolean-literal-compare': ['error'],
+    '@typescript-eslint/unbound-method': ['off'],
     '@typescript-eslint/no-unnecessary-condition': ['warn', { allowConstantLoopConditions: true }],
     '@typescript-eslint/restrict-template-expressions': ['warn', {
       allowNumber: true,
@@ -40,6 +40,7 @@ module.exports = {
     '@typescript-eslint/prefer-regexp-exec': ['warn'],
     '@typescript-eslint/prefer-function-type': ['error'],
     '@typescript-eslint/prefer-optional-chain': ['error'],
+    '@typescript-eslint/no-unnecessary-boolean-literal-compare': ['error'],
     
     // consider turning these on in the future to make the code tighter
     '@typescript-eslint/no-unsafe-assignment': ['off'],
@@ -88,7 +89,6 @@ module.exports = {
       }
     ],
     '@typescript-eslint/prefer-readonly': ['warn'],
-    '@typescript-eslint/unbound-method': ['warn'],
     '@typescript-eslint/no-unused-expressions': ['warn'],
     
     'no-continue': 'off',

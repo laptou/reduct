@@ -166,21 +166,16 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
 
     useEffect(() => {
       const runner = () => {
-        console.log(`execute ${timer.current} run for node ${node?.id}`);
         exec();
       };
 
       if (executing) {
-        timer.current = setInterval(runner, isFast ? 500 : 1000);
-        console.log(`execute ${timer.current} scheduled for node ${node?.id}`);
+        timer.current = setInterval(runner, isFast ? 500 : 1000) as unknown as number;
 
         return () => {
           if (timer.current !== null) {
-            console.log(`execute ${timer.current} unscheduled for node ${node?.id}`);
             clearInterval(timer.current);
           }
-
-          console.log(`clean up for ${node?.id}`);
         };
       }
     }, [executing, exec, isFast]);
@@ -211,6 +206,8 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
       <div className='projection-animation-container'>
         {
           transition.map(({ item: node, props: style, key }) => {
+            // node can be null, despite what type definitions say
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (!node) return null;
 
             // top level nodes (nodes w/o parents) should not be considered locked

@@ -74,7 +74,7 @@ const LevelSelectImpl: React.FC<LevelSelectProps> = (props) => {
 
 const LevelInfoImpl: React.FC<LevelInfoProps> = ({ levelIndex, onToggleLevelSelect }) => {
   const progression = Loader.progressions['Elementary'];
-  const chapters = progression.linearChapters.map(key => progression.chapters[key]);
+  const chapters = (progression.linearChapters as string[]).map(key => progression.chapters[key]);
   const chapterIndex = chapters.findIndex(
     ({ startIdx, endIdx }) => startIdx <= levelIndex && endIdx >= levelIndex
   );
