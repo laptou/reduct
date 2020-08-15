@@ -191,4 +191,9 @@ module.exports = (env) => ({
       PnpWebpackPlugin,
     ],
   },
+  resolveLoader: {
+    plugins: [
+      PnpWebpackPlugin.moduleLoader(module),
+    ]
+  }
 });
