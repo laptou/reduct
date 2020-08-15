@@ -319,7 +319,7 @@ export function isAncestorOf(node: NodeId, ancestor: NodeId, nodes: DeepReadonly
 
   while (current) {
     if (current.id === ancestor) return true;
-    current = current?.parent ? nodes.get(current.parent) : undefined;
+    current = current.parent ? nodes.get(current.parent) : undefined;
   }
 
   return false;

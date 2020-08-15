@@ -8,7 +8,7 @@ import { initializeProdServer } from './prod';
 import { serverLogger } from './logging/server';
 import { environment } from './config';
 
-(async () => {
+void (async () => {
   serverLogger.info(`starting server in ${environment} mode`);
 
   const server = new Koa();

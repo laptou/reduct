@@ -18,7 +18,10 @@
     "paths": {
       "@resources/*": ["../resources/*"],
       "@/*": ["*"],
-    }
+    },
+    "types": [
+      "webpack-env"
+    ]
   },
   "include": [
     "src/**/*.tsx",

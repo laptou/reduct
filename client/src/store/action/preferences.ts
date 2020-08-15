@@ -1,5 +1,3 @@
-import { ActionKind } from './game';
-
 export enum PreferenceActionKind {
   EnableSound = 'enable-sound'
 }

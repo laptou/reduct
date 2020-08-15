@@ -1,21 +1,21 @@
 import { castDraft, produce } from 'immer';
 
 import {
+  ActionKind, createDetach, createDetectCompetion, createEvalApply, createEvalConditional, createEvalIdentifier, createEvalLambda, createEvalLet, createEvalNot, createEvalOperator, createMoveNodeToBoard, createStep, ReductAction,
+} from '../action/game';
+import {
   CircularCallError, GameError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError,
 } from '../errors';
 import { checkDefeat, checkVictory } from '../helper';
 import { GameMode, GameState } from '../state';
-import {
-  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalLambda, createEvalNot, createEvalOperator, createEvalIdentifier, createMoveNodeToBoard, createStep, ReductAction, createEvalLet, createDetectCompetion,
-} from '../action/game';
 
 import type { Flat, NodeId, NodeMap } from '@/semantics';
 import {
-  ApplyNode, LetNode, BinOpNode, BoolNode, ConditionalNode, LambdaArgNode, LambdaNode, NotNode, NumberNode, OpNode, PTupleNode, IdentifierNode as IdentifierNode, StrNode,
+  ApplyNode, BinOpNode, BoolNode, ConditionalNode, IdentifierNode as IdentifierNode, LambdaArgNode, LambdaNode, LetNode, NotNode, NumberNode, OpNode, PTupleNode, StrNode,
 } from '@/semantics/defs';
 import { builtins } from '@/semantics/defs/builtins';
 import {
-  createBoolNode, createMissingNode, createNumberNode, createStrNode, getKindForNode, getValueForName, iterateTuple, createLetNode, getReductionOrderForNode, getDefinitionForName,
+  createBoolNode, createMissingNode, createNumberNode, createStrNode, getDefinitionForName, getKindForNode, getReductionOrderForNode, getValueForName,
 } from '@/semantics/util';
 import {
   DeepReadonly, DRF, mapIterable, withoutParent, withParent,
@@ -121,7 +121,6 @@ export function gameReducer(
         bodyNodeMut.parent = parent.id;
         bodyNodeMut.parentField = parentField;
 
-        // @ts-ignore
         parent.subexpressions[parentField] = bodyNode.id;
         draft.added.set(bodyNode.id, letNode.id);
       } else {
@@ -1057,7 +1056,7 @@ export function gameReducer(
       draft.board.add(act.nodeId);
       const node = draft.nodes.get(act.nodeId)!;
       const parent = draft.nodes.get(parentId)!;
-      const oldHole = parent.__meta?.slots?.[node.parentField!];
+      const oldHole = parent.__meta?.slots?.[node.parentField];
 
       if (oldHole) {
         parent.subexpressions[node.parentField] = oldHole;

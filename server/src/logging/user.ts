@@ -22,12 +22,12 @@ if (environment === 'dev') {
       format.align(),
       format.label({ label: 'user' }),
       format.printf(({ level, message, label }) => {
-        return `[${label}] ${level}: ${message}`;
+        return `[${label as string}] ${level}: ${message}`;
       }),
       format.colorize({
         colors: { info: 'gray' },
         all: true,
-      }),
+      })
     ),
   }));
 }

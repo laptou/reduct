@@ -292,7 +292,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
                 ...props,
                 transform:
                   props.transform
-                    ? props.transform + ' ' + translate
+                    ? props.transform as string + ' ' + translate
                     : translate,
               };
             } else {
