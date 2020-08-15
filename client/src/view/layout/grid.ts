@@ -280,7 +280,7 @@ function subdivideCells(
   rect: PlacedRect,
   rows: number[],
   cols: number[],
-  cells: boolean[][],
+  cells: boolean[][]
 ) {
   const {
     x, y, w, h,

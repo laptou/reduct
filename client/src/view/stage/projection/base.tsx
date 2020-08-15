@@ -133,12 +133,12 @@ function onDragStart(
 
 function onClick(
   event: React.MouseEvent<HTMLDivElement>,
-  props: StageProjectionProps,
+  props: StageProjectionProps
 ) {
   props.clearErrorAndRaise();
 
   if (props.kind !== 'expression') return;
-  if (props.node && props.node.parent && props.node.locked) return;
+  if (props.node?.parent && props.node.locked) return;
   if (props.frozen) return;
 
   props.exec();
@@ -162,7 +162,7 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
 
     // whether execution is being fast-forwarded or not
     const [isFast, setFast] = useState(false);
-    const timer = useRef<NodeJS.Timeout | null>(null);
+    const timer = useRef<number | null>(null);
 
     useEffect(() => {
       const runner = () => {
@@ -191,7 +191,7 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
     // transition for when this projection's node is changed
     const transition = useTransition(
       node,
-      (n) => n?.id,
+      (n) => n.id,
       {
         from: {
           transform: 'scale(0)',

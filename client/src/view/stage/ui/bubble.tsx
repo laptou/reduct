@@ -33,6 +33,8 @@ export const Bubble: React.FC<BubbleProps> = ({
     };
     translate = 'translate(-50%, 0) ';
     break;
+  default:
+    throw new Error('not implemented');
   }
 
   const transition = useTransition(show, null, {

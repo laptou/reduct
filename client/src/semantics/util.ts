@@ -170,7 +170,7 @@ export function createLetNode(variable: IdentifierNode, e1: ReductNode, e2: Redu
 export function createApplyNode(callee: ReductNode, argument: PTupleNode): ApplyNode;
 export function createApplyNode(callee: NodeId, argument: NodeId): Flat<ApplyNode>;
 export function createApplyNode(
-  callee: NodeId | ReductNode, 
+  callee: NodeId | ReductNode,
   argument: NodeId | PTupleNode
 ): ApplyNode | Flat<ApplyNode> {
   return {
@@ -184,18 +184,18 @@ export function createApplyNode(
 }
 
 export function createConditionalNode(
-  condition: ReductNode, 
-  positive: ReductNode, 
+  condition: ReductNode,
+  positive: ReductNode,
   negative: ReductNode
 ): ConditionalNode;
 export function createConditionalNode(
-  condition: NodeId, 
-  positive: NodeId, 
+  condition: NodeId,
+  positive: NodeId,
   negative: NodeId
 ): Flat<ConditionalNode>;
 export function createConditionalNode(
-  condition: ReductNode | NodeId, 
-  positive: ReductNode | NodeId, 
+  condition: ReductNode | NodeId,
+  positive: ReductNode | NodeId,
   negative: ReductNode | NodeId
 ): ConditionalNode | Flat<ConditionalNode> {
   return {
@@ -382,7 +382,7 @@ export function getDefinitionForName(
   let current: DRF = node;
 
   // traverse the tree of nodes to find if 'name' is in the scope
-  while (current) {
+  while (true) {
     if ('scope' in current && name in current.scope) {
       return current.scope[name];
     }
@@ -398,7 +398,7 @@ export function getDefinitionForName(
     }
 
     // example: let x = (x + x) in { ... }
-    // should not cause recursion, which means that we skip the let node if the node we 
+    // should not cause recursion, which means that we skip the let node if the node we
     // started at is part of the let node's value
     if (current.type === 'let' && !isAncestorOf(node.id, current.subexpressions.value, state.nodes)) {
       const varNode = state.nodes.get(current.subexpressions.variable)! as DRF<IdentifierNode>;

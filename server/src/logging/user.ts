@@ -35,16 +35,14 @@ if (environment === 'dev') {
 export const userLoggingRouter = new KoaTreeRouter<any, Context>();
 
 userLoggingRouter.post('/logs/action', (ctx) => {
-  /* eslint-disable @typescript-eslint/no-unsafe-assignment */
   const data = ctx.request.body;
   const user = ctx.state.user;
 
-  userLogger.info(`${user.netId}:${data.action}`, {
+  userLogger.info(`${user.netId as string}:${data.action as string}`, {
     netId: user.netId,
     data,
   });
 
   ctx.response.status = 200;
-  /* eslint-enable @typescript-eslint/no-unsafe-assignment */
 });
 
