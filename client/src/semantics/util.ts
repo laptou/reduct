@@ -392,11 +392,6 @@ export function getDefinitionForName(
 
   // traverse the tree of nodes to find if 'name' is in the scope
   while (true) {
-    if ('scope' in current && name in current.scope) {
-      return current.scope[name];
-    }
-
-    // special case for lambda arg nodes until scope is implemented
     if (current.type === 'lambda') {
       for (const argNode of iterateTuple<LambdaArgNode>(current.subexpressions.arg, state.nodes)) {
         // we found something with this name

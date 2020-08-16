@@ -54,10 +54,6 @@ export interface BaseNode {
 
   subexpressions: Record<string, unknown>;
 
-  /** a map from node names to their ids in the current scope of a given
-   * node */
-  scope: Record<string, NodeId>;
-
   __meta?: NodeMetadata;
 }
 
