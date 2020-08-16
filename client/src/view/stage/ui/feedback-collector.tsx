@@ -51,12 +51,12 @@ export const FeedbackCollectorPopup: React.FC = () => {
   });
 
   const feedbackTypes = [
-    ['anxious', 'Anxious'],
-    ['bored', 'Bored'],
-    ['confused', 'Confused'],
-    ['frustrated', 'Frustrated'],
     ['confident', 'Confident'],
     ['neutral', 'Neutral'],
+    ['confused', 'Confused'],
+    ['bored', 'Bored'],
+    ['anxious', 'Anxious'],
+    ['frustrated', 'Frustrated'],
   ];
 
   return (
