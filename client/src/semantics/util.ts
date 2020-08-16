@@ -361,6 +361,7 @@ export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKin
 
   case 'lambdaArg':
   case 'op':
+  case 'note':
     return 'syntax';
 
   case 'missing':
