@@ -4,7 +4,7 @@ import {
   ActionKind, createDetach, createDetectCompetion, createEvalApply, createEvalConditional, createEvalIdentifier, createEvalLambda, createEvalLet, createEvalNot, createEvalOperator, createMoveNodeToBoard, createStep, ReductAction,
 } from '../action/game';
 import {
-  CircularCallError, GameError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError,
+  CircularCallError, GameError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, NoteNodeError,
 } from '../errors';
 import { checkDefeat, checkVictory } from '../helper';
 import { GameMode, GameState } from '../state';
@@ -709,6 +709,9 @@ export function gameReducer(
 
       const parent = draft.nodes.get(slot.parent)!;
       const child = draft.nodes.get(nodeId)!;
+
+      if (child.type === 'note')
+        throw new NoteNodeError(child.id);
 
       draft.board.delete(nodeId);
 

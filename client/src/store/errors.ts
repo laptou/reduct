@@ -59,6 +59,14 @@ export class NotOnBoardError extends GameError {
 }
 
 /**
+ * This error is thrown when the user tries to use a note node in gameplay. They
+ * are just there to display text, you cannot drag them into slots or anything
+ * like that.
+ */
+export class NoteNodeError extends GameError {
+}
+
+/**
  * This error is thrown when the user tries to call a lambda using itself as a
  * parameter.
  */
