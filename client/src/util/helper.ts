@@ -36,11 +36,16 @@ export function dethunk<A extends Array<unknown>, T extends Primitive | object>(
  * any of its fields can be modified.
  */
 export type DeepReadonly<T> =
+  // We specifically want to use any kind of function, so using Function type
+  // here is fine eslint-disable-next-line @typescript-eslint/ban-types
   T extends Primitive | Function ? T :
-    T extends Array<infer U> ? ReadonlyArray<DeepReadonly<U>> :
-      T extends Set<infer U> ? ReadonlySet<DeepReadonly<U>> :
-        T extends Map<infer U, infer V> ? ReadonlyMap<U, DeepReadonly<V>> :
-          { readonly [K in keyof T]: DeepReadonly<T[K]> };
+    T extends ReadonlySet<unknown> ? T :
+      T extends ReadonlyMap<unknown, unknown> ? T :
+        T extends ReadonlyArray<unknown> ? T :
+          T extends Set<infer U> ? ReadonlySet<DeepReadonly<U>> :
+            T extends Map<infer U, infer V> ? ReadonlyMap<U, DeepReadonly<V>> :
+              T extends Array<infer U> ? ReadonlyArray<DeepReadonly<U>> :
+                { readonly [K in keyof T]: DeepReadonly<T[K]> };
 
 /**
  * Stands for deep readonly & flat.

@@ -24,9 +24,9 @@ export function redo() {
 
 export interface UndoableGameState
 {
-  $present: DeepReadonly<GameState>;
-  $past: Array<DeepReadonly<GameState>>;
-  $future: Array<DeepReadonly<GameState>>;
+  $present: GameState;
+  $past: Array<GameState>;
+  $future: Array<GameState>;
   $error: GameError | null;
 }
 
