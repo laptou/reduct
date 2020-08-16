@@ -26,10 +26,11 @@
   padding: 0.25rem;
 }
 
-.reduct-feedback-collector-button {
-  vertical-align: middle;
+#reduct-feedback-collector-btns {
+  display: grid;
+  grid-template-columns: 50% 50%;
 }
 
-.reduct-feedback-collector-button img {
-  vertical-align: middle;
+.reduct-feedback-collector-btn {
+  margin: 0.5rem;
 }

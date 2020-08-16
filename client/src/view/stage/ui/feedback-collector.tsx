@@ -1,14 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useTransition, animated, config } from 'react-spring';
-
-import SatisfiedFace from '@resources/icon/sentiment_satisfied-24px.svg';
-import NeutralFace from '@resources/icon/sentiment_neutral-24px.svg';
-import DissatisfiedFace from '@resources/icon/sentiment_dissatisfied-24px.svg';
 import '@resources/style/react/ui/feedback.scss';
+import React, { useCallback, useEffect, useState } from 'react';
+import { animated, config, useTransition } from 'react-spring';
+
 import { log } from '@/logging/logger';
 
 // interval at which the feedback collector appears in ms
-const FEEDBACK_COLLECTOR_INTERVAL = 15 * 60 * 1000;
+const FEEDBACK_COLLECTOR_INTERVAL = 1 * 1000;
 
 export const FeedbackCollectorPopup: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -53,6 +50,15 @@ export const FeedbackCollectorPopup: React.FC = () => {
     config: config.gentle,
   });
 
+  const feedbackTypes = [
+    ['anxious', 'Anxious'],
+    ['bored', 'Bored'],
+    ['confused', 'Confused'],
+    ['frustrated', 'Frustrated'],
+    ['confident', 'Confident'],
+    ['neutral', 'Neutral'],
+  ];
+
   return (
     <div id='reduct-feedback-collector'>
       {
@@ -61,27 +67,20 @@ export const FeedbackCollectorPopup: React.FC = () => {
             <p id="reduct-feedback-collector-prompt">
               Hey, can you tell us how you&apos;re feeling?
             </p>
-            <button
-              type='button'
-              className='btn btn-flat reduct-feedback-collector-button'
-              onClick={() => sendFeedback('positive')}
-            >
-              <img src={SatisfiedFace} />
-            </button>
-            <button
-              type='button'
-              className='btn btn-flat reduct-feedback-collector-button'
-              onClick={() => sendFeedback('neutral')}
-            >
-              <img src={NeutralFace} />
-            </button>
-            <button
-              type='button'
-              className='btn btn-flat reduct-feedback-collector-button'
-              onClick={() => sendFeedback('negative')}
-            >
-              <img src={DissatisfiedFace} />
-            </button>
+            <div id="reduct-feedback-collector-btns">
+              {
+                feedbackTypes.map(([codeName, displayName]) => (
+                  <button
+                    type='button'
+                    key={codeName}
+                    className='btn btn-secondary reduct-feedback-collector-btn'
+                    onClick={() => sendFeedback(codeName)}
+                  >
+                    {displayName}
+                  </button>
+                ))
+              }
+            </div>
           </animated.div>
         ))
       }
