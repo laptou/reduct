@@ -22,7 +22,7 @@ when you are deploying the application.**
   store them on your computer in a place where the server can find them.
 - `export NODE_ENV=production`: This will tell the server to run in production mode.
 - `cd ../client`
-- `npm run dist`: The server does not automatically compile the client in
+- `yarn run dist`: The server does not automatically compile the client in
   production mode, so we must compile it manually before starting the server.
 - `cd ../server`
-- `npm run serve`
+- `yarn run serve`

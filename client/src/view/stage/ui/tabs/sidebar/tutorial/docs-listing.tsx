@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { useTransition, animated } from 'react-spring';
 
-import { DocAttributes, DocsPage } from './docs-page';
-
+import { DocInfo, DocsPage } from './docs-page';
 
 // get all documentation files from Webpack
 const context = require.context('@resources/docs/', true, /\.md$/);
 
-export const DocsListing = () => {
-  const [activeDoc, setActiveDoc] = useState<DocAttributes | null>(null);
+export const DocsListing: React.FC = () => {
+  const [activeDoc, setActiveDoc] = useState<DocInfo | null>(null);
 
   const transition = useTransition(activeDoc, null, {
     from: { transform: 'translateX(100%)' },

@@ -18,11 +18,16 @@ export interface DocAttributes {
   example: string;
 }
 
+export interface DocInfo {
+  html: string;
+  attributes: DocAttributes;
+}
+
 interface DocsPageOwnProps {
   /**
    * The documentation page to show.
    */
-  doc: { html: string; attributes: DocAttributes };
+  doc: DocInfo;
 }
 
 interface DocsPageStoreProps {

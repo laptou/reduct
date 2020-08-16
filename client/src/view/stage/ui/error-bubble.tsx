@@ -14,7 +14,7 @@ export const ErrorBubble: React.FC<ErrorBubbleProps> = ({ error }) => {
   let message = '';
 
   if (error instanceof WrongTypeError) {
-    message = `We need a ${error.expected}, but we found a ${error.actual}`;
+    message = `We need a ${error.expected.join(' or a ')}, but we found a ${error.actual}`;
   }
 
   if (error instanceof NotOnBoardError) {

@@ -10,7 +10,7 @@ import { Flat } from '@/semantics';
 import '@resources/style/react/projection/value.scss';
 
 interface ValueProjectionOwnProps {
-    node: Flat<StrNode> | Flat<BoolNode> | Flat<NumberNode>;
+  node: Flat<StrNode> | Flat<BoolNode> | Flat<NumberNode>;
 }
 
 export const ValueProjection: FunctionComponent<ValueProjectionOwnProps> =

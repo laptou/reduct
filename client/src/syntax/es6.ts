@@ -208,11 +208,11 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
       if (node.callee.name === '__let') {
         const [ident, value, block] = node.arguments;
 
-        if (ident?.type !== 'Identifier') {
+        if (ident.type !== 'Identifier') {
           throw new Error('First parameter of a let expression must be an identifier.');
         }
 
-        if (block?.type !== 'ArrowFunctionExpression') {
+        if (block.type !== 'ArrowFunctionExpression') {
           throw new Error('Third parameter of a let expression must be an arrow function.');
         }
 

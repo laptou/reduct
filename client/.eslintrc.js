@@ -1,6 +1,7 @@
 const { resolve } = require('path');
 
 module.exports = {
+  root: true,
   parser: '@typescript-eslint/parser',
   plugins: [
     'react'
@@ -60,7 +61,7 @@ module.exports = {
   ],
   settings: {
     'import/resolver': {
-      webpack: {
+      'eslint-import-resolver-webpack': {
         config: resolve(__dirname, 'webpack.config.js'),
         env: {
           development: true

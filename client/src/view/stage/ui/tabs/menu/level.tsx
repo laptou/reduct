@@ -27,22 +27,21 @@ type LevelSelectProps = LevelMenuStoreProps & LevelSelectDispatchProps;
 type LevelInfoProps = LevelMenuStoreProps & LevelInfoOwnProps;
 
 const LevelSelectImpl: React.FC<LevelSelectProps> = (props) => {
-  const chapters = [];
 
   const progression = Loader.progressions['Elementary'];
-  for (const chapterKey of progression.linearChapters) {
+  const chapters = (progression.linearChapters as string[]).map(chapterKey => {
     const chapter = progression.chapters[chapterKey];
-    const levels = [];
+    const levels: number[] = [];
     for (let index = chapter.startIdx; index <= chapter.endIdx; index++) {
       levels.push(index);
     }
 
-    chapters.push({
+    return {
       levels,
       key: chapterKey,
       name: chapter.name,
-    });
-  }
+    };
+  });
 
   return (
     <div id='reduct-level-select'>
@@ -75,7 +74,7 @@ const LevelSelectImpl: React.FC<LevelSelectProps> = (props) => {
 
 const LevelInfoImpl: React.FC<LevelInfoProps> = ({ levelIndex, onToggleLevelSelect }) => {
   const progression = Loader.progressions['Elementary'];
-  const chapters = progression.linearChapters.map(key => progression.chapters[key]);
+  const chapters = (progression.linearChapters as string[]).map(key => progression.chapters[key]);
   const chapterIndex = chapters.findIndex(
     ({ startIdx, endIdx }) => startIdx <= levelIndex && endIdx >= levelIndex
   );

@@ -27,10 +27,10 @@ akin to the CASE exam.
 ## How do I run this?
 
 - Install Node.js v13 or higher.
-- `npm install` to install dependencies common to the client and the server.
-- `npx lerna bootstrap` to install remaining dependencies.
+- `npm i -g yarn` to install the Yarn package manager.
+- `yarn install` to install dependencies common to the client and the server.
 - `cd server` to go to the server directory.
 - `export NODE_ENV=development` to ensure the server will run in development mode.
-- `npm run build` to build the server.
-- `npm run serve` to run the web server.
+- `yarn run build` to build the server.
+- `yarn run serve` to run the web server.
 - Go to http://localhost:8080/ to view the development web server.
