@@ -18,6 +18,7 @@ import {
   OpNode,
 } from './defs';
 import { BuiltInIdentifierNode } from './defs/builtins';
+import { NoteNode } from './defs/note';
 
 import { DRF } from '@/util/helper';
 
@@ -107,6 +108,7 @@ export type ReductNode =
   LetNode |
   MemberNode |
   NotNode |
+  NoteNode |
   NumberNode |
   StrNode |
   BoolNode |
@@ -133,6 +135,7 @@ export type FlatReductNode =
   Flat<LetNode> |
   Flat<MemberNode> |
   Flat<NotNode> |
+  Flat<NoteNode> |
   Flat<NumberNode> |
   Flat<StrNode> |
   Flat<BoolNode> |

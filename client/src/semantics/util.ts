@@ -13,6 +13,7 @@ import type { IdentifierNode } from './defs/identifier';
 import type {
   BoolNode, NumberNode, ReductSymbol, StrNode, SymbolNode,
 } from './defs/value';
+import { NoteNode } from './defs/note';
 
 import type {
   Flat, NodeId, NodeMap, ReductNode,
@@ -164,6 +165,14 @@ export function createLetNode(variable: IdentifierNode, e1: ReductNode, e2: Redu
       value: e1,
       body: e2,
     },
+  };
+}
+
+export function createNoteNode(text: string): NoteNode {
+  return {
+    ...createNodeBase(),
+    type: 'note',
+    fields: { text },
   };
 }
 
