@@ -16,6 +16,7 @@ import { ValueProjection } from './value';
 import { VTupleProjection } from './vtuple';
 import { BuiltInReferenceProjection } from './builtin';
 import { PTupleProjection } from './ptuple';
+import { NoteProjection } from './note';
 
 import { DRF } from '@/util/helper';
 
@@ -48,6 +49,7 @@ export function getProjectionForNode(node: DRF | null) {
     return <ValueProjection node={node} key={node.id} />;
   case 'missing': return <MissingProjection node={node} key={node.id} />;
   case 'not': return <NotProjection node={node} key={node.id} />;
+  case 'note': return <NoteProjection node={node} key={node.id} />;
   case 'lambda': return <LambdaProjection node={node} key={node.id} />;
   case 'lambdaArg': return <LambdaArgProjection node={node} key={node.id} />;
   case 'lambdaVar': return <LambdaVarProjection node={node} key={node.id} />;
