@@ -388,10 +388,10 @@ export function getDefinitionForName(
   node: DRF,
   state: DeepReadonly<GameState>
 ): NodeId | null {
-  let current: DRF = node;
+  let current: DRF | undefined = node;
 
   // traverse the tree of nodes to find if 'name' is in the scope
-  while (true) {
+  while (current) {
     if (current.type === 'lambda') {
       for (const argNode of iterateTuple<LambdaArgNode>(current.subexpressions.arg, state.nodes)) {
         // we found something with this name
@@ -414,7 +414,7 @@ export function getDefinitionForName(
     if (!current.parent)
       break;
 
-    current = state.nodes.get(current.parent)!;
+    current = state.nodes.get(current.parent);
   }
 
   if (state.globals.has(name)) {
