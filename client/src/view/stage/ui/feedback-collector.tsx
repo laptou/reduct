@@ -7,7 +7,7 @@ import { animated, config, useTransition } from 'react-spring';
 import { log } from '@/logging/logger';
 
 // interval at which the feedback collector appears in ms
-const FEEDBACK_COLLECTOR_INTERVAL = 1 * 1000;
+const FEEDBACK_COLLECTOR_INTERVAL = 15 * 60 * 1000;
 
 export const FeedbackCollectorPopup: React.FC = () => {
   const feedbackTypes = [
@@ -110,7 +110,7 @@ export const FeedbackCollectorPopup: React.FC = () => {
       trail: 100,
       config: config.gentle,
     });
-  
+
   return (
     <div id='reduct-feedback-collector'>
 
@@ -119,7 +119,6 @@ export const FeedbackCollectorPopup: React.FC = () => {
           id='reduct-feedback-collector-popup'
           style={props} key={key}
           onMouseEnter={() => setIsExpanded(true)}
-          onMouseLeave={() => setIsExpanded(false)}
         >
           <p id="reduct-feedback-collector-prompt">
             Hey, can you tell us how you&apos;re feeling?
