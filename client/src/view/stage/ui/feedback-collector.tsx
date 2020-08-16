@@ -10,6 +10,16 @@ import { log } from '@/logging/logger';
 const FEEDBACK_COLLECTOR_INTERVAL = 1 * 1000;
 
 export const FeedbackCollectorPopup: React.FC = () => {
+  const feedbackTypes = [
+    ['confident', 'Confident'],
+    ['neutral', 'Neutral'],
+    ['confused', 'Confused'],
+    ['bored', 'Bored'],
+    ['anxious', 'Anxious'],
+    ['frustrated', 'Frustrated'],
+  ];
+
+
   const [isVisible, setIsVisible] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -31,6 +41,8 @@ export const FeedbackCollectorPopup: React.FC = () => {
       return () => clearInterval(timerHandle);
     }
   }, [isVisible]);
+
+  // transition stuff
 
   const buttonContainerDiv = useRef<HTMLDivElement>(null);
 
@@ -55,7 +67,7 @@ export const FeedbackCollectorPopup: React.FC = () => {
     leave: { opacity: 0 },
   });
 
-  const buttonsTransition = useTransition(isExpanded, null, {
+  const buttonContainerTransition = useTransition(isExpanded, null, {
     from: {
       height: 0,
       opacity: 0,
@@ -82,15 +94,23 @@ export const FeedbackCollectorPopup: React.FC = () => {
     config: config.gentle,
   });
 
-  const feedbackTypes = [
-    ['confident', 'Confident'],
-    ['neutral', 'Neutral'],
-    ['confused', 'Confused'],
-    ['bored', 'Bored'],
-    ['anxious', 'Anxious'],
-    ['frustrated', 'Frustrated'],
-  ];
-
+  const buttonsTransition = useTransition(
+    isExpanded ? feedbackTypes : [],
+    null,
+    {
+      from: {
+        transform: 'scale(0)',
+      },
+      enter: {
+        transform: 'scale(1)',
+      },
+      leave: {
+        transform: 'scale(0)',
+      },
+      trail: 100,
+      config: config.gentle,
+    });
+  
   return (
     <div id='reduct-feedback-collector'>
 
@@ -114,7 +134,7 @@ export const FeedbackCollectorPopup: React.FC = () => {
             </animated.span>
           ))}
 
-          {buttonsTransition.map(({ item, key, props }) => item && (
+          {buttonContainerTransition.map(({ item, key, props }) => item && (
             <animated.div
               id="reduct-feedback-collector-content"
               style={props} key={key}
@@ -122,15 +142,15 @@ export const FeedbackCollectorPopup: React.FC = () => {
             >
               <div id="reduct-feedback-collector-btns" >
                 {
-                  feedbackTypes.map(([codeName, displayName]) => (
-                    <button
+                  buttonsTransition.map(({ item: [codeName, displayName], key, props }) => (
+                    <animated.button
                       type='button'
-                      key={codeName}
+                      key={key} style={props}
                       className='btn btn-secondary reduct-feedback-collector-btn'
                       onClick={() => sendFeedback(codeName)}
                     >
                       {displayName}
-                    </button>
+                    </animated.button>
                   ))
                 }
               </div>
