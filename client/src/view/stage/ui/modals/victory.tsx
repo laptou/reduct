@@ -1,6 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { Modal } from '../modal';
+
+import LevelCompleteText from '@resources/graphics/titles/level-complete.svg';
 import { DeepReadonly } from '@/util/helper';
 import { GlobalState, GameMode } from '@/store/state';
 import { createStartLevel } from '@/store/action/game';
@@ -19,15 +22,22 @@ const VictoryImpl = (props: VictoryStoreProps & VictoryDispatchProps) => {
     return null;
 
   return (
-    <div className='reduct-banner-page'>
-      <h1 id='victory-message'>You win!</h1>
+    <Modal className='reduct-level-modal'>
+      <img
+        src={LevelCompleteText}
+        className='reduct-level-modal-title'
+      />
 
-      <div className='reduct-banner-actions'>
-        <button type='button' onClick={() => props.startLevel(props.nextLevel)}>
+      <div className='reduct-level-modal-actions'>
+        <button
+          type='button'
+          onClick={() => props.startLevel(props.nextLevel)}
+          className='btn btn-primary'
+        >
           Next level
         </button>
       </div>
-    </div>
+    </Modal>
   );
 };
 

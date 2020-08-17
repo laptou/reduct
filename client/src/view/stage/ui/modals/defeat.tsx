@@ -21,23 +21,25 @@ const DefeatImpl = (props: DefeatStoreProps & DefeatDispatchProps) => {
     return null;
 
   return (
-    <Modal>
-      <div className='reduct-level-modal'>
-        <img
-          src={LevelIncompleteText}
-          className='reduct-level-modal-title'
-        />
+    <Modal className='reduct-level-modal'>
+      <img
+        src={LevelIncompleteText}
+        className='reduct-level-modal-title'
+      />
 
-        <p className='reduct-level-modal-text'>
-          There are no moves from here that would complete the level.
-          Let&apos;s try something else.
-        </p>
+      <p className='reduct-level-modal-text'>
+        There are no moves remaining that would complete the level.
+        Let&apos;s try something else.
+      </p>
 
-        <div className='reduct-level-modal-actions'>
-          <button type='button' onClick={() => props.undo()}>
-            Undo
-          </button>
-        </div>
+      <div className='reduct-level-modal-actions'>
+        <button
+          type='button'
+          onClick={() => props.undo()}
+          className='btn btn-default'
+        >
+          Undo
+        </button>
       </div>
     </Modal>
   );

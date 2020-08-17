@@ -5,11 +5,14 @@
   left: 0;
   z-index: 200;
   display: flex;
+  flex-flow: column nowrap;
   align-items: center;
   justify-content: center;
 
   width: 100vw;
   height: 100vh;
+
+  pointer-events: none;
 
   h1 {
     margin: 2rem;
@@ -27,12 +30,38 @@
 
 #reduct-modal-overlay {
   display: flex;
+  flex-flow: column nowrap;
   align-items: center;
   align-self: stretch;
   justify-content: center;
 
   width: 100%;
+  height: 100%;
 
   background-color: rgba(black, 50%);
   color: white;
+
+  pointer-events: all;
+}
+
+.reduct-level-modal-title {
+  height: 15rem;
+  margin: 1rem;
+}
+
+.reduct-level-modal-text {
+  max-width: 30rem;
+  margin: 1rem;
+
+  font-size: 1.5rem;
+  line-height: 1.5em;
+  text-align: center;
+}
+
+.reduct-level-modal-actions {
+  margin: 1rem;
+
+  button {
+    font-size: 1.25rem;
+  }
 }
