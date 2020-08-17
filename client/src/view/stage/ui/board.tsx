@@ -287,7 +287,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
             const pos = positions.get(id);
 
             if (pos) {
-              const translate = `translate(${pos.x}px, ${pos.y}px)`;
+              const translate = `translate(${pos.x}px, ${pos.y}px) translate(-50%, -50%)`;
               style = {
                 ...props,
                 transform:
