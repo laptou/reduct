@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
 /**
  * @file Utility script to split the output.wav audio sprite into individual
  * files using FFMpeg.
@@ -9,7 +10,7 @@ const child = require('child_process');
 
 const path = require('path');
 
-(async () => {
+void (async () => {
   const audioDir = path.resolve(__dirname, '../resources/audio');
   const manifestPath = path.resolve(audioDir, 'output.json');
 
@@ -35,7 +36,11 @@ const path = require('path');
     const proc = child.spawn(
       'ffmpeg',
       [
-        '-y', '-i', srcAudioPath, '-ss', start, '-t', duration, dstAudioPath,
+        '-y',
+        '-i', srcAudioPath,
+        '-ss', start / 1000,
+        '-t', duration / 1000,
+        dstAudioPath,
       ]
     );
 
@@ -57,7 +62,7 @@ const path = require('path');
         clearTimeout(timer);
 
         if (code === 0) {
-          console.info(`transcoded ${dstAudioPath}`);
+          console.info(`transcoded ${dstAudioPath} from ${start} to ${start + duration}`);
 
           resolve();
         } else {
