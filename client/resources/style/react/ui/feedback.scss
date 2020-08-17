@@ -8,28 +8,47 @@
 }
 
 #reduct-feedback-collector-popup {
+  display: grid;
+  grid-template-rows: auto auto;
+
   padding: 0.5rem;
   border-radius: 0.5rem;
 
   background: var(--reduct-ui-bg);
   box-shadow: 0 0 0.5rem rgba(black, 0.25);
-
-  font-size: 0.9rem;
-  text-align: center;
 }
 
 #reduct-feedback-collector-prompt {
   display: block;
+  grid-row: 1;
 
   margin: 0;
 
   padding: 0.25rem;
 }
 
-.reduct-feedback-collector-button {
-  vertical-align: middle;
+#reduct-feedback-collector-hint {
+  grid-row: 2;
+  grid-column: 1;
+
+  padding: 0.25rem;
+
+  color: rgba(black, 0.56);
+
+  font-size: 0.9rem;
 }
 
-.reduct-feedback-collector-button img {
-  vertical-align: middle;
+#reduct-feedback-collector-content {
+  grid-row: 2;
+  grid-column: 1;
+  overflow: hidden;
+}
+
+#reduct-feedback-collector-btns {
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+
+.reduct-feedback-collector-btn {
+  margin: 0.5rem;
 }
