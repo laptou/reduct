@@ -156,7 +156,7 @@ export function gameReducer(
     const paramNodeKind = getKindForNode(paramNode, state.nodes);
 
     if (paramNodeKind === 'syntax' || paramNodeKind === 'statement')
-      throw new InvalidActionError(lambdaNodeId);
+      throw new InvalidActionError(paramNodeId);
 
     const bodyNodeId = lambdaNode.subexpressions.body;
 
