@@ -4,12 +4,12 @@ import ReactDOM from 'react-dom';
 import { HotApp } from './app';
 
 export function initReactApp() {
-  ReactDOM.render(<HotApp />, document.getElementById('reduct-react'));
+  ReactDOM.render(<HotApp />, document.getElementById('reduct'));
 
   if (module.hot) {
     module.hot.accept('.', () => {
       const { HotApp: NewHotApp } = require('./app');
-      ReactDOM.render(<NewHotApp />, document.getElementById('reduct-react'));
+      ReactDOM.render(<NewHotApp />, document.getElementById('reduct'));
     });
   }
 }

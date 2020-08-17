@@ -3,9 +3,9 @@ import { createPortal } from 'react-dom';
 
 export const Modal: React.FC = (props) => {
   return createPortal(
-    <div id="react-reduct-modal-overlay">
+    <div id="reduct-modal-overlay">
       {props.children}
     </div>,
-    document.getElementById('react-reduct-modal-container')!
+    document.getElementById('reduct-modal')!
   );
 };

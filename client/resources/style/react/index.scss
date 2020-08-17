@@ -12,7 +12,7 @@ body, html {
   overflow: hidden;
 }
 
-#reduct-react {
+#reduct {
   display: grid;
   grid-template-rows: 6rem 1fr 8rem;
   grid-template-columns: auto auto 1fr auto 25rem;
@@ -21,7 +21,7 @@ body, html {
   height: 100vh;
 }
 
-#reduct-react-modal-container {
+#reduct-modal {
   position: fixed;
   z-index: 200;
   display: flex;
@@ -48,7 +48,7 @@ body, html {
   }
 }
 
-#reduct-react-modal-overlay {
+#reduct-modal-overlay {
   background-color: rgba(black, 50%);
   color: white;
 }
