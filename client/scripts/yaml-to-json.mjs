@@ -22,9 +22,12 @@ import yaml from 'js-yaml';
   const chapterFiles = (await fs.readdir(chapterDirectory)).filter(fileName => fileName.endsWith('.yaml'));
   console.info(`found ${chapterFiles.length} YAML level definitions`);
 
+  const chapterNames = [];
+
   for (const fileName of chapterFiles) {
     console.info(`processing ${fileName}`);
     const chapterName = basename(fileName, '.yaml');
+    chapterNames.push(chapterName);
 
     const yamlFilePath = resolve(chapterDirectory, fileName);
     const contents = await fs.readFile(yamlFilePath);
@@ -68,6 +71,16 @@ import yaml from 'js-yaml';
     originalChapter.levels = originalChapter.levels.slice(0, levels.length);
 
     await fs.writeJSON(jsonFilePath, originalChapter);
+  }
+
+  // delete JSON files that don't correspond to a YAML file
+  for (const jsonFileName of await fs.readdir(levelDirectory)) {
+    const chapterName = basename(jsonFileName, '.json');
+    
+    if (!chapterNames.includes(chapterName)) {
+      console.log(`deleting ${jsonFileName}`);
+      await fs.unlink(resolve(levelDirectory, jsonFileName));
+    }
   }
 
   console.info('done');
