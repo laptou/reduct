@@ -4,7 +4,7 @@ import {
   ActionKind, createDetach, createDetectCompetion, createEvalApply, createEvalConditional, createEvalIdentifier, createEvalLambda, createEvalLet, createEvalNot, createEvalOperator, createMoveNodeToBoard, createStep, ReductAction,
 } from '../action/game';
 import {
-  CircularCallError, GameError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, NoteNodeError,
+  CircularCallError, GameError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, InvalidActionError,
 } from '../errors';
 import { checkDefeat, checkVictory } from '../helper';
 import { GameMode, GameState } from '../state';
@@ -152,6 +152,11 @@ export function gameReducer(
 
     const lambdaNode = state.nodes.get(lambdaNodeId) as DRF<LambdaNode>;
     const paramNode = state.nodes.get(paramNodeId) as DRF;
+
+    const paramNodeKind = getKindForNode(paramNode, state.nodes);
+
+    if (paramNodeKind === 'syntax' || paramNodeKind === 'statement')
+      throw new InvalidActionError(lambdaNodeId);
 
     const bodyNodeId = lambdaNode.subexpressions.body;
 
@@ -710,8 +715,10 @@ export function gameReducer(
       const parent = draft.nodes.get(slot.parent)!;
       const child = draft.nodes.get(nodeId)!;
 
-      if (child.type === 'note')
-        throw new NoteNodeError(child.id);
+      const childKind = getKindForNode(child, draft.nodes);
+
+      if (childKind === 'syntax' || childKind === 'statement')
+        throw new InvalidActionError(child.id);
 
       draft.board.delete(nodeId);
 

@@ -3,7 +3,7 @@ import React from 'react';
 import { Bubble } from './bubble';
 
 import {
-  MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, GameError, CircularCallError, BuiltInError, WrongBuiltInParamsCountError, AlreadyFullyBoundError, NoteNodeError,
+  MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, GameError, CircularCallError, BuiltInError, WrongBuiltInParamsCountError, AlreadyFullyBoundError, InvalidActionError,
 } from '@/store/errors';
 
 interface ErrorBubbleProps {
@@ -41,8 +41,8 @@ export const ErrorBubble: React.FC<ErrorBubbleProps> = ({ error }) => {
     message = `This function needs ${error.expected} parameters, but you only gave it ${error.actual}.`;
   }
 
-  if (error instanceof NoteNodeError) {
-    message = 'You can\'t use comments as values.';
+  if (error instanceof InvalidActionError) {
+    message = 'You can\'t do that.'
   }
 
   if (error instanceof BuiltInError) {

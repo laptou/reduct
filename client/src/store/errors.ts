@@ -59,11 +59,10 @@ export class NotOnBoardError extends GameError {
 }
 
 /**
- * This error is thrown when the user tries to use a note node in gameplay. They
- * are just there to display text, you cannot drag them into slots or anything
- * like that.
+ * This error is thrown when the user tries to do some generic invalid action,
+ * such as dragging a note node or definition node into a slot.
  */
-export class NoteNodeError extends GameError {
+export class InvalidActionError extends GameError {
 }
 
 /**
