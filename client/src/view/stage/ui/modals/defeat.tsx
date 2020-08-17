@@ -10,6 +10,7 @@ import { GlobalState, GameMode } from '@/store/state';
 import { undo as createUndo } from '@/store/reducer/undo';
 import { checkDefeat, checkVictory } from '@/store/helper';
 import Audio from '@/resource/audio';
+import { log } from '@/logging/logger';
 
 interface DefeatStoreProps {
   isDefeat: boolean;
@@ -33,6 +34,11 @@ const DefeatImpl: React.FC<DefeatStoreProps & DefeatDispatchProps> =
             Audio.play('stuck');
         },
       });
+
+    useEffect(() => {
+      if (isDefeat)
+        log('game:defeat');
+    }, [isDefeat]);
 
     return isDefeat ? (
       <Modal>

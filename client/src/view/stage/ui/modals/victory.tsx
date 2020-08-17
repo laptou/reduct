@@ -10,6 +10,7 @@ import { DeepReadonly } from '@/util/helper';
 import LevelCompleteText from '@resources/graphics/titles/level-complete.svg';
 import { checkVictory } from '@/store/helper';
 import Audio from '@/resource/audio';
+import { log } from '@/logging/logger';
 
 interface VictoryStoreProps {
   isVictory: boolean;
@@ -33,6 +34,11 @@ const VictoryImpl: React.FC<VictoryStoreProps & VictoryDispatchProps> =
           // TODO: add audio cue
         },
       });
+
+    useEffect(() => {
+      if (isVictory)
+        log('game:victory');
+    }, [isVictory]);
 
     return isVictory ? (
       <Modal>
