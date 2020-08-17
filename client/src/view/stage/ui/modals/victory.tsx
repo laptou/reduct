@@ -1,6 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, createRef, useRef } from 'react';
 import { connect } from 'react-redux';
-import { animated, config as springConfig, useSpring } from 'react-spring';
+import {
+  animated, config as springConfig, useSpring, ReactSpringHook, useChain,
+} from 'react-spring';
 
 import { Modal } from '../modal';
 
@@ -25,26 +27,56 @@ const VictoryImpl: React.FC<VictoryStoreProps & VictoryDispatchProps> =
   (props) => {
     const { isVictory, currentLevel, startLevel } = props;
 
-    const animatedStyleProps =
+    const scaleSpring = useRef<ReactSpringHook>(null);
+    const scaleProps =
       useSpring({
         transform: isVictory ? 'scale(1)' : 'scale(0)',
         config: springConfig.stiff,
-        delay: 1000,
+        delay: 500,
+        ref: scaleSpring,
         onStart() {
           // TODO: add audio cue
         },
       });
+
+    const raySpring = useRef<ReactSpringHook>(null);
+    const rayProps =
+      useSpring({
+        from: {
+          progress: 0,
+        },
+        progress: isVictory ? 1 : 0,
+        delay: 750,
+        config: springConfig.slow,
+        ref: raySpring,
+      });
+
+    useChain([scaleSpring, raySpring]);
 
     useEffect(() => {
       if (isVictory)
         log('game:victory');
     }, [isVictory]);
 
-    return isVictory ? (
+    if (!isVictory)
+      return null;
+
+    const rays = [];
+    const numRays = 12;
+
+    for (let i = 0; i < numRays; i++) {
+      rays.push({
+        angle: i / numRays * Math.PI * 2,
+        start: 150 + Math.random() * 100,
+        length: 150 + Math.random() * 100,
+      });
+    }
+
+    return (
       <Modal>
         <animated.div
           className='reduct-level-modal'
-          style={animatedStyleProps}
+          style={scaleProps}
         >
           <img
             src={LevelCompleteText}
@@ -60,9 +92,30 @@ const VictoryImpl: React.FC<VictoryStoreProps & VictoryDispatchProps> =
               Next level
             </button>
           </div>
+
+          <svg className='reduct-level-modal-animation'>
+            {
+              rays.map((ray, index) => (
+                <animated.line
+                  key={index}
+                  x1={Math.cos(ray.angle) * ray.start}
+                  y1={Math.sin(ray.angle) * ray.start}
+                  x2={Math.cos(ray.angle) * (ray.start + ray.length)}
+                  y2={Math.sin(ray.angle) * (ray.start + ray.length)}
+                  strokeDasharray={`${ray.length} ${ray.length}`}
+                  strokeDashoffset={rayProps.progress.interpolate({
+                    range: [0, 1],
+                    output: [ray.length, -ray.length],
+                  })}
+                  stroke='white'
+                  strokeWidth='2px'
+                />
+              ))
+            }
+          </svg>
         </animated.div>
       </Modal>
-    ) : null;
+    );
   };
 
 export const VictoryOverlay = connect(

@@ -5,15 +5,13 @@ import { animated, useSpring } from 'react-spring';
 
 export const Modal: React.FC<React.HTMLAttributes<HTMLDivElement>> =
   (props) => {
-    const [animatedStyleProps, setAnimatedStyleProps] =
-      useSpring(() => ({
-        opacity: 0,
-      }));
-
-    useEffect(() => {
-      setAnimatedStyleProps({ opacity: 1 });
-      return () => setAnimatedStyleProps({ opacity: 0 });
-    });
+    const animatedStyleProps =
+      useSpring({
+        from: {
+          opacity: 0,
+        },
+        opacity: 1,
+      });
 
     return createPortal(
       <animated.div
