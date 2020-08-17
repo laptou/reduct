@@ -8,7 +8,7 @@ import LevelIncompleteText from '@resources/graphics/titles/level-incomplete.svg
 import { DeepReadonly } from '@/util/helper';
 import { GlobalState, GameMode } from '@/store/state';
 import { undo as createUndo } from '@/store/reducer/undo';
-import { checkDefeat } from '@/store/helper';
+import { checkDefeat, checkVictory } from '@/store/helper';
 
 interface DefeatStoreProps {
   isDefeat: boolean;
@@ -67,7 +67,9 @@ const DefeatImpl: React.FC<DefeatStoreProps & DefeatDispatchProps> =
 
 export const DefeatOverlay = connect(
   (store: DeepReadonly<GlobalState>) => ({
-    isDefeat: checkDefeat(store.game.$present),
+    isDefeat:
+    !checkVictory(store.game.$present)
+    && checkDefeat(store.game.$present),
   }), (dispatch) => ({
     undo() { dispatch(createUndo()); },
   })
