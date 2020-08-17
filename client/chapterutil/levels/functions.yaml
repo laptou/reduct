@@ -13,6 +13,7 @@ levels:
     hint: Check out this little alien. It doesn't do anything, but it's vibing.
   - board:
       - x => __tuple(x, x)
+      - __note('Make sure you check out the hints at the top.')
     toolbox:
       - CIRCLE
     goal:
