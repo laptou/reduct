@@ -9,6 +9,7 @@ import { DeepReadonly } from '@/util/helper';
 import { GlobalState, GameMode } from '@/store/state';
 import { undo as createUndo } from '@/store/reducer/undo';
 import { checkDefeat, checkVictory } from '@/store/helper';
+import Audio from '@/resource/audio';
 
 interface DefeatStoreProps {
   isDefeat: boolean;
@@ -22,18 +23,16 @@ const DefeatImpl: React.FC<DefeatStoreProps & DefeatDispatchProps> =
   (props) => {
     const { isDefeat } = props;
 
-    const [animatedStyleProps, setAnimatedStyleProps] =
-      useSpring(() => ({
-        transform: 'scale(0)',
+    const animatedStyleProps =
+      useSpring({
+        transform: isDefeat ? 'scale(1)' : 'scale(0)',
         config: springConfig.stiff,
-      }));
-
-    useEffect(() =>{
-      if (isDefeat)
-        setAnimatedStyleProps({ transform: 'scale(1)' });
-      else
-        setAnimatedStyleProps({ transform: 'scale(0)' });
-    }, [isDefeat, setAnimatedStyleProps]);
+        delay: 1000,
+        onStart() {
+          if (isDefeat)
+            Audio.play('stuck');
+        },
+      });
 
     return isDefeat ? (
       <Modal>

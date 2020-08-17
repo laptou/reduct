@@ -9,10 +9,11 @@ import { GlobalState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
 import LevelCompleteText from '@resources/graphics/titles/level-complete.svg';
 import { checkVictory } from '@/store/helper';
+import Audio from '@/resource/audio';
 
 interface VictoryStoreProps {
   isVictory: boolean;
-  nextLevel: number;
+  currentLevel: number;
 }
 
 interface VictoryDispatchProps {
@@ -21,20 +22,17 @@ interface VictoryDispatchProps {
 
 const VictoryImpl: React.FC<VictoryStoreProps & VictoryDispatchProps> =
   (props) => {
-    const { isVictory, nextLevel, startLevel } = props;
+    const { isVictory, currentLevel, startLevel } = props;
 
-    const [animatedStyleProps, setAnimatedStyleProps] =
-      useSpring(() => ({
-        transform: 'scale(0)',
+    const animatedStyleProps =
+      useSpring({
+        transform: isVictory ? 'scale(1)' : 'scale(0)',
         config: springConfig.stiff,
-      }));
-
-    useEffect(() =>{
-      if (isVictory)
-        setAnimatedStyleProps({ transform: 'scale(1)' });
-      else
-        setAnimatedStyleProps({ transform: 'scale(0)' });
-    }, [isVictory, setAnimatedStyleProps]);
+        delay: 1000,
+        onStart() {
+          // TODO: add audio cue
+        },
+      });
 
     return isVictory ? (
       <Modal>
@@ -50,7 +48,7 @@ const VictoryImpl: React.FC<VictoryStoreProps & VictoryDispatchProps> =
           <div className='reduct-level-modal-actions'>
             <button
               type='button'
-              onClick={() => startLevel(nextLevel)}
+              onClick={() => startLevel(currentLevel + 1)}
               className='btn btn-primary'
             >
               Next level
@@ -64,7 +62,7 @@ const VictoryImpl: React.FC<VictoryStoreProps & VictoryDispatchProps> =
 export const VictoryOverlay = connect(
   (store: DeepReadonly<GlobalState>) => ({
     isVictory: checkVictory(store.game.$present),
-    nextLevel: store.game.$present.level + 1,
+    currentLevel: store.game.$present.level,
   }),
   (dispatch) => ({
     startLevel(index: number) { dispatch(createStartLevel(index)); },
