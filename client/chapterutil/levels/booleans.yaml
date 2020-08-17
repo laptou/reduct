@@ -23,16 +23,17 @@ levels:
     goal:
       - "'fish'"
   - board:
-      - "x => x > _ ? 'big number' : 'little number'"
+      - "x => x > _ ? 'big' : 'little'"
       - func => __tuple(func, func, func)
+      - 2
+    goal:
+      - "'little'"
+      - "'little'"
+      - "'big'"
+    toolbox:
       - 1
       - 2
-      - 3
       - 5
-    goal:
-      - "'little number'"
-      - "'little number'"
-      - "'big number'"
     hint: Make a function that tells us whether a number is big or little, then duplicate it.
   - board:
       - "number == _ ? _ : _"
