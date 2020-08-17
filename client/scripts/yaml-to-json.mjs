@@ -57,19 +57,19 @@ import yaml from 'js-yaml';
 
       originalLevel.board = level.board;
       originalLevel.goal = level.goal;
-      originalLevel.syntax = level.syntax;
       originalLevel.toolbox = level.toolbox;
+      originalLevel.syntax = level.syntax || [];
       originalLevel.defines = level.defines || [];
-      originalLevel.globals = level.globals?.add || [];
-      originalLevel.hideGlobals = level.globals?.hide || [];
-      originalLevel.input = level.autograder.input || [];
-      originalLevel.output = level.autograder.output || [];
+      originalLevel.globals = level.globals && level.globals.add || {};
+      originalLevel.hideGlobals = level.globals && level.globals.hide || [];
+      originalLevel.input = level.autograder && level.autograder.input || [];
+      originalLevel.output = level.autograder && level.autograder.output || [];
       originalLevel.textgoal = level.hint;
     });
 
     // if JSON has more levels than YAML, cut them
     originalChapter.levels = originalChapter.levels.slice(0, levels.length);
-    originalChapter.name = name;
+    originalChapter.chapterName = name;
     
     await fs.writeJSON(jsonFilePath, originalChapter);
   }
