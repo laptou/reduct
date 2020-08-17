@@ -44,6 +44,15 @@
   pointer-events: all;
 }
 
+.reduct-level-modal {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+
+  transform-origin: center center;
+}
+
 .reduct-level-modal-title {
   height: 15rem;
   margin: 1rem;
