@@ -23,13 +23,16 @@ levels:
   - board:
       - x => _
       - y => x + y
+      - 3 + 4
+      - __note('Click on the "3 + 4" to simplify it.')
     toolbox:
       - 3
       - 4
       - -2
     goal:
       - 7
-    hint: Functions are values. That means functions can return other functions...
+      - 7
+    hint: Try dragging something into that empty slot (the round white oval).
   - board:
       - func => __tuple(func, func, func)
     toolbox:
