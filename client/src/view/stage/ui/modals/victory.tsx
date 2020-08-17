@@ -1,18 +1,17 @@
-import React, { useEffect, createRef, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import {
-  animated, config as springConfig, useSpring, ReactSpringHook, useChain,
+  animated, config as springConfig, ReactSpringHook, useChain, useSpring,
 } from 'react-spring';
 
 import { Modal } from '../modal';
 
+import { log } from '@/logging/logger';
 import { createStartLevel } from '@/store/action/game';
+import { checkVictory } from '@/store/helper';
 import { GlobalState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
 import LevelCompleteText from '@resources/graphics/titles/level-complete.svg';
-import { checkVictory } from '@/store/helper';
-import Audio from '@/resource/audio';
-import { log } from '@/logging/logger';
 
 interface VictoryStoreProps {
   isVictory: boolean;
