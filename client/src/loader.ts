@@ -74,13 +74,22 @@ interface ChapterDefinition {
    */
   levels: LevelDefinition[];
 
+  /**
+   * The index of this chapter in the progression.
+   */
+  index: number;
+
   /** Names of chapters which must be completed before this chapter can be
    * attempted. */
   requirements: string[];
 }
 
 interface LevelDefinition {
-  egg: true;
+  board: string[];
+  toolbox: string[];
+  goal: string[];
+  globals: Record<string, string>;
+  textgoal?: string;
 }
 
 const chapterDigraph: Record<string, string[]> = {
@@ -118,7 +127,7 @@ export async function loadChapters(): Promise<ChapterProgression> {
   const chapters = await Promise.all(Object.keys(chapterDigraph).map(loadChapter));
 
   // sort chapters according to digraph using topological sort
-  const sorted = new Set<string>();
+  const sorted = new Map<string, ChapterDefinition>();
   let remaining = chapters.length;
 
   outer:
@@ -128,8 +137,10 @@ export async function loadChapters(): Promise<ChapterProgression> {
 
       if (!requirementsMet || sorted.has(chapter.key)) continue;
 
-      // Set remembers the order in which keys were inserted
-      sorted.add(chapter.key);
+      chapter.index = sorted.size;
+
+      // Map remembers the order in which keys were inserted
+      sorted.set(chapter.key, chapter);
 
       remaining--;
       continue outer;
@@ -138,6 +149,36 @@ export async function loadChapters(): Promise<ChapterProgression> {
     throw new Error('circular dependency detected in chapter progression');
   }
 
-  progression = { chapters };
+  progression = { chapters: [...sorted.values()] };
   return progression;
+}
+
+export function getLevelByIndex(index: number): LevelDefinition {
+  let current = 0;
+
+  for (const chapter of progression!.chapters) {
+    if (current + chapter.levels.length < index) {
+      current += chapter.levels.length;
+      continue;
+    }
+
+    return chapter.levels[index - current];
+  }
+
+  throw new Error(`level ${index} was not found`);
+}
+
+export function getChapterByLevelIndex(index: number): ChapterDefinition {
+  let current = 0;
+
+  for (const chapter of progression!.chapters) {
+    if (current + chapter.levels.length < index) {
+      current += chapter.levels.length;
+      continue;
+    }
+
+    return chapter;
+  }
+
+  throw new Error(`chapter for level ${index} was not found`);
 }

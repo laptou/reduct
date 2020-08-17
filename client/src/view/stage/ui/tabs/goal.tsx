@@ -7,7 +7,7 @@ import { GlobalState } from '@/store/state';
 import { NodeId } from '@/semantics';
 import { DeepReadonly } from '@/util/helper';
 import '@resources/style/react/ui/goal.scss';
-import Loader from '@/loader';
+import { getLevelByIndex } from '@/loader';
 
 interface GoalStoreProps {
   nodeIds: ReadonlySet<NodeId>;
@@ -26,8 +26,7 @@ function getRandomAlien() {
 
 const GoalImpl: FunctionComponent<GoalProps> =
   (props) => {
-    const progression = Loader.progressions['Elementary'];
-    const level = progression.levels[props.levelIndex];
+    const level = getLevelByIndex(props.levelIndex);
 
     return (
       <div id='reduct-goal'>
