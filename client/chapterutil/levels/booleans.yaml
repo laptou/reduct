@@ -52,7 +52,7 @@ levels:
       - 5
       - 10
     goal:
-      - true
-      - false
-      - false
+      - "'cool'"
+      - "'not cool'"
+      - "'not cool'"
     hint: Make a function that tells us whether a number is cool.
