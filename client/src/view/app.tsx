@@ -4,7 +4,7 @@ import React, { Suspense } from 'react';
 import { hot } from 'react-hot-loader/root';
 import { Provider } from 'react-redux';
 
-import { ErrorDisplay } from './banner/error';
+import { ErrorDisplay } from './stage/ui/modals/error';
 import { LoadingPage } from './stage/ui/loading';
 
 import * as progression from '@/game/progression';

@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { DefeatOverlay } from './banner/defeat';
-import { Title } from './banner/title';
-import { VictoryOverlay } from './banner/victory';
+import { DefeatOverlay } from './stage/ui/modals/defeat';
+import { Title } from './stage/ui/modals/title';
+import { VictoryOverlay } from './stage/ui/modals/victory';
 import { Board } from './stage/ui/board';
 import { GoalTab } from './stage/ui/tabs/goal';
 import { HistoryTab } from './stage/ui/tabs/history';
@@ -13,9 +13,11 @@ import { Sidebar } from './stage/ui/tabs/sidebar';
 import { TutorialTab } from './stage/ui/tabs/sidebar/tutorial';
 import { DefinitionsTab } from './stage/ui/tabs/sidebar/definitions';
 import { FeedbackCollectorPopup } from './stage/ui/feedback-collector';
+import { Logo } from './stage/ui/logo';
 
 import { DeepReadonly } from '@/util/helper';
 import { GameMode, GlobalState } from '@/store/state';
+import '@resources/style/react/ui/game.scss';
 
 interface GameStoreProps
 {
@@ -35,6 +37,7 @@ function GameImpl(props: GameStoreProps) {
   case GameMode.Defeat:
     return (
       <>
+        <Logo id='reduct-game-logo' />
         <Board />
         <ToolboxTab />
         <GoalTab />

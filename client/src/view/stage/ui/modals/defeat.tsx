@@ -1,6 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { Modal } from '../modal';
+
+import LevelIncompleteText from '@resources/graphics/titles/level-incomplete.svg';
 import { DeepReadonly } from '@/util/helper';
 import { GlobalState, GameMode } from '@/store/state';
 import { undo as createUndo } from '@/store/reducer/undo';
@@ -18,15 +21,25 @@ const DefeatImpl = (props: DefeatStoreProps & DefeatDispatchProps) => {
     return null;
 
   return (
-    <div className='reduct-banner-page'>
-      <h1 id='defeat-message'>You&apos;re stuck.</h1>
+    <Modal>
+      <div className='reduct-level-modal'>
+        <img
+          src={LevelIncompleteText}
+          className='reduct-level-modal-title'
+        />
 
-      <div className='reduct-banner-actions'>
-        <button type='button' onClick={() => props.undo()}>
-          Undo
-        </button>
+        <p className='reduct-level-modal-text'>
+          There are no moves from here that would complete the level.
+          Let&apos;s try something else.
+        </p>
+
+        <div className='reduct-level-modal-actions'>
+          <button type='button' onClick={() => props.undo()}>
+            Undo
+          </button>
+        </div>
       </div>
-    </div>
+    </Modal>
   );
 };
 
