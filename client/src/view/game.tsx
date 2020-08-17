@@ -24,8 +24,7 @@ interface GameStoreProps
   mode: GameMode;
 }
 
-// TODO: fix type for `store`
-function GameImpl(props: GameStoreProps) {
+const GameImpl: React.FC<GameStoreProps> = (props) => {
   switch (props.mode) {
   case GameMode.Title:
     return (
@@ -33,8 +32,6 @@ function GameImpl(props: GameStoreProps) {
     );
 
   case GameMode.Gameplay:
-  case GameMode.Victory:
-  case GameMode.Defeat:
     return (
       <>
         <Logo id='reduct-game-logo' />
@@ -52,13 +49,14 @@ function GameImpl(props: GameStoreProps) {
           </Sidebar.Section>
         </Sidebar>
         <FeedbackCollectorPopup />
-        {props.mode === GameMode.Victory && <VictoryOverlay />}
-        {props.mode === GameMode.Defeat && <DefeatOverlay />}
+        <VictoryOverlay />
+        <DefeatOverlay />
       </>
     );
+  default:
+    return <>`not implemented: game mode ${props.mode}`</>;
   }
-
-}
+};
 
 export const Game = connect((state: DeepReadonly<GlobalState>) => ({
   mode: state.game.$present.mode,

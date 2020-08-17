@@ -1,5 +1,6 @@
+
 import React, {
-  FunctionComponent, RefObject, useEffect, useRef, useState, useMemo, useLayoutEffect,
+  FunctionComponent, RefObject, useLayoutEffect, useMemo, useRef, useState,
 } from 'react';
 import { connect } from 'react-redux';
 import { animated, useTransition } from 'react-spring';
@@ -7,11 +8,12 @@ import { animated, useTransition } from 'react-spring';
 import { StageProjection } from '../projection/base';
 
 import { NodeId } from '@/semantics';
-import { createClearError, createDetectCompetion, createMoveNodeToBoard } from '@/store/action/game';
+import { createClearError, createMoveNodeToBoard } from '@/store/action/game';
 import { GlobalState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
-import '@resources/style/react/ui/board.scss';
 import { placeRects } from '@/view/layout/grid';
+
+import '@resources/style/react/ui/board.scss';
 
 interface BoardStoreProps {
   board: DeepReadonly<Set<NodeId>>;
@@ -25,11 +27,6 @@ interface BoardDispatchProps {
    * @param node The node to move to the board.
    */
   moveNodeToBoard(node: NodeId): void;
-
-  /**
-   * Detects whether the game is over.
-   */
-  detectCompletion(): void;
 
   /**
    * Clears any errors currently held by the store.
@@ -111,11 +108,8 @@ const BoardImpl: FunctionComponent<BoardProps> =
     const [positions, setPositions] = useState(new Map<NodeId, NodePos>());
 
     const {
-      board, added, detectCompletion, clearError,
+      board, added, clearError,
     } = props;
-
-    // when the board changes, check if the level has been completed
-    useEffect(() => detectCompletion(), [board, detectCompletion]);
 
     const transitions = useTransition(
       [...board],
@@ -326,7 +320,6 @@ export const Board = connect(
   }),
   (dispatch) => ({
     moveNodeToBoard(id: NodeId) { dispatch(createMoveNodeToBoard(id)); },
-    detectCompletion() { dispatch(createDetectCompetion()); },
     clearError() { dispatch(createClearError()); },
   })
 )(BoardImpl);

@@ -1,12 +1,11 @@
 import { castDraft, produce } from 'immer';
 
 import {
-  ActionKind, createDetach, createDetectCompetion, createEvalApply, createEvalConditional, createEvalIdentifier, createEvalLambda, createEvalLet, createEvalNot, createEvalOperator, createMoveNodeToBoard, createStep, ReductAction,
+  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalIdentifier, createEvalLambda, createEvalLet, createEvalNot, createEvalOperator, createMoveNodeToBoard, createStep, ReductAction,
 } from '../action/game';
 import {
   CircularCallError, GameError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, InvalidActionError,
 } from '../errors';
-import { checkDefeat, checkVictory } from '../helper';
 import { GameMode, GameState } from '../state';
 
 import type { Flat, NodeId, NodeMap } from '@/semantics';
@@ -837,12 +836,10 @@ export function gameReducer(
     if (getKindForNode(targetNode, state.nodes) !== 'expression') {
       executing.delete(targetNodeId);
 
-      state = {
+      return {
         ...state,
         executing,
       };
-
-      return gameReducer(state, createDetectCompetion());
     }
 
     executing.add(targetNodeId);
@@ -891,22 +888,6 @@ export function gameReducer(
       ...state,
       executing,
     };
-  }
-
-  case ActionKind.DetectCompletion: {
-    if (checkVictory(state))
-      return {
-        ...state,
-        mode: GameMode.Victory,
-      };
-
-    if (checkDefeat(state))
-      return {
-        ...state,
-        mode: GameMode.Defeat,
-      };
-
-    return state;
   }
 
   case ActionKind.Raise: {
