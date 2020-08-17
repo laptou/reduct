@@ -152,7 +152,7 @@ function getOverlappingArea(
   let i = 0;
 
   // iterate until we would cross left edge of rect
-  while (x + cols[i] <= rect.x) {
+  while (i < cols.length && x + cols[i] <= rect.x) {
     x += cols[i];
     i++;
   }
@@ -160,7 +160,7 @@ function getOverlappingArea(
   const firstCol = i;
 
   // iterate until we would do right edge of rect
-  while (x + w < rect.x + rect.w) {
+  while (i < cols.length && x + w < rect.x + rect.w) {
     w += cols[i];
     i++;
   }
@@ -170,7 +170,7 @@ function getOverlappingArea(
   i = 0;
 
   // iterate until we would cross top edge of rect
-  while (y + rows[i] <= rect.y) {
+  while (i < rows.length && y + rows[i] <= rect.y) {
     y += rows[i];
     i++;
   }
@@ -178,7 +178,7 @@ function getOverlappingArea(
   const firstRow = i;
 
   // iterate until we do cross bottom edge of rect
-  while (y + h < rect.y + rect.h) {
+  while (i < rows.length && y + h < rect.y + rect.h) {
     h += rows[i];
     i++;
   }
