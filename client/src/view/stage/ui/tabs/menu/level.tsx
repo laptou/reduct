@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import Loader from '@/loader';
 import { createStartLevel } from '@/store/action/game';
 import { GlobalState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
 
 import '@resources/style/react/ui/level.scss';
+import { progression, getChapterByLevelIndex } from '@/loader';
 
 interface LevelMenuStoreProps {
   levelIndex: number;
@@ -27,18 +27,13 @@ type LevelSelectProps = LevelMenuStoreProps & LevelSelectDispatchProps;
 type LevelInfoProps = LevelMenuStoreProps & LevelInfoOwnProps;
 
 const LevelSelectImpl: React.FC<LevelSelectProps> = (props) => {
+  // calculate index for each level
 
-  const progression = Loader.progressions['Elementary'];
-  const chapters = (progression.linearChapters as string[]).map(chapterKey => {
-    const chapter = progression.chapters[chapterKey];
-    const levels: number[] = [];
-    for (let index = chapter.startIdx; index <= chapter.endIdx; index++) {
-      levels.push(index);
-    }
-
+  let index = 0;
+  const indexedChapters = progression!.chapters.map(chapter => {
     return {
-      levels,
-      key: chapterKey,
+      levels: chapter.levels.map(() => index++),
+      key: chapter.key,
       name: chapter.name,
     };
   });
@@ -46,7 +41,7 @@ const LevelSelectImpl: React.FC<LevelSelectProps> = (props) => {
   return (
     <div id='reduct-level-select'>
       {
-        chapters.map(({ levels, key, name }) => (
+        indexedChapters.map(({ levels, key, name }) => (
           <div className='reduct-level-select-chapter' key={key}>
             <span className='reduct-level-select-chapter-name'>
               {name}
@@ -73,12 +68,7 @@ const LevelSelectImpl: React.FC<LevelSelectProps> = (props) => {
 };
 
 const LevelInfoImpl: React.FC<LevelInfoProps> = ({ levelIndex, onToggleLevelSelect }) => {
-  const progression = Loader.progressions['Elementary'];
-  const chapters = (progression.linearChapters as string[]).map(key => progression.chapters[key]);
-  const chapterIndex = chapters.findIndex(
-    ({ startIdx, endIdx }) => startIdx <= levelIndex && endIdx >= levelIndex
-  );
-  const chapter = chapters[chapterIndex];
+  const chapter = getChapterByLevelIndex(levelIndex);
 
   return (
     <div id='reduct-level-info'>
@@ -86,7 +76,7 @@ const LevelInfoImpl: React.FC<LevelInfoProps> = ({ levelIndex, onToggleLevelSele
         Level {levelIndex + 1}
       </span>
       <span id='reduct-level-info-chapter'>
-        <span id='reduct-level-info-chapter-index'>Chapter {chapterIndex + 1}:</span>
+        <span id='reduct-level-info-chapter-index'>Chapter {chapter.index + 1}:</span>
         &nbsp;
         <span>{chapter.name}</span>
       </span>

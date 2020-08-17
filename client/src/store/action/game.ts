@@ -1,9 +1,10 @@
 import { NodeId, NodeMap, ReductNode } from '@/semantics';
-import Loader from '@/loader';
+import { getLevelByIndex } from '@/loader';
 import { parseProgram, MacroMap } from '@/syntax/es6';
 import { createReferenceNode, createBuiltInReferenceNode } from '@/semantics/util';
 import { flatten } from '@/util/nodes';
 import { builtins } from '@/semantics/defs/builtins';
+import { DefineNode } from '@/semantics/defs';
 
 export enum ActionKind {
   UseToolbox = 'use-toolbox',
@@ -181,7 +182,7 @@ export interface StartLevelAction {
  * @param index The index of the level to start.
  */
 export function createStartLevel(index: number): StartLevelAction {
-  const levelDefinition = Loader.progressions.Elementary.levels[index];
+  const levelDefinition = getLevelByIndex(index);
 
   const macros: MacroMap = new Map();
 
@@ -189,59 +190,33 @@ export function createStartLevel(index: number): StartLevelAction {
     macros.set(name, () => createBuiltInReferenceNode(name));
   }
 
-  if (levelDefinition.macros) {
-    for (const [name, script] of Object.entries(levelDefinition.macros)) {
-      // TODO: remove override for builtins, remove defs for builtin methods in levels
-      if (name in builtins) continue;
-
-      // Needs to be a thunk in order to allocate new ID each time
-      macros.set(name, () => parseProgram(script, macros));
-    }
-  }
-
-  // Parse the defined names carried over from previous levels, the
-  // globals added for this level, and any definitions on the board.
-  const prevDefinedNames = levelDefinition.extraDefines
-    ? levelDefinition.extraDefines
-      .map((script: any) => {
-        const node = parseProgram(script.toString(), macros);
-
-        if (node.type !== 'define') {
-          return null;
-        }
-
-        return [node.fields.name, () => createReferenceNode(node.fields.name)];
-      })
-      .filter((define) => define !== null)
-    : [];
-
   const globalDefinedNames = Object.entries(levelDefinition.globals)
-    .map(([name, script]) => {
-      const node = parseProgram(script.toString(), macros);
-
-      if (node.type !== 'define') {
-        return null;
-      }
-
-      return [name, () => createReferenceNode(name)];
-    });
+    .map((script: any) => {
+      return parseProgram(script.toString(), macros);
+    })
+    .filter((node): node is DefineNode => node.type === 'define')
+    .map((node) =>
+      [
+        node.fields.name,
+        () => createReferenceNode(node.fields.name),
+      ] as const
+    );
 
   const newDefinedNames = levelDefinition.board
     .map((script: any) => {
-      const node = parseProgram(script.toString(), macros);
-
-      if (node.type !== 'define') {
-        return null;
-      }
-
-      return [node.fields.name, () => createReferenceNode(node.fields.name)];
+      return parseProgram(script.toString(), macros);
     })
-    .filter((define) => define !== null);
+    .filter((node): node is DefineNode => node.type === 'define')
+    .map((node) =>
+      [
+        node.fields.name,
+        () => createReferenceNode(node.fields.name),
+      ] as const
+    );
 
   // Turn these defines into "macros", so that the name resolution
   // system can handle lookup.
-  for (const [name, expr] of [...prevDefinedNames, ...newDefinedNames, ...globalDefinedNames]) {
-    // TODO: remove override for builtins, remove defs for builtin methods in levels
+  for (const [name, expr] of [...newDefinedNames, ...globalDefinedNames]) {
     if (name in builtins) continue;
 
     macros.set(name, expr);
@@ -254,17 +229,6 @@ export function createStartLevel(index: number): StartLevelAction {
 
   // Go back and parse the globals as well.
   const globals = new Map();
-  levelDefinition.extraDefines
-    .map((script) => parseProgram(script.toString(), macros))
-    .forEach((node) => {
-      if (node.type !== 'define') {
-        return;
-      }
-
-      if (node.fields.name in builtins) return;
-
-      globals.set(node.fields.name, node);
-    });
 
   for (const [name, script] of Object.entries(levelDefinition.globals)) {
     // TODO: remove override for builtins, remove defs for builtin methods in levels
