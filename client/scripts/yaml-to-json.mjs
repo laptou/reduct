@@ -22,13 +22,16 @@ void (async () => {
   const chapterFiles = (await fs.readdir(chapterDirectory)).filter(fileName => fileName.endsWith('.yaml'));
   console.info(`found ${chapterFiles.length} YAML level definitions`);
 
+  const chapterNames = [];
+
   for (const fileName of chapterFiles) {
     console.info(`processing ${fileName}`);
     const chapterName = basename(fileName, '.yaml');
+    chapterNames.push(chapterName);
 
     const yamlFilePath = resolve(chapterDirectory, fileName);
     const contents = await fs.readFile(yamlFilePath);
-    const { levels } = yaml.safeLoad(contents);
+    const { levels, name } = yaml.safeLoad(contents);
 
     // this script should just update the existing JSON definitions, not
     // overwrite them
@@ -38,7 +41,7 @@ void (async () => {
     try {
       originalChapter = await fs.readJSON(jsonFilePath);
     } catch {
-      originalChapter = {};
+      originalChapter = { levels: [] };
     }
 
     levels.forEach((level, index) => {
@@ -54,20 +57,31 @@ void (async () => {
 
       originalLevel.board = level.board;
       originalLevel.goal = level.goal;
-      originalLevel.syntax = level.syntax;
       originalLevel.toolbox = level.toolbox;
-      originalLevel.defines = level.defines;
-      originalLevel.globals = level.globals.add;
-      originalLevel.hideGlobals = level.globals.hide;
-      originalLevel.input = level.autograder.input;
-      originalLevel.output = level.autograder.output;
+      originalLevel.syntax = level.syntax || [];
+      originalLevel.defines = level.defines || [];
+      originalLevel.globals = level.globals && level.globals.add || {};
+      originalLevel.hideGlobals = level.globals && level.globals.hide || [];
+      originalLevel.input = level.autograder && level.autograder.input || [];
+      originalLevel.output = level.autograder && level.autograder.output || [];
       originalLevel.textgoal = level.hint;
     });
 
     // if JSON has more levels than YAML, cut them
     originalChapter.levels = originalChapter.levels.slice(0, levels.length);
-
+    originalChapter.chapterName = name;
+    
     await fs.writeJSON(jsonFilePath, originalChapter);
+  }
+
+  // delete JSON files that don't correspond to a YAML file
+  for (const jsonFileName of await fs.readdir(levelDirectory)) {
+    const chapterName = basename(jsonFileName, '.json');
+    
+    if (!chapterNames.includes(chapterName)) {
+      console.log(`deleting ${jsonFileName}`);
+      await fs.unlink(resolve(levelDirectory, jsonFileName));
+    }
   }
 
   console.info('done');

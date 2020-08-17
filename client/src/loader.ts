@@ -93,25 +93,8 @@ interface LevelDefinition {
 }
 
 const chapterDigraph: Record<string, string[]> = {
-  'functions': ['replication'],
-  'replication': ['multiargument'],
-  'multiargument': ['booleans-intro'],
-  'booleans-intro': ['application'],
-  'application': ['definition'],
-  'definition': ['testing'],
-  'testing': ['lists-intro'],
-  'lists-intro': ['lists-query'],
-  'lists-query': ['higher-order-functions'],
-  'higher-order-functions': ['define-challenges'],
-  'define-challenges': ['recursion-basics'],
-  'recursion-basics': ['recursion-higher-order'],
-  'recursion-higher-order': ['remove-first'],
-  'remove-first': ['count-all'],
-  'count-all': ['list-functions'],
-  'list-functions': ['strings'],
-  'strings': ['let'],
-  'let': ['play'],
-  'play': [],
+  functions: ['booleans'],
+  booleans: [],
 };
 
 async function loadChapter(key: string): Promise<ChapterDefinition> {

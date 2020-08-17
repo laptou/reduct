@@ -147,7 +147,17 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
   }
 
   case 'UnaryExpression': {
-    return createNotNode(parseNode(node.argument, macros));
+    switch (node.operator) {
+    case '!':
+      return createNotNode(parseNode(node.argument, macros));
+    case '-': {
+      const numberLiteral = node.argument as estree.Literal;
+      const numberValue = numberLiteral.value as number;
+      return createNumberNode(-numberValue);
+    }
+    default:
+      throw new Error(`The ${node.operator} operator is not supported`);
+    }
   }
 
   case 'BinaryExpression':
