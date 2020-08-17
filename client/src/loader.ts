@@ -10,6 +10,21 @@ interface AudioManifest {
   sprite: Record<string, [number, number]>;
 }
 
+export async function loadAudio(key: string): Promise<void> {
+  const audioFileUri = await import(`@resources/audio/${key}.mp3`);
+
+  return new Promise((resolve, reject) => {
+    const audio = new Howl({
+      src: audioFileUri,
+      onload: () => {
+        audios.set(key, audio);
+        resolve();
+      },
+      onloaderror: reject,
+    });
+  });
+}
+
 export async function loadAudioSprite(key: string): Promise<void> {
   const audioManifest =
     await import(`@resources/audio/${key}.json`) as AudioManifest;
