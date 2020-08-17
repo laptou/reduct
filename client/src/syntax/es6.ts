@@ -7,7 +7,7 @@ import * as progression from '../game/progression';
 import { ReductNode } from '@/semantics';
 import { LambdaNode } from '@/semantics/defs';
 import {
-  createApplyNode, createArrayNode, createBinOpNode, createBoolNode, createConditionalNode, createDefineNode, createLambdaArgNode, createLambdaNode, createMemberNode, createMissingNode, createNotNode, createNumberNode, createOpNode, createReferenceNode, createStrNode, createSymbolNode, createVtupleNode, createPtupleNode, createLetNode,
+  createApplyNode, createArrayNode, createBinOpNode, createBoolNode, createConditionalNode, createDefineNode, createLambdaArgNode, createLambdaNode, createMemberNode, createMissingNode, createNotNode, createNumberNode, createOpNode, createReferenceNode, createStrNode, createSymbolNode, createVtupleNode, createPtupleNode, createLetNode, createNoteNode,
 } from '@/semantics/util';
 
 function modifier(ast: esprima.Program) {
@@ -202,6 +202,7 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
       createOpNode(node.operator),
       parseNode(node.right, macros)
     );
+
   case 'CallExpression': {
     if (node.callee.type === 'Identifier') {
 
@@ -224,6 +225,22 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
           createReferenceNode(ident.name),
           parseNode(value, macros),
           parseNode(block.body, macros)
+        );
+      }
+
+      if (node.callee.name === '__note') {
+        const [text] = node.arguments;
+
+        if (text.type !== 'Literal' || typeof text.value !== 'string')  {
+          throw new Error('First parameter of a let expression must be a string literal.');
+        }
+
+        if (node.arguments.length > 3) {
+          throw new Error('Note blocks only require 1 argument.');
+        }
+
+        return createNoteNode(
+          text.value
         );
       }
 

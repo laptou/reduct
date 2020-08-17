@@ -4,7 +4,7 @@ import {
   ActionKind, createDetach, createDetectCompetion, createEvalApply, createEvalConditional, createEvalIdentifier, createEvalLambda, createEvalLet, createEvalNot, createEvalOperator, createMoveNodeToBoard, createStep, ReductAction,
 } from '../action/game';
 import {
-  CircularCallError, GameError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError,
+  CircularCallError, GameError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, NoteNodeError,
 } from '../errors';
 import { checkDefeat, checkVictory } from '../helper';
 import { GameMode, GameState } from '../state';
@@ -86,7 +86,6 @@ export function gameReducer(
     const valueNode = state.nodes.get(letNode.subexpressions.value) as DRF;
     const bodyNode = state.nodes.get(letNode.subexpressions.body) as DRF;
     // place the reference node in the scope record of letnode with a value of e1
-    //letnode.scope[refnode.fields.name] = state.nodes.get(letnode.subexpressions.e1)!.id;
 
     if (!state.board.has(getRootForNode(letNodeId, state.nodes).id))
       throw new NotOnBoardError(letNodeId);
@@ -105,13 +104,6 @@ export function gameReducer(
 
     return produce(state, draft => {
       const bodyNodeMut = draft.nodes.get(letNode.subexpressions.body)!;
-
-      if (!bodyNodeMut.scope) {
-        bodyNodeMut.scope = {};
-      }
-
-      const varName = refNode.fields.name;
-      bodyNodeMut.scope[varName] = valueNode.id;
 
       // update parent's reference to this node since we are replacing it with
       // its body
@@ -717,6 +709,9 @@ export function gameReducer(
 
       const parent = draft.nodes.get(slot.parent)!;
       const child = draft.nodes.get(nodeId)!;
+
+      if (child.type === 'note')
+        throw new NoteNodeError(child.id);
 
       draft.board.delete(nodeId);
 

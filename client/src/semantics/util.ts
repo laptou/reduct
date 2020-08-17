@@ -13,6 +13,7 @@ import type { IdentifierNode } from './defs/identifier';
 import type {
   BoolNode, NumberNode, ReductSymbol, StrNode, SymbolNode,
 } from './defs/value';
+import { NoteNode } from './defs/note';
 
 import type {
   Flat, NodeId, NodeMap, ReductNode,
@@ -164,6 +165,14 @@ export function createLetNode(variable: IdentifierNode, e1: ReductNode, e2: Redu
       value: e1,
       body: e2,
     },
+  };
+}
+
+export function createNoteNode(text: string): NoteNode {
+  return {
+    ...createNodeBase(),
+    type: 'note',
+    fields: { text },
   };
 }
 
@@ -352,6 +361,7 @@ export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKin
 
   case 'lambdaArg':
   case 'op':
+  case 'note':
     return 'syntax';
 
   case 'missing':
@@ -379,15 +389,10 @@ export function getDefinitionForName(
   node: DRF,
   state: DeepReadonly<GameState>
 ): NodeId | null {
-  let current: DRF = node;
+  let current: DRF | undefined = node;
 
   // traverse the tree of nodes to find if 'name' is in the scope
-  while (true) {
-    if ('scope' in current && name in current.scope) {
-      return current.scope[name];
-    }
-
-    // special case for lambda arg nodes until scope is implemented
+  while (current) {
     if (current.type === 'lambda') {
       for (const argNode of iterateTuple<LambdaArgNode>(current.subexpressions.arg, state.nodes)) {
         // we found something with this name
@@ -410,7 +415,7 @@ export function getDefinitionForName(
     if (!current.parent)
       break;
 
-    current = state.nodes.get(current.parent)!;
+    current = state.nodes.get(current.parent);
   }
 
   if (state.globals.has(name)) {

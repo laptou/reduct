@@ -186,7 +186,7 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
     // transition for when this projection's node is changed
     const transition = useTransition(
       node,
-      (n) => n.id,
+      null,
       {
         from: {
           transform: 'scale(0)',
@@ -202,6 +202,7 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
           opacity: 0,
         },
       });
+
     return (
       <div className='projection-animation-container'>
         {
