@@ -7,7 +7,7 @@ import { resolve, dirname, basename } from 'path';
 import fs from 'fs-extra';
 import yaml from 'js-yaml';
 
-(async () => {
+void (async () => {
   // __dirname does not work in ES modules
   const scriptDirectory = dirname(new URL(import.meta.url).pathname);
   const chapterDirectory = resolve(scriptDirectory, '../chapterutil/levels');
@@ -34,7 +34,7 @@ import yaml from 'js-yaml';
     // overwrite them
     const jsonFilePath = resolve(levelDirectory, `${chapterName}.json`);
     let originalChapter;
-    
+
     try {
       originalChapter = await fs.readJSON(jsonFilePath);
     } catch {

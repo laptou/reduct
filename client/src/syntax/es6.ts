@@ -2,8 +2,6 @@ import * as esprima from 'esprima';
 // eslint-disable-next-line import/no-unresolved
 import type * as estree from 'estree';
 
-import * as progression from '../game/progression';
-
 import { ReductNode } from '@/semantics';
 import { LambdaNode } from '@/semantics/defs';
 import {

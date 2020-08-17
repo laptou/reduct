@@ -1,8 +1,8 @@
 import { Howl } from 'howler';
 
 export let progression: ChapterProgression | null = null;
-export const audios = new Map();
-export const audioSprites = new Map();
+export const audios = new Map<string, Howl>();
+export const audioSprites = new Map<string, Howl>();
 
 interface AudioManifest {
   urls: string[];
@@ -11,7 +11,7 @@ interface AudioManifest {
 }
 
 export async function loadAudio(key: string): Promise<void> {
-  const audioFileUri = await import(`@resources/audio/${key}.mp3`);
+  const { default: audioFileUri } = await import(`@resources/audio/${key}.mp3`);
 
   return new Promise((resolve, reject) => {
     const audio = new Howl({
@@ -20,7 +20,7 @@ export async function loadAudio(key: string): Promise<void> {
         audios.set(key, audio);
         resolve();
       },
-      onloaderror: reject,
+      onloaderror: () => reject(`failed to load audio ${key}`),
     });
   });
 }
@@ -47,7 +47,7 @@ export async function loadAudioSprite(key: string): Promise<void> {
 
         resolve();
       },
-      onloaderror: reject,
+      onloaderror: () => reject(`failed to load audio sprite ${key}`),
     });
 
     audioSprites.set(key, audio);
