@@ -21,35 +21,3 @@ body, html {
   height: 100vh;
 }
 
-#reduct-modal {
-  position: fixed;
-  z-index: 200;
-  display: flex;
-  flex-flow: column nowrap;
-  grid-row: 1 / 4;
-  grid-column: 1 / 5;
-  align-items: center;
-  justify-content: center;
-
-  width: 100vw;
-  height: 100vh;
-
-  h1 {
-    margin: 2rem;
-
-    font-weight: 700;
-    font-size: 4rem;
-
-    user-select: none;
-  }
-
-  .reduct-banner-actions {
-    margin: 2rem;
-  }
-}
-
-#reduct-modal-overlay {
-  background-color: rgba(black, 50%);
-  color: white;
-}
-
