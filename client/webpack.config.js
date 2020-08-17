@@ -84,10 +84,11 @@ module.exports = (env) => ({
         test: /\.css$/i,
         use: [
           {
-            loader: MiniCssExtractPlugin.loader,
+            loader: env.development
+              ? 'style-loader'
+              : MiniCssExtractPlugin.loader,
             options: {
               esModule: true,
-              hmr: env.development,
             },
           }, {
             loader: 'css-loader',
@@ -98,10 +99,11 @@ module.exports = (env) => ({
         test: /\.scss$/i,
         use: [
           {
-            loader: MiniCssExtractPlugin.loader,
+            loader: env.development
+              ? 'style-loader'
+              : MiniCssExtractPlugin.loader,
             options: {
               esModule: true,
-              hmr: env.development,
             },
           },
           {
