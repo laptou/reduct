@@ -1,22 +1,34 @@
 import React from 'react';
 
+import { Modal } from '../modal';
+
 interface ErrorDisplayProps {
   resetError(): void;
 }
 
 export const ErrorDisplay: React.FC<ErrorDisplayProps> = (props) => {
   return (
-    <div className='reduct-banner-page'>
-      <h1 id='error-message'>Uh oh.</h1>
-      <p>
-        Reduct has crashed. We&apos;ve been notified about this issue, and will fix it ASAP.
-      </p>
+    <Modal>
+      <div
+        className='reduct-error-modal'
+      >
+        <h1 className='reduct-error-modal-title'>Uh oh.</h1>
 
-      <div className='reduct-banner-actions'>
-        <button type='button' onClick={() => props.resetError()}>
-          Reset
-        </button>
+        <p className='reduct-error-modal-text'>
+          Reduct has crashed. We&apos;ve been notified about this issue, and will fix it ASAP.
+
+        </p>
+
+        <div className='reduct-error-modal-actions'>
+          <button
+            type='button'
+            onClick={() => props.resetError()}
+            className='btn btn-primary'
+          >
+            Reset
+          </button>
+        </div>
       </div>
-    </div>
+    </Modal>
   );
 };
