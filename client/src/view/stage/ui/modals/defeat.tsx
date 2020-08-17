@@ -7,12 +7,12 @@ import {
 import { Modal } from '../modal';
 
 import { log } from '@/logging/logger';
-import Audio from '@/resource/audio';
 import { checkDefeat, checkVictory } from '@/store/helper';
 import { undo as createUndo } from '@/store/reducer/undo';
 import { GlobalState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
 import LevelIncompleteText from '@resources/graphics/titles/level-incomplete.svg';
+import { playSound } from '@/resource/audio';
 
 interface DefeatStoreProps {
   isDefeat: boolean;
@@ -34,8 +34,7 @@ const DefeatImpl: React.FC<DefeatStoreProps & DefeatDispatchProps> =
         delay: 500,
         ref: scaleSpring,
         onStart() {
-          if (isDefeat)
-            Audio.play('stuck');
+          if (isDefeat) playSound('stuck');
         },
       });
 

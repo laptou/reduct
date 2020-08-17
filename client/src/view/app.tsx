@@ -7,25 +7,18 @@ import { Provider } from 'react-redux';
 import { ErrorDisplay } from './stage/ui/modals/error';
 import { LoadingPage } from './stage/ui/loading';
 
-import * as progression from '@/game/progression';
-
-const assetsPromise =
-  import(/* webpackChunkName: "loader" */ '@/loader')
-    .then(({ default: loader }) => Promise.all([
-      loader.loadAudioSprite('sounds', 'output'),
-      // comment this out b/c no images are currently used in the game
-      // loader.loadImageAtlas('spritesheet', 'assets', 'assets.png'),
-      // loader.loadImageAtlas('titlesprites', 'title-assets', 'title-assets.png'),
-      // loader.loadImageAtlas('menusprites', 'menu-assets', 'menu-assets.png'),
-      loader.loadChapters('Elementary', progression.ACTIVE_PROGRESSION_DEFINITION),
-    ]));
-
 const Game = React.lazy(async () => {
   // load modules of code and retrieve assets
   const [game, store] = await Promise.all([
     import(/* webpackChunkName: "game" */ './game'),
     import(/* webpackChunkName: "store" */ '@/store'),
-    assetsPromise,
+    import(/* webpackChunkName: "loader" */ '@/loader')
+      .then((loader) => Promise.all([
+        loader.loadAudio('level-complete'),
+        loader.loadAudio('level-incomplete'),
+        loader.loadAudio('drip'),
+        loader.loadChapters(),
+      ])),
   ]);
 
   // wait for persistor to load state into store
@@ -49,7 +42,7 @@ const Game = React.lazy(async () => {
   return { default: GameWithProvider };
 });
 
-export function App() {
+export const App: React.FC = () => {
   return (
     <Sentry.ErrorBoundary showDialog fallback={ErrorDisplay}>
       <Suspense fallback={<LoadingPage />}>
@@ -57,6 +50,6 @@ export function App() {
       </Suspense>
     </Sentry.ErrorBoundary>
   );
-}
+};
 
 export const HotApp = hot(App);
