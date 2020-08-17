@@ -31,7 +31,7 @@ import yaml from 'js-yaml';
 
     const yamlFilePath = resolve(chapterDirectory, fileName);
     const contents = await fs.readFile(yamlFilePath);
-    const { levels } = yaml.safeLoad(contents);
+    const { levels, name } = yaml.safeLoad(contents);
 
     // this script should just update the existing JSON definitions, not
     // overwrite them
@@ -41,7 +41,7 @@ import yaml from 'js-yaml';
     try {
       originalChapter = await fs.readJSON(jsonFilePath);
     } catch {
-      originalChapter = {};
+      originalChapter = { levels: [] };
     }
 
     levels.forEach((level, index) => {
@@ -59,17 +59,18 @@ import yaml from 'js-yaml';
       originalLevel.goal = level.goal;
       originalLevel.syntax = level.syntax;
       originalLevel.toolbox = level.toolbox;
-      originalLevel.defines = level.defines;
-      originalLevel.globals = level.globals.add;
-      originalLevel.hideGlobals = level.globals.hide;
-      originalLevel.input = level.autograder.input;
-      originalLevel.output = level.autograder.output;
+      originalLevel.defines = level.defines || [];
+      originalLevel.globals = level.globals?.add || [];
+      originalLevel.hideGlobals = level.globals?.hide || [];
+      originalLevel.input = level.autograder.input || [];
+      originalLevel.output = level.autograder.output || [];
       originalLevel.textgoal = level.hint;
     });
 
     // if JSON has more levels than YAML, cut them
     originalChapter.levels = originalChapter.levels.slice(0, levels.length);
-
+    originalChapter.name = name;
+    
     await fs.writeJSON(jsonFilePath, originalChapter);
   }
 

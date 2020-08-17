@@ -1,0 +1,14 @@
+name: Functions / tutorial
+levels:
+  - board:
+     - x => x
+     - x => STAR
+     - STAR
+     - RECT
+     - __note('Welcome to Reduct! Try dragging the shapes onto the lambdas.')
+    toolbox: []
+    goal:
+     - STAR
+     - STAR
+    hint:
+     - Check out this little alien. It doesn't do anything, but it's vibing.
