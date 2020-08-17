@@ -4,7 +4,8 @@ export const PROGRESSIONS = {
   Elementary: {
     dir: 'levels-progression/',
     digraph: {
-      functions: [],
+      functions: ['booleans'],
+      booleans: [],
     },
   },
 };
