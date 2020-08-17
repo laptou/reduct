@@ -59,6 +59,13 @@ export class NotOnBoardError extends GameError {
 }
 
 /**
+ * This error is thrown when the user tries to do some generic invalid action,
+ * such as dragging a note node or definition node into a slot.
+ */
+export class InvalidActionError extends GameError {
+}
+
+/**
  * This error is thrown when the user tries to call a lambda using itself as a
  * parameter.
  */

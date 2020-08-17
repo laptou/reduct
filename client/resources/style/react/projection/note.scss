@@ -1,0 +1,14 @@
+@use 'layout';
+@use 'fx';
+
+.projection.note {
+  @extend %projection-standalone;
+  max-width: 30rem;
+  padding: 1rem;
+  border: 1px dashed rgba(black, 0.5);
+
+  font-weight: 500;
+  white-space: pre-line;
+
+  opacity: 0.65;
+}

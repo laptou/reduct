@@ -18,6 +18,7 @@ import {
   OpNode,
 } from './defs';
 import { BuiltInIdentifierNode } from './defs/builtins';
+import { NoteNode } from './defs/note';
 
 import { DRF } from '@/util/helper';
 
@@ -52,10 +53,6 @@ export interface BaseNode {
   fields: Record<string | number, any>;
 
   subexpressions: Record<string, unknown>;
-
-  /** a map from node names to their ids in the current scope of a given
-   * node */
-  scope: Record<string, NodeId>;
 
   __meta?: NodeMetadata;
 }
@@ -107,6 +104,7 @@ export type ReductNode =
   LetNode |
   MemberNode |
   NotNode |
+  NoteNode |
   NumberNode |
   StrNode |
   BoolNode |
@@ -133,6 +131,7 @@ export type FlatReductNode =
   Flat<LetNode> |
   Flat<MemberNode> |
   Flat<NotNode> |
+  Flat<NoteNode> |
   Flat<NumberNode> |
   Flat<StrNode> |
   Flat<BoolNode> |
