@@ -1,17 +1,16 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import {
-  ReactSpringHook, useSpring, useChain, config as springConfig, animated,
+  animated, config as springConfig, ReactSpringHook, useChain, useSpring,
 } from 'react-spring';
 
+import { Logo } from '../logo';
 import { Modal } from '../modal';
 
 import { DeepReadonly } from '@/util/helper';
-import { GlobalState, GameMode } from '@/store/state';
+import { GameMode, GlobalState } from '@/store/state';
 import { createStartLevel } from '@/store/action/game';
 import { log } from '@/logging/logger';
-import LogoText from '@resources/graphics/titles/logo.svg';
-
 
 interface TitleStoreProps {
   isTitle: boolean;
@@ -41,8 +40,7 @@ const TitleImpl = (props: TitleStoreProps & TitleDispatchProps) => {
       from: {
         progress: 0,
       },
-      progress: isTitle ? 1 : 0,
-      delay: 750,
+      progress: 1,
       config: springConfig.slow,
       ref: raySpring,
     });
@@ -50,8 +48,9 @@ const TitleImpl = (props: TitleStoreProps & TitleDispatchProps) => {
   useChain([scaleSpring, raySpring]);
 
   useEffect(() => {
-    if (isTitle)
+    if (isTitle) {
       log('game:title');
+    }
   }, [isTitle]);
 
   if (!isTitle)
@@ -69,15 +68,12 @@ const TitleImpl = (props: TitleStoreProps & TitleDispatchProps) => {
   }
 
   return (
-    <Modal className='reduct-title-modal-overlay'>
+    <Modal className='modal-overlay-clear'>
       <animated.div
         className='reduct-title-modal'
         style={scaleProps}
       >
-        <img
-          src={LogoText}
-          className='reduct-title-modal-title'
-        />
+        <Logo className='reduct-title-modal-title' />
 
         <div className='reduct-title-modal-actions'>
           <button
