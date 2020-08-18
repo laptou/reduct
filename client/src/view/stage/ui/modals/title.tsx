@@ -1,18 +1,16 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import {
-  ReactSpringHook, useSpring, useChain, config as springConfig, animated,
+  animated, config as springConfig, ReactSpringHook, useChain, useSpring,
 } from 'react-spring';
 
+import { Logo } from '../logo';
 import { Modal } from '../modal';
 
 import { DeepReadonly } from '@/util/helper';
-import { GlobalState, GameMode } from '@/store/state';
+import { GameMode, GlobalState } from '@/store/state';
 import { createStartLevel } from '@/store/action/game';
 import { log } from '@/logging/logger';
-import LogoText from '@resources/graphics/titles/logo.svg';
-import { playSound } from '@/resource/audio';
-
 
 interface TitleStoreProps {
   isTitle: boolean;
@@ -75,10 +73,7 @@ const TitleImpl = (props: TitleStoreProps & TitleDispatchProps) => {
         className='reduct-title-modal'
         style={scaleProps}
       >
-        <img
-          src={LogoText}
-          className='reduct-title-modal-title'
-        />
+        <Logo className='reduct-title-modal-title' />
 
         <div className='reduct-title-modal-actions'>
           <button
