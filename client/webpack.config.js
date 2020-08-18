@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 const SentryCliPlugin = require('@sentry/webpack-plugin');
 const HtmlPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin: CleanPlugin } = require('clean-webpack-plugin');
 const TsCheckerPlugin = require('fork-ts-checker-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
@@ -32,6 +33,26 @@ module.exports = (env) => ({
     runtimeChunk: false,
     splitChunks: {
       chunks: 'all',
+      cacheGroups: {
+        audioGroup: {
+          test: /\.mp3$/,
+          // reuseExistingChunk: true,
+          name: 'audio',
+          minSize: 5000,
+        },
+        imageGroup: {
+          test: /\.(svg|png)$/,
+          // reuseExistingChunk: true,
+          name: 'image',
+          minSize: 5000,
+        },
+        textGroup: {
+          test: /\.(md)$/,
+          // reuseExistingChunk: true,
+          name: 'text',
+          minSize: 5000,
+        },
+      },
     },
   },
   output: {
@@ -147,6 +168,7 @@ module.exports = (env) => ({
       'PKG_VERSION': JSON.stringify(require('./package.json').version),
       'process.env.NODE_ENV': JSON.stringify(env.production ? 'production' : 'development'),
     }),
+    new CleanPlugin(),
     // new TsCheckerPlugin({
     //   workers: TsCheckerPlugin.TWO_CPUS_FREE,
     //   eslint: true,
