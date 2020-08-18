@@ -1,4 +1,4 @@
-import { audios } from '@/loader';
+import { audios, audioSprites } from '@/loader';
 import { store } from '@/store';
 
 function getIsSoundEnabled() {
@@ -8,14 +8,20 @@ function getIsSoundEnabled() {
 export function playSound(key) {
   if (!getIsSoundEnabled()) return;
 
-  const sound = audios.get(key);
+  const sprite = audioSprites.get(key);
 
-  if (!sound) {
-    console.warn(`@AudioEngine#play: could not find sound ${key}`);
-    return;
+  if (sprite) {
+    return sprite.play(key);
   }
 
-  return sound.play(key);
+  const audio = audios.get(key);
+
+  if (audio) {
+    console.log(audio);
+    return audio.play();
+  }
+
+  console.warn(`@AudioEngine#play: could not find sound ${key}`);
 }
 
 export function stopSound(key, handle) {
