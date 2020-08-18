@@ -1,16 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
-import { config as springConfig, useSpring, animated } from 'react-spring';
+import {
+  animated, config as springConfig, ReactSpringHook, useChain, useSpring,
+} from 'react-spring';
 
 import { Modal } from '../modal';
 
-import LevelIncompleteText from '@resources/graphics/titles/level-incomplete.svg';
-import { DeepReadonly } from '@/util/helper';
-import { GlobalState, GameMode } from '@/store/state';
-import { undo as createUndo } from '@/store/reducer/undo';
-import { checkDefeat, checkVictory } from '@/store/helper';
-import Audio from '@/resource/audio';
 import { log } from '@/logging/logger';
+import Audio from '@/resource/audio';
+import { checkDefeat, checkVictory } from '@/store/helper';
+import { undo as createUndo } from '@/store/reducer/undo';
+import { GlobalState } from '@/store/state';
+import { DeepReadonly } from '@/util/helper';
+import LevelIncompleteText from '@resources/graphics/titles/level-incomplete.svg';
 
 interface DefeatStoreProps {
   isDefeat: boolean;
@@ -24,27 +26,57 @@ const DefeatImpl: React.FC<DefeatStoreProps & DefeatDispatchProps> =
   (props) => {
     const { isDefeat } = props;
 
-    const animatedStyleProps =
+    const scaleSpring = useRef<ReactSpringHook>(null);
+    const scaleProps =
       useSpring({
         transform: isDefeat ? 'scale(1)' : 'scale(0)',
         config: springConfig.stiff,
-        delay: 1000,
+        delay: 500,
+        ref: scaleSpring,
         onStart() {
           if (isDefeat)
             Audio.play('stuck');
         },
       });
 
+    const raySpring = useRef<ReactSpringHook>(null);
+    const rayProps =
+      useSpring({
+        from: {
+          progress: 0,
+        },
+        progress: isDefeat ? 1 : 0,
+        delay: 750,
+        config: springConfig.slow,
+        ref: raySpring,
+      });
+
+    useChain([scaleSpring, raySpring]);
+
     useEffect(() => {
       if (isDefeat)
         log('game:defeat');
     }, [isDefeat]);
 
-    return isDefeat ? (
+    if (!isDefeat)
+      return null;
+
+    const rays = [];
+    const numRays = 12;
+
+    for (let i = 0; i < numRays; i++) {
+      rays.push({
+        hOffset: (i - numRays / 2) * 50,
+        vOffset: Math.random() * -150,
+        length: 250 + Math.random() * 100,
+      });
+    }
+
+    return (
       <Modal>
         <animated.div
           className='reduct-level-modal'
-          style={animatedStyleProps}
+          style={scaleProps}
         >
           <img
             src={LevelIncompleteText}
@@ -65,9 +97,30 @@ const DefeatImpl: React.FC<DefeatStoreProps & DefeatDispatchProps> =
               Undo
             </button>
           </div>
+
+          <svg className='reduct-level-modal-animation'>
+            {
+              rays.map((ray, index) => (
+                <animated.line
+                  key={index}
+                  x1={ray.hOffset}
+                  y1={ray.vOffset}
+                  x2={ray.hOffset}
+                  y2={ray.vOffset + ray.length}
+                  strokeDasharray={`${ray.length} ${ray.length}`}
+                  strokeDashoffset={rayProps.progress.interpolate({
+                    range: [0, 1],
+                    output: [ray.length, -ray.length],
+                  })}
+                  stroke='white'
+                  strokeWidth='2px'
+                />
+              ))
+            }
+          </svg>
         </animated.div>
       </Modal>
-    ) : null;
+    );
   };
 
 export const DefeatOverlay = connect(
