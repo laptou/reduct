@@ -69,15 +69,15 @@ void (async () => {
 
     // if JSON has more levels than YAML, cut them
     originalChapter.levels = originalChapter.levels.slice(0, levels.length);
-    originalChapter.chapterName = name;
-    
+    originalChapter.name = name;
+
     await fs.writeJSON(jsonFilePath, originalChapter);
   }
 
   // delete JSON files that don't correspond to a YAML file
   for (const jsonFileName of await fs.readdir(levelDirectory)) {
     const chapterName = basename(jsonFileName, '.json');
-    
+
     if (!chapterNames.includes(chapterName)) {
       console.log(`deleting ${jsonFileName}`);
       await fs.unlink(resolve(levelDirectory, jsonFileName));

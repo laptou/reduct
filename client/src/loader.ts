@@ -93,25 +93,8 @@ interface LevelDefinition {
 }
 
 const chapterDigraph: Record<string, string[]> = {
-  'functions': ['replication'],
-  'replication': ['multiargument'],
-  'multiargument': ['booleans-intro'],
-  'booleans-intro': ['application'],
-  'application': ['definition'],
-  'definition': ['testing'],
-  'testing': ['lists-intro'],
-  'lists-intro': ['lists-query'],
-  'lists-query': ['higher-order-functions'],
-  'higher-order-functions': ['define-challenges'],
-  'define-challenges': ['recursion-basics'],
-  'recursion-basics': ['recursion-higher-order'],
-  'recursion-higher-order': ['remove-first'],
-  'remove-first': ['count-all'],
-  'count-all': ['list-functions'],
-  'list-functions': ['strings'],
-  'strings': ['let'],
-  'let': ['play'],
-  'play': [],
+  functions: [],
+  booleans: ['functions'],
 };
 
 async function loadChapter(key: string): Promise<ChapterDefinition> {
@@ -157,7 +140,7 @@ export function getLevelByIndex(index: number): LevelDefinition {
   let current = 0;
 
   for (const chapter of progression!.chapters) {
-    if (current + chapter.levels.length < index) {
+    if (current + chapter.levels.length <= index) {
       current += chapter.levels.length;
       continue;
     }

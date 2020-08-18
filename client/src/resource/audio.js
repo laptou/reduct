@@ -1,5 +1,3 @@
-import { Howler } from 'howler';
-
 import { audios } from '@/loader';
 import { store } from '@/store';
 
