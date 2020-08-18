@@ -32,6 +32,11 @@
   pointer-events: all;
 }
 
+#reduct-modal-overlay.modal-overlay-clear {
+  background: transparent;
+  color: black;
+}
+
 .reduct-level-modal, .reduct-error-modal, .reduct-title-modal {
   display: flex;
   flex-flow: column nowrap;
@@ -39,10 +44,6 @@
   justify-content: center;
 
   transform-origin: center center;
-}
-
-#reduct-modal-overlay.modal-overlay-clear {
-  background: transparent;
 }
 
 .reduct-level-modal-title {
