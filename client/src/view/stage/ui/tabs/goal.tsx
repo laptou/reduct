@@ -20,17 +20,17 @@ function getRandomAlien() {
   const alienContext = require.context('@resources/graphics/assets', false, /alien[-a-z0-9]+\.png$/);
   const alienResourceKeys = alienContext.keys();
   const index = Math.floor(Math.random() * alienResourceKeys.length);
-
-  return alienContext.resolve(alienResourceKeys[index]);
+  return alienContext(alienResourceKeys[index]).default;
 }
 
 const GoalImpl: FunctionComponent<GoalProps> =
   (props) => {
     const level = getLevelByIndex(props.levelIndex);
+    const alien = getRandomAlien();
 
     return (
       <div id='reduct-goal'>
-        <img id='reduct-goal-alien' src={getRandomAlien()} />
+        <img id='reduct-goal-alien' src={alien} />
         <div id='reduct-goal-header'>
           Goal
         </div>
