@@ -24,5 +24,7 @@ client/*
 server/*
 !server/dist
 !server/package.json
+!server/cert
+!server/meta
 client/dist/*.js.map
 client/dist/*.css.map

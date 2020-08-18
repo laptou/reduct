@@ -15,7 +15,8 @@
     "build:client": "cd client && yarn build",
     "build:server": "cd server && yarn build",
     "build": "run-p build:*",
-    "deploy": "run-p build:* && gcloud app deploy",
+    "deploy": "run-p build:* && gcloud app deploy -v prod",
+    "deploy:beta": "run-p build:* && gcloud app deploy -v beta",
     "start": "node server/dist/index.js"
   },
   "devDependencies": {

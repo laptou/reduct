@@ -8,10 +8,13 @@
     "build:watch": "tsc --watch",
     "serve": "node dist/index.js",
     "serve:secure": "env REDUCT_USE_HTTPS=true node dist/index.js",
+    "serve:prod": "env NODE_ENV=production node dist/index.js",
+    "serve:prod:secure": "env NODE_ENV=production REDUCT_USE_HTTPS=true node dist/index.js",
     "serve:watch": "nodemon --watch dist dist/index.js",
     "lint:check": "eslint --color --ext .ts .",
     "lint:fix": "eslint --color --fix --ext .ts .",
-    "keygen": "node scripts/keygen.mjs"
+    "keygen": "node scripts/keygen.mjs",
+    "certgen": "bash -c scripts/certgen.sh"
   },
   "author": "",
   "license": "ISC",
