@@ -11,6 +11,7 @@ import { GlobalState, GameMode } from '@/store/state';
 import { createStartLevel } from '@/store/action/game';
 import { log } from '@/logging/logger';
 import LogoText from '@resources/graphics/titles/logo.svg';
+import { playSound } from '@/resource/audio';
 
 
 interface TitleStoreProps {
@@ -41,8 +42,7 @@ const TitleImpl = (props: TitleStoreProps & TitleDispatchProps) => {
       from: {
         progress: 0,
       },
-      progress: isTitle ? 1 : 0,
-      delay: 750,
+      progress: 1,
       config: springConfig.slow,
       ref: raySpring,
     });
@@ -50,8 +50,9 @@ const TitleImpl = (props: TitleStoreProps & TitleDispatchProps) => {
   useChain([scaleSpring, raySpring]);
 
   useEffect(() => {
-    if (isTitle)
+    if (isTitle) {
       log('game:title');
+    }
   }, [isTitle]);
 
   if (!isTitle)
@@ -69,7 +70,7 @@ const TitleImpl = (props: TitleStoreProps & TitleDispatchProps) => {
   }
 
   return (
-    <Modal className='reduct-title-modal-overlay'>
+    <Modal className='modal-overlay-clear'>
       <animated.div
         className='reduct-title-modal'
         style={scaleProps}
