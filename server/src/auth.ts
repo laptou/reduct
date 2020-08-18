@@ -13,8 +13,7 @@ import {
   VerifiedCallback as SamlVerifiedCallback,
 } from 'passport-saml';
 
-
-import { useHttps, useTestAuthentication } from './config';
+import { isHttps, useTestAuthentication } from './config';
 
 const { readFile } = fs;
 
@@ -23,7 +22,7 @@ const NETID_URN = 'urn:oid:0.9.2342.19200300.100.1.1';
 
 const LOGIN_PATH = '/auth/login';
 const CALLBACK_PATH_SAML = '/auth/saml/callback';
-const CALLBACK_PROTOCOL_SAML = useHttps ? 'https://' : 'http://';
+const CALLBACK_PROTOCOL_SAML = isHttps ? 'https://' : 'http://';
 const ENTRYPOINT_SAML = useTestAuthentication
   ? 'https://shibidp-test.cit.cornell.edu/idp/profile/SAML2/Redirect/SSO'
   : 'https://shibidp.cit.cornell.edu/idp/profile/SAML2/Redirect/SSO';

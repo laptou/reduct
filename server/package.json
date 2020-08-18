@@ -7,6 +7,7 @@
     "build": "tsc",
     "build:watch": "tsc --watch",
     "serve": "node dist/index.js",
+    "serve:secure": "env REDUCT_USE_HTTPS=true node dist/index.js",
     "serve:watch": "nodemon --watch dist dist/index.js",
     "lint:check": "eslint --color --ext .ts .",
     "lint:fix": "eslint --color --fix --ext .ts .",
