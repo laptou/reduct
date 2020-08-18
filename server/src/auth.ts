@@ -11,19 +11,18 @@ import {
   VerifiedCallback as SamlVerifiedCallback,
 } from 'passport-saml';
 
-import { environment } from './config';
+import { useHttps, useTestAuthentication } from './config';
+
 
 // derived from https://it.cornell.edu/shibboleth/shibboleth-faq
 const NETID_URN = 'urn:oid:0.9.2342.19200300.100.1.1';
 
 const LOGIN_PATH = '/auth/login';
 const CALLBACK_PATH_SAML = '/auth/saml/callback';
-const CALLBACK_PROTOCOL_SAML = environment === 'prod' ? 'https://' : 'http://';
-
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-const ENTRYPOINT_SAML = true // environment === 'prod'
-  ? 'https://shibidp.cit.cornell.edu/idp/profile/SAML2/Redirect/SSO'
-  : 'https://shibidp-test.cit.cornell.edu/idp/profile/SAML2/Redirect/SSO';
+const CALLBACK_PROTOCOL_SAML = useHttps ? 'https://' : 'http://';
+const ENTRYPOINT_SAML = useTestAuthentication
+  ? 'https://shibidp-test.cit.cornell.edu/idp/profile/SAML2/Redirect/SSO'
+  : 'https://shibidp.cit.cornell.edu/idp/profile/SAML2/Redirect/SSO';
 
 KoaPassport.use(new SamlStrategy({
   path: CALLBACK_PATH_SAML,
