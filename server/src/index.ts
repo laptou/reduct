@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/node';
 import Koa from 'koa';
 import KoaBodyParser from 'koa-bodyparser';
 
@@ -6,10 +7,21 @@ import { initializeAuth, authMiddleware } from './auth';
 import { serverLogger } from './logging/server';
 import { environment } from './config';
 
+Sentry.init({ dsn: 'https://0a8675f3076947a3ba73a4ecb9f9d75c@o190059.ingest.sentry.io/5394738' });
+
 void (async () => {
   serverLogger.info(`starting server in ${environment} mode`);
 
   const server = new Koa();
+
+  server.on('error', (err, ctx) => {
+    Sentry.withScope(function(scope) {
+      scope.addEventProcessor(function(event) {
+        return Sentry.Handlers.parseRequest(event, ctx.request);
+      });
+      Sentry.captureException(err);
+    });
+  });
 
   // body parser MUST be initialized for auth middleware
   // to work correctly
