@@ -32,13 +32,17 @@
   pointer-events: all;
 }
 
-.reduct-level-modal, .reduct-error-modal {
+.reduct-level-modal, .reduct-error-modal, .reduct-title-modal {
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
   justify-content: center;
 
   transform-origin: center center;
+}
+
+#reduct-modal-overlay.reduct-title-modal-overlay {
+  background: white;
 }
 
 .reduct-level-modal-title {
@@ -64,7 +68,7 @@
   text-align: center;
 }
 
-.reduct-level-modal-actions, .reduct-error-modal-actions {
+.reduct-level-modal-actions, .reduct-error-modal-actions, .reduct-title-modal-actions {
   margin: 1rem;
 
   button {
@@ -72,7 +76,7 @@
   }
 }
 
-.reduct-level-modal-animation {
+.reduct-level-modal-animation, .reduct-title-modal-animation {
   position: absolute;
   top: 50%;
   left: 50%;
