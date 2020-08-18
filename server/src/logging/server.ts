@@ -1,7 +1,7 @@
 import { createLogger, transports, format } from 'winston';
 import { LoggingWinston as GCloudLogging } from '@google-cloud/logging-winston';
 
-import { environment } from '../config';
+import { ENV } from '../config';
 
 export const serverLogger = createLogger({
   level: 'info',
@@ -11,7 +11,7 @@ serverLogger.add(new GCloudLogging({
   logName: 'server',
 }));
 
-if (environment === 'dev') {
+if (ENV === 'dev') {
   serverLogger.add(new transports.Console({
     level: 'debug',
     format: format.combine(

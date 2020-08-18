@@ -1,6 +1,6 @@
 
-import { promises as fs } from 'fs';
-import { resolve } from 'path';
+import { promises as fs, readFileSync } from 'fs';
+import { resolve, join } from 'path';
 
 import type {
   Context, default as Koa, DefaultState, Middleware,
@@ -13,30 +13,41 @@ import {
   VerifiedCallback as SamlVerifiedCallback,
 } from 'passport-saml';
 
-import { isHttps, useTestAuthentication } from './config';
+import { IS_HTTPS, USE_TEST_AUTHENTICATION, ENV, PUBLIC_URI } from './config';
 
-const { readFile } = fs;
+const { readFile, writeFile } = fs;
 
 // derived from https://it.cornell.edu/shibboleth/shibboleth-faq
 const NETID_URN = 'urn:oid:0.9.2342.19200300.100.1.1';
 
 const LOGIN_PATH = '/auth/login';
 const CALLBACK_PATH_SAML = '/auth/saml/callback';
-const CALLBACK_PROTOCOL_SAML = isHttps ? 'https://' : 'http://';
-const ENTRYPOINT_SAML = useTestAuthentication
+const CALLBACK_URL_SAML = ENV === 'prod'
+  ? join(PUBLIC_URI, CALLBACK_PATH_SAML)
+  : undefined;
+const CALLBACK_PROTOCOL_SAML = IS_HTTPS ? 'https://' : 'http://';
+const ENTRYPOINT_SAML = USE_TEST_AUTHENTICATION
   ? 'https://shibidp-test.cit.cornell.edu/idp/profile/SAML2/Redirect/SSO'
   : 'https://shibidp.cit.cornell.edu/idp/profile/SAML2/Redirect/SSO';
+const CERT_IDP_SAML_PATH = USE_TEST_AUTHENTICATION
+  ? resolve(__dirname, '../cert/cornell-idp-test.cer')
+  : resolve(__dirname, '../cert/cornell-idp.cer');
 
-KoaPassport.use(new SamlStrategy({
+const strategy = new SamlStrategy({
+  callbackUrl: CALLBACK_URL_SAML,
   path: CALLBACK_PATH_SAML,
   protocol: CALLBACK_PROTOCOL_SAML,
   entryPoint: ENTRYPOINT_SAML,
+  cert: readFileSync(CERT_IDP_SAML_PATH, 'utf-8'),
+  signatureAlgorithm: 'sha256',
   issuer: 'reduct',
   name: 'saml',
 }, (profile: SamlProfile, callback: SamlVerifiedCallback) => {
   const netId = profile[NETID_URN];
   callback(null, { netId });
-}));
+});
+
+KoaPassport.use(strategy);
 
 KoaPassport.serializeUser(({ netId }: {netId: string}, callback) => {
   callback(null, netId);
@@ -47,6 +58,10 @@ KoaPassport.deserializeUser((netId: string, callback) => {
 });
 
 export async function initializeAuth(server: Koa): Promise<void> {
+  // write IDP metadata to file
+  const meta = strategy.generateServiceProviderMetadata(null, null);
+  await writeFile(resolve(__dirname, '../meta/idp.xml'), meta);
+
   // __dirname does not normally work in ES modules, but TypeScript converts all
   // of this into CJS anyway
   const secret = await readFile(resolve(__dirname, '../secret/session.base64'), 'utf-8');
