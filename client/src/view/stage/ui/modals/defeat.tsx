@@ -34,7 +34,7 @@ const DefeatImpl: React.FC<DefeatStoreProps & DefeatDispatchProps> =
         delay: 500,
         ref: scaleSpring,
         onStart() {
-          if (isDefeat) playSound('stuck');
+          if (isDefeat) playSound('level-incomplete');
         },
       });
 
