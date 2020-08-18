@@ -11,6 +11,8 @@ import {
   VerifiedCallback as SamlVerifiedCallback,
 } from 'passport-saml';
 
+import { environment } from './config';
+
 // derived from https://it.cornell.edu/shibboleth/shibboleth-faq
 const NETID_URN = 'urn:oid:0.9.2342.19200300.100.1.1';
 
@@ -18,6 +20,7 @@ const LOGIN_PATH = '/auth/login';
 const CALLBACK_PATH_SAML = '/auth/saml/callback';
 
 KoaPassport.use(new SamlStrategy({
+  protocol: environment === 'prod' ? 'https' : 'http',
   path: CALLBACK_PATH_SAML,
   entryPoint: 'https://shibidp-test.cit.cornell.edu/idp/profile/SAML2/Redirect/SSO',
   issuer: 'reduct',

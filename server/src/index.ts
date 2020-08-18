@@ -3,8 +3,6 @@ import KoaBodyParser from 'koa-bodyparser';
 
 import { userLoggingRouter } from './logging/user';
 import { initializeAuth, authMiddleware } from './auth';
-import { initializeDevServer } from './dev';
-import { initializeProdServer } from './prod';
 import { serverLogger } from './logging/server';
 import { environment } from './config';
 
@@ -26,9 +24,11 @@ void (async () => {
   server.use(userLoggingRouter.routes());
 
   if (environment === 'dev') {
+    const { initializeDevServer } = await import('./dev');
     await initializeDevServer(server);
     serverLogger.debug('initialized dev server');
   } else {
+    const { initializeProdServer } = await import('./prod');
     initializeProdServer(server);
     serverLogger.debug('initialized production server');
   }
