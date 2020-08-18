@@ -1,10 +1,10 @@
 import { Datacenter, datadogRum } from '@datadog/browser-rum';
 import type { Middleware } from 'redux';
 
-import { log, flushLogs } from './logger';
+import { flushLogs, log } from './logger';
 
 import { ActionKind, ReductAction } from '@/store/action/game';
-import { GameMode, GlobalState } from '@/store/state';
+import { GlobalState } from '@/store/state';
 import { unflatten } from '@/util/nodes';
 
 datadogRum.init({
@@ -102,17 +102,6 @@ export const logMiddleware: Middleware = (api) => (next) => (act: ReductAction) 
       },
       error: errorState,
     });
-    break;
-
-  case ActionKind.DetectCompletion:
-    switch (presentState.mode) {
-    case GameMode.Victory:
-      log('game:victory');
-      break;
-    case GameMode.Defeat:
-      log('game:defeat');
-      break;
-    }
     break;
   }
 

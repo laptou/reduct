@@ -72,10 +72,9 @@ export interface GameState {
 }
 
 export enum GameMode {
+  Consent,
   Title,
   Gameplay,
-  Victory,
-  Defeat
 }
 
 export interface PreferenceState {

@@ -1,5 +1,7 @@
 import React from 'react';
+
 import '@resources/style/react/ui/loading.scss';
+import { Modal } from './modal';
 
 export const LoadingAnimation: React.FC = () => {
   return (
@@ -26,8 +28,10 @@ export const LoadingAnimationWithText: React.FC = () => {
 
 export const LoadingPage: React.FC = () => {
   return (
-    <div className='reduct-loading-page'>
-      <LoadingAnimationWithText />
-    </div>
+    <Modal>
+      <div className='reduct-loading-page'>
+        <LoadingAnimationWithText />
+      </div>
+    </Modal>
   );
 };
