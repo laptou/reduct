@@ -20,7 +20,7 @@ const LOGIN_PATH = '/auth/login';
 const CALLBACK_PATH_SAML = '/auth/saml/callback';
 
 KoaPassport.use(new SamlStrategy({
-  protocol: environment === 'prod' ? 'https' : 'http',
+  protocol: environment === 'prod' ? 'https://' : 'http://',
   path: CALLBACK_PATH_SAML,
   entryPoint: 'https://shibidp-test.cit.cornell.edu/idp/profile/SAML2/Redirect/SSO',
   issuer: 'reduct',
