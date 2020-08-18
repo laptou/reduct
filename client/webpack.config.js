@@ -8,6 +8,7 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const SriPlugin = require('webpack-subresource-integrity');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { DefinePlugin } = require('webpack');
+const { resolve } = require('path');
 
 /**
  * @typedef {Object} Env
@@ -37,6 +38,7 @@ module.exports = (env) => ({
     path: path.resolve(__dirname, 'dist'),
     crossOriginLoading: 'anonymous',
     publicPath: '/',
+    chunkFilename: env.production ? '[name]-[chunkhash].js' : undefined,
   },
   module: {
     rules: [
@@ -159,7 +161,7 @@ module.exports = (env) => ({
           hashFuncNames: ['sha384', 'sha512'],
         }),
         new SentryCliPlugin({
-          include: '.',
+          include: resolve(__dirname, 'dist'),
           ignoreFile: '.sentrycliignore',
           ignore: ['node_modules', 'webpack.config.js'],
         }),
