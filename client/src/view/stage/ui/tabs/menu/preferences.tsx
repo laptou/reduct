@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { createEnableSound } from '@/store/action/preferences';
 import { GlobalState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
-import '@resources/style/react/ui/level.scss';
+import '@resources/style/react/ui/preferences.scss';
 
 interface PreferencesStoreProps {
   isSoundEnabled: boolean;
@@ -23,13 +23,22 @@ const PreferencesImpl: React.FC<PreferencesProps> = (props) => {
   } = props;
 
   return (
-    <div>
-      sound enabled: <input
-        type='checkbox'
-        checked={isSoundEnabled}
-        onChange={e => enableSound(e.target.checked)}
-      />
-    </div>
+    <ul id='reduct-preferences'>
+      <li>
+        <span className='reduct-preference-name'>sound enabled:</span>
+        &nbsp;
+        <input
+          type='checkbox'
+          checked={isSoundEnabled}
+          onChange={e => enableSound(e.target.checked)}
+        />
+      </li>
+      <li>
+        <span className='reduct-preference-name'>game version:</span>
+        &nbsp;
+        {PKG_VERSION}
+      </li>
+    </ul>
   );
 };
 
