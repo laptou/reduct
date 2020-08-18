@@ -5,7 +5,7 @@ import KoaBodyParser from 'koa-bodyparser';
 import { userLoggingRouter } from './logging/user';
 import { initializeAuth, authMiddleware } from './auth';
 import { serverLogger } from './logging/server';
-import { environment } from './config';
+import { environment, useAuthentication } from './config';
 
 Sentry.init({ dsn: 'https://0a8675f3076947a3ba73a4ecb9f9d75c@o190059.ingest.sentry.io/5394738' });
 
@@ -30,8 +30,10 @@ void (async () => {
   initializeAuth(server);
   serverLogger.debug('initialized authentication');
 
-  // all middleware after this point will be authentication-gated
-  server.use(authMiddleware);
+  if (useAuthentication) {
+    // all middleware after this point will be authentication-gated
+    server.use(authMiddleware);
+  }
 
   server.use(userLoggingRouter.routes());
 
