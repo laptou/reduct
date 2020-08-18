@@ -40,7 +40,6 @@ export enum ActionKind {
   Stop = 'stop',
   Step = 'step',
 
-  DetectCompletion = 'detect-end',
   Undo = 'undo',
   Redo = 'redo',
   ClearError = 'clear-error',
@@ -67,7 +66,6 @@ export type ReductAction =
   StopAction |
   StepAction |
   CleanupAction |
-  DetectCompletionAction |
   ClearErrorAction |
   RaiseAction |
   DetachAction |
@@ -615,21 +613,6 @@ export function createStop(
   return {
     type: ActionKind.Stop,
     targetNodeId,
-  };
-}
-
-export interface DetectCompletionAction {
-  type: ActionKind.DetectCompletion;
-}
-
-/**
- * Returns an action which will check if the level has been completed (which
- * will send the game into the 'victory' state) or if the level is now
- * impossible (which will send the game into the 'defeat' state).
- */
-export function createDetectCompetion(): DetectCompletionAction {
-  return {
-    type: ActionKind.DetectCompletion,
   };
 }
 
