@@ -19,7 +19,6 @@ export const FeedbackCollectorPopup: React.FC = () => {
     ['frustrated', 'Frustrated'],
   ];
 
-
   const [isVisible, setIsVisible] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 

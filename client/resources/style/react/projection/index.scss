@@ -59,8 +59,4 @@
   left: 50%;
 
   transform-origin: top left;
-
-  & > .projection-animation-container {
-    transform: translate(-50%, -50%);
-  }
 }

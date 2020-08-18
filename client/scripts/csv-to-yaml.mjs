@@ -75,8 +75,11 @@ import yaml from 'js-yaml';
 
     const yamlFileName = `${basename(basename(fileName, '.csv'), '.yaml')}.yaml`;
     const yamlFilePath = resolve(chapterDirectory, yamlFileName);
-    const yamlData = yaml.safeDump({ levels });
-    await fs.writeFile(yamlFilePath, yamlData);
+    const yamlData = yaml.safeLoad(await fs.readFile(yamlFilePath, 'utf-8'));
+    
+    yamlData.levels = levels;
+
+    await fs.writeFile(yamlFilePath, yaml.safeDump(yamlData));
   }
 
   console.info('done');
