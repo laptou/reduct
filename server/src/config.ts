@@ -1,5 +1,7 @@
 export const ENV = process.env.NODE_ENV === 'development' ? 'dev' : 'prod';
-export const USE_REMOTE_LOGGING = ENV === 'prod' || (process.env.REDUCT_REMOTE_LOGGING === 'true');
+export const USE_REMOTE_LOGGING = ENV === 'prod'
+  ? (process.env.REDUCT_REMOTE_LOGGING === 'false')
+  : (process.env.REDUCT_REMOTE_LOGGING === 'true');
 export const USE_HTTPS = process.env.REDUCT_USE_HTTPS === 'true';
 export const IS_HTTPS = ENV === 'prod' || USE_HTTPS;
 export const GENERATE_SAML_METADATA = process.env.REDUCT_SAML_META === 'true';
