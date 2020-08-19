@@ -1,0 +1,32 @@
+name: Application
+levels:
+  - board:
+      - '(x => x - 1) (_)'
+      - '(x => x + 2) (_)'
+    toolbox:
+      - 7
+      - 4
+      - 8
+      - 6
+      - 5
+    goal:
+      - 7
+      - 5
+  - board:
+      - '(x => ( y => x + y)) (_) (_)'
+    toolbox:
+      - 2
+      - 8
+      - 9
+      - 4
+    goal:
+      - 11
+  - board:  
+      - '( y => y (1)) (_) '
+    toolbox:
+      - 1
+      - 2
+      - x => x == 1
+      - x => x == 2
+    goal:
+      - false
