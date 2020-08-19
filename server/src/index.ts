@@ -27,6 +27,7 @@ void (async () => {
         scope.addEventProcessor(function(event) {
           return Sentry.Handlers.parseRequest(event, ctx.request);
         });
+        scope.setUser({ username: ctx.state?.user?.netId });
         Sentry.captureException(err);
       });
     }
