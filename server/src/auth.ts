@@ -70,6 +70,7 @@ export async function initializeAuth(server: Koa): Promise<void> {
     // write IDP metadata to file
     const meta = strategy.generateServiceProviderMetadata(signingCert);
     await writeFile(resolve(__dirname, '../meta/idp.xml'), meta);
+    serverLogger.info('wrote SAML metadata');
   }
 
   // __dirname does not normally work in ES modules, but TypeScript converts all
@@ -81,7 +82,7 @@ export async function initializeAuth(server: Koa): Promise<void> {
   server.use(KoaPassport.initialize());
   server.use(KoaPassport.session());
 
-  serverLogger.info(`[auth] using ${USE_TEST_AUTHENTICATION ? 'test' : 'prod'} SAML server`);
+  serverLogger.info(`using ${USE_TEST_AUTHENTICATION ? 'test' : 'prod'} SAML server`);
 
   const authRouter = new KoaTreeRouter<DefaultState, Context>();
 

@@ -22,4 +22,4 @@ openssl req -new -nodes -newkey rsa:2048 -keyout localhost.key -out localhost.cs
 openssl x509 -req -sha256 -days 1024 -in localhost.csr -CA root-ca.pem -CAkey root-ca.key -CAcreateserial -extfile domains.ext -out localhost.crt
 
 echo "Generating self-signed certificate for SAML"
-openssl req -x509 -nodes -newkey rsa:4096 -keyout saml-key.pem -out saml-cert.pem -days 365
+openssl req -x509 -nodes -newkey rsa:4096 -keyout saml-key.pem -out saml-cert.pem -days 3650

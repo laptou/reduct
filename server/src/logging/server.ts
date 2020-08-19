@@ -1,17 +1,19 @@
 import { createLogger, transports, format } from 'winston';
 import { LoggingWinston as GCloudLogging } from '@google-cloud/logging-winston';
 
-import { ENV } from '../config';
+import { ENV, USE_REMOTE_LOGGING } from '../config';
 
 export const serverLogger = createLogger({
   level: 'info',
 });
 
-serverLogger.add(new GCloudLogging({
-  logName: 'server',
-}));
+if (USE_REMOTE_LOGGING) {
+  serverLogger.add(new GCloudLogging({
+    logName: 'server',
+  }));
+}
 
-if (ENV === 'dev') {
+if (ENV === 'dev' || !USE_REMOTE_LOGGING) {
   serverLogger.add(new transports.Console({
     level: 'debug',
     format: format.combine(

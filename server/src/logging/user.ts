@@ -15,7 +15,7 @@ if (USE_REMOTE_LOGGING) {
   }));
 }
 
-if (ENV === 'dev') {
+if (ENV === 'dev' || !USE_REMOTE_LOGGING) {
   userLogger.add(new transports.Console({
     level: 'debug',
     format: format.combine(
