@@ -14,6 +14,7 @@ import {
   VerifiedCallback as SamlVerifiedCallback,
 } from 'passport-saml';
 
+import { serverLogger } from './logging/server';
 import {
   IS_HTTPS, USE_TEST_AUTHENTICATION, ENV, PUBLIC_URI, GENERATE_SAML_METADATA,
 } from './config';
@@ -79,6 +80,8 @@ export async function initializeAuth(server: Koa): Promise<void> {
   server.use(KoaSession({}, server));
   server.use(KoaPassport.initialize());
   server.use(KoaPassport.session());
+
+  serverLogger.info(`[auth] using ${USE_TEST_AUTHENTICATION ? 'test' : 'prod'} SAML server`);
 
   const authRouter = new KoaTreeRouter<DefaultState, Context>();
 

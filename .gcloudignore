@@ -26,5 +26,6 @@ server/*
 !server/package.json
 !server/cert
 !server/meta
+!server/secret
 client/dist/*.js.map
 client/dist/*.css.map
