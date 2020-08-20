@@ -1,5 +1,5 @@
 
-import '@resources/style/react/ui/consent.scss';
+import '@resources/style/react/ui/credits.scss';
 import React from 'react';
 import { connect } from 'react-redux';
 
@@ -12,70 +12,116 @@ const CreditsPageImpl: React.FC = (props) => {
     <div id='reduct-credits'>
       <Logo />
 
+      <p className='credit-version'>{PKG_VERSION} {PKG_ENV}</p>
+
       <p className='credit-primary'>
         Designed and developed by Ibiyemi Abiodun
       </p>
 
       <p className='credit-primary-ack'>
-        with the Cornell Future of Learning Lab, with assistance from Ian Tomasik, and
-        input from Andrew Myers, René Kizilcec, François Guimbretière.
+        in association with the Cornell Future of Learning Lab
+      </p>
+      <p className='credit-primary-ack'>
+        with assistance from Ian Tomasik
+      </p>
+      <p className='credit-primary-ack'>
+        and with input from Prof. Andrew Myers, Prof. René Kizilcec,
+        and Prof. François Guimbretière.
       </p>
 
       <p className='credit-secondary'>
         Based on a previous version of Reduct, developed by:
         <dl>
-          <dt>Yiting Wang</dt>
-          <dd>Designer, Developer</dd>
+          <div className='credit-secondary-group'>
+            <dt>David Li</dt>
+            <dd>Lead Developer</dd>
+            <dd>Designer</dd>
+          </div>
 
-          <dt>Yishu Zhang</dt>
-          <dd>Designer, Developer</dd>
+          <div className='credit-secondary-group'>
+            <dt>Yiting Wang</dt>
+            <dd>Designer</dd>
+            <dd>Developer</dd>
+          </div>
 
-          <dt>David Li</dt>
-          <dd>Designer, Lead Developer</dd>
+          <div className='credit-secondary-group'>
+            <dt>Yishu Zhang</dt>
+            <dd>Designer</dd>
+            <dd>Developer</dd>
+          </div>
 
-          <dt>Yuchang Zhou</dt>
-          <dd>Artist, UI Designer</dd>
+          <div className='credit-secondary-group'>
+            <dt>Yuchang Zhou</dt>
+            <dd>UI Designer</dd>
+            <dd>Artist</dd>
+          </div>
 
-          <dt>Kevin Ma</dt>
-          <dd>Artist</dd>
+          <div className='credit-secondary-group'>
+            <dt>Ian Arawjo</dt>
+            <dd>Sound Designer</dd>
+            <dd>Artist</dd>
+          </div>
 
-          <dt>Erik Andersen</dt>
-          <dd>Advisor</dd>
+          <div className='credit-secondary-group'>
+            <dt>Kevin Ma</dt>
+            <dd>Artist</dd>
+          </div>
 
-          <dt>Andrew Myers</dt>
-          <dd>Advisor</dd>
+          <div className='credit-secondary-group'>
+            <dt>Erik Andersen</dt>
+            <dd>Advisor</dd>
+          </div>
 
-          <dt>François Guimbretière</dt>
-          <dd>Advisor</dd>
+          <div className='credit-secondary-group'>
+            <dt>Andrew Myers</dt>
+            <dd>Advisor</dd>
+          </div>
 
-          <dt>Ian Arawjo</dt>
-          <dd>Sound Designer, Artist</dd>
+          <div className='credit-secondary-group'>
+            <dt>François Guimbretière</dt>
+            <dd>Advisor</dd>
+          </div>
         </dl>
       </p>
 
       <p className='credit-secondary'>
         With respect to the original Reduct team:
         <dl>
-          <dt>Ian Arawjo</dt>
-          <dd>Designer, Sound Designer, Artist</dd>
+          <div className='credit-secondary-group'>
+            <dt>Ian Arawjo</dt>
+            <dd>Designer</dd>
+            <dd>Artist</dd>
+          </div>
 
-          <dt>Shiliang Guo</dt>
-          <dd>Developer</dd>
+          <div className='credit-secondary-group'>
+            <dt>Shiliang Guo</dt>
+            <dd>Developer</dd>
+          </div>
 
-          <dt>David Li</dt>
-          <dd>Developer</dd>
+          <div className='credit-secondary-group'>
+            <dt>David Li</dt>
+            <dd>Developer</dd>
+          </div>
 
-          <dt>Kevin Ma</dt>
-          <dd>Artist</dd>
+          <div className='credit-secondary-group'>
+            <dt>Kevin Ma</dt>
+            <dd>Artist</dd>
+          </div>
 
-          <dt>Erik Andersen</dt>
-          <dd>Advisor</dd>
+          <div className='credit-secondary-group'>
+            <dt>Erik Andersen</dt>
+            <dd>Advisor</dd>
+          </div>
 
-          <dt>Andrew Myers</dt>
-          <dd>Advisor</dd>
+          <div className='credit-secondary-group'>
+            <dt>Andrew Myers</dt>
+            <dd>Advisor</dd>
+          </div>
 
-          <dt>François Guimbretière</dt>
-          <dd>Advisor</dd>
+          <div className='credit-secondary-group'>
+            <dt>François Guimbretière</dt>
+            <dd>Advisor</dd>
+          </div>
         </dl>
       </p>
 

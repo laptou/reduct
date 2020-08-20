@@ -77,6 +77,16 @@ export function gameReducer(
     };
   }
 
+  case ActionKind.ToggleCredits: {
+    return {
+      ...state,
+      mode:
+        state.mode === GameMode.Credits
+          ? GameMode.Gameplay
+          : GameMode.Credits,
+    };
+  }
+
   case ActionKind.EvalLet: {
     const { letNodeId } = act;
 
