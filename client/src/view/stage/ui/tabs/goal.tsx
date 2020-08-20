@@ -7,7 +7,7 @@ import { GlobalState } from '@/store/state';
 import { NodeId } from '@/semantics';
 import { DeepReadonly } from '@/util/helper';
 import '@resources/style/react/ui/goal.scss';
-import Loader from '@/loader';
+import { getLevelByIndex } from '@/loader';
 
 interface GoalStoreProps {
   nodeIds: ReadonlySet<NodeId>;
@@ -20,18 +20,17 @@ function getRandomAlien() {
   const alienContext = require.context('@resources/graphics/assets', false, /alien[-a-z0-9]+\.png$/);
   const alienResourceKeys = alienContext.keys();
   const index = Math.floor(Math.random() * alienResourceKeys.length);
-
-  return alienContext.resolve(alienResourceKeys[index]);
+  return alienContext(alienResourceKeys[index]).default;
 }
 
 const GoalImpl: FunctionComponent<GoalProps> =
   (props) => {
-    const progression = Loader.progressions['Elementary'];
-    const level = progression.levels[props.levelIndex];
+    const level = getLevelByIndex(props.levelIndex);
+    const alien = getRandomAlien();
 
     return (
       <div id='reduct-goal'>
-        <img id='reduct-goal-alien' src={getRandomAlien()} />
+        <img id='reduct-goal-alien' src={alien} />
         <div id='reduct-goal-header'>
           Goal
         </div>

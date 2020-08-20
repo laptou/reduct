@@ -19,7 +19,7 @@ import { GameError } from '@/store/errors';
 import { GlobalState } from '@/store/state';
 import { DeepReadonly, DRF } from '@/util/helper';
 import { isAncestorOf } from '@/util/nodes';
-import Audio from '@/resource/audio';
+import Audio, { playSound } from '@/resource/audio';
 
 /**
  * Props retrieved from Redux.
@@ -142,7 +142,7 @@ function onClick(
   if (props.frozen) return;
 
   props.exec();
-  Audio.play('371270__mafon2__water-drip-2');
+  playSound('drip');
 
   event.stopPropagation();
 }

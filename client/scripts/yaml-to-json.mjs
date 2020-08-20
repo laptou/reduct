@@ -7,7 +7,7 @@ import { resolve, dirname, basename } from 'path';
 import fs from 'fs-extra';
 import yaml from 'js-yaml';
 
-(async () => {
+void (async () => {
   // __dirname does not work in ES modules
   const scriptDirectory = dirname(new URL(import.meta.url).pathname);
   const chapterDirectory = resolve(scriptDirectory, '../chapterutil/levels');
@@ -37,7 +37,7 @@ import yaml from 'js-yaml';
     // overwrite them
     const jsonFilePath = resolve(levelDirectory, `${chapterName}.json`);
     let originalChapter;
-    
+
     try {
       originalChapter = await fs.readJSON(jsonFilePath);
     } catch {
@@ -69,15 +69,15 @@ import yaml from 'js-yaml';
 
     // if JSON has more levels than YAML, cut them
     originalChapter.levels = originalChapter.levels.slice(0, levels.length);
-    originalChapter.chapterName = name;
-    
+    originalChapter.name = name;
+
     await fs.writeJSON(jsonFilePath, originalChapter);
   }
 
   // delete JSON files that don't correspond to a YAML file
   for (const jsonFileName of await fs.readdir(levelDirectory)) {
     const chapterName = basename(jsonFileName, '.json');
-    
+
     if (!chapterNames.includes(chapterName)) {
       console.log(`deleting ${jsonFileName}`);
       await fs.unlink(resolve(levelDirectory, jsonFileName));
