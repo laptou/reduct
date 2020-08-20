@@ -11,7 +11,9 @@
   }
 
   p {
-    line-height: 1.5em;
+    margin: 1.5rem 0;
+
+    line-height: 1.75em;
     white-space: pre-wrap;
   }
 }
@@ -23,4 +25,15 @@
   background-color: #eeeeee;
 
   font-size: 1.25em;
+}
+
+#reduct-consent-buttons {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 1rem;
+  justify-content: flex-end;
+
+  button {
+    font-size: inherit;
+  }
 }
