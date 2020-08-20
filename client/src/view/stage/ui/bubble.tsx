@@ -60,11 +60,11 @@ export const Bubble: React.FC<BubbleProps> = ({
 
     const bubbleDiv = bubbleRef.current!;
     const bubbleBounds = bubbleDiv.getBoundingClientRect();
-    console.log('bubble bounds', bubbleBounds);
 
+    // bubble is positioned at the edge of its parent, so
+    // we need parent bound size
     const parent = bubbleDiv.parentElement!;
     const parentBounds = parent.getBoundingClientRect();
-    console.log('parent bounds', parentBounds);
 
     // travel upwards until we find an element that doesn't have
     // overflow: visible
