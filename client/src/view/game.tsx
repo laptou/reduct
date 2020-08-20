@@ -30,20 +30,12 @@ const GameImpl: React.FC<GameStoreProps> = (props) => {
   const { mode, consent } = props;
 
   if (consent === null) {
-    return (
-      <div id='reduct-consent'>
-        <ConsentForm />
-      </div>
-    );
+    return <ConsentForm />;
   }
 
   switch (mode) {
   case GameMode.Title:
-    return (
-      <div id='reduct-title'>
-        <Title />
-      </div>
-    );
+    return <Title />;
 
   case GameMode.Gameplay:
     return (
