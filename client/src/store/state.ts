@@ -78,7 +78,15 @@ export enum GameMode {
 }
 
 export interface PreferenceState {
+  /**
+   * Enable playing sound effects.
+   */
   enableSounds: boolean;
+
+  /**
+   * Enable usage of the user's data for research.
+   */
+  enableResearch: boolean;
 }
 
 export interface GlobalState {

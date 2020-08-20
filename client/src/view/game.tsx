@@ -28,12 +28,14 @@ const GameImpl: React.FC<GameStoreProps> = (props) => {
   switch (props.mode) {
   case GameMode.Title:
     return (
-      <Title />
+      <div id='reduct-title'>
+        <Title />
+      </div>
     );
 
   case GameMode.Gameplay:
     return (
-      <>
+      <div id='reduct-game'>
         <Logo id='reduct-game-logo' />
         <Board />
         <ToolboxTab />
@@ -51,8 +53,16 @@ const GameImpl: React.FC<GameStoreProps> = (props) => {
         <FeedbackCollectorPopup />
         <VictoryOverlay />
         <DefeatOverlay />
-      </>
+      </div>
     );
+
+  case GameMode.Consent:
+    return (
+      <div id='reduct-consent'>
+        <Title />
+      </div>
+    );
+
   default:
     return <>`not implemented: game mode ${props.mode}`</>;
   }
