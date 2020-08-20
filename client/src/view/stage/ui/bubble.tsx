@@ -18,7 +18,7 @@ interface BubbleProps {
 }
 
 enum BubbleSide {
-  Auto,
+  Auto = 'auto',
   Bottom = 'bottom',
   Left = 'left',
   Top = 'top',
@@ -32,60 +32,31 @@ export const Bubble: React.FC<BubbleProps> = ({
 
   const [side, setSide] = useState(BubbleSide.Auto);
 
-  const style = useMemo(() => {
-    switch (side) {
-    case BubbleSide.Auto:
-      return { };
-    case BubbleSide.Bottom:
-      return {
-        top: '100%',
-        left: '50%',
-        paddingTop: '1rem',
-        transformOrigin: 'center top',
-      };
-    case BubbleSide.Right:
-      return {
-        top: '50%',
-        left: '100%',
-        paddingLeft: '1rem',
-        transformOrigin: 'left center',
-      };
-    case BubbleSide.Top:
-      return {
-        left: '50%',
-        bottom: '100%',
-        paddingBottom: '1rem',
-        transformOrigin: 'center bottom',
-      };
-    case BubbleSide.Left:
-      return {
-        top: '50%',
-        right: '100%',
-        paddingRight: '1rem',
-        transformOrigin: 'right center',
-      };
-    }
-  }, [side]);
-
   const transition = useTransition(show, null, {
     from: {
       opacity: 0,
-      transform: 'scale(0)',
+      ['--scale' as any]: 0,
     },
     enter: {
       opacity: 1,
-      transform: 'scale(1)',
+      ['--scale' as any]: 1,
     },
     leave: {
       opacity: 0,
-      transform: 'scale(0)',
+      ['--scale' as any]: 0,
+    },
+    onDestroyed(isDestroyed) {
+      if (isDestroyed)
+        setSide(BubbleSide.Auto);
     },
   });
 
   // bubble is shown at the edge of its parent element, so we need to find out
   // which side we should show the bubble on to avoid being clipped
   useLayoutEffect(() => {
-    if (!show) return;
+    if (!show) {
+      return;
+    }
 
     const bubbleDiv = bubbleRef.current!;
     const bubbleBounds = bubbleDiv.getBoundingClientRect();
@@ -113,28 +84,22 @@ export const Bubble: React.FC<BubbleProps> = ({
 
     if (bubbleBounds.height < clipBounds.bottom - parentBounds.bottom)
       setSide(BubbleSide.Bottom);
-
-    if (bubbleBounds.height < parentBounds.top - clipBounds.top)
+    else if (bubbleBounds.height < parentBounds.top - clipBounds.top)
       setSide(BubbleSide.Top);
-
-    if (bubbleBounds.width < clipBounds.right - parentBounds.right)
+    else if (bubbleBounds.width < clipBounds.right - parentBounds.right)
       setSide(BubbleSide.Right);
-
-    if (bubbleBounds.width < parentBounds.left - clipBounds.left)
+    else if (bubbleBounds.width < parentBounds.left - clipBounds.left)
       setSide(BubbleSide.Left);
   }, [show]);
 
   return transition.map(({ item, key, props }) => item && (
     <animated.div
-      style={{
-        ...style,
-        ...props,
-      }}
+      style={props}
       key={key}
       className={`reduct-bubble reduct-bubble-${type} reduct-bubble-${side}`}
       ref={bubbleRef}
     >
-      <svg className='reduct-bubble-pointer' viewBox='0 0 32 16'>
+      <svg className='reduct-bubble-pointer' viewBox='8 0 16 16'>
         <polygon points='16 0 0 16 32 16' />
       </svg>
       <div className='reduct-bubble-inner'>
