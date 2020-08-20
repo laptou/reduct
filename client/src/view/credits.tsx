@@ -5,8 +5,14 @@ import { connect } from 'react-redux';
 
 import { Logo } from './stage/ui/logo';
 
+import { createToggleCredits } from '@/store/action/game';
 
-const CreditsPageImpl: React.FC = (props) => {
+interface CreditsPageDispatchProps {
+  back(): void;
+}
+
+const CreditsPageImpl: React.FC<CreditsPageDispatchProps> = (props) => {
+  const { back } = props;
 
   return (
     <div id='reduct-credits'>
@@ -14,6 +20,7 @@ const CreditsPageImpl: React.FC = (props) => {
         type='button'
         className='btn btn-default'
         id='reduct-credits-btn-back'
+        onClick={back}
       >
         Back
       </button>
@@ -138,4 +145,5 @@ const CreditsPageImpl: React.FC = (props) => {
 };
 
 export const CreditsPage = connect(null, (dispatch) => ({
+  back() { dispatch(createToggleCredits()); },
 }))(CreditsPageImpl);
