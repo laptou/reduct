@@ -89,6 +89,7 @@ module.exports = {
       }
     ],
     '@typescript-eslint/prefer-readonly': ['warn'],
+    '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/no-unused-expressions': ['warn'],
     '@typescript-eslint/no-misused-promises': ['warn', { checksVoidReturn: false }],
     
@@ -96,7 +97,7 @@ module.exports = {
     'no-restricted-syntax': 'off',
     'space-before-function-paren': 'off',
     'no-use-before-define': 'off',
-    'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    'no-unused-vars': 'off', // replaced by typescript-eslint variant
     'no-unused-expressions': 'off', // replaced by typescript-eslint variant
     'func-names': 'off',
     'no-plusplus': 'off',
