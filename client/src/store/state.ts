@@ -72,10 +72,14 @@ export interface GameState {
 }
 
 export enum GameMode {
-  Consent,
   Title,
   Gameplay,
 }
+
+export type ResearchConsentState =
+  null | // consent not asked for
+  true | // consent given
+  false; // consent explicitly not given
 
 export interface PreferenceState {
   /**
@@ -86,7 +90,7 @@ export interface PreferenceState {
   /**
    * Enable usage of the user's data for research.
    */
-  enableResearch: boolean;
+  enableResearch: ResearchConsentState;
 }
 
 export interface GlobalState {

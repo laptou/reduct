@@ -3,7 +3,7 @@ import { PreferenceAction, PreferenceActionKind } from '../action/preferences';
 
 const initialState: PreferenceState = {
   enableSounds: true,
-  enableResearch: false,
+  enableResearch: null,
 };
 
 export const preferencesReducer = (
