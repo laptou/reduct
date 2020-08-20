@@ -10,9 +10,17 @@ const CreditsPageImpl: React.FC = (props) => {
 
   return (
     <div id='reduct-credits'>
+      <button
+        type='button'
+        className='btn btn-default'
+        id='reduct-credits-btn-back'
+      >
+        Back
+      </button>
+
       <Logo />
 
-      <p className='credit-version'>{PKG_VERSION} {PKG_ENV}</p>
+      <p className='credit-version'>v{PKG_VERSION} {PKG_ENV}</p>
 
       <p className='credit-primary'>
         Designed and developed by Ibiyemi Abiodun
