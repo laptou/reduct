@@ -5,6 +5,7 @@ import { createEnableSound } from '@/store/action/preferences';
 import { GlobalState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
 import '@resources/style/react/ui/preferences.scss';
+import { createToggleCredits } from '@/store/action/game';
 
 interface PreferencesStoreProps {
   isSoundEnabled: boolean;
@@ -12,6 +13,7 @@ interface PreferencesStoreProps {
 
 interface PreferencesDispatchProps {
   enableSound(enabled: boolean): void;
+  toggleCredits(): void;
 }
 
 type PreferencesProps = PreferencesStoreProps & PreferencesDispatchProps;
@@ -20,6 +22,7 @@ const PreferencesImpl: React.FC<PreferencesProps> = (props) => {
   const {
     isSoundEnabled,
     enableSound,
+    toggleCredits,
   } = props;
 
   return (
@@ -38,6 +41,9 @@ const PreferencesImpl: React.FC<PreferencesProps> = (props) => {
         &nbsp;
         {PKG_VERSION}
       </li>
+      <li>
+        <a href="#" onClick={() => toggleCredits()}>view credits</a>
+      </li>
     </ul>
   );
 };
@@ -48,5 +54,6 @@ export const Preferences = connect(
   }),
   (dispatch) => ({
     enableSound(enabled: boolean) { dispatch(createEnableSound(enabled)); },
+    toggleCredits() { dispatch(createToggleCredits()); },
   })
 )(PreferencesImpl);
