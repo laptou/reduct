@@ -79,9 +79,6 @@ export const Bubble: React.FC<BubbleProps> = ({
 
     const clipBounds = clip.getBoundingClientRect();
 
-    console.log('clip element', clip);
-    console.log('clip bounds', clipBounds);
-
     if (bubbleBounds.height < clipBounds.bottom - parentBounds.bottom)
       setSide(BubbleSide.Bottom);
     else if (bubbleBounds.height < parentBounds.top - clipBounds.top)
