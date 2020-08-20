@@ -21,7 +21,7 @@ export const preferencesReducer = (
   case PreferenceActionKind.EnableResearch:
     return {
       ...state,
-      enableSounds: act.enabled,
+      enableResearch: act.enabled,
     };
   default:
     return state;
