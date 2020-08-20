@@ -105,6 +105,8 @@ export function undoableReducer(
             const { error, ...newPresentWithoutError } = newPresent;
             draft.$error = error;
             newPresent = newPresentWithoutError;
+            draft.$present = castDraft(newPresent);
+            return;
           }
 
           // don't store these actions in the undo history

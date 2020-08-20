@@ -830,18 +830,12 @@ export function gameReducer(
   case ActionKind.Execute: {
     const { targetNodeId } = act;
 
-    const executing = new Set(state.executing);
-
     const targetNode = state.nodes.get(targetNodeId)!;
-    if (getKindForNode(targetNode, state.nodes) !== 'expression') {
-      executing.delete(targetNodeId);
 
-      return {
-        ...state,
-        executing,
-      };
-    }
+    if (getKindForNode(targetNode, state.nodes) !== 'expression')
+      return state;
 
+    const executing = new Set(state.executing);
     executing.add(targetNodeId);
 
     try {
@@ -861,14 +855,21 @@ export function gameReducer(
       }
     }
 
-    // if it was replaced by other nodes, add those
-    // to the execution list
-
-    if (state.removed.has(targetNodeId))
+    // if it was replaced by other nodes or is no longer steppable, add those to
+    // the execution list
+    if (state.removed.has(targetNodeId)
+    || getKindForNode(targetNode, state.nodes) !== 'expression')
       executing.delete(targetNodeId);
 
     for (const [nodeId, sourceId] of state.added) {
-      if (sourceId !== targetNodeId) continue;
+      if (sourceId !== targetNodeId)
+        continue;
+
+      const newNode = state.nodes.get(nodeId)!;
+
+      if (getKindForNode(newNode, state.nodes) !== 'expression')
+        continue;
+
       executing.add(nodeId);
     }
 
