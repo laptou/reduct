@@ -1,9 +1,19 @@
-import React from 'react';
 
 import '@resources/style/react/ui/consent.scss';
+import React from 'react';
+import { connect } from 'react-redux';
+
 import { Logo } from './stage/ui/logo';
 
-export const ConsentForm: React.FC = () => {
+import { createEnableResearch } from '@/store/action/preferences';
+
+interface ConsentFormDispatchProps {
+  enableResearch(enable: boolean): void;
+}
+
+const ConsentFormImpl: React.FC<ConsentFormDispatchProps> = (props) => {
+  const { enableResearch } = props;
+
   return (
     <div id='reduct-consent'>
       <Logo />
@@ -71,11 +81,11 @@ export const ConsentForm: React.FC = () => {
           asked. I consent to take part in the study.
         </p>
         <div id='reduct-consent-buttons'>
-          <button type='button' className='btn btn-big btn-default'> NO, I decline
+          <button type='button' className='btn btn-default' onClick={() => enableResearch(false)}> NO, I decline
             participation.
           </button>
 
-          <button type='button' className='btn btn-big btn-primary'> YES, I approve.
+          <button type='button' className='btn btn-primary' onClick={() => enableResearch(true)}> YES, I approve.
           </button>
         </div>
       </div>
@@ -83,3 +93,9 @@ export const ConsentForm: React.FC = () => {
     </div>
   );
 };
+
+export const ConsentForm = connect(null, (dispatch) => ({
+  enableResearch(enable: boolean) {
+    dispatch(createEnableResearch(enable));
+  },
+}))(ConsentFormImpl);
