@@ -10,16 +10,10 @@ export enum ActionKind {
   UseToolbox = 'use-toolbox',
   Raise = 'raise',
   Detach = 'detach',
-  Unfold = 'unfold',
-  BetaReduce = 'beta-reduce',
-  Victory = 'victory',
-  Fade = 'fade',
-  Unfade = 'unfade',
   AddToolboxItem = 'add-toolbox-item',
   AddBoardItem = 'add-board-item',
   AddGoalItem = 'add-goal-item',
   ChangeGoal = 'change-goal',
-  Hover = 'hover',
 
   StartLevel = 'start-level',
 
@@ -38,8 +32,8 @@ export enum ActionKind {
   EvalLet = 'eval-let',
 
   Execute = 'exec',
-  Stop = 'stop',
   Step = 'step',
+  Stop = 'stop',
 
   Undo = 'undo',
   Redo = 'redo',
