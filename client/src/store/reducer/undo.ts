@@ -105,7 +105,7 @@ export function undoableReducer(reducer: typeof gameReducer) {
 
           // don't store these actions in the undo history
           if (action.type === ActionKind.Cleanup
-            || action.type === ActionKind.DetectCompletion
+            || action.type === ActionKind.ToggleCredits
             || action.type === ActionKind.Raise) {
             draft.$present = castDraft(newPresent);
             return;
