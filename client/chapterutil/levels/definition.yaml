@@ -1,0 +1,173 @@
+name: Definition / Scope
+levels:
+  - board:
+      - 'function star() { return STAR; }'
+    toolbox:
+      - 'star'
+    defines: []
+    goal:
+      - STAR
+    hint: Move the def block to the left box to define the word {star}!
+    note:
+      - null
+    syntax: []
+    globals:
+      add: {}
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - 'function is_star(object) { return (STAR == object); }'
+      - 'function is_rect(object) { return (RECT == object); }'
+      - 'function star() { return STAR; }'
+      - 'function rect() { return RECT; }'
+    toolbox:
+      - __unlimited;is_star
+      - __unlimited;is_rect
+      - __unlimited;rect
+      - __unlimited;star
+    defines: []
+    goal:
+      - true
+      - false
+      - false
+    hint: Reach the goal by instantiating the defined functions!
+    note:
+      - null
+    syntax: []
+    globals:
+      add: {}
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - 'function add_one(Object) { return (Object + 1); }'
+      - 'function add_two(a, b) { return ((a) (b)) + 1; }'
+    toolbox:
+      - 5
+      - 2
+      - __unlimited;add_one
+      - __unlimited;add_two
+    defines: []
+    goal:
+      - 7
+    hint: Reminder- functions can take other fucntions as arguments!
+    note:
+      - null
+    syntax: []
+    globals:
+      add: {}
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - '__let(x, _, () => x + x)'
+    toolbox:
+      - 1
+      - 3
+      - 2
+    defines: []
+    goal:
+      - 4
+    hint: What should x be equal to in order to solve the level?
+    note:
+      - null
+    syntax: []
+    globals:
+      add: {}
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - '__let(x, _, x => __let(y, _, y => x - y ))'
+    toolbox:
+      - 3
+      - 5
+      - 7
+      - 4
+    defines: []
+    goal:
+      - 4
+    hint:
+    note:
+      - null
+    syntax: []
+    globals:
+      add: {}
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - '__let(x, _, x => __let(x, _, x => x + 5 ))'
+    toolbox:
+      - 3
+      - 2
+      - 4
+      - 5
+      - 7
+    defines: []
+    goal:
+      - 9
+    hint:
+    note:
+      - null
+    syntax: []
+    globals:
+      add: {}
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - x => __tuple(_, _)
+      - '__let(x, _, x => x - 1)'
+    toolbox:
+      - 0
+      - -1
+      - 2
+      - 1
+      - __unlimited;x
+      - __unlimited;y
+    defines: []
+    goal:
+      - -1
+      - 0
+    hint:
+    note:
+      - null
+    syntax: []
+    globals:
+      add: {}
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
+  - board:
+      - '__let(my_fun, _, () => my_fun)'
+      - 'Object => (Object == 5)'
+      - ' function my_fun(Object) {return (Object == _ ? true : false)} '
+    toolbox:
+      - __unlimited;my_fun
+      - 5
+      - 0
+      - 5
+      - 0
+    defines: []
+    goal:
+      - false
+      - true
+    hint:
+    note:
+      - null
+    syntax: []
+    globals:
+      add: {}
+      hide: []
+    autograder:
+      inputs: []
+      outputs: []
