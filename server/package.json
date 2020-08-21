@@ -7,14 +7,17 @@
     "build": "tsc",
     "build:watch": "tsc --watch",
     "serve": "node dist/index.js",
+    "serve:secure": "env REDUCT_USE_HTTPS=true node dist/index.js",
     "serve:watch": "nodemon --watch dist dist/index.js",
     "lint:check": "eslint --color --ext .ts .",
-    "lint:fix": "eslint --color --fix --ext .ts ."
+    "lint:fix": "eslint --color --fix --ext .ts .",
+    "keygen": "node scripts/keygen.mjs"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@google-cloud/logging-winston": "^4.0.0",
+    "@sentry/node": "^5.21.1",
     "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",
     "koa-passport": "^4.1.3",
