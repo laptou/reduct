@@ -7,24 +7,15 @@ levels:
     defines: []
     goal:
       - STAR
-    hint: Move the def block to the left box to define the word {star}!
-    note:
-      - null
-    syntax: []
-    globals:
-      add: {}
-      hide: []
-    autograder:
-      inputs: []
-      outputs: []
+    hint: Move the def block to the left box to define the word star!
   - board:
-      - 'function is_star(object) { return (STAR == object); }'
-      - 'function is_rect(object) { return (RECT == object); }'
+      - 'function isStar(symbol) { return (STAR == symbol); }'
+      - 'function isRect(symbol) { return (RECT == symbol); }'
       - 'function star() { return STAR; }'
       - 'function rect() { return RECT; }'
     toolbox:
-      - __unlimited;is_star
-      - __unlimited;is_rect
+      - __unlimited;isStar
+      - __unlimited;isRect
       - __unlimited;rect
       - __unlimited;star
     defines: []
@@ -32,39 +23,24 @@ levels:
       - true
       - false
       - false
-    hint: Reach the goal by instantiating the defined functions!
-    note:
-      - null
-    syntax: []
-    globals:
-      add: {}
-      hide: []
-    autograder:
-      inputs: []
-      outputs: []
+    hint:
+      - Add these functions to the global scope, and then use their names to get references to them!
   - board:
-      - 'function add_one(Object) { return (Object + 1); }'
-      - 'function add_two(a, b) { return ((a) (b)) + 1; }'
+      - 'function addOne(number) { return (number + 1); }'
+      - 'function addTwo(fun, number) { return ((fun) (number)) + 1; }'
+      - __note('After adding addOne and addTwo to the global scope, make sure to use addOne as an argument to addTwo!')
     toolbox:
       - 5
       - 2
-      - __unlimited;add_one
-      - __unlimited;add_two
+      - addOne
+      - addTwo
     defines: []
     goal:
       - 7
-    hint: Reminder- functions can take other fucntions as arguments!
-    note:
-      - null
-    syntax: []
-    globals:
-      add: {}
-      hide: []
-    autograder:
-      inputs: []
-      outputs: []
+    hint:
   - board:
       - '__let(x, _, () => x + x)'
+      - __note('Check out the tutorial on the left for let expressions!')
     toolbox:
       - 1
       - 3
@@ -72,16 +48,7 @@ levels:
     defines: []
     goal:
       - 4
-    hint: What should x be equal to in order to solve the level?
-    note:
-      - null
-    syntax: []
-    globals:
-      add: {}
-      hide: []
-    autograder:
-      inputs: []
-      outputs: []
+    hint:
   - board:
       - '__let(x, _, x => __let(y, _, y => x - y ))'
     toolbox:
@@ -93,15 +60,6 @@ levels:
     goal:
       - 4
     hint:
-    note:
-      - null
-    syntax: []
-    globals:
-      add: {}
-      hide: []
-    autograder:
-      inputs: []
-      outputs: []
   - board:
       - '__let(x, _, x => __let(x, _, x => x + 5 ))'
     toolbox:
@@ -114,60 +72,40 @@ levels:
     goal:
       - 9
     hint:
-    note:
-      - null
-    syntax: []
-    globals:
-      add: {}
-      hide: []
-    autograder:
-      inputs: []
-      outputs: []
   - board:
-      - x => __tuple(_, _)
-      - '__let(x, _, x => x - 1)'
+      - '__let(outer, _, outer => __tuple(__let(inner, _, inner => (outer > inner) ? STAR : RECT), __let(inner, _, inner => (outer == inner) ? STAR : RECT)))'
     toolbox:
       - 0
-      - -1
-      - 2
+      - 5
       - 1
-      - __unlimited;x
-      - __unlimited;y
+      - 3
+      - 3
     defines: []
     goal:
-      - -1
-      - 0
+      - RECT
+      - STAR
     hint:
-    note:
-      - null
-    syntax: []
-    globals:
-      add: {}
-      hide: []
-    autograder:
-      inputs: []
-      outputs: []
   - board:
-      - '__let(my_fun, _, () => my_fun)'
-      - 'Object => (Object == 5)'
-      - ' function my_fun(Object) {return (Object == _ ? true : false)} '
+      - __let(myFun, _, () => __let(number, _, () => __let(number, _, () => myFun (number) )))
+      - 'number => (number == _)'
+      - '(number => _ (number)) (_)'
+      - 'function myFun(number) {return (number == _ ? true : false)}'
+      - 'function swapper(boolean) {return (boolean == true ? false : true)}'
+      - swapper
+      - swapper
+      - swapper
     toolbox:
-      - __unlimited;my_fun
-      - 5
+      - myFun
+      - myFun
       - 0
       - 5
       - 0
+      - 5
+      - 0
+      - 1
     defines: []
     goal:
       - false
       - true
+      - true
     hint:
-    note:
-      - null
-    syntax: []
-    globals:
-      add: {}
-      hide: []
-    autograder:
-      inputs: []
-      outputs: []
