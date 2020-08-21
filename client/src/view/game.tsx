@@ -16,6 +16,7 @@ import { DefinitionsTab } from './stage/ui/tabs/sidebar/definitions';
 import { TutorialTab } from './stage/ui/tabs/sidebar/tutorial';
 import { ToolboxTab } from './stage/ui/tabs/toolbox';
 import { ConsentForm } from './consent';
+import { CreditsPage } from './credits';
 
 import { GameMode, GlobalState, ResearchConsentState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
@@ -59,6 +60,9 @@ const GameImpl: React.FC<GameStoreProps> = (props) => {
         <DefeatOverlay />
       </div>
     );
+
+  case GameMode.Credits:
+    return <CreditsPage />;
 
   default:
     return <>`not implemented: game mode ${props.mode}`</>;

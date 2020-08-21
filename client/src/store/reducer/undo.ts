@@ -111,6 +111,7 @@ export function undoableReducer(
 
           // don't store these actions in the undo history
           if (action.type === ActionKind.Cleanup
+            || action.type === ActionKind.ToggleCredits
             || action.type === ActionKind.CreateDocNodes
             || action.type === ActionKind.DeleteDocNodes
             || action.type === ActionKind.Raise) {

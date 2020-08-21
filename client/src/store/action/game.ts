@@ -16,6 +16,7 @@ export enum ActionKind {
   ChangeGoal = 'change-goal',
 
   StartLevel = 'start-level',
+  ToggleCredits = 'toggle-credits',
 
   MoveNodeToBoard = 'move-node-to-stage',
   MoveNodeToSlot = 'move-node-to-slot',
@@ -45,6 +46,7 @@ export enum ActionKind {
 
 export type ReductAction =
   StartLevelAction |
+  ToggleCreditsAction |
   MoveNodeToBoardAction |
   MoveNodeToSlotAction |
   MoveNodeToDefsAction |
@@ -282,6 +284,19 @@ export function createStartLevel(index: number): StartLevelAction {
     board: board,
     toolbox: toolbox,
     globals: flatGlobals,
+  };
+}
+
+export interface ToggleCreditsAction {
+  type: ActionKind.ToggleCredits;
+}
+
+/**
+ * Creates an action which will show/hide the credits screen.
+ */
+export function createToggleCredits(): ToggleCreditsAction {
+  return {
+    type: ActionKind.ToggleCredits,
   };
 }
 
