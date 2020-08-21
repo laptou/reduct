@@ -1,4 +1,4 @@
 [defaults]
 url = https://sentry.io/
-project = reduct
+project = reduct-client
 org = ibiyemi-abiodun

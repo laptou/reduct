@@ -25,7 +25,9 @@ button, .btn {
       color: $color-default;
     }
 
-    .btn-#{$name}:hover, .btn-#{$name}:focus, .btn-#{$name}:active {
+    .btn-#{$name}:enabled:hover,
+    .btn-#{$name}:enabled:focus,
+    .btn-#{$name}:enabled:active {
       border-color: $color-highlight;
 
       color: $color-default;
@@ -37,7 +39,9 @@ button, .btn {
       color: black;
     }
 
-    .btn-#{$name}:hover, .btn-#{$name}:focus, .btn-#{$name}:active {
+    .btn-#{$name}:enabled:hover,
+    .btn-#{$name}:enabled:focus,
+    .btn-#{$name}:enabled:active {
       background: $color-highlight;
     }
   }
@@ -51,7 +55,7 @@ button, .btn {
     box-shadow: 0 1pt 4pt rgba(black, 0.25);
   }
 
-  .btn-#{$name}:hover, .btn-#{$name}:focus {
+  .btn-#{$name}:enabled:hover, .btn-#{$name}:enabled:focus {
     outline: none;
 
     &::before {
@@ -68,16 +72,23 @@ button, .btn {
     }
   }
 
-  .btn-#{$name}:hover::before {
+  .btn-#{$name}:enabled:hover::before {
     border-style: dashed;
   }
 
-  .btn-#{$name}:focus::before {
+  .btn-#{$name}:enabled:focus::before {
     border-style: solid;
   }
 
-  .btn-#{$name}:active {
+  .btn-#{$name}:enabled:active {
     box-shadow: none;
+  }
+
+  .btn-#{$name}:disabled {
+    box-shadow: none;
+
+    opacity: 0.56;
+    cursor: default;
   }
 }
 
