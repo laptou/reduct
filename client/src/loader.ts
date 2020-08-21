@@ -95,6 +95,7 @@ interface LevelDefinition {
 const chapterDigraph: Record<string, string[]> = {
   functions: [],
   booleans: ['functions'],
+  application: ['booleans'],
 };
 
 async function loadChapter(key: string): Promise<ChapterDefinition> {
