@@ -190,12 +190,21 @@ export function createStartLevel(index: number): StartLevelAction {
     macros.set(name, () => createBuiltInReferenceNode(name));
   }
 
-  const globalDefinedNames = Object.entries(levelDefinition.globals)
-    .map((script: any) => {
-      return parseProgram(script.toString(), macros);
-    })
-    .filter((node): node is DefineNode => node.type === 'define')
-    .map((node) =>
+  const globals = new Map();
+
+  for (const [name, script] of Object.entries(levelDefinition.globals)) {
+    if (name in builtins) continue;
+
+    const node = parseProgram(script.toString(), macros);
+
+    if (node.type !== 'define')
+      continue;
+
+    globals.set(name, node);
+  }
+
+  const globalDefinedNames =
+    [...globals.values()].map((node) =>
       [
         node.fields.name,
         () => createReferenceNode(node.fields.name),
@@ -228,19 +237,7 @@ export function createStartLevel(index: number): StartLevelAction {
   const toolboxNodes = levelDefinition.toolbox.map((script) => parseProgram(script.toString(), macros));
 
   // Go back and parse the globals as well.
-  const globals = new Map();
 
-  for (const [name, script] of Object.entries(levelDefinition.globals)) {
-    // TODO: remove override for builtins, remove defs for builtin methods in levels
-    if (name in builtins) continue;
-
-    const node = parseProgram(script.toString(), macros);
-
-    if (node.type !== 'define')
-      continue;
-
-    globals.set(name, node);
-  }
 
   const flatNodes = new Map();
   const goal: Set<NodeId> = new Set();
