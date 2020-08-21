@@ -1,6 +1,6 @@
 
 import React, {
-  FunctionComponent, RefObject, useLayoutEffect, useMemo, useRef, useState,
+  FunctionComponent, RefObject, useLayoutEffect, useMemo, useRef, useState, useEffect,
 } from 'react';
 import { connect } from 'react-redux';
 import { animated, useTransition } from 'react-spring';
@@ -16,6 +16,7 @@ import { placeRects } from '@/view/layout/grid';
 import '@resources/style/react/ui/board.scss';
 
 interface BoardStoreProps {
+  level: number;
   board: DeepReadonly<Set<NodeId>>;
   added: DeepReadonly<Map<NodeId, NodeId | null>>;
   removed: DeepReadonly<Map<NodeId, boolean>>;
@@ -36,14 +37,31 @@ interface BoardDispatchProps {
 
 type BoardProps = BoardStoreProps & BoardDispatchProps;
 
-// source prop indicates whether this node was moved by the user
-// if it was, then we shouldn't automatically reposition it
 interface NodePos {
+  /**
+   * The ID of the node whose position is represented.
+   */
   nodeId: NodeId;
+
   x: number;
   y: number;
+
+  /**
+   * True if the node has been moved by the user at any point.
+   */
   isUserPositioned: boolean;
+
+  /**
+   * True if the node has already been positioned by the automatic layout
+   * engine.
+   */
   isAutoPositioned: boolean;
+
+  /**
+   * The index of the level that this node belongs to. Used to eliminate stale
+   * node position info.
+   */
+  level: number;
 }
 
 function onDragOver(event: React.DragEvent<HTMLDivElement>) {
@@ -55,8 +73,7 @@ function onDrop(
   event: React.DragEvent<HTMLDivElement>,
   props: BoardProps,
   board: RefObject<HTMLDivElement>,
-  positions: Map<NodeId, NodePos>,
-  setPositions: (positions: Map<NodeId, NodePos>) => void
+  setPositions: (cb: (positions: Map<NodeId, NodePos>) => Map<NodeId, NodePos>) => void
 ) {
   const nodeId = parseInt(event.dataTransfer.getData('application/reduct-node'));
   if (!nodeId || isNaN(nodeId)) return;
@@ -91,15 +108,20 @@ function onDrop(
   const x = Math.max(-boardWidth / 2, Math.min(boardWidth / 2, event.clientX - boardCenterX - offset.x));
   const y = Math.max(-boardHeight / 2, Math.min(boardHeight / 2, event.clientY - boardCenterY - offset.y));
 
-  const newPositions = new Map(positions);
-  newPositions.set(nodeId, {
-    nodeId,
-    x,
-    y,
-    isAutoPositioned: false,
-    isUserPositioned: true,
+  setPositions((positions) => {
+    const newPositions = new Map(positions);
+
+    newPositions.set(nodeId, {
+      nodeId,
+      x,
+      y,
+      isAutoPositioned: false,
+      isUserPositioned: true,
+      level: props.level,
+    });
+
+    return newPositions;
   });
-  setPositions(newPositions);
 }
 
 const BoardImpl: FunctionComponent<BoardProps> =
@@ -108,7 +130,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
     const [positions, setPositions] = useState(new Map<NodeId, NodePos>());
 
     const {
-      board, added, clearError,
+      board, added, level, clearError,
     } = props;
 
     const transitions = useTransition(
@@ -120,13 +142,6 @@ const BoardImpl: FunctionComponent<BoardProps> =
         leave: {
           opacity: 0,
           transform: 'scale(0)',
-        },
-        onDestroyed: (id: NodeId) => {
-          setPositions(positions => {
-            const newPositions = new Map(positions);
-            newPositions.delete(id);
-            return newPositions;
-          });
         },
       }
     );
@@ -145,11 +160,20 @@ const BoardImpl: FunctionComponent<BoardProps> =
       [board]
     );
 
+    // when level changes, remove node positions from previous level
+    useEffect(() => {
+      setPositions(positions =>
+        new Map<NodeId, NodePos>(
+          [...positions].filter(([_id, pos]) => pos.level === level)
+        )
+      );
+    }, [level]);
+
     // use useLayoutEffect instead of useEffect b/c this needs to execute after
     // React has created elements but before the browser can paint (to avoid
     // elements "jumping" around)
     useLayoutEffect(() => {
-      const updatedPositions = new Map();
+      const updatedPositions = new Map<NodeId, NodePos>();
 
       const padding = 10;
       const boardDiv = boardRef.current!;
@@ -185,7 +209,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
           // this node already has a position, do not move it
           const fixedRect = {
             id: nodeId,
-            x: x + boardScroll.x - padding,
+            x: x +   boardScroll.x - padding,
             y: y + boardScroll.y - padding,
             w: width + padding * 2,
             h: height + padding * 2,
@@ -204,6 +228,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
             y: sourcePositionInfo.y + Math.random() * 40 - 20,
             isAutoPositioned: false,
             isUserPositioned: true,
+            level,
           };
 
           updatedPositions.set(nodeId, newNodePosition);
@@ -254,6 +279,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
           y: y - boardBounds.height / 2 + h / 2 + padding + topLeft.y,
           isAutoPositioned: true,
           isUserPositioned: false,
+          level,
         });
       }
 
@@ -263,15 +289,11 @@ const BoardImpl: FunctionComponent<BoardProps> =
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [added]);
 
-    // positions are removed from dictionary in the onDestroyed option of
-    // useTransition, so that the position is not deleted before the element
-    // disappears
-
     return (
       <div
         id='reduct-board'
         onDragOver={onDragOver}
-        onDrop={e => onDrop(e, props, boardRef, positions, setPositions)}
+        onDrop={e => onDrop(e, props, boardRef, setPositions)}
         onClick={() => clearError()}
         ref={boardRef}
       >
@@ -313,10 +335,17 @@ const BoardImpl: FunctionComponent<BoardProps> =
   };
 
 export const Board = connect(
-  ({ game: { $present: { added, removed, board } } }: DeepReadonly<GlobalState>) => ({
+  ({
+    game: {
+      $present: {
+        added, removed, board, level,
+      },
+    },
+  }: DeepReadonly<GlobalState>) => ({
     added,
     removed,
     board,
+    level,
   }),
   (dispatch) => ({
     moveNodeToBoard(id: NodeId) { dispatch(createMoveNodeToBoard(id)); },

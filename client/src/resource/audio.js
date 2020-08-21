@@ -17,7 +17,6 @@ export function playSound(key) {
   const audio = audios.get(key);
 
   if (audio) {
-    console.log(audio);
     return audio.play();
   }
 

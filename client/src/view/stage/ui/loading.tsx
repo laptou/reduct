@@ -28,7 +28,7 @@ export const LoadingAnimationWithText: React.FC = () => {
 
 export const LoadingPage: React.FC = () => {
   return (
-    <Modal>
+    <Modal className='modal-overlay-clear'>
       <div className='reduct-loading-page'>
         <LoadingAnimationWithText />
       </div>

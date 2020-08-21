@@ -12,6 +12,7 @@ import { checkVictory } from '@/store/helper';
 import { GlobalState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
 import LevelCompleteText from '@resources/graphics/titles/level-complete.svg';
+import { playSound } from '@/resource/audio';
 
 interface VictoryStoreProps {
   isVictory: boolean;
@@ -34,7 +35,7 @@ const VictoryImpl: React.FC<VictoryStoreProps & VictoryDispatchProps> =
         delay: 500,
         ref: scaleSpring,
         onStart() {
-          // TODO: add audio cue
+          if (isVictory) playSound('level-complete');
         },
       });
 

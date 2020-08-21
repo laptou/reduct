@@ -17,6 +17,7 @@ const Game = React.lazy(async () => {
         loader.loadAudio('level-complete'),
         loader.loadAudio('level-incomplete'),
         loader.loadAudio('drip'),
+        loader.loadAudio('pop'),
         loader.loadChapters(),
       ])),
   ]);

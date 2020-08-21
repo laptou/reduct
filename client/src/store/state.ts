@@ -72,13 +72,26 @@ export interface GameState {
 }
 
 export enum GameMode {
-  Consent,
   Title,
   Gameplay,
+  Credits,
 }
 
+export type ResearchConsentState =
+  null | // consent not asked for
+  true | // consent given
+  false; // consent explicitly not given
+
 export interface PreferenceState {
+  /**
+   * Enable playing sound effects.
+   */
   enableSounds: boolean;
+
+  /**
+   * Enable usage of the user's data for research.
+   */
+  enableResearch: ResearchConsentState;
 }
 
 export interface GlobalState {

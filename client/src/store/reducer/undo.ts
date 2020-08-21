@@ -1,22 +1,24 @@
 import { castDraft, produce } from 'immer';
+import { Reducer } from 'redux';
 
-import { ActionKind, ReductAction } from '../action/game';
+import {
+  ActionKind, ReductAction, UndoAction, RedoAction,
+} from '../action/game';
 import { GameError } from '../errors';
 import { GameState } from '../state';
 
 import type { gameReducer } from './game';
 
-import { DeepReadonly } from '@/util/helper';
 
 /** Undo the last action. */
-export function undo() {
+export function undo(): UndoAction {
   return {
     type: ActionKind.Undo,
   };
 }
 
 /** Redo the last undone action. */
-export function redo() {
+export function redo(): RedoAction {
   return {
     type: ActionKind.Redo,
   };
@@ -34,7 +36,9 @@ export interface UndoableGameState
  * Given a game reducer, return a reducer that supports undo/redo and handles game
  * errors.
  */
-export function undoableReducer(reducer: typeof gameReducer) {
+export function undoableReducer(
+  reducer: typeof gameReducer
+): Reducer<UndoableGameState, ReductAction> {
   const initialState: UndoableGameState = {
     $present: reducer(),
     $past: [],
@@ -42,7 +46,7 @@ export function undoableReducer(reducer: typeof gameReducer) {
     $error: null,
   };
 
-  return (state: UndoableGameState = initialState, action?: ReductAction): UndoableGameState => {
+  return (state = initialState, action?) => {
     if (!action) return state;
 
     switch (action.type) {
@@ -101,11 +105,15 @@ export function undoableReducer(reducer: typeof gameReducer) {
             const { error, ...newPresentWithoutError } = newPresent;
             draft.$error = error;
             newPresent = newPresentWithoutError;
+            draft.$present = castDraft(newPresent);
+            return;
           }
 
           // don't store these actions in the undo history
           if (action.type === ActionKind.Cleanup
-            || action.type === ActionKind.DetectCompletion
+            || action.type === ActionKind.ToggleCredits
+            || action.type === ActionKind.CreateDocNodes
+            || action.type === ActionKind.DeleteDocNodes
             || action.type === ActionKind.Raise) {
             draft.$present = castDraft(newPresent);
             return;

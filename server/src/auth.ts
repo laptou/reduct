@@ -1,4 +1,7 @@
 
+import { promises as fs } from 'fs';
+import { resolve } from 'path';
+
 import type {
   Context, default as Koa, DefaultState, Middleware,
 } from 'koa';
@@ -7,19 +10,27 @@ import KoaSession from 'koa-session';
 import KoaTreeRouter from 'koa-tree-router';
 import {
   Profile as SamlProfile, Strategy as SamlStrategy,
-
   VerifiedCallback as SamlVerifiedCallback,
 } from 'passport-saml';
+
+import { isHttps, useTestAuthentication } from './config';
+
+const { readFile } = fs;
 
 // derived from https://it.cornell.edu/shibboleth/shibboleth-faq
 const NETID_URN = 'urn:oid:0.9.2342.19200300.100.1.1';
 
 const LOGIN_PATH = '/auth/login';
 const CALLBACK_PATH_SAML = '/auth/saml/callback';
+const CALLBACK_PROTOCOL_SAML = isHttps ? 'https://' : 'http://';
+const ENTRYPOINT_SAML = useTestAuthentication
+  ? 'https://shibidp-test.cit.cornell.edu/idp/profile/SAML2/Redirect/SSO'
+  : 'https://shibidp.cit.cornell.edu/idp/profile/SAML2/Redirect/SSO';
 
 KoaPassport.use(new SamlStrategy({
   path: CALLBACK_PATH_SAML,
-  entryPoint: 'https://shibidp-test.cit.cornell.edu/idp/profile/SAML2/Redirect/SSO',
+  protocol: CALLBACK_PROTOCOL_SAML,
+  entryPoint: ENTRYPOINT_SAML,
   issuer: 'reduct',
   name: 'saml',
 }, (profile: SamlProfile, callback: SamlVerifiedCallback) => {
@@ -35,8 +46,12 @@ KoaPassport.deserializeUser((netId: string, callback) => {
   callback(null, { netId });
 });
 
-export function initializeAuth(server: Koa): void {
-  server.keys = ['secret key, change me before deploying'];
+export async function initializeAuth(server: Koa): Promise<void> {
+  // __dirname does not normally work in ES modules, but TypeScript converts all
+  // of this into CJS anyway
+  const secret = await readFile(resolve(__dirname, '../secret/session.base64'), 'utf-8');
+
+  server.keys = [secret];
   server.use(KoaSession({}, server));
   server.use(KoaPassport.initialize());
   server.use(KoaPassport.session());
