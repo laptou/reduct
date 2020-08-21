@@ -39,7 +39,18 @@ export const logMiddleware: Middleware = (api) => (next) => (act: ReductAction) 
     });
     break;
 
-  case ActionKind.Execute:
+  case ActionKind.Execute: {
+    // if lastState is null, that means the execution failed
+    // and the user hasn't done any other moves yet
+    if (!lastState) {
+      log('game:execute', {
+        executed: unflatten(act.targetNodeId, presentState.nodes),
+        error: errorState,
+      });
+
+      break;
+    }
+
     const added = Array
       .from(presentState.added)
       .map(([addedNodeId, sourceNodeId]) => ({
@@ -57,13 +68,14 @@ export const logMiddleware: Middleware = (api) => (next) => (act: ReductAction) 
       nodes: {
         // use version from lastState b/c targetNode might have been deleted as
         // a result of executing it
-        executed: unflatten(act.targetNodeId, lastState!.nodes),
+        executed: unflatten(act.targetNodeId, lastState.nodes),
         added,
         removed,
       },
       error: errorState,
     });
     break;
+  }
 
   case ActionKind.Stop: {
     log('game:stop');
