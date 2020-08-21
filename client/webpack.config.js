@@ -135,6 +135,28 @@ module.exports = (env) => ({
         test: /\.(md)$/i,
         use: ['frontmatter-markdown-loader'],
       },
+      {
+        test: /\.html$/,
+        loader: 'html-loader',
+        options: {
+          attributes: {
+            list: [
+              {
+                tag: 'link',
+                attribute: 'href',
+                type: 'src',
+                filter: (tag, attribute, attributes) => {
+                  if (!/(stylesheet|icon)/i.test(attributes.rel)) {
+                    return false;
+                  }
+
+                  return true;
+                },
+              },
+            ],
+          },
+        },
+      },
     ],
   },
   plugins: [
