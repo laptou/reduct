@@ -2,12 +2,14 @@ const webpack = require('webpack');
 const path = require('path');
 const SentryCliPlugin = require('@sentry/webpack-plugin');
 const HtmlPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin: CleanPlugin } = require('clean-webpack-plugin');
 const TsCheckerPlugin = require('fork-ts-checker-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const SriPlugin = require('webpack-subresource-integrity');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { DefinePlugin } = require('webpack');
+const { resolve } = require('path');
 
 /**
  * @typedef {Object} Env
@@ -31,12 +33,33 @@ module.exports = (env) => ({
     runtimeChunk: false,
     splitChunks: {
       chunks: 'all',
+      cacheGroups: {
+        audioGroup: {
+          test: /\.mp3$/,
+          // reuseExistingChunk: true,
+          name: 'audio',
+          minSize: 5000,
+        },
+        imageGroup: {
+          test: /\.(svg|png)$/,
+          // reuseExistingChunk: true,
+          name: 'image',
+          minSize: 5000,
+        },
+        textGroup: {
+          test: /\.(md)$/,
+          // reuseExistingChunk: true,
+          name: 'text',
+          minSize: 5000,
+        },
+      },
     },
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
     crossOriginLoading: 'anonymous',
     publicPath: '/',
+    chunkFilename: env.production ? '[name]-[chunkhash].js' : undefined,
   },
   module: {
     rules: [
@@ -133,6 +156,28 @@ module.exports = (env) => ({
         test: /\.(md)$/i,
         use: ['frontmatter-markdown-loader'],
       },
+      {
+        test: /\.html$/,
+        loader: 'html-loader',
+        options: {
+          attributes: {
+            list: [
+              {
+                tag: 'link',
+                attribute: 'href',
+                type: 'src',
+                filter: (tag, attribute, attributes) => {
+                  if (!/(stylesheet|icon)/i.test(attributes.rel)) {
+                    return false;
+                  }
+
+                  return true;
+                },
+              },
+            ],
+          },
+        },
+      },
     ],
   },
   plugins: [
@@ -145,6 +190,7 @@ module.exports = (env) => ({
       'PKG_VERSION': JSON.stringify(require('./package.json').version),
       'process.env.NODE_ENV': JSON.stringify(env.production ? 'production' : 'development'),
     }),
+    new CleanPlugin(),
     // new TsCheckerPlugin({
     //   workers: TsCheckerPlugin.TWO_CPUS_FREE,
     //   eslint: true,
@@ -159,7 +205,7 @@ module.exports = (env) => ({
           hashFuncNames: ['sha384', 'sha512'],
         }),
         new SentryCliPlugin({
-          include: '.',
+          include: resolve(__dirname, 'dist'),
           ignoreFile: '.sentrycliignore',
           ignore: ['node_modules', 'webpack.config.js'],
         }),

@@ -10,18 +10,13 @@ export enum ActionKind {
   UseToolbox = 'use-toolbox',
   Raise = 'raise',
   Detach = 'detach',
-  Unfold = 'unfold',
-  BetaReduce = 'beta-reduce',
-  Victory = 'victory',
-  Fade = 'fade',
-  Unfade = 'unfade',
   AddToolboxItem = 'add-toolbox-item',
   AddBoardItem = 'add-board-item',
   AddGoalItem = 'add-goal-item',
   ChangeGoal = 'change-goal',
-  Hover = 'hover',
 
   StartLevel = 'start-level',
+  ToggleCredits = 'toggle-credits',
 
   MoveNodeToBoard = 'move-node-to-stage',
   MoveNodeToSlot = 'move-node-to-slot',
@@ -38,8 +33,8 @@ export enum ActionKind {
   EvalLet = 'eval-let',
 
   Execute = 'exec',
-  Stop = 'stop',
   Step = 'step',
+  Stop = 'stop',
 
   Undo = 'undo',
   Redo = 'redo',
@@ -51,6 +46,7 @@ export enum ActionKind {
 
 export type ReductAction =
   StartLevelAction |
+  ToggleCreditsAction |
   MoveNodeToBoardAction |
   MoveNodeToSlotAction |
   MoveNodeToDefsAction |
@@ -190,12 +186,21 @@ export function createStartLevel(index: number): StartLevelAction {
     macros.set(name, () => createBuiltInReferenceNode(name));
   }
 
-  const globalDefinedNames = Object.entries(levelDefinition.globals)
-    .map((script: any) => {
-      return parseProgram(script.toString(), macros);
-    })
-    .filter((node): node is DefineNode => node.type === 'define')
-    .map((node) =>
+  const globals = new Map();
+
+  for (const [name, script] of Object.entries(levelDefinition.globals)) {
+    if (name in builtins) continue;
+
+    const node = parseProgram(script.toString(), macros);
+
+    if (node.type !== 'define')
+      continue;
+
+    globals.set(name, node);
+  }
+
+  const globalDefinedNames =
+    [...globals.values()].map((node) =>
       [
         node.fields.name,
         () => createReferenceNode(node.fields.name),
@@ -228,19 +233,7 @@ export function createStartLevel(index: number): StartLevelAction {
   const toolboxNodes = levelDefinition.toolbox.map((script) => parseProgram(script.toString(), macros));
 
   // Go back and parse the globals as well.
-  const globals = new Map();
 
-  for (const [name, script] of Object.entries(levelDefinition.globals)) {
-    // TODO: remove override for builtins, remove defs for builtin methods in levels
-    if (name in builtins) continue;
-
-    const node = parseProgram(script.toString(), macros);
-
-    if (node.type !== 'define')
-      continue;
-
-    globals.set(name, node);
-  }
 
   const flatNodes = new Map();
   const goal: Set<NodeId> = new Set();
@@ -288,6 +281,19 @@ export function createStartLevel(index: number): StartLevelAction {
     board: board,
     toolbox: toolbox,
     globals: flatGlobals,
+  };
+}
+
+export interface ToggleCreditsAction {
+  type: ActionKind.ToggleCredits;
+}
+
+/**
+ * Creates an action which will show/hide the credits screen.
+ */
+export function createToggleCredits(): ToggleCreditsAction {
+  return {
+    type: ActionKind.ToggleCredits,
   };
 }
 
@@ -635,43 +641,5 @@ export function addBoardItem(newNodeIds, addedNodes) {
     type: ActionKind.AddBoardItem,
     newNodeIds,
     addedNodes,
-  };
-}
-
-/**
- * Unfold the definition of ``nodeId``, producing ``newNodeId`` (and
- * adding ``addedNodes`` to the store).
- */
-export function unfold(nodeId, newNodeId, addedNodes) {
-  return {
-    type: ActionKind.Unfold,
-    nodeId,
-    newNodeId,
-    addedNodes,
-  };
-}
-
-/**
- * Replace a node with its unfaded variant temporarily.
- */
-export function unfade(source, nodeId, newNodeId, addedNodes) {
-  return {
-    type: ActionKind.Unfade,
-    source,
-    nodeId,
-    newNodeId,
-    addedNodes,
-  };
-}
-
-/**
- * Replace an unfaded node with its faded variant.
- */
-export function fade(source, unfadedId, fadedId) {
-  return {
-    type: ActionKind.Fade,
-    source,
-    unfadedId,
-    fadedId,
   };
 }

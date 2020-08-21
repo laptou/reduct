@@ -21,12 +21,26 @@ interface HistoryDispatchProps {
 }
 
 const HistoryImpl = (props: HistoryStoreProps & HistoryDispatchProps) => {
+  const {
+    canUndo, canRedo, undo, redo,
+  } = props;
+
   return (
     <div id='reduct-history'>
-      <button type='button' disabled={!props.canUndo} onClick={() => props.undo()} className='btn btn-default'>
+      <button
+        className='btn btn-default'
+        type='button'
+        disabled={!canUndo}
+        onClick={() => undo()}
+      >
         Undo
       </button>
-      <button type='button' disabled={!props.canRedo} onClick={() => props.redo()} className='btn btn-default'>
+      <button
+        className='btn btn-default'
+        type='button'
+        disabled={!canRedo}
+        onClick={() => redo()}
+      >
         Redo
       </button>
     </div>
@@ -39,7 +53,11 @@ export const HistoryTab = connect(
     canRedo: store.game.$future.length > 0,
   }),
   (dispatch) => ({
-    undo() { dispatch(createUndo()); },
-    redo() { dispatch(createRedo()); },
+    undo() {
+      dispatch(createUndo());
+    },
+    redo() {
+      dispatch(createRedo());
+    },
   })
 )(HistoryImpl);

@@ -77,6 +77,16 @@ export function gameReducer(
     };
   }
 
+  case ActionKind.ToggleCredits: {
+    return {
+      ...state,
+      mode:
+        state.mode === GameMode.Credits
+          ? GameMode.Gameplay
+          : GameMode.Credits,
+    };
+  }
+
   case ActionKind.EvalLet: {
     const { letNodeId } = act;
 
@@ -830,18 +840,12 @@ export function gameReducer(
   case ActionKind.Execute: {
     const { targetNodeId } = act;
 
-    const executing = new Set(state.executing);
-
     const targetNode = state.nodes.get(targetNodeId)!;
-    if (getKindForNode(targetNode, state.nodes) !== 'expression') {
-      executing.delete(targetNodeId);
 
-      return {
-        ...state,
-        executing,
-      };
-    }
+    if (getKindForNode(targetNode, state.nodes) !== 'expression')
+      return state;
 
+    const executing = new Set(state.executing);
     executing.add(targetNodeId);
 
     try {
@@ -861,14 +865,21 @@ export function gameReducer(
       }
     }
 
-    // if it was replaced by other nodes, add those
-    // to the execution list
-
-    if (state.removed.has(targetNodeId))
+    // if it was replaced by other nodes or is no longer steppable, add those to
+    // the execution list
+    if (state.removed.has(targetNodeId)
+    || getKindForNode(targetNode, state.nodes) !== 'expression')
       executing.delete(targetNodeId);
 
     for (const [nodeId, sourceId] of state.added) {
-      if (sourceId !== targetNodeId) continue;
+      if (sourceId !== targetNodeId)
+        continue;
+
+      const newNode = state.nodes.get(nodeId)!;
+
+      if (getKindForNode(newNode, state.nodes) !== 'expression')
+        continue;
+
       executing.add(nodeId);
     }
 
@@ -978,34 +989,6 @@ export function gameReducer(
       .set('goal', newGoal);
   }
 
-  case ActionKind.Unfold: {
-    const nodes = state.nodes;
-    const ref = nodes.get(act.nodeId);
-
-    let newState = state
-      .set('nodes', nodes.withMutations((n) => {
-        for (const node of act.addedNodes) {
-          n.set(node.id, node);
-        }
-
-        if (ref.has('parent')) {
-          const parentId = ref.parent;
-          n.set(
-            parentId,
-            n.get(parentId).set(ref.parentField, act.newNodeId)
-          );
-          n.set('locked', true);
-        }
-      }));
-
-    if (!ref.has('parent')) {
-      newState = newState
-        .set('board', state.board.map((id) => (id === act.nodeId ? act.newNodeId : id)));
-    }
-
-    return newState;
-  }
-
   case ActionKind.UseToolbox: {
     if (state.toolbox.has(act.nodeId)) {
       // If node has __meta indicating infinite uses, clone
@@ -1073,31 +1056,6 @@ export function gameReducer(
 
       markDirty(draft.nodes, parentId);
     });
-  }
-
-  case ActionKind.Unfade: {
-    return produce(state, (draft) => {
-      for (const newNode of act.addedNodes) {
-        draft.nodes.set(newNode.id, newNode);
-      }
-
-      draft[act.source].delete(act.nodeId);
-      draft[act.source].add(act.newNodeId);
-    });
-  }
-
-  case ActionKind.Fade: {
-    return produce(state, draft => {
-      draft[act.source].delete(act.unfadedId);
-      draft[act.source].add(act.fadedId);
-    });
-
-    // return state.withMutations((s) => {
-    //   s.set(
-    //     act.source,
-    //     s.get(act.source).map((n) => (n === act.unfadedId ? act.fadedId : n))
-    //   );
-    // });
   }
 
   default: return state;

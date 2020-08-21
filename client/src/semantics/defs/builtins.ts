@@ -249,6 +249,7 @@ function builtinMap(
   let newNodeMap: DeepReadonly<NodeMap> = state.nodes;
   const applyNodes: DRF[] = [];
   const ptupleNodes: DRF[] = [];
+  const fnNodes: DRF[] = [];
   const newNodes: DRF[] = [];
   const newArr = createArrayNode();
   newArr.fields.length = arr.fields.length;
@@ -258,13 +259,18 @@ function builtinMap(
     const ptupleNode = createPtupleNode(itemId);
     const applyNode = createApplyNode(clonedFn.id, ptupleNode.id);
 
+    const clonedFnWithParent = withParent(clonedFn, applyNode.id, 'callee');
+
     ptupleNode.parent = applyNode.id;
-    ptupleNode.parentField = 'callee';
+    ptupleNode.parentField = 'argument';
+
     applyNode.parent = newArr.id;
     applyNode.parentField = index;
+
     newArr.subexpressions[index] = applyNode.id;
 
-    newNodes.push(clonedFn, ...clonedFnChildren, ptupleNode, applyNode);
+    newNodes.push(clonedFnWithParent, ...clonedFnChildren, ptupleNode, applyNode);
+    fnNodes.push(clonedFnWithParent);
     ptupleNodes.push(ptupleNode);
     applyNodes.push(applyNode);
     newNodeMap = nodeMapWithClone;
@@ -272,6 +278,7 @@ function builtinMap(
 
   newNodeMap = new Map([
     ...newNodeMap,
+    ...fnNodes.map(fnNode => [fnNode.id, fnNode] as const),
     ...applyNodes.map(applyNode => [applyNode.id, applyNode] as const),
     ...ptupleNodes.map(ptupleNode => [ptupleNode.id, ptupleNode] as const),
     [newArr.id, newArr],

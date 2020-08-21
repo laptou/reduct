@@ -100,7 +100,7 @@ const chapterDigraph: Record<string, string[]> = {
 };
 
 async function loadChapter(key: string): Promise<ChapterDefinition> {
-  const chapterManifest = await import(`@resources/levels-progression/${key}.json`);
+  const chapterManifest = await import(/* webpackChunkName: "levels" */ `@resources/levels-progression/${key}.json`);
   chapterManifest.key = key;
   chapterManifest.requirements = chapterDigraph[key];
   return chapterManifest;

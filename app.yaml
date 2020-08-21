@@ -1,0 +1,9 @@
+runtime: nodejs12
+env_variables:
+  NODE_ENV: production
+  REDUCT_TEST_AUTH: true
+handlers:
+- url: /.*
+  secure: always
+  redirect_http_response_code: 301
+  script: auto
