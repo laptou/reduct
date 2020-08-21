@@ -10,16 +10,10 @@ export enum ActionKind {
   UseToolbox = 'use-toolbox',
   Raise = 'raise',
   Detach = 'detach',
-  Unfold = 'unfold',
-  BetaReduce = 'beta-reduce',
-  Victory = 'victory',
-  Fade = 'fade',
-  Unfade = 'unfade',
   AddToolboxItem = 'add-toolbox-item',
   AddBoardItem = 'add-board-item',
   AddGoalItem = 'add-goal-item',
   ChangeGoal = 'change-goal',
-  Hover = 'hover',
 
   StartLevel = 'start-level',
   ToggleCredits = 'toggle-credits',
@@ -39,8 +33,8 @@ export enum ActionKind {
   EvalLet = 'eval-let',
 
   Execute = 'exec',
-  Stop = 'stop',
   Step = 'step',
+  Stop = 'stop',
 
   Undo = 'undo',
   Redo = 'redo',
@@ -650,43 +644,5 @@ export function addBoardItem(newNodeIds, addedNodes) {
     type: ActionKind.AddBoardItem,
     newNodeIds,
     addedNodes,
-  };
-}
-
-/**
- * Unfold the definition of ``nodeId``, producing ``newNodeId`` (and
- * adding ``addedNodes`` to the store).
- */
-export function unfold(nodeId, newNodeId, addedNodes) {
-  return {
-    type: ActionKind.Unfold,
-    nodeId,
-    newNodeId,
-    addedNodes,
-  };
-}
-
-/**
- * Replace a node with its unfaded variant temporarily.
- */
-export function unfade(source, nodeId, newNodeId, addedNodes) {
-  return {
-    type: ActionKind.Unfade,
-    source,
-    nodeId,
-    newNodeId,
-    addedNodes,
-  };
-}
-
-/**
- * Replace an unfaded node with its faded variant.
- */
-export function fade(source, unfadedId, fadedId) {
-  return {
-    type: ActionKind.Fade,
-    source,
-    unfadedId,
-    fadedId,
   };
 }

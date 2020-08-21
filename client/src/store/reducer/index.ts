@@ -31,8 +31,7 @@ const gameStateTransform = createTransform(
     }
 
     return gameReducer();
-  },
-  { whitelist: ['$present'] }
+  }
 );
 
 export function createReducer() {
@@ -44,6 +43,7 @@ export function createReducer() {
       storage,
       version,
       transforms: [gameStateTransform],
+      whitelist: ['$present'],
     },
     undoableReducer(gameReducer)
   );
