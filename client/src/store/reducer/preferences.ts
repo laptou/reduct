@@ -3,6 +3,7 @@ import { PreferenceAction, PreferenceActionKind } from '../action/preferences';
 
 const initialState: PreferenceState = {
   enableSounds: true,
+  enableResearch: null,
 };
 
 export const preferencesReducer = (
@@ -16,6 +17,11 @@ export const preferencesReducer = (
     return {
       ...state,
       enableSounds: act.enabled,
+    };
+  case PreferenceActionKind.EnableResearch:
+    return {
+      ...state,
+      enableResearch: act.enabled,
     };
   default:
     return state;
