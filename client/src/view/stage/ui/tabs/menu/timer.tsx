@@ -7,11 +7,11 @@ import { DeepReadonly } from '@/util/helper';
 import { GlobalState } from '@/store/state';
 import { GAME_TIME_LIMIT } from '@/util/constants';
 
-interface TimerStoreProps {
-  endTime: number;
+interface GameTimerStoreProps {
+  endTime: number | null;
 }
 
-const TimerImpl: React.FC<TimerStoreProps> = (props) => {
+const GameTimerImpl: React.FC<GameTimerStoreProps> = (props) => {
   const { endTime } = props;
 
   const [currentTime, setCurrentTime] = useState(+new Date());
@@ -23,7 +23,7 @@ const TimerImpl: React.FC<TimerStoreProps> = (props) => {
   }, []);
 
   useEffect(() => {
-    if (currentTime < endTime) {
+    if (endTime && currentTime < endTime) {
       timerRef.current = setTimeout(timerCallback, 1000) as unknown as number;
 
       return () => {
@@ -61,8 +61,8 @@ const TimerImpl: React.FC<TimerStoreProps> = (props) => {
   );
 };
 
-export const Timer = connect(
+export const GameTimer = connect(
   (store: DeepReadonly<GlobalState>) => ({
     endTime: store.stats.startTime ? +store.stats.startTime + GAME_TIME_LIMIT : null,
   })
-)(TimerImpl);
+)(GameTimerImpl);

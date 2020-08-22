@@ -8,6 +8,8 @@ import { DeepReadonly } from '@/util/helper';
 import '@resources/style/react/ui/level.scss';
 import { progression, getChapterByLevelIndex } from '@/loader';
 
+import { GameTimer } from './timer';
+
 interface LevelMenuStoreProps {
   levelIndex: number;
 }
@@ -79,6 +81,9 @@ const LevelInfoImpl: React.FC<LevelInfoProps> = ({ levelIndex, onToggleLevelSele
         <span id='reduct-level-info-chapter-index'>Chapter {chapter.index + 1}:</span>
         &nbsp;
         <span>{chapter.name}</span>
+      </span>
+      <span id='reduct-level-info-time'>
+        <GameTimer /> remaining
       </span>
       <button
         id='reduct-level-info-expander'
