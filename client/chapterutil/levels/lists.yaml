@@ -2,7 +2,6 @@ name: Lists / Strings / Recursion
 levels:
   - board:
       - '[_, _, _]'
-      - __note('This is a list. As you can see, its empty. Try placing objects in it!')
     toolbox:
       - STAR
       - RECT
@@ -11,25 +10,24 @@ levels:
       - '9'
     goal:
       - '[STAR, RECT, TRIANGLE]'
+    hint:
+      - 'Try filling in the empty slots in that list.'
     defines: []
   - board:
       - '[_, _]'
       - '[1]'
       - '[TRIANGLE, CIRCLE]'
-      - 'function head(a) {return get(a,0);}'
+      - 'function getFirst(a) {return get(a,0);}'
       - >-
         function removeFirst(a) {return length(a) < 2 ? []: slice(a, 1,
         length(a))}
-      - >- 
-        __note('Check out these functions. One of them returns the first element
-        in a list, and one removes the first element.')
     toolbox:
       - STAR
       - RECT
       - removeFirst
-      - head
+      - getFirst
       - removeFirst
-      - head
+      - getFirst
     note:
       - null
     goal:
@@ -40,9 +38,8 @@ levels:
       - '[1]'
       - 'map(_, addOne)'
       - >-
-        __note('This is map. Map applies a function to every element in a list')
-      - >-
-        __note('This is concat. It joins two lists together.')
+        __note('`map` applies a function to every element in a list and
+        returns a new list\n\n`concat` joins two lists together into a new list')
       - concat(_, _)
     toolbox:
       - '[4]'
@@ -61,22 +58,19 @@ levels:
       - '[2,4,5,1]'
   - board:
       - >- 
-          'function contains(list, target, pointer){ return  _ (pointer) ? false :
-          ((_ == _) ? true : ( contains(list, pointer + 1, target))); }'
+          function contains(list, target, index){ return  _ (index) ? false :
+          ((_ == _) ? true : ( contains(list, index + 1, target))); }
       - >-
-          __note('Lets work on a contains, which returns true if a given element is in a list, and false if not.
-          Notice that contains is recursive, and that the counter parameter changes at the recursive call. ')
-      - >- 
-          __note('After we have visited every element in the list, we want to return false.
-          How can you use the pointer to achieve this effect? ')
+          __note('Contains should return true if `list` contains `target`, and
+          false otherwise ')
     toolbox:
       - contains
       - contains
       - length
       - list
-      - get(list, pointer)
+      - get(list, index)
       - target
-      - 'pointer => (pointer == (_) (_))'
+      - 'index => (index == (_) (_))'
       - '[6,7,9,12]'
       - '[12,9,7,6]'
       - 0
@@ -86,9 +80,8 @@ levels:
       - 0
     hint:
       - >-
-        'contains takes three arguments, a list, a target, and a pointer.
-        What should the value of the pointer be when it is first passed to the
-        function?'
+        'contains takes three arguments, a list, a target, and a index.
+        What value should `index` have at the start?'
     note:
       - null
     goal:
@@ -96,22 +89,20 @@ levels:
       - true
   - board:
       - >-
-          __note('Complete the body of getIndex.
-          getIndex takes three arguments, a list, a target, and a pointer.
-          If the target element is in the list, getIndex returns the index
-          of the target element, or -1 if not.')
+          __note('`getIndex` should return the index at which `target`
+          appears in `list`, or -1 if `target` is not found.')
       - >-
-          function getIndex(list,target,pointer){ return (_ (_)) ? -1 :
+          function getIndex(list,target,index){ return (_ (_)) ? -1 :
           ((_ (_) (_) (_)) ? _ : (getIndex(_, _, (_ + 1)))); }
       - 'x => (x == (_) (_))'
-      - 'function isTarget(list,target,pointer) {return ( (_(_,_)) == _ );}'
+      - 'function isTarget(list,target,index) {return ( (_(_,_)) == _ );}'
       
     toolbox:
       - getIndex
       - isTarget
       - __unlimited;list
       - __unlimited;target
-      - __unlimited;pointer
+      - __unlimited;index
       - length
       - get
       - '[7,9,2,5,18]'

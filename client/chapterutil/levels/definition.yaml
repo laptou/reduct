@@ -24,11 +24,11 @@ levels:
       - false
       - false
     hint:
-      - Add these functions to the global scope, and then use their names to get references to them!
+      - Add these functions to the global scope, and then use their names to get references to them.
   - board:
       - 'function addOne(number) { return (number + 1); }'
       - 'function addTwo(fun, number) { return ((fun) (number)) + 1; }'
-      - __note('After adding addOne and addTwo to the global scope, make sure to use addOne as an argument to addTwo!')
+      - __note('How can you use addOne to get to the answer?')
     toolbox:
       - 5
       - 2
@@ -38,9 +38,9 @@ levels:
     goal:
       - 7
     hint:
+      - 'Check out the tutorial on the left for let expressions.'
   - board:
       - '__let(x, _, () => x + x)'
-      - __note('Check out the tutorial on the left for let expressions!')
     toolbox:
       - 1
       - 3
@@ -109,3 +109,4 @@ levels:
       - true
       - true
     hint:
+    
