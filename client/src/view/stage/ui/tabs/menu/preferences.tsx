@@ -5,7 +5,7 @@ import { createEnableSound } from '@/store/action/preferences';
 import { GlobalState, ResearchConsentState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
 import '@resources/style/react/ui/preferences.scss';
-import { createToggleCredits } from '@/store/action/game';
+import { createGoToCredits } from '@/store/action/game';
 
 interface PreferencesStoreProps {
   isSoundEnabled: boolean;
@@ -66,6 +66,6 @@ export const Preferences = connect(
   }),
   (dispatch) => ({
     enableSound(enabled: boolean) { dispatch(createEnableSound(enabled)); },
-    toggleCredits() { dispatch(createToggleCredits()); },
+    toggleCredits() { dispatch(createGoToCredits()); },
   })
 )(PreferencesImpl);

@@ -77,13 +77,24 @@ export function gameReducer(
     };
   }
 
-  case ActionKind.ToggleCredits: {
+  case ActionKind.GoToCredits: {
     return {
       ...state,
-      mode:
-        state.mode === GameMode.Credits
-          ? GameMode.Gameplay
-          : GameMode.Credits,
+      mode: GameMode.Credits,
+    };
+  }
+
+  case ActionKind.GoToGameplay: {
+    return {
+      ...state,
+      mode: GameMode.Gameplay,
+    };
+  }
+
+  case ActionKind.GoToSurvey: {
+    return {
+      ...state,
+      mode: GameMode.Survey,
     };
   }
 
