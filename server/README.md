@@ -26,3 +26,20 @@ when you are deploying the application.**
   production mode, so we must compile it manually before starting the server.
 - `cd ../server`
 - `yarn run serve`
+
+## Important environment variables that affect execution
+- `NODE_ENV`: if this variable is present and equal to `development`, the server
+  will operate in dev mode. Otherwise, it will operate in production mode.
+- `REDUCT_REMOTE_LOGGING`: defaults to `true` in production mode and `false` in
+  development mode. Controls whether logs of the server's activity are uploaded
+  to Google Cloud.
+- `REDUCT_USE_HTTPS`: controls whether the server should operate in HTTPS mode.
+  **When deploying to App Engine, this should not be set to `true` because HTTPS
+  is handled by App Engine's built in proxy.**
+- `REDUCT_SAML_META`: if set to `true`, the server will generate a new `idp.xml`
+  file when it starts, containing up-to-date IdP metadata for the SAML service
+  provider.
+- `REDUCT_NO_AUTH`: if set to `true`, the server will not require users to log
+  in before they can access the game.
+- `REDUCT_PROD_AUTH`: if set to `true`, the server will redirect users to the
+  production instance of CUWebAuth instead of the testing instance.
