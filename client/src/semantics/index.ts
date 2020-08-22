@@ -17,7 +17,7 @@ import {
   NumberNode,
   OpNode,
 } from './defs';
-import { BuiltInIdentifierNode } from './defs/builtins/builtins';
+import { BuiltInIdentifierNode } from './defs/builtins';
 import { NoteNode } from './defs/note';
 
 import { DRF } from '@/util/helper';

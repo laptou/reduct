@@ -2,7 +2,7 @@ import type { PTupleNode, VTupleNode } from './defs';
 import type { ApplyNode } from './defs/apply';
 import type { ArrayNode } from './defs/array';
 import type { BinOpNode, OpNode } from './defs/binop';
-import type { BuiltInIdentifierNode } from './defs/builtins/builtins';
+import type { BuiltInIdentifierNode } from './defs/builtins';
 import type { ConditionalNode } from './defs/conditional';
 import type { DefineNode } from './defs/define';
 import type { LambdaArgNode, LambdaNode, LambdaVarNode } from './defs/lambda';

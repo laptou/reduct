@@ -1,12 +1,12 @@
 
 import { BaseNode } from '../..';
 
-import { builtinGet } from './builtinGet';
-import { builtinSet } from './builtinSet';
-import { builtinConcat } from './builtinConcat';
-import { builtinMap } from './builtinMap';
-import { builtinSlice } from './builtinSlice';
-import { builtinLength } from './builtinLength';
+import { builtinGet } from './get';
+import { builtinSet } from './set';
+import { builtinConcat } from './concat';
+import { builtinMap } from './map';
+import { builtinSlice } from './slice';
+import { builtinLength } from './length';
 
 import {
   DeepReadonly, DRF,

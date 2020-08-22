@@ -13,6 +13,6 @@ export type {
 } from './value';
 export type { IdentifierNode } from './identifier';
 export type { MissingNode } from './missing';
-export type { BuiltInIdentifierNode as BuiltInReferenceNode } from './builtins/builtins';
+export type { BuiltInIdentifierNode as BuiltInReferenceNode } from './builtins';
 export type { VTupleNode, PTupleNode } from './tuple';
 export type { ReferenceNode } from './reference';

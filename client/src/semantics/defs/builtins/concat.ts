@@ -2,7 +2,7 @@ import { produce, castDraft } from 'immer';
 
 import { createArrayNode } from '../../util';
 
-import { BuiltInIdentifierNode } from './builtins';
+import { BuiltInIdentifierNode } from '.';
 
 import { WrongBuiltInParamsCountError, WrongTypeError } from '@/store/errors';
 import { GameState } from '@/store/state';
