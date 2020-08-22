@@ -95,8 +95,20 @@ export interface PreferenceState {
 }
 
 export interface StatsState {
+  /**
+   * Statistics about all of the levels the user has played.
+   */
   levels: Map<number, LevelCompletionStats>;
+
+  /**
+   * Intermediate stats for the level the user is currently playing.
+   */
   current: LevelCompletionStats | null;
+
+  /**
+   * The time at which the user started the first level.
+   */
+  startTime: Date;
 }
 
 export interface LevelCompletionStats {
