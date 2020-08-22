@@ -1,21 +1,25 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { connect } from 'react-redux';
 
 import { GameTimer } from './timer';
 
 import { createStartLevel } from '@/store/action/game';
-import { GlobalState } from '@/store/state';
+import { GlobalState, LevelCompletionStats } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
 import '@resources/style/react/ui/level.scss';
 import { progression, getChapterByLevelIndex } from '@/loader';
 
-
-interface LevelMenuStoreProps {
+interface LevelSelectStoreProps {
   levelIndex: number;
+  levelStats: Map<number, LevelCompletionStats>;
 }
 
 interface LevelSelectDispatchProps {
   startLevel(level: number): void;
+}
+
+interface LevelInfoStoreProps {
+  levelIndex: number;
 }
 
 interface LevelInfoOwnProps {
@@ -25,38 +29,62 @@ interface LevelInfoOwnProps {
   onToggleLevelSelect(): void;
 }
 
-type LevelSelectProps = LevelMenuStoreProps & LevelSelectDispatchProps;
-type LevelInfoProps = LevelMenuStoreProps & LevelInfoOwnProps;
+type LevelSelectProps = LevelSelectStoreProps & LevelSelectDispatchProps;
+type LevelInfoProps = LevelInfoStoreProps & LevelInfoOwnProps;
 
 const LevelSelectImpl: React.FC<LevelSelectProps> = (props) => {
-  // calculate index for each level
+  const { levelIndex, levelStats, startLevel } = props;
 
+  const completedLevels = useMemo(
+    () =>
+      new Set(Array
+        .from(levelStats.values())
+        .filter(stats => stats.complete)
+        .map(stats => stats.levelIndex)),
+    [levelStats]
+  );
+
+  // calculate index for each level
   let index = 0;
   const indexedChapters = progression!.chapters.map(chapter => {
-    return {
-      levels: chapter.levels.map(() => index++),
+    const indexedChapter = {
+      levels: chapter.levels.map(() => {
+        const levelIndex = index;
+        index++;
+
+        return {
+          index: levelIndex,
+          complete: completedLevels.has(levelIndex),
+        };
+      }),
       key: chapter.key,
       name: chapter.name,
     };
+
+    return indexedChapter;
   });
 
   return (
     <div id='reduct-level-select'>
       {
-        indexedChapters.map(({ levels, key, name }) => (
+        indexedChapters.map(({
+          levels, key, name,
+        }) => (
           <div className='reduct-level-select-chapter' key={key}>
             <span className='reduct-level-select-chapter-name'>
               {name}
             </span>
-            {levels.map(index => (
+            {levels.map(({ index, complete }) => (
               <button
                 type='button'
                 key={index}
-                onClick={() => props.startLevel(index)}
+                onClick={() => startLevel(index)}
                 className={
-                  index === props.levelIndex
-                    ? 'btn btn-primary'
-                    : 'btn btn-primary-inv'
+                  index === levelIndex
+                    ? 'btn btn-special'
+                    : complete
+                      ? 'btn btn-secondary'
+                      : 'btn btn-secondary-inv'
                 }
               >
                 {index + 1}
@@ -100,6 +128,7 @@ const LevelInfoImpl: React.FC<LevelInfoProps> = ({ levelIndex, onToggleLevelSele
 export const LevelSelect = connect(
   (store: DeepReadonly<GlobalState>) => ({
     levelIndex: store.game.$present.level,
+    levelStats: store.stats.levels,
   }),
   (dispatch) => ({
     startLevel(level: number) { dispatch(createStartLevel(level)); },

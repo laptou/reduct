@@ -110,7 +110,7 @@ export interface StatsState {
   /**
    * The time at which the user started the first level.
    */
-  startTime: Date | null;
+  startTime: number | null;
 }
 
 export interface LevelCompletionStats {
@@ -132,13 +132,13 @@ export interface LevelCompletionStats {
   /**
    * The time at which the user started on this level.
    */
-  startTime: Date;
+  startTime: number;
 
   /**
    * The time at which the user resumed working on this level after navigating
    * away to another level.
    */
-  resumeTime: Date;
+  resumeTime: number;
 
   /**
    * Whether or not this level was solved.

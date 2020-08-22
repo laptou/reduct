@@ -16,7 +16,7 @@ export const statsReducer = (
   switch (act.type) {
   case ActionKind.StartLevel: {
     if (state.startTime === null) {
-      state.startTime = new Date();
+      state.startTime = new Date().getTime();
     }
 
     if (state.current?.levelIndex !== act.level) {
@@ -25,14 +25,14 @@ export const statsReducer = (
 
       if (state.levels.has(act.level)) {
         newStats = state.levels.get(act.level)!;
-        newStats.resumeTime = new Date();
+        newStats.resumeTime = new Date().getTime();
       } else {
         newStats = {
           levelIndex: act.level,
           playDuration: null,
           totalDuration: null,
-          startTime: new Date(),
-          resumeTime: new Date(),
+          startTime: new Date().getTime(),
+          resumeTime: new Date().getTime(),
           complete: false,
         };
       }
@@ -47,10 +47,10 @@ export const statsReducer = (
               ...state.current,
               totalDuration:
                 new Date().getTime()
-                - state.current.startTime.getTime(),
+                - state.current.startTime,
               playDuration:
                 new Date().getTime()
-                - state.current.resumeTime.getTime()
+                - state.current.resumeTime
                 + (state.current.playDuration ?? 0),
             },
           ],
@@ -59,13 +59,16 @@ export const statsReducer = (
         newLevels = state.levels;
       }
 
-      state = {
+      return {
         ...state,
         current: newStats,
         levels: newLevels,
       };
     }
+
+    return state;
   }
+  
   case ActionKind.CompleteLevel: {
     let newLevels;
 
@@ -77,10 +80,10 @@ export const statsReducer = (
             ...state.current,
             totalDuration:
               new Date().getTime()
-              - state.current.startTime.getTime(),
+              - state.current.startTime,
             playDuration:
               new Date().getTime()
-              - state.current.resumeTime.getTime()
+              - state.current.resumeTime
               + (state.current.playDuration ?? 0),
             complete: true,
           },
@@ -90,12 +93,13 @@ export const statsReducer = (
       newLevels = state.levels;
     }
 
-    state = {
+    return {
       ...state,
       current: null,
       levels: newLevels,
     };
   }
+
   default:
     return state;
   }
