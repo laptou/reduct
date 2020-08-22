@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {
+  useCallback, useState, useEffect, useRef, useMemo,
+} from 'react';
 import { connect } from 'react-redux';
 
 import { createEnableSound } from '@/store/action/preferences';
@@ -30,12 +32,55 @@ const PreferencesImpl: React.FC<PreferencesProps> = (props) => {
     toggleCredits,
   } = props;
 
+  const [currentTime, setCurrentTime] = useState(+new Date());
+
+  const timerRef = useRef<number>();
+
+  const timerCallback = useCallback(() => {
+    setCurrentTime(+new Date());
+  }, []);
+
+  useEffect(() => {
+    if (currentTime < endTime) {
+      timerRef.current = setTimeout(timerCallback, 1000) as unknown as number;
+
+      return () => {
+        clearTimeout(timerRef.current);
+        timerRef.current = undefined;
+      };
+    }
+  }, [currentTime, endTime, timerCallback]);
+
+  const remainingTime = useMemo(
+    () => {
+      const totalMillis = endTime - currentTime;
+      const totalSeconds = Math.floor(totalMillis / 1000);
+      const totalMinutes = Math.floor(totalMillis / 60 / 1000);
+      const totalHours = Math.floor(totalMillis / 60 / 60 / 1000);
+
+      return {
+        seconds: totalSeconds % 60,
+        minutes: totalMinutes % 60,
+        hours: totalHours,
+      };
+    },
+    [currentTime, endTime]
+  );
+
+
   return (
     <ul id='reduct-preferences'>
       <li>
         <span className='reduct-preference-name'>time remaining:</span>
         &nbsp;
-        <span>{endTime}</span>
+        <span>
+          {
+            remainingTime.hours > 1 ? `${remainingTime.hours} hours, ${remainingTime.minutes} minutes`
+              : remainingTime.hours > 0 ? `1 hour, ${remainingTime.minutes} minutes`
+                : remainingTime.minutes > 0 ? `${remainingTime.minutes} minutes`
+                  : `${remainingTime.seconds} seconds`
+          }
+        </span>
       </li>
       <li>
         <span className='reduct-preference-name'>sound enabled:</span>
