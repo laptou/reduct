@@ -7,4 +7,5 @@ export const IS_HTTPS = ENV === 'prod' || USE_HTTPS;
 export const GENERATE_SAML_METADATA = process.env.REDUCT_SAML_META === 'true';
 export const USE_AUTHENTICATION = process.env.REDUCT_NO_AUTH !== 'true';
 export const USE_TEST_AUTHENTICATION = process.env.REDUCT_PROD_AUTH !== 'true';
-export const PUBLIC_URI = 'https://reduct-285602.uc.r.appspot.com/';
+export const PUBLIC_URI = process.env.REDUCT_PUBLIC_URI || 'https://reduct-285602.uc.r.appspot.com/';
+export const SURVEY_URI = process.env.REDUCT_SURVEY_URI || 'https://cornell.ca1.qualtrics.com/jfe/form/SV_bHQpz21wa5LQp1z';
