@@ -1,7 +1,7 @@
 import { NodeId, NodeMap, ReductNode } from '@/semantics';
 import { getLevelByIndex } from '@/loader';
 import { parseProgram, MacroMap } from '@/syntax/es6';
-import { createReferenceNode, createBuiltInReferenceNode } from '@/semantics/util';
+import { createIdentifierNode, createBuiltInIdentifierNode } from '@/semantics/util';
 import { flatten } from '@/util/nodes';
 import { builtins } from '@/semantics/defs/builtins';
 import { DefineNode } from '@/semantics/defs';
@@ -189,7 +189,7 @@ export function createStartLevel(index: number): StartLevelAction {
   const macros: MacroMap = new Map();
 
   for (const name of Object.keys(builtins)) {
-    macros.set(name, () => createBuiltInReferenceNode(name));
+    macros.set(name, () => createBuiltInIdentifierNode(name));
   }
 
   const globals = new Map();
@@ -209,7 +209,7 @@ export function createStartLevel(index: number): StartLevelAction {
     [...globals.values()].map((node) =>
       [
         node.fields.name,
-        () => createReferenceNode(node.fields.name),
+        () => createIdentifierNode(node.fields.name),
       ] as const
     );
 
@@ -221,7 +221,7 @@ export function createStartLevel(index: number): StartLevelAction {
     .map((node) =>
       [
         node.fields.name,
-        () => createReferenceNode(node.fields.name),
+        () => createIdentifierNode(node.fields.name),
       ] as const
     );
 
@@ -362,7 +362,7 @@ export function createCreateDocs(key: string, docScript: string): CreateDocsActi
   const macros: MacroMap = new Map();
 
   for (const name of Object.keys(builtins)) {
-    macros.set(name, () => createBuiltInReferenceNode(name));
+    macros.set(name, () => createBuiltInIdentifierNode(name));
   }
 
   const node = parseProgram(docScript, macros);

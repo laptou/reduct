@@ -22,6 +22,7 @@ import type {
 import { nextId, isAncestorOf } from '@/util/nodes';
 import type { DeepReadonly, DRF } from '@/util/helper';
 import type { GameState } from '@/store/state';
+import { ReferenceNode } from './defs/reference';
 
 /**
  * Creates a partial node. Helper for "create node" functions to avoid
@@ -268,7 +269,15 @@ export function createDefineNode(name: string, params: string[], body: LambdaNod
   };
 }
 
-export function createReferenceNode(name: string): IdentifierNode {
+export function createReferenceNode(targetId: NodeId): ReferenceNode {
+  return {
+    ...createNodeBase(),
+    type: 'reference',
+    fields: { target: targetId },
+  };
+}
+
+export function createIdentifierNode(name: string): IdentifierNode {
   return {
     ...createNodeBase(),
     type: 'identifier',
@@ -276,7 +285,7 @@ export function createReferenceNode(name: string): IdentifierNode {
   };
 }
 
-export function createBuiltInReferenceNode(name: string): BuiltInIdentifierNode {
+export function createBuiltInIdentifierNode(name: string): BuiltInIdentifierNode {
   return {
     ...createNodeBase(),
     type: 'builtin',
