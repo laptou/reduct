@@ -204,23 +204,33 @@ function builtinConcat(
     let i = 0;
 
     for (let j = 0; j < left.fields.length; j++) {
-      let [childClone, , newNodeMap] =
-        cloneNodeDeep(left.subexpressions[j], draft.nodes);
+      const childId = left.subexpressions[j];
+      const child = draft.nodes.get(childId)!;
 
-      childClone = withParent(childClone, newArr.id, i.toString(10));
+      // update child before cloning so we can use draft object
+      child.parent = newArr.id;
+      child.parentField = i.toString(10);
+
+      const [childClone, , newNodeMap] =
+        cloneNodeDeep(childId, draft.nodes);
+
       draft.nodes = castDraft(newNodeMap);
-
       newArr.subexpressions[i] = childClone.id;
       i++;
     }
 
     for (let k = 0; k < right.fields.length; k++) {
-      let [childClone, , newNodeMap] =
-        cloneNodeDeep(right.subexpressions[k], draft.nodes);
+      const childId = right.subexpressions[k];
+      const child = draft.nodes.get(childId)!;
 
-      childClone = withParent(childClone, newArr.id, i.toString(10));
+      // update child before cloning so we can use draft object
+      child.parent = newArr.id;
+      child.parentField = i.toString(10);
+
+      const [childClone, , newNodeMap] =
+        cloneNodeDeep(childId, draft.nodes);
+
       draft.nodes = castDraft(newNodeMap);
-
       newArr.subexpressions[i] = childClone.id;
       i++;
     }
