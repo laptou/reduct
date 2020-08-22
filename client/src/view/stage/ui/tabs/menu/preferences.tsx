@@ -28,34 +28,37 @@ const PreferencesImpl: React.FC<PreferencesProps> = (props) => {
   } = props;
 
   return (
-    <ul id='reduct-preferences'>
-      <li>
-        <span className='reduct-preference-name'>sound enabled:</span>
-        &nbsp;
-        <input
-          type='checkbox'
-          checked={isSoundEnabled}
-          onChange={e => enableSound(e.target.checked)}
-        />
-      </li>
-      <li>
-        <span className='reduct-preference-name'>research data collection enabled:</span>
-        &nbsp;
-        <input
-          type='checkbox'
-          checked={isResearchEnabled === true}
-          disabled
-        />
-      </li>
-      <li>
-        <span className='reduct-preference-name'>game version:</span>
-        &nbsp;
-        {PKG_VERSION}
-      </li>
-      <li>
-        <a href="#" onClick={() => toggleCredits()}>view credits</a>
-      </li>
-    </ul>
+    <>
+      <h2>Preferences</h2>
+      <ul id='reduct-preferences'>
+        <li>
+          <span className='reduct-preference-name'>sound enabled:</span>
+          &nbsp;
+          <input
+            type='checkbox'
+            checked={isSoundEnabled}
+            onChange={e => enableSound(e.target.checked)}
+          />
+        </li>
+        <li>
+          <span className='reduct-preference-name'>research data collection enabled:</span>
+          &nbsp;
+          <input
+            type='checkbox'
+            checked={isResearchEnabled === true}
+            disabled
+          />
+        </li>
+        <li>
+          <span className='reduct-preference-name'>game version:</span>
+          &nbsp;
+          {PKG_VERSION}
+        </li>
+        <li>
+          <a href="#" onClick={() => toggleCredits()}>view credits</a>
+        </li>
+      </ul>
+    </>
   );
 };
 

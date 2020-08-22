@@ -65,35 +65,38 @@ const LevelSelectImpl: React.FC<LevelSelectProps> = (props) => {
   });
 
   return (
-    <div id='reduct-level-select'>
-      {
-        indexedChapters.map(({
-          levels, key, name,
-        }) => (
-          <div className='reduct-level-select-chapter' key={key}>
-            <span className='reduct-level-select-chapter-name'>
-              {name}
-            </span>
-            {levels.map(({ index, complete }) => (
-              <button
-                type='button'
-                key={index}
-                onClick={() => startLevel(index)}
-                className={
-                  index === levelIndex
-                    ? 'btn btn-special'
-                    : complete
-                      ? 'btn btn-secondary'
-                      : 'btn btn-secondary-inv'
-                }
-              >
-                {index + 1}
-              </button>
-            ))}
-          </div>
-        ))
-      }
-    </div>
+    <>
+      <h2>Levels</h2>
+      <div id='reduct-level-select'>
+        {
+          indexedChapters.map(({
+            levels, key, name,
+          }) => (
+            <div className='reduct-level-select-chapter' key={key}>
+              <span className='reduct-level-select-chapter-name'>
+                {name}
+              </span>
+              {levels.map(({ index, complete }) => (
+                <button
+                  type='button'
+                  key={index}
+                  onClick={() => startLevel(index)}
+                  className={
+                    index === levelIndex
+                      ? 'btn btn-special'
+                      : complete
+                        ? 'btn btn-secondary'
+                        : 'btn btn-secondary-inv'
+                  }
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+          ))
+        }
+      </div>
+    </>
   );
 };
 
