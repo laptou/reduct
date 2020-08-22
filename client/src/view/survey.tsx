@@ -9,7 +9,7 @@ const SurveyPageImpl: React.FC = () => {
   return (
     <div id='reduct-survey'>
       <Logo />
-      <iframe src='/post-survey'>
+      <iframe src='/survey'>
       </iframe>
     </div>
   );

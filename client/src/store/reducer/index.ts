@@ -2,8 +2,8 @@ import { combineReducers } from 'redux';
 import { createTransform, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-import { createStartLevel } from '../action/game';
-import { GameState } from '../state';
+import { createStartLevel, createGoToSurvey } from '../action/game';
+import { GameState, GameMode } from '../state';
 
 import { gameReducer } from './game';
 import { preferencesReducer } from './preferences';
@@ -14,6 +14,7 @@ export { nextId } from '@/util/nodes';
 
 interface SerializedState {
   level: number;
+  mode: GameMode;
 }
 
 const gameStateTransform = createTransform(
@@ -22,16 +23,25 @@ const gameStateTransform = createTransform(
     if (!$present) return $present;
 
     return {
+      mode: $present.mode,
       level: $present.level,
     } as SerializedState;
   },
   // transform state being rehydrated
   ($present: SerializedState) => {
-    if ($present.level >= 0) {
-      return gameReducer(undefined, createStartLevel($present.level));
-    }
+    switch ($present.mode) {
+    case GameMode.Credits:
+    case GameMode.Gameplay:
+      if ($present.level >= 0) {
+        return gameReducer(undefined, createStartLevel($present.level));
+      }
 
-    return gameReducer();
+      return gameReducer();
+    case GameMode.Survey:
+      return gameReducer(undefined, createGoToSurvey());
+    default:
+      return gameReducer();
+    }
   }
 );
 
