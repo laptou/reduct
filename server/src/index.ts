@@ -11,6 +11,7 @@ import { userLoggingRouter } from './logging/user';
 import { initializeAuth, authMiddleware } from './auth';
 import { serverLogger } from './logging/server';
 import { ENV, USE_AUTHENTICATION, USE_HTTPS } from './config';
+import { initializeSurvey } from './survey';
 
 const { readFile } = fs;
 
@@ -48,6 +49,8 @@ void (async () => {
   }
 
   app.use(userLoggingRouter.routes());
+
+  initializeSurvey(app);
 
   if (ENV === 'dev') {
     const { initializeDevServer } = await import('./dev');

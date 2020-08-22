@@ -1,4 +1,3 @@
-
 import { promises as fs, readFileSync } from 'fs';
 import { resolve } from 'path';
 import { resolve as resolveUri } from 'url';
