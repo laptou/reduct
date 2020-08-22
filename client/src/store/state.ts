@@ -139,6 +139,11 @@ export interface LevelCompletionStats {
    * away to another level.
    */
   resumeTime: Date;
+
+  /**
+   * Whether or not this level was solved.
+   */
+  complete: boolean;
 }
 
 export interface GlobalState {

@@ -16,6 +16,7 @@ export enum ActionKind {
   ChangeGoal = 'change-goal',
 
   StartLevel = 'start-level',
+  CompleteLevel = 'end-level',
   GoToCredits = 'go-to-credits',
   GoToSurvey = 'go-to-survey',
   GoToGameplay = 'go-to-gameplay',
@@ -48,6 +49,7 @@ export enum ActionKind {
 
 export type ReductAction =
   StartLevelAction |
+  CompleteLevelAction |
   GoToGameplayAction |
   GoToCreditsAction |
   GoToSurveyAction |
@@ -287,6 +289,20 @@ export function createStartLevel(index: number): StartLevelAction {
     globals: flatGlobals,
   };
 }
+
+export interface CompleteLevelAction {
+  type: ActionKind.CompleteLevel;
+}
+
+/**
+ * Creates an action which will show the credits screen.
+ */
+export function createCompleteLevel(): CompleteLevelAction {
+  return {
+    type: ActionKind.CompleteLevel,
+  };
+}
+
 
 export interface GoToCreditsAction {
   type: ActionKind.GoToCredits;

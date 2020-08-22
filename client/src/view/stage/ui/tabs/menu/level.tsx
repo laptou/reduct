@@ -1,14 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { GameTimer } from './timer';
+
 import { createStartLevel } from '@/store/action/game';
 import { GlobalState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
-
 import '@resources/style/react/ui/level.scss';
 import { progression, getChapterByLevelIndex } from '@/loader';
 
-import { GameTimer } from './timer';
 
 interface LevelMenuStoreProps {
   levelIndex: number;
