@@ -19,6 +19,7 @@ import { PTupleProjection } from './ptuple';
 import { NoteProjection } from './note';
 
 import { DRF } from '@/util/helper';
+import { ReferenceProjection } from './reference';
 
 /**
  * Definitions:
@@ -56,6 +57,7 @@ export function getProjectionForNode(node: DRF | null) {
   case 'ptuple': return <PTupleProjection node={node} key={node.id} />;
   case 'symbol': return <SymbolProjection node={node} key={node.id} />;
   case 'identifier': return <IdentifierProjection node={node} key={node.id} />;
+  case 'reference': return <ReferenceProjection node={node} key={node.id} />;
   case 'vtuple': return <VTupleProjection node={node} key={node.id} />;
   case 'let': return <LetProjection node={node} key={node.id} />;
   default: return <span>{`{${node.type}}`}</span>;
