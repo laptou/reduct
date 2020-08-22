@@ -130,4 +130,5 @@ export interface LevelCompletionStats {
 export interface GlobalState {
   game: UndoableGameState;
   preferences: PreferenceState;
+  stats: StatsState;
 }

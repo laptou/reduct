@@ -8,6 +8,7 @@ import { GameState } from '../state';
 import { gameReducer } from './game';
 import { preferencesReducer } from './preferences';
 import { undoableReducer } from './undo';
+import { statsReducer } from './stats';
 
 export { nextId } from '@/util/nodes';
 
@@ -57,9 +58,19 @@ export function createReducer() {
     preferencesReducer
   );
 
+  const statsReducerPersisted = persistReducer(
+    {
+      key: 'reduct/stats',
+      storage,
+      version,
+    },
+    statsReducer
+  );
+
   const rootReducer = combineReducers({
     game: gameReducerPersisted,
     preferences: preferencesReducerPersisted,
+    stats: statsReducerPersisted,
   });
 
   return rootReducer;
