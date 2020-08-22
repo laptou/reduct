@@ -7,7 +7,7 @@ import { addClonedNodes } from './util';
 import { WrongBuiltInParamsCountError, WrongTypeError } from '@/store/errors';
 import { GameState } from '@/store/state';
 import { DeepReadonly, DRF, withParent } from '@/util/helper';
-import { cloneNodeDeep } from '@/util/nodes';
+import { cloneNodeAndAddDeep } from '@/util/nodes';
 
 export function builtinMap(self: DRF<BuiltInIdentifierNode>,
   args: DRF[],
@@ -34,7 +34,7 @@ export function builtinMap(self: DRF<BuiltInIdentifierNode>,
   newArr.fields.length = arr.fields.length;
 
   for (const [index, itemId] of Object.entries(arr.subexpressions)) {
-    const [clonedFn, clonedFnChildren, nodeMapWithClone] = cloneNodeDeep(fn.id, newNodeMap);
+    const [clonedFn, clonedFnChildren, nodeMapWithClone] = cloneNodeAndAddDeep(fn.id, newNodeMap);
     const ptupleNode = createPtupleNode(itemId);
     const applyNode = createApplyNode(clonedFn.id, ptupleNode.id);
 

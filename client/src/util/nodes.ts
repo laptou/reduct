@@ -23,7 +23,7 @@ export function nextId(): NodeId {
   return idCounter++;
 }
 
-export type CloneResult<N extends ReductNode = ReductNode> = [
+export type CloneAndAddResult<N extends ReductNode = ReductNode> = [
   /** cloned root node */
   DRF<N>,
   /** cloned descendant nodes */
@@ -33,15 +33,16 @@ export type CloneResult<N extends ReductNode = ReductNode> = [
 ];
 
 /**
- * Clones the node given by `id` and all of its descendants. Returns
+ * Clones the node given by `id` and all of its descendants. They are added to a
+ * new node map, which is returned.
  *
  * @param id The ID of the node to clone.
  * @param nodeMap A map from IDs to nodes.
  * @param locked Whether the cloned nodes should be locked.
- * @returns A tuple: [cloned root node, cloned descendant nodes,
- * modified node map containing cloned nodes and originals].
+ * @returns A tuple: [cloned root node, cloned descendant nodes, modified node
+ * map containing cloned nodes and originals].
  */
-export function cloneNodeDeep<N extends ReductNode = ReductNode>(id: NodeId, nodeMap: DeepReadonly<NodeMap>, locked?: boolean): CloneResult<N> {
+export function cloneNodeAndAddDeep<N extends ReductNode = ReductNode>(id: NodeId, nodeMap: DeepReadonly<NodeMap>, locked?: boolean): CloneAndAddResult<N> {
   const root = nodeMap.get(id) as DRF;
   const clonedDescendants: DRF[] = [];
   const clonedChildren: DRF[] = [];
@@ -56,7 +57,7 @@ export function cloneNodeDeep<N extends ReductNode = ReductNode>(id: NodeId, nod
     }
 
     for (const [childPath, childId] of Object.entries(draft.subexpressions)) {
-      const [clonedChild, clonedGrandChildren, descendantNodeMap] = cloneNodeDeep(childId, nodeMap, locked);
+      const [clonedChild, clonedGrandChildren, descendantNodeMap] = cloneNodeAndAddDeep(childId, nodeMap, locked);
       nodeMap = descendantNodeMap;
 
       const reparentedChild = {

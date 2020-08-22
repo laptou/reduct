@@ -20,7 +20,7 @@ import {
   DeepReadonly, DRF, mapIterable, withoutParent, withParent,
 } from '@/util/helper';
 import {
-  cloneNodeDeep, findNodesDeep, getRootForNode, isAncestorOf,
+  cloneNodeAndAddDeep, findNodesDeep, getRootForNode, isAncestorOf,
 } from '@/util/nodes';
 
 const initialProgram: GameState = {
@@ -636,7 +636,7 @@ export function gameReducer(
     }
     default: {
       [newNode, , newNodeMap] =
-        cloneNodeDeep(targetId, state.nodes);
+        cloneNodeAndAddDeep(targetId, state.nodes);
       break;
     }
     }
@@ -707,7 +707,7 @@ export function gameReducer(
         // if there is a meta tag that specifies unlimited uses, clone the node
         // instead of moving it
         if (node.__meta?.toolbox?.unlimited) {
-          const [clonedNode, clonedDescendants, newNodeMap] = cloneNodeDeep(act.nodeId, state.nodes);
+          const [clonedNode, clonedDescendants, newNodeMap] = cloneNodeAndAddDeep(act.nodeId, state.nodes);
 
           draft.nodes = castDraft(newNodeMap);
 

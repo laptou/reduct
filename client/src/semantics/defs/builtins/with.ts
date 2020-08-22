@@ -3,7 +3,7 @@ import { addClonedNodes } from './util';
 import { BuiltinFn } from '.';
 
 import { BuiltInError, WrongBuiltInParamsCountError, WrongTypeError } from '@/store/errors';
-import { cloneNodeDeep, mapNodeDeep } from '@/util/nodes';
+import { cloneNodeAndAddDeep, mapNodeDeep } from '@/util/nodes';
 
 export const builtinWith: BuiltinFn =
   (self, args, state) => {
@@ -34,7 +34,7 @@ export const builtinWith: BuiltinFn =
         state.nodes,
         (node, nodeMap) => {
           if (node.id === nodeToReplace) {
-            const [valueClone, , newNodeMap] = cloneNodeDeep(value.id, nodeMap);
+            const [valueClone, , newNodeMap] = cloneNodeAndAddDeep(value.id, nodeMap);
             return [valueClone, newNodeMap];
           }
 

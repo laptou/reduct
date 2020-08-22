@@ -8,6 +8,7 @@ import { builtinMap } from './map';
 import { builtinSlice } from './slice';
 import { builtinLength } from './length';
 import { builtinClone } from './clone';
+import { builtinSet } from './set';
 
 import {
   DeepReadonly, DRF,
@@ -23,6 +24,7 @@ export type BuiltinFn = (
 export const builtins: Record<string, BuiltinFn> = {
   length: builtinLength,
   get: builtinGet,
+  set: builtinSet,
   with: builtinWith,
   map: builtinMap,
   slice: builtinSlice,

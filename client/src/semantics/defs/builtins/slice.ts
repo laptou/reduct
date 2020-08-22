@@ -6,7 +6,7 @@ import { addClonedNodes } from './util';
 import { BuiltInError, WrongBuiltInParamsCountError, WrongTypeError } from '@/store/errors';
 import { GameState } from '@/store/state';
 import { DeepReadonly, DRF } from '@/util/helper';
-import { cloneNodeDeep } from '@/util/nodes';
+import { cloneNodeAndAddDeep } from '@/util/nodes';
 
 export function builtinSlice(self: DRF<BuiltInIdentifierNode>,
   args: DRF[],
@@ -41,7 +41,7 @@ export function builtinSlice(self: DRF<BuiltInIdentifierNode>,
   let currentNodeMap = state.nodes;
 
   for (let i = indexStart; i < indexEnd; i++) {
-    const [clone, descendants, newNodeMap] = cloneNodeDeep(
+    const [clone, descendants, newNodeMap] = cloneNodeAndAddDeep(
       arrayNode.subexpressions[i],
       currentNodeMap
     );
