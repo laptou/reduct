@@ -16,7 +16,9 @@ export enum ActionKind {
   ChangeGoal = 'change-goal',
 
   StartLevel = 'start-level',
-  ToggleCredits = 'toggle-credits',
+  GoToCredits = 'go-to-credits',
+  GoToSurvey = 'go-to-survey',
+  GoToGameplay = 'go-to-gameplay',
 
   MoveNodeToBoard = 'move-node-to-stage',
   MoveNodeToSlot = 'move-node-to-slot',
@@ -46,7 +48,9 @@ export enum ActionKind {
 
 export type ReductAction =
   StartLevelAction |
-  ToggleCreditsAction |
+  GoToGameplayAction |
+  GoToCreditsAction |
+  GoToSurveyAction |
   MoveNodeToBoardAction |
   MoveNodeToSlotAction |
   MoveNodeToDefsAction |
@@ -284,16 +288,42 @@ export function createStartLevel(index: number): StartLevelAction {
   };
 }
 
-export interface ToggleCreditsAction {
-  type: ActionKind.ToggleCredits;
+export interface GoToCreditsAction {
+  type: ActionKind.GoToCredits;
 }
 
 /**
- * Creates an action which will show/hide the credits screen.
+ * Creates an action which will show the credits screen.
  */
-export function createToggleCredits(): ToggleCreditsAction {
+export function createGoToCredits(): GoToCreditsAction {
   return {
-    type: ActionKind.ToggleCredits,
+    type: ActionKind.GoToCredits,
+  };
+}
+
+export interface GoToSurveyAction {
+  type: ActionKind.GoToSurvey;
+}
+
+/**
+ * Creates an action which will show the survey screen.
+ */
+export function createGoToSurvey(): GoToSurveyAction {
+  return {
+    type: ActionKind.GoToSurvey,
+  };
+}
+
+export interface GoToGameplayAction {
+  type: ActionKind.GoToGameplay;
+}
+
+/**
+ * Creates an action which will show the gameplay screen.
+ */
+export function createGoToGameplay(): GoToGameplayAction {
+  return {
+    type: ActionKind.GoToGameplay,
   };
 }
 

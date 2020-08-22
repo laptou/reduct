@@ -9,7 +9,7 @@ import {
 import { Modal } from '../modal';
 
 import { log } from '@/logging/logger';
-import { createStartLevel } from '@/store/action/game';
+import { createGoToSurvey } from '@/store/action/game';
 import { GlobalState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
 import TimesUpText from '@resources/graphics/titles/times-up.svg';
@@ -21,12 +21,12 @@ interface TimeOverlayStoreProps {
 }
 
 interface TimeOverlayDispatchProps {
-  startLevel(index: number): void;
+  goToSurvey(): void;
 }
 
 const TimeOverlayImpl: React.FC<TimeOverlayStoreProps & TimeOverlayDispatchProps> =
   (props) => {
-    const { endTime, startLevel } = props;
+    const { endTime, goToSurvey } = props;
 
     const [currentTime, setCurrentTime] = useState(+new Date());
 
@@ -111,7 +111,7 @@ const TimeOverlayImpl: React.FC<TimeOverlayStoreProps & TimeOverlayDispatchProps
           <div className='reduct-level-modal-actions'>
             <button
               type='button'
-              onClick={() => startLevel(currentLevel + 1)}
+              onClick={goToSurvey}
               className='btn btn-default'
             >
               Go to post-game survey
@@ -148,6 +148,6 @@ export const TimeOverlay = connect(
     endTime: state.stats.startTime ? +state.stats.startTime + GAME_TIME_LIMIT : null,
   }),
   (dispatch) => ({
-    startLevel(index: number) { dispatch(createStartLevel(index)); },
+    goToSurvey() { dispatch(createGoToSurvey()); },
   })
 )(TimeOverlayImpl);

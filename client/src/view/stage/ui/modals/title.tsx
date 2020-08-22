@@ -20,7 +20,7 @@ interface TitleDispatchProps {
   startGame(): void;
 }
 
-const TitleImpl = (props: TitleStoreProps & TitleDispatchProps) => {
+const TitlePageImpl = (props: TitleStoreProps & TitleDispatchProps) => {
   const { isTitle, startGame } = props;
   const scaleSpring = useRef<ReactSpringHook>(null);
   const scaleProps =
@@ -110,11 +110,11 @@ const TitleImpl = (props: TitleStoreProps & TitleDispatchProps) => {
   );
 };
 
-export const Title = connect(
+export const TitlePage = connect(
   (store: DeepReadonly<GlobalState>) => ({
     isTitle: store.game.$present.mode === GameMode.Title,
   }),
   (dispatch) => ({
     startGame() { dispatch(createStartLevel(0)); },
   })
-)(TitleImpl);
+)(TitlePageImpl);
