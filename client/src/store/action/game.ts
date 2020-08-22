@@ -178,6 +178,7 @@ export interface StartLevelAction {
  * @param index The index of the level to start.
  */
 export function createStartLevel(index: number): StartLevelAction {
+
   const levelDefinition = getLevelByIndex(index);
 
   const macros: MacroMap = new Map();

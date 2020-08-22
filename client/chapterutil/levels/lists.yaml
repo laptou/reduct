@@ -9,8 +9,6 @@ levels:
       - TRIANGLE
       - CIRCLE
       - '9'
-    hint:
-      - null
     goal:
       - '[STAR, RECT, TRIANGLE]'
     defines: []
@@ -61,5 +59,72 @@ levels:
       - null
     goal:
       - '[2,4,5,1]'
+  - board:
+      - >- 
+          'function contains(list, target, pointer){ return  _ (pointer) ? false :
+          ((_ == _) ? true : ( contains(list, pointer + 1, target))); }'
+      - >-
+          __note('Lets work on a contains, which returns true if a given element is in a list, and false if not.
+          Notice that contains is recursive, and that the counter parameter changes at the recursive call. ')
+      - >- 
+          __note('After we have visited every element in the list, we want to return false.
+          How can you use the pointer to achieve this effect? ')
+    toolbox:
+      - contains
+      - contains
+      - length
+      - list
+      - get(list, pointer)
+      - target
+      - 'pointer => (pointer == (_) (_))'
+      - '[6,7,9,12]'
+      - '[12,9,7,6]'
+      - 0
+      - 4
+      - 11
+      - 12
+      - 0
+    hint:
+      - >-
+        'contains takes three arguments, a list, a target, and a pointer.
+        What should the value of the pointer be when it is first passed to the
+        function?'
+    note:
+      - null
+    goal:
+      - false
+      - true
+  - board:
+      - >-
+          __note('Complete the body of getIndex.
+          getIndex takes three arguments, a list, a target, and a pointer.
+          If the target element is in the list, getIndex returns the index
+          of the target element, or -1 if not.')
+      - >-
+          function getIndex(list,target,pointer){ return (_ (_)) ? -1 :
+          ((_ (_) (_) (_)) ? _ : (getIndex(_, _, (_ + 1)))); }
+      - 'x => (x == (_) (_))'
+      - 'function isTarget(list,target,pointer) {return ( (_(_,_)) == _ );}'
+      
+    toolbox:
+      - getIndex
+      - isTarget
+      - __unlimited;list
+      - __unlimited;target
+      - __unlimited;pointer
+      - length
+      - get
+      - '[7,9,2,5,18]'
+      - 0
+      - 1
+      - 2
+    hint:
+      - 'Remember the recursive structure of the contains function.'
+    goal:
+      - 2
+
+
+
+
     
 
