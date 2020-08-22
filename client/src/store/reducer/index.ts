@@ -50,6 +50,7 @@ const statsTransform = createTransform<StatsState>(
   (item, key) => {
     switch (key) {
     case 'levels':
+      return Object.fromEntries(item.entries());
     default:
       return item;
     }
