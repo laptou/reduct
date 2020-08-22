@@ -17,6 +17,7 @@ import { TutorialTab } from './stage/ui/tabs/sidebar/tutorial';
 import { ToolboxTab } from './stage/ui/tabs/toolbox';
 import { ConsentForm } from './consent';
 import { CreditsPage } from './credits';
+import { TimeOverlay } from './stage/ui/modals/time';
 
 import { GameMode, GlobalState, ResearchConsentState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
@@ -58,6 +59,7 @@ const GameImpl: React.FC<GameStoreProps> = (props) => {
         <FeedbackCollectorPopup />
         <VictoryOverlay />
         <DefeatOverlay />
+        <TimeOverlay />
       </div>
     );
 

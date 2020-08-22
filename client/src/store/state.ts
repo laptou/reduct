@@ -72,9 +72,11 @@ export interface GameState {
 }
 
 export enum GameMode {
+  Tutorial,
   Title,
   Gameplay,
   Credits,
+  Survey,
 }
 
 export type ResearchConsentState =
