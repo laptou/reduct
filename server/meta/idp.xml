@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" entityID="reduct" ID="reduct">
+  <SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <KeyDescriptor use="encryption">
+      <ds:KeyInfo>
+        <ds:X509Data>
+          <ds:X509Certificate>MIIFtzCCA5+gAwIBAgIUB3w904p1/BTLJwL4RDsWfHQjzvkwDQYJKoZIhvcNAQEL
+BQAwazELMAkGA1UEBhMCVVMxETAPBgNVBAgMCE5ldyBZb3JrMQ8wDQYDVQQHDAZJ
+dGhhY2ExDzANBgNVBAoMBlJlZHVjdDEnMCUGA1UEAwwecmVkdWN0LTI4NTYwMi51
+Yy5yLmFwcHNwb3QuY29tMB4XDTIwMDgxOTE3NTgyMloXDTMwMDgxNzE3NTgyMlow
+azELMAkGA1UEBhMCVVMxETAPBgNVBAgMCE5ldyBZb3JrMQ8wDQYDVQQHDAZJdGhh
+Y2ExDzANBgNVBAoMBlJlZHVjdDEnMCUGA1UEAwwecmVkdWN0LTI4NTYwMi51Yy5y
+LmFwcHNwb3QuY29tMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAxxKi
+gtCRaOS6op8L5wptdYKgfRqjmZbhHhP1Nn7YscBfz3HaDA68AulDoRGzaWWg9rXh
+FwQi6TanjBvrqE4U3b8A0mlTU9ZhUaEkrPqYTf64e69IYkC3U8zWI9LhGXOOziXY
+fU8EbVh7l3Tz4mi52fgvNQBko/spbkQAJn/bTsmcy10qWlqghjlRN7AuHFCPw1q/
+V8uoTF5MVRkVkclSlepzNLwddg8IH57zx7jvQLTnhdPJ1B+6SZEx2yaVDYGBPXi9
+tAPBcVTnAf6fDk/XrNEnammJ3gIA/jgZ76TCNCx57SvZZ/5zz9tzuY3QR7tf+fb/
+l/JnVVqJl80VeArZP2+r+mzjiyIqjm078cb89UYU+PhErxFzTmgfKMdhZI5l2Vsq
+KM1fyjs6sweqXtm/oQJ7ANeaqyb9lCje/Mxyx6wPqCK35h5YmZ/mNAiduipx3fNt
+kkDT11l6+pN7N2kebKoEEUaXfJeYPPl9spBzW/xuxOSiJOVVKjxbCN9MgUQJ3FDz
+oLeTVNrvkaZfqS8b56TTere9P+dvhDWQzx93o1nefDwXUknf/SCy4j+0uXUj9ol7
+9COd2jU3Ontguhoj/kxHfKeGMh1yjDeWAnBSAu+Pvvd5AzY1lDmM3Vl+VDFQlFWg
+GEuSAwvvrWohx0QpYn3W4rbI2QW8a2gb1/rN+SsCAwEAAaNTMFEwHQYDVR0OBBYE
+FDrUVsg4Nx2WRcn9MgIBeB/MDCsCMB8GA1UdIwQYMBaAFDrUVsg4Nx2WRcn9MgIB
+eB/MDCsCMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggIBABRWIFjM
+HeJSb0uTOBR2klPs7wC611TOUcUn0Iqv9WjH9qGh5h7zGi5qhPX9ljY5NVniIsQa
+c73zFRigFSB1yhBNAafs/JYZJ5xSAGoJeDtClC4+cfhM2Bk56RfqFNJCw1nBgHtX
+YswpzksQSk4B1cEdgJU+lUtC+FpiYGW/7hGc8MMX9QyIYr7UyheGh1qPXWCxqfTr
+RX1EODc3aEO3y6J75b6lIhGMa1mFAfjVjaPknckWHQdfEXdcjqk2CVPoCBwOlrQU
+3/VHklyRRpykXdCQdi0+OyJ2Uu2ss373pMFzloObcSB7NrKF+FAxC3l6/VdvVmks
+nWyZHYVXvQrbkL1ywL44xrmL7mskdm/Zj9q+XAJ4OL6gA6rNCFGiXfulq5hIYitd
+IKnmcvA2g2bD3Lsn7+/uBoBYNherJMI/LafBE03D/1MJb4JlZtOA6ToOM9vTpTqS
+JH9jMpRzPJks+4BcEmr4NzFuyX86Tz86YQKHEBj2T7SAJchSV+6Z1a7FfDbXneBn
+4JXFmdtz+eypcSq/L/i2DQowOvJXE3wGkwOpCtAxi9iVc7IGIOSFRBLnbEfU/yPw
+w0TojYSH1LBeeS7jHfKKCNGjgO0bSr80tQUrAeN86m67RwDjyhGC7hDO94ZAeaRA
+8RkYr7gWvMXuiUZUeCi32fJtZYcz/Pn0s6SI
+</ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+      <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes256-cbc"/>
+      <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes128-cbc"/>
+      <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#tripledes-cbc"/>
+    </KeyDescriptor>
+    <NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</NameIDFormat>
+    <AssertionConsumerService index="1" isDefault="true" Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://reduct-285602.uc.r.appspot.com/auth/saml/callback"/>
+  </SPSSODescriptor>
+</EntityDescriptor>
