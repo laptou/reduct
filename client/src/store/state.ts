@@ -94,7 +94,53 @@ export interface PreferenceState {
   enableResearch: ResearchConsentState;
 }
 
+export interface StatsState {
+  /**
+   * Statistics about all of the levels the user has played.
+   */
+  levels: Map<number, LevelCompletionStats>;
+
+  /**
+   * Intermediate stats for the level the user is currently playing.
+   */
+  current: LevelCompletionStats | null;
+
+  /**
+   * The time at which the user started the first level.
+   */
+  startTime: Date | null;
+}
+
+export interface LevelCompletionStats {
+  levelIndex: number;
+
+  /**
+   * Duration in milliseconds it took the player to complete the level.
+   * Null if the player has not completed the level.
+   */
+  totalDuration: number | null;
+
+  /**
+   * Duration in milliseconds that the user spent in this level. This is
+   * different from totalDuration, which is the time between when the user first
+   * opened the level and when they completed it.
+   */
+  playDuration: number | null;
+
+  /**
+   * The time at which the user started on this level.
+   */
+  startTime: Date;
+
+  /**
+   * The time at which the user resumed working on this level after navigating
+   * away to another level.
+   */
+  resumeTime: Date;
+}
+
 export interface GlobalState {
   game: UndoableGameState;
   preferences: PreferenceState;
+  stats: StatsState;
 }
