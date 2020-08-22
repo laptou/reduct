@@ -363,7 +363,7 @@ export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKin
   case 'string':
   case 'symbol':
   case 'unsol':
-  case 'dynamicVariant':
+  case 'reference':
   case 'builtin':
     return 'value';
 

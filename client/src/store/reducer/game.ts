@@ -609,11 +609,11 @@ export function gameReducer(
     if (!state.board.has(getRootForNode(referenceNodeId, state.nodes).id))
       throw new NotOnBoardError(referenceNodeId);
 
-    const referenceNode = state.nodes.get(referenceNodeId) as DRF<IdentifierNode>;
-    const targetId = getValueForName(referenceNode.fields.name, referenceNode, state);
+    const identNode = state.nodes.get(referenceNodeId) as DRF<IdentifierNode>;
+    const targetId = getValueForName(identNode.fields.name, identNode, state);
 
     if (targetId === undefined || targetId === null)
-      throw new UnknownNameError(referenceNode.id, referenceNode.fields.name);
+      throw new UnknownNameError(identNode.id, identNode.fields.name);
 
     const targetNode = state.nodes.get(targetId)!;
 
@@ -632,10 +632,12 @@ export function gameReducer(
         ...state.nodes,
         [newNode.id, newNode],
       ]);
+      break;
     }
     default: {
       [newNode, , newNodeMap] =
         cloneNodeDeep(targetId, state.nodes);
+      break;
     }
     }
 
@@ -646,16 +648,16 @@ export function gameReducer(
 
     return produce(state, draft => {
       draft.nodes = castDraft(newNodeMap);
-      draft.board.delete(referenceNode.id);
+      draft.board.delete(identNode.id);
 
       // retrieve inside of produce() so we get a mutable draft object
       const resultNode = draft.nodes.get(newNode.id)!;
 
-      if (referenceNode.parent) {
-        const parentNode = draft.nodes.get(referenceNode.parent)!;
-        parentNode.subexpressions[referenceNode.parentField!] = resultNode.id;
+      if (identNode.parent) {
+        const parentNode = draft.nodes.get(identNode.parent)!;
+        parentNode.subexpressions[identNode.parentField!] = resultNode.id;
         resultNode.parent = parentNode.id;
-        resultNode.parentField = referenceNode.parentField;
+        resultNode.parentField = identNode.parentField;
       } else {
         resultNode.parent = null;
         resultNode.parentField = null;
@@ -663,10 +665,10 @@ export function gameReducer(
       }
 
       draft.added.clear();
-      draft.added.set(resultNode.id, referenceNode.id);
+      draft.added.set(resultNode.id, identNode.id);
 
       // schedule for cleanup
-      draft.removed.set(referenceNode.id, false);
+      draft.removed.set(identNode.id, false);
     });
   }
 
