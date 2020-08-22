@@ -5,7 +5,7 @@ import { BuiltinFn } from '.';
 import { BuiltInError, WrongBuiltInParamsCountError, WrongTypeError } from '@/store/errors';
 import { cloneNodeDeep, mapNodeDeep } from '@/util/nodes';
 
-export const builtinSet: BuiltinFn =
+export const builtinWith: BuiltinFn =
   (self, args, state) => {
     if (args.length !== 3)
       throw new WrongBuiltInParamsCountError(self.id, 3, args.length);
