@@ -3,7 +3,7 @@ import { getLevelByIndex } from '@/loader';
 import { parseProgram, MacroMap } from '@/syntax/es6';
 import { createIdentifierNode, createBuiltInIdentifierNode } from '@/semantics/util';
 import { flatten } from '@/util/nodes';
-import { builtins } from '@/semantics/defs/builtins';
+import { builtins } from '@/semantics/defs/builtins/builtins';
 import { DefineNode } from '@/semantics/defs';
 
 export enum ActionKind {

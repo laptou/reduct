@@ -1,9 +1,9 @@
 import { produce, castDraft } from 'immer';
 
-import { BaseNode, NodeMap } from '..';
+import { BaseNode, NodeMap } from '../..';
 import {
   createApplyNode, createArrayNode, createNumberNode, createPtupleNode,
-} from '../util';
+} from '../../util';
 
 import { BuiltInError, WrongBuiltInParamsCountError, WrongTypeError } from '@/store/errors';
 import { GameState } from '@/store/state';

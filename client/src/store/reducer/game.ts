@@ -12,7 +12,7 @@ import type { Flat, NodeId, NodeMap } from '@/semantics';
 import {
   ApplyNode, BinOpNode, BoolNode, ConditionalNode, IdentifierNode as IdentifierNode, LambdaArgNode, LambdaNode, LetNode, NotNode, NumberNode, OpNode, PTupleNode, StrNode,
 } from '@/semantics/defs';
-import { builtins } from '@/semantics/defs/builtins';
+import { builtins } from '@/semantics/defs/builtins/builtins';
 import {
   createBoolNode, createMissingNode, createNumberNode, createStrNode, getDefinitionForName, getKindForNode, getReductionOrderForNode, getValueForName, createReferenceNode,
 } from '@/semantics/util';
