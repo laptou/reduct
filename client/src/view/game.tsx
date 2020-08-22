@@ -18,6 +18,7 @@ import { ToolboxTab } from './stage/ui/tabs/toolbox';
 import { ConsentPage } from './consent';
 import { CreditsPage } from './credits';
 import { TimeOverlay } from './stage/ui/modals/time';
+import { SurveyPage } from './survey';
 
 import { GameMode, GlobalState, ResearchConsentState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
@@ -67,7 +68,7 @@ const GameImpl: React.FC<GameStoreProps> = (props) => {
     return <CreditsPage />;
 
   case GameMode.Survey:
-    return <CreditsPage />;
+    return <SurveyPage />;
 
   default:
     return <>`not implemented: game mode ${props.mode}`</>;
