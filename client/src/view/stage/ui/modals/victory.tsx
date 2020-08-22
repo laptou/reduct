@@ -112,7 +112,7 @@ const VictoryImpl: React.FC<VictoryStoreProps & VictoryDispatchProps> =
                     </div>
                   </>
                 )
-                :(
+                : (
                   <div className='reduct-level-modal-actions'>
                     <button
                       type='button'
@@ -173,9 +173,9 @@ export const VictoryOverlay = connect(
     // loop around so that we detect levels after the one the player is
     // currently playing first, then go back to any levels the player skipped
     for (
-      let i = currentLevel + 1;
+      let i = (currentLevel + 1) % levels.length;
       i !== currentLevel;
-      i = (i + 1) % (levels.length - 1)
+      i = (i + 1) % levels.length
     ) {
       const stats = store.stats.levels.get(i);
 

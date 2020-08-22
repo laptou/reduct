@@ -3,7 +3,7 @@ import { createTransform, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
 import { createStartLevel, createGoToSurvey } from '../action/game';
-import { GameState, GameMode } from '../state';
+import { GameState, GameMode, StatsState } from '../state';
 
 import { gameReducer } from './game';
 import { preferencesReducer } from './preferences';
@@ -45,6 +45,30 @@ const gameStateTransform = createTransform(
   }
 );
 
+const statsTransform = createTransform<StatsState>(
+  // transform state on its way to being serialized and persisted.
+  (item, key) => {
+    switch (key) {
+    case 'levels':
+    default:
+      return item;
+    }
+  },
+  // transform state being rehydrated
+  (serializedItem, key) => {
+    switch (key) {
+    case 'levels':
+      return new Map(
+        Object
+          .entries(serializedItem)
+          .map(([key, val]) => [parseInt(key), val])
+      );
+    default:
+      return serializedItem;
+    }
+  }
+);
+
 export function createReducer() {
   const version = parseInt(PKG_VERSION.replace(/\D/g, '')); // 7.0.0-alpha = 700
 
@@ -73,6 +97,7 @@ export function createReducer() {
       key: 'reduct/stats',
       storage,
       version,
+      transforms: [statsTransform],
     },
     statsReducer
   );
