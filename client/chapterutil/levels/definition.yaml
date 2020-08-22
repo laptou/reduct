@@ -88,7 +88,6 @@ levels:
   - board:
       - __let(myFun, _, () => __let(number, _, () => __let(number, _, () => myFun (number) )))
       - 'number => (number == _)'
-      - '(number => _ (number)) (_)'
       - 'function myFun(number) {return (number == _ ? true : false)}'
       - 'function swapper(boolean) {return (boolean == true ? false : true)}'
       - swapper
