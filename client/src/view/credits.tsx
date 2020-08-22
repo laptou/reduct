@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import { Logo } from './stage/ui/logo';
 
-import { createGoToCredits } from '@/store/action/game';
+import { createGoToGameplay } from '@/store/action/game';
 
 interface CreditsPageDispatchProps {
   back(): void;
@@ -149,5 +149,5 @@ const CreditsPageImpl: React.FC<CreditsPageDispatchProps> = (props) => {
 };
 
 export const CreditsPage = connect(null, (dispatch) => ({
-  back() { dispatch(createGoToCredits()); },
+  back() { dispatch(createGoToGameplay()); },
 }))(CreditsPageImpl);

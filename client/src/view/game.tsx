@@ -71,7 +71,7 @@ const GameImpl: React.FC<GameStoreProps> = (props) => {
     return <SurveyPage />;
 
   default:
-    return <>`not implemented: game mode ${props.mode}`</>;
+    return <>not implemented: game mode {props.mode}</>;
   }
 };
 
