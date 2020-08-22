@@ -10,24 +10,29 @@ import KoaBodyParser from 'koa-bodyparser';
 import { userLoggingRouter } from './logging/user';
 import { initializeAuth, authMiddleware } from './auth';
 import { serverLogger } from './logging/server';
-import { environment, useAuthentication, useHttps } from './config';
+import { ENV, USE_AUTHENTICATION, USE_HTTPS } from './config';
 
 const { readFile } = fs;
 
 Sentry.init({ dsn: 'https://0a8675f3076947a3ba73a4ecb9f9d75c@o190059.ingest.sentry.io/5394738' });
 
 void (async () => {
-  serverLogger.info(`starting server in ${environment} mode`);
+  serverLogger.info(`starting server in ${ENV} mode`);
 
   const app = new Koa();
 
   app.on('error', (err, ctx) => {
-    Sentry.withScope(function(scope) {
-      scope.addEventProcessor(function(event) {
-        return Sentry.Handlers.parseRequest(event, ctx.request);
+    if (ENV === 'prod') {
+      Sentry.withScope(function(scope) {
+        scope.addEventProcessor(function(event) {
+          return Sentry.Handlers.parseRequest(event, ctx.request);
+        });
+        scope.setUser({ username: ctx.state?.user?.netId });
+        Sentry.captureException(err);
       });
-      Sentry.captureException(err);
-    });
+    }
+
+    serverLogger.error(err);
   });
 
   // body parser MUST be initialized for auth middleware
@@ -37,14 +42,14 @@ void (async () => {
   await initializeAuth(app);
   serverLogger.debug('initialized authentication');
 
-  if (useAuthentication) {
+  if (USE_AUTHENTICATION) {
     // all middleware after this point will be authentication-gated
     app.use(authMiddleware);
   }
 
   app.use(userLoggingRouter.routes());
 
-  if (environment === 'dev') {
+  if (ENV === 'dev') {
     const { initializeDevServer } = await import('./dev');
     await initializeDevServer(app);
     serverLogger.debug('initialized dev server');
@@ -56,10 +61,10 @@ void (async () => {
 
   const port = process.env.PORT || 8080;
 
-  if (useHttps) {
+  if (USE_HTTPS) {
     serverLogger.info('using HTTPS');
-    
-    if (environment === 'prod')
+
+    if (ENV === 'prod')
       serverLogger.warn('HTTPS should not be used in production; it is handled by App Engine');
 
     const key = await readFile(resolve(__dirname, '../secret/localhost.key'));

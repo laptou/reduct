@@ -1,7 +1,7 @@
 runtime: nodejs12
 env_variables:
-  NODE_ENV: production
-  REDUCT_TEST_AUTH: true
+  NODE_ENV: "production"
+  REDUCT_PROD_AUTH: "true"
 handlers:
 - url: /.*
   secure: always
