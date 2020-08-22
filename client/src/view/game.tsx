@@ -6,7 +6,7 @@ import { Board } from './stage/ui/board';
 import { FeedbackCollectorPopup } from './stage/ui/feedback-collector';
 import { Logo } from './stage/ui/logo';
 import { DefeatOverlay } from './stage/ui/modals/defeat';
-import { Title } from './stage/ui/modals/title';
+import { TitlePage } from './stage/ui/modals/title';
 import { VictoryOverlay } from './stage/ui/modals/victory';
 import { GoalTab } from './stage/ui/tabs/goal';
 import { HistoryTab } from './stage/ui/tabs/history';
@@ -15,7 +15,7 @@ import { Sidebar } from './stage/ui/tabs/sidebar';
 import { DefinitionsTab } from './stage/ui/tabs/sidebar/definitions';
 import { TutorialTab } from './stage/ui/tabs/sidebar/tutorial';
 import { ToolboxTab } from './stage/ui/tabs/toolbox';
-import { ConsentForm } from './consent';
+import { ConsentPage } from './consent';
 import { CreditsPage } from './credits';
 import { TimeOverlay } from './stage/ui/modals/time';
 
@@ -32,12 +32,12 @@ const GameImpl: React.FC<GameStoreProps> = (props) => {
   const { mode, consent } = props;
 
   if (consent === null) {
-    return <ConsentForm />;
+    return <ConsentPage />;
   }
 
   switch (mode) {
   case GameMode.Title:
-    return <Title />;
+    return <TitlePage />;
 
   case GameMode.Gameplay:
     return (
@@ -64,6 +64,9 @@ const GameImpl: React.FC<GameStoreProps> = (props) => {
     );
 
   case GameMode.Credits:
+    return <CreditsPage />;
+
+  case GameMode.Survey:
     return <CreditsPage />;
 
   default:
