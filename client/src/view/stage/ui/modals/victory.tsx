@@ -105,7 +105,7 @@ const VictoryImpl: React.FC<VictoryStoreProps & VictoryDispatchProps> =
                       <button
                         type='button'
                         onClick={() => startLevel(nextLevel)}
-                        className='btn btn-primary'
+                        className='btn btn-secondary'
                       >
                         Go to level {nextLevel}
                       </button>
@@ -117,7 +117,7 @@ const VictoryImpl: React.FC<VictoryStoreProps & VictoryDispatchProps> =
                     <button
                       type='button'
                       onClick={() => startLevel(nextLevel)}
-                      className='btn btn-primary'
+                      className='btn btn-secondary'
                     >
                       Next level
                     </button>
@@ -130,7 +130,7 @@ const VictoryImpl: React.FC<VictoryStoreProps & VictoryDispatchProps> =
                     onClick={() => startSurvey()}
                     className='btn btn-primary'
                   >
-                    Start survey
+                    Finish game
                   </button>
                 </div>
               )
