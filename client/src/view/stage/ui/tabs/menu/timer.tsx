@@ -35,6 +35,14 @@ const GameTimerImpl: React.FC<GameTimerStoreProps> = (props) => {
 
   const remainingTime = useMemo(
     () => {
+      if (!endTime) {
+        return {
+          seconds: Number.POSITIVE_INFINITY,
+          minutes: Number.POSITIVE_INFINITY,
+          hours: Number.POSITIVE_INFINITY,
+        };
+      }
+
       const totalMillis = endTime - currentTime;
       const totalSeconds = Math.floor(totalMillis / 1000);
       const totalMinutes = Math.floor(totalMillis / 60 / 1000);
