@@ -4,6 +4,7 @@ import { StatsState } from '../state';
 const initialState: StatsState = {
   levels: new Map(),
   current: null,
+  startTime: null,
 };
 
 export const statsReducer = (
@@ -14,6 +15,10 @@ export const statsReducer = (
 
   switch (act.type) {
   case ActionKind.StartLevel: {
+    if (state.startTime === null) {
+      state.startTime = new Date();
+    }
+
     if (state.current?.levelIndex !== act.level) {
       let newStats;
       let newLevels;

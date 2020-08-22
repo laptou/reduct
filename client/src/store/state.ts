@@ -108,7 +108,7 @@ export interface StatsState {
   /**
    * The time at which the user started the first level.
    */
-  startTime: Date;
+  startTime: Date | null;
 }
 
 export interface LevelCompletionStats {
