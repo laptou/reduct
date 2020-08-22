@@ -33,6 +33,7 @@ export const statsReducer = (
           totalDuration: null,
           startTime: new Date(),
           resumeTime: new Date(),
+          complete: false,
         };
       }
 
@@ -64,6 +65,36 @@ export const statsReducer = (
         levels: newLevels,
       };
     }
+  }
+  case ActionKind.CompleteLevel: {
+    let newLevels;
+
+    if (state.current) {
+      newLevels = new Map([
+        ...state.levels,
+        [
+          state.current.levelIndex, {
+            ...state.current,
+            totalDuration:
+              new Date().getTime()
+              - state.current.startTime.getTime(),
+            playDuration:
+              new Date().getTime()
+              - state.current.resumeTime.getTime()
+              + (state.current.playDuration ?? 0),
+            complete: true,
+          },
+        ],
+      ]);
+    } else {
+      newLevels = state.levels;
+    }
+
+    state = {
+      ...state,
+      current: null,
+      levels: newLevels,
+    };
   }
   default:
     return state;
