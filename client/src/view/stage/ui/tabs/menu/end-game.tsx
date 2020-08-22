@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+
+import { createGoToSurvey } from '@/store/action/game';
 
 enum EndGameButtonState {
   None,
@@ -6,11 +9,12 @@ enum EndGameButtonState {
   PressedEnabled,
 }
 
-/**
- * A button that lets the player end the game early. Forces them to wait a
- * couple of seconds and then confirm in order to avoid doing this accidentally.
- */
-export const EndGameButton: React.FC = () => {
+interface EndGameButtonDispatchProps {
+  startSurvey(): void;
+}
+
+const EndGameButtonImpl: React.FC<EndGameButtonDispatchProps> = (props) => {
+  const { startSurvey } = props;
   const [mode, setMode] = useState(EndGameButtonState.None);
 
   useEffect(() => {
@@ -42,10 +46,10 @@ export const EndGameButton: React.FC = () => {
       <button
         id='reduct-level-info-quit'
         type='button'
-        className='btn btn-danger'
+        className='btn btn-default'
         disabled
       >
-        Are you sure? Click again to end the game.
+        Please wait
       </button>
     );
   case EndGameButtonState.PressedEnabled:
@@ -54,10 +58,19 @@ export const EndGameButton: React.FC = () => {
         id='reduct-level-info-quit'
         type='button'
         className='btn btn-danger'
+        onClick={startSurvey}
       >
         Are you sure? Click again to end the game.
       </button>
     );
   }
-
 };
+
+/**
+ * A button that lets the player end the game early. Forces them to wait a
+ * couple of seconds and then confirm in order to avoid doing this accidentally.
+ */
+export const EndGameButton =
+  connect(null, (dispatch) => ({
+    startSurvey() { dispatch(createGoToSurvey()); },
+  }))(EndGameButtonImpl);
