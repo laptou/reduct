@@ -65,6 +65,11 @@ export interface GameState {
   executing: Set<NodeId>;
 
   /**
+   * The ID of the node which was returned by the most recent reduction.
+   */
+  returned: NodeId | null;
+
+  /**
    * Used to set the error if the reducer needs to throw an error and return a
    * new state at the same time.
    */
