@@ -23,6 +23,62 @@ export function nextId(): NodeId {
   return idCounter++;
 }
 
+export type CloneResult<N extends ReductNode = ReductNode> = [
+  /** cloned root node */
+  DRF<N>,
+  /** cloned descendant nodes */
+  Array<DeepReadonly<Flat<ReductNode>>>,
+];
+
+/**
+ * Clones the node given by `id` and all of its descendants. They are added to a
+ * new node map, which is returned.
+ *
+ * @param id The ID of the node to clone.
+ * @param nodeMap A map from IDs to nodes.
+ * @param locked Whether the cloned nodes should be locked.
+ * @returns A tuple: [cloned root node, cloned descendant nodes, modified node].
+ */
+export function cloneNodeDeep<N extends ReductNode = ReductNode>(
+  id: NodeId,
+  nodeMap: DeepReadonly<NodeMap>,
+  locked?: boolean
+): CloneResult<N> {
+  const root = nodeMap.get(id) as DRF;
+  const clonedDescendants: DRF[] = [];
+  const clonedChildren: DRF[] = [];
+  const newId = nextId();
+
+  const clonedRoot: DRF = produce(root, (draft) => {
+    draft.id = newId;
+
+    // delete cached holes
+    if (draft.__meta?.slots) {
+      delete draft.__meta.slots;
+    }
+
+    for (const [childPath, childId] of Object.entries(draft.subexpressions)) {
+      const [clonedChild, clonedGrandChildren] = cloneNodeDeep(childId, nodeMap, locked);
+
+      const reparentedChild = {
+        ...clonedChild,
+        parent: newId,
+      } as FlatReductNode;
+
+      if (typeof locked === 'boolean')
+        reparentedChild.locked = locked;
+
+      clonedDescendants.push(...clonedGrandChildren);
+      clonedChildren.push(reparentedChild);
+
+      (draft.subexpressions as Record<string, number>)[childPath] = reparentedChild.id;
+      // TODO: delete any cached __missing fields
+    }
+  });
+
+  return [clonedRoot as DRF<N>, clonedChildren.concat(clonedDescendants)];
+}
+
 export type CloneAndAddResult<N extends ReductNode = ReductNode> = [
   /** cloned root node */
   DRF<N>,
@@ -43,50 +99,17 @@ export type CloneAndAddResult<N extends ReductNode = ReductNode> = [
  * map containing cloned nodes and originals].
  */
 export function cloneNodeAndAddDeep<N extends ReductNode = ReductNode>(id: NodeId, nodeMap: DeepReadonly<NodeMap>, locked?: boolean): CloneAndAddResult<N> {
-  const root = nodeMap.get(id) as DRF;
-  const clonedDescendants: DRF[] = [];
-  const clonedChildren: DRF[] = [];
-  const newId = nextId();
+  const [clonedRoot, clonedDescendants] = cloneNodeDeep(id, nodeMap, locked);
 
-  const clonedRoot: DRF = produce(root, (draft) => {
-    draft.id = newId;
+  const newNodeMap: NodeMap = new Map([
+    ...nodeMap,
+    ...clonedDescendants.map(
+      clonedDescendant => [clonedDescendant.id, clonedDescendant] as const
+    ),
+    [clonedRoot.id, clonedRoot],
+  ]);
 
-    // delete cached holes
-    if (draft.__meta?.slots) {
-      delete draft.__meta.slots;
-    }
-
-    for (const [childPath, childId] of Object.entries(draft.subexpressions)) {
-      const [clonedChild, clonedGrandChildren, descendantNodeMap] = cloneNodeAndAddDeep(childId, nodeMap, locked);
-      nodeMap = descendantNodeMap;
-
-      const reparentedChild = {
-        ...clonedChild,
-        parent: newId,
-      } as FlatReductNode;
-
-      if (typeof locked === 'boolean')
-        reparentedChild.locked = locked;
-
-      clonedDescendants.push(...clonedGrandChildren);
-      clonedChildren.push(reparentedChild);
-
-      (draft.subexpressions as Record<string, number>)[childPath] = reparentedChild.id;
-      // TODO: delete any cached __missing fields
-    }
-  });
-
-  nodeMap = produce(nodeMap, draft => {
-    draft.set(clonedRoot.id, castDraft(clonedRoot));
-
-    // node map contains reference to old cloned children with wrong parent and
-    // parentField information
-    for (const clonedChild of clonedChildren) {
-      draft.set(clonedChild.id, castDraft(clonedChild));
-    }
-  });
-
-  return [clonedRoot as DRF<N>, clonedChildren.concat(clonedDescendants), nodeMap];
+  return [clonedRoot as DRF<N>, clonedDescendants, newNodeMap];
 }
 
 type MapResult = [
