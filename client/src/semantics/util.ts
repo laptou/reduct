@@ -269,7 +269,9 @@ export function createDefineNode(name: string, params: string[], body: LambdaNod
   };
 }
 
-export function createReferenceNode(targetId: NodeId): ReferenceNode {
+export function createReferenceNode(targetId: NodeId): ReferenceNode;
+export function createReferenceNode(targetId: NodeId): Flat<ReferenceNode>;
+export function createReferenceNode(targetId: NodeId): ReferenceNode | Flat<ReferenceNode> {
   return {
     ...createNodeBase(),
     type: 'reference',

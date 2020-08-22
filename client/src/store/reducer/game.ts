@@ -14,7 +14,7 @@ import {
 } from '@/semantics/defs';
 import { builtins } from '@/semantics/defs/builtins';
 import {
-  createBoolNode, createMissingNode, createNumberNode, createStrNode, getDefinitionForName, getKindForNode, getReductionOrderForNode, getValueForName,
+  createBoolNode, createMissingNode, createNumberNode, createStrNode, getDefinitionForName, getKindForNode, getReductionOrderForNode, getValueForName, createReferenceNode,
 } from '@/semantics/util';
 import {
   DeepReadonly, DRF, mapIterable, withoutParent, withParent,
@@ -615,11 +615,29 @@ export function gameReducer(
     if (targetId === undefined || targetId === null)
       throw new UnknownNameError(referenceNode.id, referenceNode.fields.name);
 
-    if (state.nodes.get(targetId)!.type === 'missing')
+    const targetNode = state.nodes.get(targetId)!;
+
+    if (targetNode.type === 'missing')
       throw new MissingNodeError(targetId);
 
-    const [clonedNode, , newNodeMap] =
+    let newNode: DRF, newNodeMap: NodeMap;
+
+    switch (targetNode.type) {
+    case 'array': {
+      // array is special b/c it is a reference type
+      // currently, no other reference types are in the game
+
+      newNode = createReferenceNode(targetId) as DRF;
+      newNodeMap = new Map([
+        ...state.nodes,
+        [newNode.id, newNode],
+      ]);
+    }
+    default: {
+      [newNode, , newNodeMap] =
         cloneNodeDeep(targetId, state.nodes);
+    }
+    }
 
     state = {
       ...state,
@@ -631,7 +649,7 @@ export function gameReducer(
       draft.board.delete(referenceNode.id);
 
       // retrieve inside of produce() so we get a mutable draft object
-      const resultNode = draft.nodes.get(clonedNode.id)!;
+      const resultNode = draft.nodes.get(newNode.id)!;
 
       if (referenceNode.parent) {
         const parentNode = draft.nodes.get(referenceNode.parent)!;
