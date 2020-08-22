@@ -10,7 +10,8 @@ const SurveyPageImpl: React.FC = () => {
     <div id='reduct-survey'>
       <Logo />
       <p>
-        Please fill out this survey, then you can close this window.
+        Please fill out this survey, then you can close this window. <br />
+        Make sure you scroll to the bottom and click Submit.
       </p>
       <iframe src='/survey'>
       </iframe>
