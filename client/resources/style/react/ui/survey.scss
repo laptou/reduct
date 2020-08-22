@@ -1,0 +1,23 @@
+#reduct-survey {
+  display: flex;
+  flex-flow: column nowrap;
+
+  width: 100%;
+  height: 100%;
+
+  .reduct-logo {
+    display: block;
+
+    max-height: 4rem;
+
+    margin: 2rem auto;
+  }
+
+  iframe {
+    flex-grow: 1;
+    overflow: hidden;
+
+    border: none;
+  }
+}
+

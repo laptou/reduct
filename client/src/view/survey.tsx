@@ -1,5 +1,5 @@
 
-import '@resources/style/react/ui/credits.scss';
+import '@resources/style/react/ui/survey.scss';
 import React from 'react';
 import { connect } from 'react-redux';
 
