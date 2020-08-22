@@ -1,8 +1,9 @@
 import { NodeMap } from '../..';
 import { createApplyNode, createArrayNode, createPtupleNode } from '../../util';
 
-import { BuiltInIdentifierNode } from '.';
 import { addClonedNodes } from './util';
+
+import { BuiltInIdentifierNode } from '.';
 
 import { WrongBuiltInParamsCountError, WrongTypeError } from '@/store/errors';
 import { GameState } from '@/store/state';

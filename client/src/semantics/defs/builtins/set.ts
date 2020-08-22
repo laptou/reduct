@@ -1,11 +1,9 @@
-import produce from 'immer';
-
-import { addClonedNodes } from './util';
+import { produce } from 'immer';
 
 import { BuiltinFn } from '.';
 
 import { BuiltInError, WrongBuiltInParamsCountError, WrongTypeError } from '@/store/errors';
-import { cloneNodeAndAddDeep, mapNodeDeep } from '@/util/nodes';
+import { cloneNodeDeep } from '@/util/nodes';
 
 export const builtinSet: BuiltinFn =
   (self, args, state) => {
@@ -33,33 +31,20 @@ export const builtinSet: BuiltinFn =
       if (indexValue >= array.fields.length)
         throw new BuiltInError(self.id, `You tried to set item ${indexValue} of an array with only ${array.fields.length} items`);
 
-      const nodeIdToReplace = array.subexpressions[indexValue];
-
-      draft.removed.set(nodeIdToReplace, false);
-
-      const nodeToReplace = draft.nodes.get(nodeIdToReplace)!;
+      const nodeToReplace = draft.nodes.get(array.subexpressions[indexValue])!;
       nodeToReplace.parent = null;
       nodeToReplace.parentField = null;
 
-      array.subexpressions[indexValue]
+      const [valueClone, valueCloneDescendants] =
+        cloneNodeDeep(value.id, draft.nodes, true);
+
+      array.subexpressions[indexValue] = valueClone.id;
+
+      draft.removed.set(nodeToReplace.id, false);
+      draft.added.set(valueClone.id, nodeToReplace.id);
+
+      for (const newNode of [valueClone, ...valueCloneDescendants]) {
+        draft.nodes.set(newNode.id, newNode);
+      }
     });
-
-    const nodeToReplace = arrayRef.subexpressions[indexValue];
-
-    return addClonedNodes(
-      self,
-      mapNodeDeep(
-        arrayRef.subexpressions[indexValue],
-        state.nodes,
-        (node, nodeMap) => {
-          if (node.id === nodeToReplace) {
-            const [valueClone, , newNodeMap] = cloneNodeAndAddDeep(value.id, nodeMap);
-            return [valueClone, newNodeMap];
-          }
-
-          return [node, nodeMap];
-        }
-      ),
-      state
-    );
   };
