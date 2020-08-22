@@ -1,5 +1,5 @@
 
-import '@resources/style/react/ui/credits.scss';
+import '@resources/style/react/ui/survey.scss';
 import React from 'react';
 import { connect } from 'react-redux';
 
@@ -9,6 +9,9 @@ const SurveyPageImpl: React.FC = () => {
   return (
     <div id='reduct-survey'>
       <Logo />
+      <p>
+        Please fill out this survey, then you can close this window.
+      </p>
       <iframe src='/survey'>
       </iframe>
     </div>
