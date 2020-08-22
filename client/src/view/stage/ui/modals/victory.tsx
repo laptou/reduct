@@ -7,7 +7,7 @@ import {
 import { Modal } from '../modal';
 
 import { log } from '@/logging/logger';
-import { createStartLevel, createGoToSurvey } from '@/store/action/game';
+import { createStartLevel, createGoToSurvey, createCompleteLevel } from '@/store/action/game';
 import { checkVictory } from '@/store/helper';
 import { GlobalState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
@@ -24,6 +24,7 @@ interface VictoryStoreProps {
 interface VictoryDispatchProps {
   startLevel(index: number): void;
   startSurvey(): void;
+  completeLevel(): void;
 }
 
 const VictoryImpl: React.FC<VictoryStoreProps & VictoryDispatchProps> =
@@ -34,6 +35,7 @@ const VictoryImpl: React.FC<VictoryStoreProps & VictoryDispatchProps> =
       currentLevel,
       startLevel,
       startSurvey,
+      completeLevel,
     } = props;
 
     const scaleSpring = useRef<ReactSpringHook>(null);
@@ -63,9 +65,11 @@ const VictoryImpl: React.FC<VictoryStoreProps & VictoryDispatchProps> =
     useChain([scaleSpring, raySpring]);
 
     useEffect(() => {
-      if (isVictory)
+      if (isVictory) {
         log('game:victory');
-    }, [isVictory]);
+        completeLevel();
+      }
+    }, [completeLevel, isVictory]);
 
     if (!isVictory)
       return null;
@@ -99,7 +103,7 @@ const VictoryImpl: React.FC<VictoryStoreProps & VictoryDispatchProps> =
                   <>
                     <p className='reduct-level-modal-text'>
                       This is the last level, but you haven&apos;t
-                      completed level {nextLevel} yet.
+                      completed level {nextLevel + 1} yet.
                     </p>
                     <div className='reduct-level-modal-actions'>
                       <button
@@ -107,7 +111,7 @@ const VictoryImpl: React.FC<VictoryStoreProps & VictoryDispatchProps> =
                         onClick={() => startLevel(nextLevel)}
                         className='btn btn-secondary'
                       >
-                        Go to level {nextLevel}
+                        Go to level {nextLevel + 1}
                       </button>
                     </div>
                   </>
@@ -195,5 +199,6 @@ export const VictoryOverlay = connect(
   (dispatch) => ({
     startLevel(index: number) { dispatch(createStartLevel(index)); },
     startSurvey() { dispatch(createGoToSurvey()); },
+    completeLevel() { dispatch(createCompleteLevel()); },
   })
 )(VictoryImpl);
