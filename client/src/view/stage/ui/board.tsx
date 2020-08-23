@@ -257,8 +257,8 @@ const BoardImpl: FunctionComponent<BoardProps> =
 
       const results = placeRects(
         {
-          w: boardBounds.width,
-          h: boardBounds.height,
+          w: boardBounds.width * 2,
+          h: boardBounds.height * 2,
         },
         movableNodeBounds,
         fixedNodeBounds.map(fixedRect => {
@@ -275,8 +275,8 @@ const BoardImpl: FunctionComponent<BoardProps> =
 
         updatedPositions.set(id, {
           nodeId: id,
-          x: x - boardBounds.width / 2 + w / 2 + padding + topLeft.x,
-          y: y - boardBounds.height / 2 + h / 2 + padding + topLeft.y,
+          x: x - boardBounds.width + w / 2 + padding + topLeft.x,
+          y: y - boardBounds.height + h / 2 + padding + topLeft.y,
           isAutoPositioned: true,
           isUserPositioned: false,
           level,
