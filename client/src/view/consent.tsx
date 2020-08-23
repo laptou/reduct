@@ -11,7 +11,7 @@ interface ConsentFormDispatchProps {
   enableResearch(enable: boolean): void;
 }
 
-const ConsentFormImpl: React.FC<ConsentFormDispatchProps> = (props) => {
+const ConsentPageImpl: React.FC<ConsentFormDispatchProps> = (props) => {
   const { enableResearch } = props;
 
   return (
@@ -94,8 +94,8 @@ const ConsentFormImpl: React.FC<ConsentFormDispatchProps> = (props) => {
   );
 };
 
-export const ConsentForm = connect(null, (dispatch) => ({
+export const ConsentPage = connect(null, (dispatch) => ({
   enableResearch(enable: boolean) {
     dispatch(createEnableResearch(enable));
   },
-}))(ConsentFormImpl);
+}))(ConsentPageImpl);

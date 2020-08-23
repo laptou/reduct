@@ -7,7 +7,7 @@ import { StageProjection } from './base';
 import { LambdaNode, LambdaArgNode, LambdaVarNode } from '@/semantics/defs';
 import '@resources/style/react/projection/lambda.scss';
 import { Flat, NodeId } from '@/semantics';
-import { createEvalLambda } from '@/store/action/game';
+import { createCall } from '@/store/action/game';
 
 
 interface LambdaArgProjectionOwnProps {
@@ -53,7 +53,7 @@ interface LambdaProjectionOwnProps {
 }
 
 interface LambdaProjectionDispatchProps {
-  evalLambda(paramNodeId: NodeId): void;
+  call(paramNodeId: NodeId): void;
 }
 
 type LambdaProjectionProps =
@@ -112,7 +112,7 @@ function onDrop(
   setHover(false);
 
   // fill this slot with the node that was dropped on it
-  props.evalLambda(droppedNodeId);
+  props.call(droppedNodeId);
 }
 
 export const LambdaProjectionImpl: FunctionComponent<LambdaProjectionProps> =
@@ -121,18 +121,18 @@ export const LambdaProjectionImpl: FunctionComponent<LambdaProjectionProps> =
 
     return (
       <div className={cx('projection lambda', { hover })}>
+        <span className='lambda-arrow'>
+          =&gt;
+        </span>
         <div
-          className='arg'
+          className='lambda-arg'
           onDragOver={e => onDragOver(e, props, setHover)}
           onDragLeave={e => onDragLeave(e, props, setHover)}
           onDrop={e => onDrop(e, props, setHover)}
         >
           <StageProjection nodeId={props.node.subexpressions.arg} />
         </div>
-        <span className='arrow'>
-          =&gt;
-        </span>
-        <div className='body'>
+        <div className='lambda-body'>
           <StageProjection nodeId={props.node.subexpressions.body} />
         </div>
       </div>
@@ -142,8 +142,8 @@ export const LambdaProjectionImpl: FunctionComponent<LambdaProjectionProps> =
 export const LambdaProjection = connect(
   null,
   (dispatch, ownProps: LambdaProjectionOwnProps) => ({
-    evalLambda(paramNodeId: NodeId) {
-      dispatch(createEvalLambda(ownProps.node.id, paramNodeId));
+    call(paramNodeId: NodeId) {
+      dispatch(createCall(ownProps.node.id, paramNodeId));
     },
   })
 )(LambdaProjectionImpl);

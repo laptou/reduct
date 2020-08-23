@@ -21,6 +21,7 @@ import { BuiltInIdentifierNode } from './defs/builtins';
 import { NoteNode } from './defs/note';
 
 import { DRF } from '@/util/helper';
+import { ReferenceNode } from './defs/reference';
 
 export type NodeId = number;
 
@@ -110,7 +111,7 @@ export type ReductNode =
   BoolNode |
   UnsolNode |
   SymbolNode |
-  DynVarNode |
+  ReferenceNode |
   IdentifierNode |
   VTupleNode |
   PTupleNode |
@@ -137,7 +138,7 @@ export type FlatReductNode =
   Flat<BoolNode> |
   Flat<UnsolNode> |
   Flat<SymbolNode> |
-  Flat<DynVarNode> |
+  Flat<ReferenceNode> |
   Flat<IdentifierNode> |
   Flat<VTupleNode> |
   Flat<PTupleNode> |

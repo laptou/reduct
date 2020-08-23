@@ -65,6 +65,11 @@ export interface GameState {
   executing: Set<NodeId>;
 
   /**
+   * The ID of the node which was returned by the most recent reduction.
+   */
+  returned: NodeId | null;
+
+  /**
    * Used to set the error if the reducer needs to throw an error and return a
    * new state at the same time.
    */
@@ -72,9 +77,11 @@ export interface GameState {
 }
 
 export enum GameMode {
+  Tutorial,
   Title,
   Gameplay,
   Credits,
+  Survey,
 }
 
 export type ResearchConsentState =
@@ -94,7 +101,58 @@ export interface PreferenceState {
   enableResearch: ResearchConsentState;
 }
 
+export interface StatsState {
+  /**
+   * Statistics about all of the levels the user has played.
+   */
+  levels: Map<number, LevelCompletionStats>;
+
+  /**
+   * Intermediate stats for the level the user is currently playing.
+   */
+  current: LevelCompletionStats | null;
+
+  /**
+   * The time at which the user started the first level.
+   */
+  startTime: number | null;
+}
+
+export interface LevelCompletionStats {
+  levelIndex: number;
+
+  /**
+   * Duration in milliseconds it took the player to complete the level.
+   * Null if the player has not completed the level.
+   */
+  totalDuration: number | null;
+
+  /**
+   * Duration in milliseconds that the user spent in this level. This is
+   * different from totalDuration, which is the time between when the user first
+   * opened the level and when they completed it.
+   */
+  playDuration: number | null;
+
+  /**
+   * The time at which the user started on this level.
+   */
+  startTime: number;
+
+  /**
+   * The time at which the user resumed working on this level after navigating
+   * away to another level.
+   */
+  resumeTime: number;
+
+  /**
+   * Whether or not this level was solved.
+   */
+  complete: boolean;
+}
+
 export interface GlobalState {
   game: UndoableGameState;
   preferences: PreferenceState;
+  stats: StatsState;
 }

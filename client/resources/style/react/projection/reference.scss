@@ -1,0 +1,29 @@
+@use '../theme';
+@use 'layout';
+@use 'fx';
+@use 'sass:color';
+
+.projection.reference {
+  @extend %projection-standalone;
+  @include fx.projection-shadow-box();
+  
+  align-items: center;
+
+  margin: 0.25rem;
+
+  padding: 2px;
+  border: 1px dashed rgba(black, 0.5);
+  border-radius: 0.5rem;
+
+  background-color: #fff7d2;
+
+  line-height: 1;
+
+  .reference-symbol {
+    padding: 0.5rem;
+  }
+
+  .reference-target {
+    padding: 0 0.5rem;
+  }
+}
