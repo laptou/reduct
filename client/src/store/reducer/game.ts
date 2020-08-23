@@ -125,10 +125,7 @@ export function gameReducer(
       throw new MissingNodeError(bodyNode.id);
 
     return produce(state, draft => {
-      draft.board.delete(letNode.id);
-
-      draft.nodes.delete(letNode.id);
-      draft.nodes.delete(identNode.id);
+      draft.removed.set(identNode.id, false);
 
       draft.returned = bodyNode.id;
     });
@@ -356,18 +353,12 @@ export function gameReducer(
       resultNode = createStrNode(resultValue);
 
     return produce(state, draft => {
-      draft.board.delete(binOpNode.id);
-      draft.board.delete(opNode.id);
-      draft.board.delete(leftNode.id);
-      draft.board.delete(rightNode.id);
-
       draft.added.set(resultNode.id, binOpNode.id);
 
       draft.returned = resultNode.id;
       draft.nodes.set(resultNode.id, resultNode as DRF);
 
       // schedule for cleanup
-      draft.removed.set(binOpNode.id, false);
       draft.removed.set(opNode.id, false);
       draft.removed.set(leftNode.id, false);
       draft.removed.set(rightNode.id, false);
@@ -399,7 +390,6 @@ export function gameReducer(
     const removedNode = !condNode.fields.value ? positiveNode : negativeNode;
 
     return produce(state, draft => {
-      draft.board.delete(blockNode.id);
       draft.board.delete(condNode.id);
 
       draft.added.set(resultNode.id, blockNode.id);
@@ -408,7 +398,6 @@ export function gameReducer(
       draft.nodes.set(resultNode.id, castDraft(resultNode));
 
       // schedule for cleanup
-      draft.removed.set(blockNode.id, false);
       draft.removed.set(condNode.id, false);
       draft.removed.set(removedNode.id, false);
     });
@@ -430,15 +419,10 @@ export function gameReducer(
     const resultNode = createBoolNode(!valueNode.fields.value);
 
     return produce(state, draft => {
-      draft.board.delete(notNode.id);
-
       draft.added.set(resultNode.id, notNode.id);
       draft.returned = resultNode.id;
 
       draft.nodes.set(resultNode.id, resultNode as DRF);
-
-      // schedule for cleanup
-      draft.removed.set(notNode.id, false);
     });
   }
 
