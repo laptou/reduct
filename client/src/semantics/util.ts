@@ -269,7 +269,9 @@ export function createDefineNode(name: string, params: string[], body: LambdaNod
   };
 }
 
-export function createReferenceNode(targetId: NodeId): ReferenceNode {
+export function createReferenceNode(targetId: NodeId): ReferenceNode;
+export function createReferenceNode(targetId: NodeId): Flat<ReferenceNode>;
+export function createReferenceNode(targetId: NodeId): ReferenceNode | Flat<ReferenceNode> {
   return {
     ...createNodeBase(),
     type: 'reference',
@@ -361,7 +363,7 @@ export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKin
   case 'string':
   case 'symbol':
   case 'unsol':
-  case 'dynamicVariant':
+  case 'reference':
   case 'builtin':
     return 'value';
 

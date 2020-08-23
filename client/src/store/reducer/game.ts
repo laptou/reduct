@@ -14,7 +14,7 @@ import {
 } from '@/semantics/defs';
 import { builtins } from '@/semantics/defs/builtins';
 import {
-  createBoolNode, createMissingNode, createNumberNode, createStrNode, getDefinitionForName, getKindForNode, getReductionOrderForNode, getValueForName,
+  createBoolNode, createMissingNode, createNumberNode, createStrNode, getDefinitionForName, getKindForNode, getReductionOrderForNode, getValueForName, createReferenceNode,
 } from '@/semantics/util';
 import {
   DeepReadonly, DRF, mapIterable, withoutParent, withParent,
@@ -609,17 +609,37 @@ export function gameReducer(
     if (!state.board.has(getRootForNode(referenceNodeId, state.nodes).id))
       throw new NotOnBoardError(referenceNodeId);
 
-    const referenceNode = state.nodes.get(referenceNodeId) as DRF<IdentifierNode>;
-    const targetId = getValueForName(referenceNode.fields.name, referenceNode, state);
+    const identNode = state.nodes.get(referenceNodeId) as DRF<IdentifierNode>;
+    const targetId = getValueForName(identNode.fields.name, identNode, state);
 
     if (targetId === undefined || targetId === null)
-      throw new UnknownNameError(referenceNode.id, referenceNode.fields.name);
+      throw new UnknownNameError(identNode.id, identNode.fields.name);
 
-    if (state.nodes.get(targetId)!.type === 'missing')
+    const targetNode = state.nodes.get(targetId)!;
+
+    if (targetNode.type === 'missing')
       throw new MissingNodeError(targetId);
 
-    const [clonedNode, , newNodeMap] =
+    let newNode: DRF, newNodeMap: NodeMap;
+
+    switch (targetNode.type) {
+    case 'array': {
+      // array is special b/c it is a reference type
+      // currently, no other reference types are in the game
+
+      newNode = createReferenceNode(targetId) as DRF;
+      newNodeMap = new Map([
+        ...state.nodes,
+        [newNode.id, newNode],
+      ]);
+      break;
+    }
+    default: {
+      [newNode, , newNodeMap] =
         cloneNodeDeep(targetId, state.nodes);
+      break;
+    }
+    }
 
     state = {
       ...state,
@@ -628,16 +648,16 @@ export function gameReducer(
 
     return produce(state, draft => {
       draft.nodes = castDraft(newNodeMap);
-      draft.board.delete(referenceNode.id);
+      draft.board.delete(identNode.id);
 
       // retrieve inside of produce() so we get a mutable draft object
-      const resultNode = draft.nodes.get(clonedNode.id)!;
+      const resultNode = draft.nodes.get(newNode.id)!;
 
-      if (referenceNode.parent) {
-        const parentNode = draft.nodes.get(referenceNode.parent)!;
-        parentNode.subexpressions[referenceNode.parentField!] = resultNode.id;
+      if (identNode.parent) {
+        const parentNode = draft.nodes.get(identNode.parent)!;
+        parentNode.subexpressions[identNode.parentField!] = resultNode.id;
         resultNode.parent = parentNode.id;
-        resultNode.parentField = referenceNode.parentField;
+        resultNode.parentField = identNode.parentField;
       } else {
         resultNode.parent = null;
         resultNode.parentField = null;
@@ -645,10 +665,10 @@ export function gameReducer(
       }
 
       draft.added.clear();
-      draft.added.set(resultNode.id, referenceNode.id);
+      draft.added.set(resultNode.id, identNode.id);
 
       // schedule for cleanup
-      draft.removed.set(referenceNode.id, false);
+      draft.removed.set(identNode.id, false);
     });
   }
 
