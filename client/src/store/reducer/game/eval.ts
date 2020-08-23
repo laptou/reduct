@@ -558,7 +558,11 @@ export function gameEvalReducer(
         returnedNode.parent = null;
         returnedNode.parentField = null;
 
-        if (returnedNode.type === 'vtuple') {
+        if (returnedNode.type === 'void') {
+          // void nodes should not be added to anything
+          // they should just disappear
+          draft.removed.set(returnedNode.id, false);
+        } else if (returnedNode.type === 'vtuple') {
           for (const subExprId of Object.values(returnedNode.subexpressions)) {
             const subExpr = draft.nodes.get(subExprId)!;
             subExpr.parent = null;
