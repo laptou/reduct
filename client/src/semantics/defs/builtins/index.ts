@@ -7,13 +7,14 @@ import { builtinConcat } from './concat';
 import { builtinMap } from './map';
 import { builtinSlice } from './slice';
 import { builtinLength } from './length';
+import { builtinClone } from './clone';
 
 import {
   DeepReadonly, DRF,
 } from '@/util/helper';
 import { GameState } from '@/store/state';
 
-type BuiltinFn = (
+export type BuiltinFn = (
   self: DRF<BuiltInIdentifierNode>,
   args: DRF[],
   state: DeepReadonly<GameState>
@@ -26,6 +27,7 @@ export const builtins: Record<string, BuiltinFn> = {
   map: builtinMap,
   slice: builtinSlice,
   concat: builtinConcat,
+  clone: builtinClone,
 };
 
 /**
