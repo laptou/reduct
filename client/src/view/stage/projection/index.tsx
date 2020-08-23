@@ -17,9 +17,10 @@ import { VTupleProjection } from './vtuple';
 import { BuiltInReferenceProjection } from './builtin';
 import { PTupleProjection } from './ptuple';
 import { NoteProjection } from './note';
+import { ReferenceProjection } from './reference';
+import { VoidProjection } from './void';
 
 import { DRF } from '@/util/helper';
-import { ReferenceProjection } from './reference';
 
 /**
  * Definitions:
@@ -60,6 +61,7 @@ export function getProjectionForNode(node: DRF | null) {
   case 'reference': return <ReferenceProjection node={node} key={node.id} />;
   case 'vtuple': return <VTupleProjection node={node} key={node.id} />;
   case 'let': return <LetProjection node={node} key={node.id} />;
+  case 'void': return <VoidProjection key={node.id} />;
   default: return <span>{`{${node.type}}`}</span>;
   }
 }
