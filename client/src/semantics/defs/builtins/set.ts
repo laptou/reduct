@@ -40,11 +40,13 @@ export const builtinSet: BuiltinFn =
 
       array.subexpressions[indexValue] = valueClone.id;
 
-      draft.removed.set(nodeToReplace.id, false);
       draft.added.set(valueClone.id, nodeToReplace.id);
+      draft.returned = arrayRef.id;
 
       for (const newNode of [valueClone, ...valueCloneDescendants]) {
         draft.nodes.set(newNode.id, newNode);
       }
+
+      draft.removed.set(nodeToReplace.id, false);
     });
   };

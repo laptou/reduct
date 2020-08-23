@@ -35,6 +35,8 @@ export enum ActionKind {
   EvalIdentifier = 'eval-reference',
   EvalLet = 'eval-let',
 
+  Call = 'call',
+  Return = 'return',
   Execute = 'exec',
   Step = 'step',
   Stop = 'stop',
@@ -58,13 +60,14 @@ export type ReductAction =
   MoveNodeToDefsAction |
   AddNodeToToolboxAction |
   EvalLambdaAction |
-  EvalLambdaAction |
   EvalOperatorAction |
   EvalConditionalAction |
   EvalNotAction |
   EvalApplyAction |
   EvalIdentifierAction |
   EvalLetAction |
+  CallAction |
+  ReturnAction |
   ExecuteAction |
   StopAction |
   StepAction |
@@ -590,6 +593,51 @@ export function createStep(
   return {
     type: ActionKind.Step,
     targetNodeId,
+  };
+}
+
+export interface ReturnAction {
+  type: ActionKind.Return;
+  targetNodeId: NodeId;
+}
+
+/**
+ * Returns an action which will replace the target node with the node that was
+ * returned by the previous action.
+ *
+ * @param targetNodeId The ID of the node to replace.
+ */
+export function createReturn(
+  targetNodeId: NodeId
+): ReturnAction {
+  return {
+    type: ActionKind.Return,
+    targetNodeId,
+  };
+}
+
+export interface CallAction {
+  type: ActionKind.Call;
+  targetNodeId: NodeId;
+  paramNodeId: NodeId;
+}
+
+/**
+ * Returns an action which will bind a parameter to a lambda's argument. Should
+ * be followed with a call to execute.
+ *
+ * @param targetNodeId The ID of the node to execute.
+ * @param paramNodeId The ID of the node that represents the parameter to
+ * substitute.
+ */
+export function createCall(
+  targetNodeId: NodeId,
+  paramNodeId: NodeId
+): CallAction {
+  return {
+    type: ActionKind.Call,
+    targetNodeId,
+    paramNodeId,
   };
 }
 
