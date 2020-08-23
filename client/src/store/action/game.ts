@@ -1,7 +1,7 @@
 import { NodeId, NodeMap, ReductNode } from '@/semantics';
 import { getLevelByIndex } from '@/loader';
 import { parseProgram, MacroMap } from '@/syntax/es6';
-import { createReferenceNode, createBuiltInReferenceNode } from '@/semantics/util';
+import { createIdentifierNode, createBuiltInIdentifierNode } from '@/semantics/util';
 import { flatten } from '@/util/nodes';
 import { builtins } from '@/semantics/defs/builtins';
 import { DefineNode } from '@/semantics/defs';
@@ -16,7 +16,10 @@ export enum ActionKind {
   ChangeGoal = 'change-goal',
 
   StartLevel = 'start-level',
-  ToggleCredits = 'toggle-credits',
+  CompleteLevel = 'end-level',
+  GoToCredits = 'go-to-credits',
+  GoToSurvey = 'go-to-survey',
+  GoToGameplay = 'go-to-gameplay',
 
   MoveNodeToBoard = 'move-node-to-stage',
   MoveNodeToSlot = 'move-node-to-slot',
@@ -32,6 +35,8 @@ export enum ActionKind {
   EvalIdentifier = 'eval-reference',
   EvalLet = 'eval-let',
 
+  Call = 'call',
+  Return = 'return',
   Execute = 'exec',
   Step = 'step',
   Stop = 'stop',
@@ -46,12 +51,14 @@ export enum ActionKind {
 
 export type ReductAction =
   StartLevelAction |
-  ToggleCreditsAction |
+  CompleteLevelAction |
+  GoToGameplayAction |
+  GoToCreditsAction |
+  GoToSurveyAction |
   MoveNodeToBoardAction |
   MoveNodeToSlotAction |
   MoveNodeToDefsAction |
   AddNodeToToolboxAction |
-  EvalLambdaAction |
   EvalLambdaAction |
   EvalOperatorAction |
   EvalConditionalAction |
@@ -59,6 +66,8 @@ export type ReductAction =
   EvalApplyAction |
   EvalIdentifierAction |
   EvalLetAction |
+  CallAction |
+  ReturnAction |
   ExecuteAction |
   StopAction |
   StepAction |
@@ -184,7 +193,7 @@ export function createStartLevel(index: number): StartLevelAction {
   const macros: MacroMap = new Map();
 
   for (const name of Object.keys(builtins)) {
-    macros.set(name, () => createBuiltInReferenceNode(name));
+    macros.set(name, () => createBuiltInIdentifierNode(name));
   }
 
   const globals = new Map();
@@ -204,7 +213,7 @@ export function createStartLevel(index: number): StartLevelAction {
     [...globals.values()].map((node) =>
       [
         node.fields.name,
-        () => createReferenceNode(node.fields.name),
+        () => createIdentifierNode(node.fields.name),
       ] as const
     );
 
@@ -216,7 +225,7 @@ export function createStartLevel(index: number): StartLevelAction {
     .map((node) =>
       [
         node.fields.name,
-        () => createReferenceNode(node.fields.name),
+        () => createIdentifierNode(node.fields.name),
       ] as const
     );
 
@@ -285,16 +294,56 @@ export function createStartLevel(index: number): StartLevelAction {
   };
 }
 
-export interface ToggleCreditsAction {
-  type: ActionKind.ToggleCredits;
+export interface CompleteLevelAction {
+  type: ActionKind.CompleteLevel;
 }
 
 /**
- * Creates an action which will show/hide the credits screen.
+ * Creates an action which will show the credits screen.
  */
-export function createToggleCredits(): ToggleCreditsAction {
+export function createCompleteLevel(): CompleteLevelAction {
   return {
-    type: ActionKind.ToggleCredits,
+    type: ActionKind.CompleteLevel,
+  };
+}
+
+
+export interface GoToCreditsAction {
+  type: ActionKind.GoToCredits;
+}
+
+/**
+ * Creates an action which will show the credits screen.
+ */
+export function createGoToCredits(): GoToCreditsAction {
+  return {
+    type: ActionKind.GoToCredits,
+  };
+}
+
+export interface GoToSurveyAction {
+  type: ActionKind.GoToSurvey;
+}
+
+/**
+ * Creates an action which will show the survey screen.
+ */
+export function createGoToSurvey(): GoToSurveyAction {
+  return {
+    type: ActionKind.GoToSurvey,
+  };
+}
+
+export interface GoToGameplayAction {
+  type: ActionKind.GoToGameplay;
+}
+
+/**
+ * Creates an action which will show the gameplay screen.
+ */
+export function createGoToGameplay(): GoToGameplayAction {
+  return {
+    type: ActionKind.GoToGameplay,
   };
 }
 
@@ -317,7 +366,7 @@ export function createCreateDocs(key: string, docScript: string): CreateDocsActi
   const macros: MacroMap = new Map();
 
   for (const name of Object.keys(builtins)) {
-    macros.set(name, () => createBuiltInReferenceNode(name));
+    macros.set(name, () => createBuiltInIdentifierNode(name));
   }
 
   const node = parseProgram(docScript, macros);
@@ -545,6 +594,51 @@ export function createStep(
   return {
     type: ActionKind.Step,
     targetNodeId,
+  };
+}
+
+export interface ReturnAction {
+  type: ActionKind.Return;
+  targetNodeId: NodeId;
+}
+
+/**
+ * Returns an action which will replace the target node with the node that was
+ * returned by the previous action.
+ *
+ * @param targetNodeId The ID of the node to replace.
+ */
+export function createReturn(
+  targetNodeId: NodeId
+): ReturnAction {
+  return {
+    type: ActionKind.Return,
+    targetNodeId,
+  };
+}
+
+export interface CallAction {
+  type: ActionKind.Call;
+  targetNodeId: NodeId;
+  paramNodeId: NodeId;
+}
+
+/**
+ * Returns an action which will bind a parameter to a lambda's argument. Should
+ * be followed with a call to execute.
+ *
+ * @param targetNodeId The ID of the node to execute.
+ * @param paramNodeId The ID of the node that represents the parameter to
+ * substitute.
+ */
+export function createCall(
+  targetNodeId: NodeId,
+  paramNodeId: NodeId
+): CallAction {
+  return {
+    type: ActionKind.Call,
+    targetNodeId,
+    paramNodeId,
   };
 }
 

@@ -172,7 +172,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
     // use useLayoutEffect instead of useEffect b/c this needs to execute after
     // React has created elements but before the browser can paint (to avoid
     // elements "jumping" around)
-    useLayoutEffect(() => {
+    useLayoutEffect(() => setPositions(positions => {
       const updatedPositions = new Map<NodeId, NodePos>();
 
       const padding = 10;
@@ -194,7 +194,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
       const movableNodeBounds = [];
 
       for (const [nodeId, sourceNodeId] of added) {
-        const positionInfo = updatedPositions.get(nodeId);
+        const positionInfo = positions.get(nodeId);
         const sourcePositionInfo = sourceNodeId && positions.get(sourceNodeId);
 
         const ref = boardItemRefs.get(nodeId);
@@ -205,21 +205,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
           x, y, width, height,
         } = boardItemDiv.getBoundingClientRect();
 
-        if (positionInfo?.isUserPositioned || positionInfo?.isAutoPositioned) {
-          // this node already has a position, do not move it
-          const fixedRect = {
-            id: nodeId,
-            x: x +   boardScroll.x - padding,
-            y: y + boardScroll.y - padding,
-            w: width + padding * 2,
-            h: height + padding * 2,
-          };
-
-          fixedNodeBounds.push(fixedRect);
-
-          topLeft.x = Math.min(topLeft.x, fixedRect.x);
-          topLeft.y = Math.min(topLeft.y, fixedRect.y);
-        } else if (sourcePositionInfo) {
+        if (sourcePositionInfo && !positionInfo?.isUserPositioned) {
           // this node was the result of stepping another node, place it on top
           // of the node that created it
           const newNodePosition = {
@@ -245,6 +231,20 @@ const BoardImpl: FunctionComponent<BoardProps> =
 
           topLeft.x = Math.min(topLeft.x, fixedRect.x);
           topLeft.y = Math.min(topLeft.y, fixedRect.y);
+        } else if (positionInfo?.isUserPositioned || positionInfo?.isAutoPositioned) {
+          // this node already has a position, do not move it
+          const fixedRect = {
+            id: nodeId,
+            x: x +   boardScroll.x - padding,
+            y: y + boardScroll.y - padding,
+            w: width + padding * 2,
+            h: height + padding * 2,
+          };
+
+          fixedNodeBounds.push(fixedRect);
+
+          topLeft.x = Math.min(topLeft.x, fixedRect.x);
+          topLeft.y = Math.min(topLeft.y, fixedRect.y);
         } else {
           // this node doesn't have an assigned position, add it to the movable nodes
           movableNodeBounds.push({
@@ -257,8 +257,8 @@ const BoardImpl: FunctionComponent<BoardProps> =
 
       const results = placeRects(
         {
-          w: boardBounds.width,
-          h: boardBounds.height,
+          w: boardBounds.width * 2,
+          h: boardBounds.height * 2,
         },
         movableNodeBounds,
         fixedNodeBounds.map(fixedRect => {
@@ -275,19 +275,16 @@ const BoardImpl: FunctionComponent<BoardProps> =
 
         updatedPositions.set(id, {
           nodeId: id,
-          x: x - boardBounds.width / 2 + w / 2 + padding + topLeft.x,
-          y: y - boardBounds.height / 2 + h / 2 + padding + topLeft.y,
+          x: x - boardBounds.width + w / 2 + padding + topLeft.x,
+          y: y - boardBounds.height + h / 2 + padding + topLeft.y,
           isAutoPositioned: true,
           isUserPositioned: false,
           level,
         });
       }
 
-      setPositions(positions => new Map([...positions, ...updatedPositions]));
-
-      // do not want to include positions to avoid infinite loop of updates
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [added]);
+      return new Map([...positions, ...updatedPositions]);
+    }), [added, boardItemRefs, level]);
 
     return (
       <div

@@ -51,7 +51,7 @@ const DefinitionsImpl: FunctionComponent<DefinitionsProps> =
         {props.nodeIds.length === 0 && (
           <div id='reduct-definitions-empty-state'>
             <p>
-              Drag a <code>def</code> or <code>let</code> node in
+              Drag a <code>def</code> node in
               here to add it to the global scope.
             </p>
           </div>

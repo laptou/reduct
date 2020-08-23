@@ -5,7 +5,7 @@ import type * as estree from 'estree';
 import { ReductNode } from '@/semantics';
 import { LambdaNode } from '@/semantics/defs';
 import {
-  createApplyNode, createArrayNode, createBinOpNode, createBoolNode, createConditionalNode, createDefineNode, createLambdaArgNode, createLambdaNode, createMemberNode, createMissingNode, createNotNode, createNumberNode, createOpNode, createReferenceNode, createStrNode, createSymbolNode, createVtupleNode, createPtupleNode, createLetNode, createNoteNode,
+  createApplyNode, createArrayNode, createBinOpNode, createBoolNode, createConditionalNode, createDefineNode, createLambdaArgNode, createLambdaNode, createMemberNode, createMissingNode, createNotNode, createNumberNode, createOpNode, createIdentifierNode, createStrNode, createSymbolNode, createVtupleNode, createPtupleNode, createLetNode, createNoteNode,
 } from '@/semantics/util';
 
 function modifier(ast: esprima.Program) {
@@ -73,16 +73,16 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
     // TODO: phase out xx and xxx in favour of __tuple(x, x)
     if (name === 'xx') {
       return createVtupleNode(
-        createReferenceNode('x'),
-        createReferenceNode('x')
+        createIdentifierNode('x'),
+        createIdentifierNode('x')
       );
     }
 
     if (name === 'xxx') {
       return createVtupleNode(
-        createReferenceNode('x'),
-        createReferenceNode('x'),
-        createReferenceNode('x')
+        createIdentifierNode('x'),
+        createIdentifierNode('x'),
+        createIdentifierNode('x')
       );
     }
 
@@ -97,7 +97,7 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
         }
         */
 
-    return createReferenceNode(name);
+    return createIdentifierNode(name);
   }
 
   case 'Literal': {
@@ -130,7 +130,7 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
 
         // Implement capture of bindings
         const argName = param.name;
-        newMacros.set(argName, () => createReferenceNode(argName));
+        newMacros.set(argName, () => createIdentifierNode(argName));
         return createLambdaArgNode(argName);
       });
 
@@ -230,7 +230,7 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
         }
 
         return createLetNode(
-          createReferenceNode(ident.name),
+          createIdentifierNode(ident.name),
           parseNode(value, macros),
           parseNode(block.body, macros)
         );

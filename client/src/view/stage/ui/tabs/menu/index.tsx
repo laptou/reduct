@@ -8,12 +8,13 @@ import { animated, useSpring, useTransition } from 'react-spring';
 
 import { LevelSelect, LevelInfo } from './level';
 import { Preferences } from './preferences';
+import { EndGameButton } from './end-game';
 
 export const GameMenuTab: React.FC = () => {
   const [isOpen, setOpen] = useState(false);
 
   const innerStyle = useSpring({
-    transform: isOpen ? 'translateY(20rem)' : 'translateY(0rem)',
+    transform: isOpen ? 'translateY(30rem)' : 'translateY(0rem)',
     config: {
       mass: 1,
       tension: 180,
@@ -46,7 +47,12 @@ export const GameMenuTab: React.FC = () => {
       }
       <animated.div id='reduct-game-menu-inner' style={innerStyle}>
         <div id='reduct-game-menu-scroller'>
+          <EndGameButton />
+          <hr />
+
           <Preferences />
+          <hr />
+
           <LevelSelect />
         </div>
         <div id='reduct-game-menu-tab'>
