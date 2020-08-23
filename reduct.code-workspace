@@ -13,5 +13,7 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"typescript.tsdk": "reduct-redux/node_modules/typescript/lib"
+	}
 }
