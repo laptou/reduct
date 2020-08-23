@@ -44,22 +44,38 @@ const LevelSelectImpl: React.FC<LevelSelectProps> = (props) => {
     [levelStats]
   );
 
-  // calculate index for each level
+  // calculate index for each level and calculate whether half of the levels in
+  // a chapter have been completed
+  let isLastChapterCompleted = true;
   let index = 0;
-  const indexedChapters = progression!.chapters.map(chapter => {
-    const indexedChapter = {
-      levels: chapter.levels.map(() => {
-        const levelIndex = index;
-        index++;
 
-        return {
-          index: levelIndex,
-          complete: completedLevels.has(levelIndex),
-        };
-      }),
+  const indexedChapters = progression!.chapters.map(chapter => {
+    let numLevelsComplete = 0;
+
+    const levels = chapter.levels.map(() => {
+      const complete = completedLevels.has(index);
+      if (complete) {
+        numLevelsComplete++;
+      }
+
+      const indexedLevel = {
+        index,
+        complete,
+      };
+
+      index++;
+
+      return indexedLevel;
+    });
+
+    const indexedChapter = {
+      levels,
       key: chapter.key,
       name: chapter.name,
+      enabled: isLastChapterCompleted,
     };
+
+    isLastChapterCompleted = numLevelsComplete >= levels.length / 2;
 
     return indexedChapter;
   });
@@ -70,7 +86,7 @@ const LevelSelectImpl: React.FC<LevelSelectProps> = (props) => {
       <div id='reduct-level-select'>
         {
           indexedChapters.map(({
-            levels, key, name,
+            levels, key, name, enabled,
           }) => (
             <div className='reduct-level-select-chapter' key={key}>
               <span className='reduct-level-select-chapter-name'>
@@ -88,6 +104,7 @@ const LevelSelectImpl: React.FC<LevelSelectProps> = (props) => {
                         ? 'btn btn-secondary'
                         : 'btn btn-secondary-inv'
                   }
+                  disabled={!enabled}
                 >
                   {index + 1}
                 </button>
