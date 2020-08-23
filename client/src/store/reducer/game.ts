@@ -1,7 +1,7 @@
 import { castDraft, produce } from 'immer';
 
 import {
-  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalIdentifier, createEvalLambda, createEvalLet, createEvalNot, createEvalOperator, createMoveNodeToBoard, createStep, ReductAction,
+  ActionKind, createDetach, createEvalApply, createEvalConditional, createEvalIdentifier, createEvalLambda, createEvalLet, createEvalNot, createEvalOperator, createMoveNodeToBoard, createStep, ReductAction, createReturn,
 } from '../action/game';
 import {
   CircularCallError, GameError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, InvalidActionError,
@@ -134,6 +134,13 @@ export function gameReducer(
     });
   }
 
+  case ActionKind.Call: {
+    const { targetNodeId, paramNodeId } = act;
+    state = gameReducer(state, createEvalLambda(targetNodeId, paramNodeId));
+    state = gameReducer(state, createReturn(targetNodeId));
+    return state;
+  }
+
   case ActionKind.EvalLambda: {
     let { lambdaNodeId, paramNodeId } = act;
 
@@ -202,7 +209,7 @@ export function gameReducer(
         if (targetNodeId !== argNodeId) continue;
 
         // keep track of which nodes are destroyed
-        state = gameReducer(state, createEvalIdentifier(referenceNode.id));
+        state = gameReducer(state, createStep(referenceNode.id));
       }
 
       // get param node and descendants
@@ -232,15 +239,9 @@ export function gameReducer(
         }
 
         if (argTupleMut.fields.size === 0) {
-          return {
-            ...state,
-            returned: lambdaNodeMut.subexpressions.body,
-          };
+          draft.returned = lambdaNodeMut.subexpressions.body;
         } else {
-          return {
-            ...state,
-            returned: lambdaNodeMut.id,
-          };
+          draft.returned = lambdaNodeMut.id;
         }
       });
     } else {
@@ -538,21 +539,11 @@ export function gameReducer(
     }
     }
 
-    state = {
+    return {
       ...state,
       nodes: newNodeMap,
+      returned: resultNode.id,
     };
-
-    return produce(state, draft => {
-      draft.nodes = castDraft(newNodeMap);
-      draft.board.delete(identNode.id);
-
-      draft.returned = resultNode.id;
-      draft.added.set(resultNode.id, identNode.id);
-
-      // schedule for cleanup
-      draft.removed.set(identNode.id, false);
-    });
   }
 
   case ActionKind.Cleanup: {
@@ -755,10 +746,23 @@ export function gameReducer(
       throw new Error(`Cannot step a ${targetNode.type}`);
     }
 
+    return gameReducer(state, createReturn(targetNodeId));
+  }
+
+  case ActionKind.Return: {
+    const { targetNodeId } = act;
+
     if (state.returned === null || state.returned === targetNodeId)
       return state;
 
+    const targetNode = state.nodes.get(targetNodeId)!;
+
     return produce(state, draft => {
+      draft.added.clear();
+      draft.removed.set(targetNodeId, false);
+      draft.board.delete(targetNodeId);
+      draft.toolbox.delete(targetNodeId);
+
       const returnedNode = draft.nodes.get(draft.returned!)!;
 
       // replace the target node with the returned node
