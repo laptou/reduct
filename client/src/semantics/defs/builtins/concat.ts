@@ -7,7 +7,7 @@ import { BuiltInIdentifierNode } from '.';
 import { WrongBuiltInParamsCountError, WrongTypeError } from '@/store/errors';
 import { GameState } from '@/store/state';
 import { DeepReadonly, DRF } from '@/util/helper';
-import { cloneNodeDeep } from '@/util/nodes';
+import { cloneNodeAndAddDeep } from '@/util/nodes';
 
 export function builtinConcat(self: DRF<BuiltInIdentifierNode>,
   args: DRF[],
@@ -42,7 +42,7 @@ export function builtinConcat(self: DRF<BuiltInIdentifierNode>,
       child.parent = newArr.id;
       child.parentField = i.toString(10);
 
-      const [childClone, , newNodeMap] = cloneNodeDeep(childId, draft.nodes);
+      const [childClone, , newNodeMap] = cloneNodeAndAddDeep(childId, draft.nodes);
 
       draft.nodes = castDraft(newNodeMap);
       newArr.subexpressions[i] = childClone.id;
@@ -57,7 +57,7 @@ export function builtinConcat(self: DRF<BuiltInIdentifierNode>,
       child.parent = newArr.id;
       child.parentField = i.toString(10);
 
-      const [childClone, , newNodeMap] = cloneNodeDeep(childId, draft.nodes);
+      const [childClone, , newNodeMap] = cloneNodeAndAddDeep(childId, draft.nodes);
 
       draft.nodes = castDraft(newNodeMap);
       newArr.subexpressions[i] = childClone.id;

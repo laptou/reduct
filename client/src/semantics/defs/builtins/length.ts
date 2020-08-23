@@ -1,7 +1,8 @@
 import { createNumberNode } from '../../util';
 
-import { BuiltInIdentifierNode } from '.';
 import { addClonedNodes } from './util';
+
+import { BuiltInIdentifierNode } from '.';
 
 import { WrongBuiltInParamsCountError, WrongTypeError } from '@/store/errors';
 import { GameState } from '@/store/state';

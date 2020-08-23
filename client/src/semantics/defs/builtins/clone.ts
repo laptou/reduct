@@ -3,7 +3,7 @@ import { addClonedNodes } from './util';
 import { BuiltinFn } from '.';
 
 import { WrongBuiltInParamsCountError } from '@/store/errors';
-import { cloneNodeDeep } from '@/util/nodes';
+import { cloneNodeAndAddDeep } from '@/util/nodes';
 
 export const builtinClone: BuiltinFn =
   (self, args, state) => {
@@ -17,6 +17,6 @@ export const builtinClone: BuiltinFn =
         ? nodeToCopy.fields.target
         : nodeToCopy.id;
 
-    const result = cloneNodeDeep(targetId, state.nodes);
+    const result = cloneNodeAndAddDeep(targetId, state.nodes);
     return addClonedNodes(self, result, state);
   };

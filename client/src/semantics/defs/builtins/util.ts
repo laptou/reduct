@@ -2,7 +2,7 @@ import { GameState } from '@/store/state';
 import {
   DeepReadonly, DRF, withChild, withParent,
 } from '@/util/helper';
-import { CloneResult } from '@/util/nodes';
+import { CloneAndAddResult } from '@/util/nodes';
 
 /**
  * Helper function that will construct a new game state with cloned nodes added.
@@ -16,7 +16,7 @@ import { CloneResult } from '@/util/nodes';
 
 export function addClonedNodes(
   self: DRF,
-  [clonedRoot, , newNodeMap]: CloneResult,
+  [clonedRoot, , newNodeMap]: CloneAndAddResult,
   state: DeepReadonly<GameState>
 ): DeepReadonly<GameState> {
   const added = new Map();

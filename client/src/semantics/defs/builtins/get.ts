@@ -1,10 +1,11 @@
-import { BuiltInIdentifierNode } from '.';
 import { addClonedNodes } from './util';
+
+import { BuiltInIdentifierNode } from '.';
 
 import { BuiltInError, WrongBuiltInParamsCountError, WrongTypeError } from '@/store/errors';
 import { GameState } from '@/store/state';
 import { DeepReadonly, DRF } from '@/util/helper';
-import { cloneNodeDeep } from '@/util/nodes';
+import { cloneNodeAndAddDeep } from '@/util/nodes';
 
 export function builtinGet(self: DRF<BuiltInIdentifierNode>,
   args: DRF[],
@@ -27,6 +28,6 @@ export function builtinGet(self: DRF<BuiltInIdentifierNode>,
   if (index >= length)
     throw new BuiltInError(indexNode.id, `You tried to get item ${index} of an array with only ${length} items`);
 
-  const result = cloneNodeDeep(arrayNode.subexpressions[index], state.nodes);
+  const result = cloneNodeAndAddDeep(arrayNode.subexpressions[index], state.nodes);
   return addClonedNodes(self, result, state);
 }
