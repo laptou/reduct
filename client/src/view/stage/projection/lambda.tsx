@@ -121,18 +121,18 @@ export const LambdaProjectionImpl: FunctionComponent<LambdaProjectionProps> =
 
     return (
       <div className={cx('projection lambda', { hover })}>
+        <span className='lambda-arrow'>
+          =&gt;
+        </span>
         <div
-          className='arg'
+          className='lambda-arg'
           onDragOver={e => onDragOver(e, props, setHover)}
           onDragLeave={e => onDragLeave(e, props, setHover)}
           onDrop={e => onDrop(e, props, setHover)}
         >
           <StageProjection nodeId={props.node.subexpressions.arg} />
         </div>
-        <span className='arrow'>
-          =&gt;
-        </span>
-        <div className='body'>
+        <div className='lambda-body'>
           <StageProjection nodeId={props.node.subexpressions.body} />
         </div>
       </div>

@@ -14,16 +14,26 @@
   background-color: white;
   color: theme.$projection-foreground-inverse;
 
-  & > .arg, & > .arrow, & > .body {
+  .lambda-arg, .lambda-arrow, .lambda-body {
     @extend %value-container;
   }
 
   // make the arg bigger so it's easier to drop things on it
-  & > .arg {
+  .lambda-arg {
+    order: 0;
+
     margin: -2rem;
     padding: 2rem;
 
     background-color: transparent;
+  }
+
+  .lambda-arrow {
+    order: 1;
+  }
+
+  .lambda-body {
+    order: 2;
   }
 
   &.hover {

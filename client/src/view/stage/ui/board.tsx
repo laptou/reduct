@@ -205,7 +205,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
           x, y, width, height,
         } = boardItemDiv.getBoundingClientRect();
 
-        if (sourcePositionInfo) {
+        if (sourcePositionInfo && !positionInfo?.isUserPositioned) {
           // this node was the result of stepping another node, place it on top
           // of the node that created it
           const newNodePosition = {

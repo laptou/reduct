@@ -860,10 +860,15 @@ export function gameReducer(
 
   case ActionKind.Raise: {
     const root = getRootForNode(act.nodeId, state.nodes);
+
     if (state.board.has(root.id)) {
       return produce(state, draft => {
         draft.board.delete(root.id);
         draft.board.add(root.id);
+
+        // clear added dictionary so that
+        // board does not reset
+        draft.added.clear();
       });
     }
 
