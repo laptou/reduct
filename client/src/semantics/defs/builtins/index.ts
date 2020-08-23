@@ -9,6 +9,7 @@ import { builtinSlice } from './slice';
 import { builtinLength } from './length';
 import { builtinClone } from './clone';
 import { builtinSet } from './set';
+import { builtinEat } from './eat';
 
 import {
   DeepReadonly, DRF,
@@ -22,6 +23,7 @@ export type BuiltinFn = (
 ) => DeepReadonly<GameState>;
 
 export const builtins: Record<string, BuiltinFn> = {
+  eat: builtinEat,
   length: builtinLength,
   get: builtinGet,
   set: builtinSet,

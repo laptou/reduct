@@ -1,4 +1,4 @@
-import type { PTupleNode, VTupleNode } from './defs';
+import type { PTupleNode, VTupleNode, VoidNode } from './defs';
 import type { ApplyNode } from './defs/apply';
 import type { ArrayNode } from './defs/array';
 import type { BinOpNode, OpNode } from './defs/binop';
@@ -14,6 +14,7 @@ import type {
   BoolNode, NumberNode, ReductSymbol, StrNode, SymbolNode,
 } from './defs/value';
 import { NoteNode } from './defs/note';
+import { ReferenceNode } from './defs/reference';
 
 import type {
   Flat, NodeId, NodeMap, ReductNode,
@@ -22,7 +23,6 @@ import type {
 import { nextId, isAncestorOf } from '@/util/nodes';
 import type { DeepReadonly, DRF } from '@/util/helper';
 import type { GameState } from '@/store/state';
-import { ReferenceNode } from './defs/reference';
 
 /**
  * Creates a partial node. Helper for "create node" functions to avoid
@@ -295,6 +295,14 @@ export function createBuiltInIdentifierNode(name: string): BuiltInIdentifierNode
   };
 }
 
+export function createVoidNode(): VoidNode {
+  return {
+    ...createNodeBase(),
+    type: 'void',
+    fields: {},
+  };
+}
+
 export function * iterateTuple<N extends ReductNode>(
   tupleNode: NodeId | DRF<VTupleNode | PTupleNode>,
   nodes: DeepReadonly<NodeMap>
@@ -373,6 +381,7 @@ export function getKindForNode(node: DRF, nodes: DeepReadonly<NodeMap>): NodeKin
   case 'lambdaArg':
   case 'op':
   case 'note':
+  case 'void':
     return 'syntax';
 
   case 'missing':
