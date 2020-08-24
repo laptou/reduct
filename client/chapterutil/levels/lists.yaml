@@ -58,19 +58,20 @@ levels:
       - '[2,4,5,1]'
   - board:
       - >- 
-          function contains(list, target, index){ return  _ (index) ? false :
+          function contains(list, target, index){ return  _ ? false :
           ((_ == _) ? true : ( contains(list, index + 1, target))); }
       - >-
           __note('Contains should return true if `list` contains `target`, and
-          false otherwise ')
+          false otherwise')
     toolbox:
-      - contains
-      - contains
       - length
       - list
-      - get(list, index)
+      - index
+      - get(list, _)
       - target
-      - 'index => (index == (_) (_))'
+      - 'index == (_) (_)'
+      - contains(_, _, _)
+      - contains(_, _, _)
       - '[6,7,9,12]'
       - '[12,9,7,6]'
       - 0
@@ -79,9 +80,7 @@ levels:
       - 12
       - 0
     hint:
-      - >-
-        'contains takes three arguments, a list, a target, and a index.
-        What value should `index` have at the start?'
+      - What's a good starting value for `index`?
     note:
       - null
     goal:
