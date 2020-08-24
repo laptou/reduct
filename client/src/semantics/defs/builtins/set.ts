@@ -41,7 +41,7 @@ export const builtinSet: BuiltinFn =
       array.subexpressions[indexValue] = valueClone.id;
 
       draft.added.set(valueClone.id, nodeToReplace.id);
-      draft.returned = arrayRef.id;
+      draft.returned = [arrayRef.id];
 
       for (const newNode of [valueClone, ...valueCloneDescendants]) {
         draft.nodes.set(newNode.id, newNode);
