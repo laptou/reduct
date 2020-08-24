@@ -23,23 +23,21 @@ levels:
       - true
       - false
       - false
-    hint:
-      - Add these functions to the global scope, and then use their names to get references to them!
   - board:
       - 'function addOne(number) { return (number + 1); }'
-      - 'function addTwo(fun, number) { return ((fun) (number)) + 1; }'
-      - __note('After adding addOne and addTwo to the global scope, make sure to use addOne as an argument to addTwo!')
+      - 'function twice(fun, number) { return fun(fun(number))}'
     toolbox:
       - 5
       - 2
       - addOne
-      - addTwo
+      - twice
     defines: []
     goal:
       - 7
+    hint:
+      -  You can use functions (like addOne) as arguments to other functions.
   - board:
       - '__let(x, _, () => x + x)'
-      - __note('Check out the tutorial on the left for let expressions!')
     toolbox:
       - 1
       - 3
@@ -48,6 +46,7 @@ levels:
     goal:
       - 4
     hint:
+      - 'Check out the tutorial on the left for let expressions!'
   - board:
       - '__let(x, _, x => __let(y, _, y => x - y ))'
     toolbox:
@@ -83,15 +82,14 @@ levels:
     goal:
       - RECT
       - STAR
-    hint:
   - board:
-      - __let(myFun, _, () => __let(number, _, () => __let(number, _, () => myFun (number) )))
+      - __let(myFun, _, () => __let(number, _, () => myFun (number)))
       - 'number => (number == _)'
       - 'function myFun(number) {return (number == _ ? true : false)}'
-      - 'function swapper(boolean) {return (boolean == true ? false : true)}'
-      - swapper
-      - swapper
-      - swapper
+      - 'function invert(bool) {return (!bool)}'
+      - invert
+      - invert
+      - invert
     toolbox:
       - myFun
       - myFun
