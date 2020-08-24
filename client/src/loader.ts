@@ -1,4 +1,4 @@
-import { Howl } from 'howler';
+import { Howl, HowlOptions } from 'howler';
 
 export let progression: ChapterProgression | null = null;
 export const audios = new Map<string, Howl>();
@@ -10,12 +10,16 @@ interface AudioManifest {
   sprite: Record<string, [number, number]>;
 }
 
-export async function loadAudio(key: string): Promise<void> {
+export async function loadAudio(
+  key: string,
+  options: Partial<Omit<HowlOptions, 'src' | 'onload' | 'onloaderror'>> = {}
+): Promise<void> {
   const { default: audioFileUri } = await import(`@resources/audio/${key}.mp3`);
 
   return new Promise((resolve, reject) => {
     const audio = new Howl({
       src: audioFileUri,
+      ...options,
       onload: () => {
         audios.set(key, audio);
         resolve();

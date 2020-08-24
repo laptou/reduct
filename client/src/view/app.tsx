@@ -16,10 +16,10 @@ const Game = React.lazy(async () => {
       .then((loader) => Promise.all([
         loader.loadAudio('level-complete'),
         loader.loadAudio('level-incomplete'),
-        loader.loadAudio('drip'),
+        loader.loadAudio('drip', { volume: 0.25 }),
         loader.loadAudio('pop'),
-        loader.loadAudio('attach'),
-        loader.loadAudio('detach'),
+        loader.loadAudio('attach', { volume: 0.1 }),
+        loader.loadAudio('detach', { volume: 0.1 }),
         loader.loadChapters(),
       ])),
   ]);
