@@ -14,10 +14,10 @@ levels:
       - 'function star() { return STAR; }'
       - 'function rect() { return RECT; }'
     toolbox:
-      - __unlimited;isStar
-      - __unlimited;isRect
-      - __unlimited;rect
-      - __unlimited;star
+      - __unlimited;isStar(_)
+      - __unlimited;isRect(_)
+      - __unlimited;rect(_)
+      - __unlimited;star(_)
     defines: []
     goal:
       - true
@@ -30,7 +30,7 @@ levels:
       - 5
       - 2
       - addOne
-      - twice
+      - twice(_, _)
     defines: []
     goal:
       - 7
@@ -86,22 +86,23 @@ levels:
       - __let(myFun, _, () => __let(number, _, () => myFun (number)))
       - 'number => (number == _)'
       - 'function myFun(number) {return (number == _ ? true : false)}'
-      - 'function invert(bool) {return (!bool)}'
-      - invert
-      - invert
-      - invert
+      - invert(_)
+      - invert(_)
+      - invert(_)
     toolbox:
-      - myFun
-      - myFun
+      - myFun(_)
+      - myFun(_)
       - 0
       - 5
       - 0
       - 5
       - 0
       - 1
-    defines: []
+    globals:
+      add:
+        invert: 'function invert(bool) {return (!bool)}'
     goal:
       - false
       - true
       - true
-    hint:
+    hint: You have to use all of those invert() blocks.
