@@ -130,18 +130,8 @@ function onDragStart(
   // stop parent projections from hijacking the drag
   event.stopPropagation();
 
-  playSound('detach');
-}
-
-function onDragEnd(
-  event: React.DragEvent<HTMLDivElement>
-) {
-  if (event.dataTransfer.dropEffect === 'move') {
-    playSound('attach');
-  } else {
-    // I want to use the MacOS 'Funk' error sound here, but that sounds like a
-    // bad idea
-  }
+  if (props.node?.parent)
+    playSound('detach');
 }
 
 function onClick(
