@@ -62,7 +62,7 @@ export function gameEvalReducer(
     return produce(state, draft => {
       draft.removed.set(identNode.id, false);
 
-      draft.returned = bodyNode.id;
+      draft.returned = [bodyNode.id];
     });
   }
 
@@ -97,7 +97,7 @@ export function gameEvalReducer(
       if (paramNode.type === 'identifier') {
         state = gameEvalReducer(state, createMoveNodeToBoard(paramNodeId));
         state = gameEvalReducer(state, createEvalIdentifier(paramNodeId));
-        paramNodeId = state.returned!;
+        paramNodeId = state.returned[0];
       }
 
       const argNode = state.nodes.get(argNodeId) as DRF<LambdaArgNode>;
@@ -164,9 +164,9 @@ export function gameEvalReducer(
         }
 
         if (argTupleMut.fields.size === 0) {
-          draft.returned = lambdaNodeMut.subexpressions.body;
+          draft.returned = [lambdaNodeMut.subexpressions.body];
         } else {
-          draft.returned = lambdaNodeMut.id;
+          draft.returned = [lambdaNodeMut.id];
         }
       });
     } else {
@@ -283,7 +283,7 @@ export function gameEvalReducer(
     return produce(state, draft => {
       draft.added.set(resultNode.id, binOpNode.id);
 
-      draft.returned = resultNode.id;
+      draft.returned = [resultNode.id];
       draft.nodes.set(resultNode.id, resultNode as DRF);
 
       // schedule for cleanup
@@ -322,7 +322,7 @@ export function gameEvalReducer(
 
       draft.added.set(resultNode.id, blockNode.id);
 
-      draft.returned = resultNode.id;
+      draft.returned = [resultNode.id];
       draft.nodes.set(resultNode.id, castDraft(resultNode));
 
       // schedule for cleanup
@@ -348,7 +348,7 @@ export function gameEvalReducer(
 
     return produce(state, draft => {
       draft.added.set(resultNode.id, notNode.id);
-      draft.returned = resultNode.id;
+      draft.returned = [resultNode.id];
 
       draft.nodes.set(resultNode.id, resultNode as DRF);
     });
@@ -393,7 +393,7 @@ export function gameEvalReducer(
       throw new WrongTypeError(calleeNode.id, ['lambda', 'builtin'], calleeNode.type);
     }
 
-    const resultNodeId = state.returned;
+    const resultNodeId = state.returned[0];
 
     return produce(state, draft => {
       draft.board.delete(applyNode.id);
@@ -406,7 +406,7 @@ export function gameEvalReducer(
         }
       }
 
-      draft.returned = resultNodeId;
+      draft.returned = [resultNodeId];
 
       // schedule for cleanup
       draft.removed.set(applyNode.id, false);
@@ -454,7 +454,7 @@ export function gameEvalReducer(
     return {
       ...state,
       nodes: newNodeMap,
-      returned: resultNode.id,
+      returned: [resultNode.id],
     };
   }
 
@@ -532,50 +532,64 @@ export function gameEvalReducer(
   case ActionKind.Return: {
     const { targetNodeId } = act;
 
-    if (state.returned === null || state.returned === targetNodeId)
+    if (
+      state.returned.length === 0
+      || (state.returned.length === 1 && state.returned[0] === targetNodeId))
       return state;
 
     const targetNode = state.nodes.get(targetNodeId)!;
 
-    return produce(state, draft => {
+    // set if executing a return on the target node causes more nodes to be
+    // returned
+    const cascade = new Map();
+
+    state = produce(state, draft => {
       draft.added.clear();
       draft.removed.set(targetNodeId, false);
       draft.board.delete(targetNodeId);
       draft.toolbox.delete(targetNodeId);
 
-      const returnedNode = draft.nodes.get(draft.returned!)!;
+      for (const returnedNodeId of draft.returned) {
+        const returnedNode = draft.nodes.get(returnedNodeId)!;
 
-      // replace the target node with the returned node
-      if (targetNode.parent) {
-        const parent = draft.nodes.get(targetNode.parent)!;
-        const parentField = targetNode.parentField!;
+        // replace the target node with the returned node
+        if (targetNode.parent) {
+          const parent = draft.nodes.get(targetNode.parent)!;
+          const parentField = targetNode.parentField!;
 
-        returnedNode.parent = parent.id;
-        returnedNode.parentField = parentField;
-        parent.subexpressions[parentField] = returnedNode.id;
-      } else {
-        // if there is no parent, then this node goes on the board
-        returnedNode.parent = null;
-        returnedNode.parentField = null;
-
-        if (returnedNode.type === 'void') {
-          // void nodes should not be added to anything
-          // they should just disappear
-          draft.removed.set(returnedNode.id, false);
-        } else if (returnedNode.type === 'vtuple') {
-          for (const subExprId of Object.values(returnedNode.subexpressions)) {
-            const subExpr = draft.nodes.get(subExprId)!;
-            subExpr.parent = null;
-            subExpr.parentField = null;
-            draft.board.add(subExprId);
-            draft.added.set(subExprId, targetNode.id);
-          }
+          returnedNode.parent = parent.id;
+          returnedNode.parentField = parentField;
+          parent.subexpressions[parentField] = returnedNode.id;
         } else {
-          draft.board.add(returnedNode.id);
-          draft.added.set(returnedNode.id, targetNode.id);
+          // if there is no parent, then this node goes on the board
+          returnedNode.parent = null;
+          returnedNode.parentField = null;
+
+          if (returnedNode.type === 'void') {
+            // void nodes should not be added to anything
+            // they should just disappear
+            draft.removed.set(returnedNode.id, false);
+          } else if (returnedNode.type === 'vtuple') {
+            cascade.set(returnedNode.id, [...Object.values(returnedNode.subexpressions)]);
+          } else {
+            draft.board.add(returnedNode.id);
+            draft.added.set(returnedNode.id, targetNode.id);
+          }
         }
       }
     });
+
+    for (const [targetId, newReturnNodeIds] of cascade) {
+      state = gameEvalReducer(
+        {
+          ...state,
+          returned: newReturnNodeIds,
+        },
+        createReturn(targetId)
+      );
+    }
+
+    return state;
   }
 
   case ActionKind.Execute: {
