@@ -3,6 +3,7 @@
 
 .projection.note {
   @extend %projection-standalone;
+  width: 25rem;
   max-width: 30rem;
   padding: 1rem;
   border: 1px dashed rgba(black, 0.5);

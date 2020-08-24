@@ -37,6 +37,8 @@ interface BoardDispatchProps {
 
 type BoardProps = BoardStoreProps & BoardDispatchProps;
 
+type Bounds = { left: number; top: number; right: number; bottom: number; };
+
 interface NodePos {
   /**
    * The ID of the node whose position is represented.
@@ -72,7 +74,8 @@ function onDragOver(event: React.DragEvent<HTMLDivElement>) {
 function onDrop(
   event: React.DragEvent<HTMLDivElement>,
   props: BoardProps,
-  board: RefObject<HTMLDivElement>,
+  boardBounds: Bounds,
+  boardOffset: { x: number; y: number; },
   setPositions: (cb: (positions: Map<NodeId, NodePos>) => Map<NodeId, NodePos>) => void
 ) {
   const nodeId = parseInt(event.dataTransfer.getData('application/reduct-node'));
@@ -92,21 +95,18 @@ function onDrop(
 
   // get drag offset data
   const serializedOffset = event.dataTransfer.getData('application/reduct-node-offset');
-  const offset = serializedOffset ? JSON.parse(serializedOffset) : {
-    x: 0,
-    y: 0,
-  };
+  const nodeOffset = serializedOffset
+    ? JSON.parse(serializedOffset)
+    : {
+      x: 0,
+      y: 0,
+    };
 
-  const boardEl = board.current!;
-  const {
-    top: boardTop, left: boardLeft, height: boardHeight, width: boardWidth,
-  } = boardEl.getBoundingClientRect();
+  const boardCenterX = (boardBounds.left + boardBounds.right) / 2;
+  const boardCenterY = (boardBounds.top + boardBounds.bottom) / 2;
 
-  const boardCenterX = boardLeft + boardWidth / 2;
-  const boardCenterY = boardTop + boardHeight / 2;
-
-  const x = Math.max(-boardWidth / 2, Math.min(boardWidth / 2, event.clientX - boardCenterX - offset.x));
-  const y = Math.max(-boardHeight / 2, Math.min(boardHeight / 2, event.clientY - boardCenterY - offset.y));
+  let x = event.clientX - boardCenterX - nodeOffset.x + boardOffset.x;
+  let y = event.clientY - boardCenterY - nodeOffset.y + boardOffset.y;
 
   setPositions((positions) => {
     const newPositions = new Map(positions);
@@ -124,10 +124,57 @@ function onDrop(
   });
 }
 
+function onScroll(
+  event: React.WheelEvent<HTMLDivElement>,
+  contentBounds: Bounds,
+  boardBounds: Bounds,
+  setOffset: (setter: (offset: { x: number; y: number; }) => { x: number; y: number; }) => void
+) {
+  let deltaX: number, deltaY: number;
+
+  if (event.shiftKey) {
+    deltaX = event.deltaY;
+    deltaY = event.deltaX;
+  } else {
+    deltaX = event.deltaX;
+    deltaY = event.deltaY;
+  }
+
+  if (event.altKey) {
+    deltaX /= 3;
+    deltaY /= 3;
+  }
+
+  event.stopPropagation();
+
+  setOffset(offset => {
+    // calculate by how much the content of the board extends off the board
+    const boardHeight = boardBounds.bottom - boardBounds.top;
+    const boardWidth = boardBounds.right - boardBounds.left;
+
+    const leftExtent = Math.min(0, boardWidth / 2 - contentBounds.left);
+    const rightExtent = Math.max(0, contentBounds.right - boardWidth / 2);
+    const topExtent = Math.min(0, boardHeight / 2 - contentBounds.top);
+    const bottomExtent = Math.max(0, contentBounds.bottom - boardHeight / 2);
+
+    return {
+      x: Math.max(leftExtent - 50, Math.min(rightExtent + 50, offset.x + deltaX)),
+      y: Math.max(topExtent - 50, Math.min(bottomExtent + 50, offset.y + deltaY)),
+    };
+  });
+}
+
 const BoardImpl: FunctionComponent<BoardProps> =
   (props) => {
     const boardRef = useRef<HTMLDivElement>(null);
-    const [positions, setPositions] = useState(new Map<NodeId, NodePos>());
+
+    const [positions, setPositions] = useState(
+      new Map<NodeId, NodePos>()
+    );
+    const [boardOffset, setOffset] = useState({
+      x: 0,
+      y: 0,
+    });
 
     const {
       board, added, level, clearError,
@@ -160,6 +207,22 @@ const BoardImpl: FunctionComponent<BoardProps> =
       [board]
     );
 
+    // calculate the bounds of the items of the board
+    const contentBounds = useRef<Bounds>({
+      left: 0,
+      top: 0,
+      right: 0,
+      bottom: 0,
+    });
+
+    // calculate the bounds of the board
+    const boardBounds = useRef<Bounds>({
+      left: 0,
+      top: 0,
+      right: 0,
+      bottom: 0,
+    });
+
     // when level changes, remove node positions from previous level
     useEffect(() => {
       setPositions(positions =>
@@ -169,6 +232,54 @@ const BoardImpl: FunctionComponent<BoardProps> =
       );
     }, [level]);
 
+    // when positions are updated, calculate the outer bounds of all of the items
+    // this is used for scrolling
+    useEffect(() => {
+      if (!boardRef.current) return;
+
+      const boardBounds = boardRef.current.getBoundingClientRect();
+      const boardCenterX = boardBounds.left + boardBounds.width / 2;
+      const boardCenterY = boardBounds.top + boardBounds.height / 2;
+
+      let newContentBounds = null;
+
+      for (const boardItemRef of boardItemRefs.values()) {
+        if (!boardItemRef.current) continue;
+        const itemBounds = boardItemRef.current.getBoundingClientRect();
+
+        if (newContentBounds) {
+          newContentBounds = {
+            left: Math.min(newContentBounds.left, itemBounds.left),
+            top: Math.min(newContentBounds.top, itemBounds.top),
+            right: Math.max(newContentBounds.right, itemBounds.right),
+            bottom: Math.max(newContentBounds.bottom, itemBounds.bottom),
+          };
+        } else {
+          newContentBounds = itemBounds;
+        }
+      }
+
+      if (!newContentBounds) return;
+
+      contentBounds.current = {
+        left: newContentBounds.left - boardCenterX - boardOffset.x,
+        top: newContentBounds.top - boardCenterY - boardOffset.y,
+        right: newContentBounds.right - boardCenterX - boardOffset.x,
+        bottom: newContentBounds.bottom - boardCenterY - boardOffset.y,
+      };
+
+    // we do not want this calculation to re-run when offset changes
+    // b/c the whole point of including the offset is to make the result
+    // independent of the offset
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [boardItemRefs, positions]);
+
+    // update the size of the board
+    useLayoutEffect(() => {
+      if (!boardRef.current) return;
+      boardBounds.current = boardRef.current.getBoundingClientRect();
+    }, []);
+
     // use useLayoutEffect instead of useEffect b/c this needs to execute after
     // React has created elements but before the browser can paint (to avoid
     // elements "jumping" around)
@@ -176,12 +287,6 @@ const BoardImpl: FunctionComponent<BoardProps> =
       const updatedPositions = new Map<NodeId, NodePos>();
 
       const padding = 10;
-      const boardDiv = boardRef.current!;
-      const boardBounds = boardDiv.getBoundingClientRect();
-      const boardScroll = {
-        x: boardDiv.scrollLeft,
-        y: boardDiv.scrollTop,
-      };
 
       // placement algorithm doesn't like negative coordinates so we need to
       // temporarily offset everything into positive coordinates
@@ -210,8 +315,8 @@ const BoardImpl: FunctionComponent<BoardProps> =
           // of the node that created it
           const newNodePosition = {
             nodeId,
-            x: sourcePositionInfo.x + Math.random() * 40 - 20,
-            y: sourcePositionInfo.y + Math.random() * 40 - 20,
+            x: sourcePositionInfo.x + (Math.random() - 0.5) * width,
+            y: sourcePositionInfo.y + (Math.random() - 0.5) * width,
             isAutoPositioned: false,
             isUserPositioned: true,
             level,
@@ -221,22 +326,19 @@ const BoardImpl: FunctionComponent<BoardProps> =
 
           const fixedRect = {
             id: nodeId,
-            x: newNodePosition.x + boardScroll.x - padding,
-            y: newNodePosition.y + boardScroll.y - padding,
+            x: newNodePosition.x - padding,
+            y: newNodePosition.y - padding,
             w: width + padding * 2,
             h: height + padding * 2,
           };
 
           fixedNodeBounds.push(fixedRect);
-
-          topLeft.x = Math.min(topLeft.x, fixedRect.x);
-          topLeft.y = Math.min(topLeft.y, fixedRect.y);
         } else if (positionInfo?.isUserPositioned || positionInfo?.isAutoPositioned) {
           // this node already has a position, do not move it
           const fixedRect = {
             id: nodeId,
-            x: x +   boardScroll.x - padding,
-            y: y + boardScroll.y - padding,
+            x: x - padding,
+            y: y - padding,
             w: width + padding * 2,
             h: height + padding * 2,
           };
@@ -257,8 +359,8 @@ const BoardImpl: FunctionComponent<BoardProps> =
 
       const results = placeRects(
         {
-          w: boardBounds.width * 2,
-          h: boardBounds.height * 2,
+          w: 2000,
+          h: 2000,
         },
         movableNodeBounds,
         fixedNodeBounds.map(fixedRect => {
@@ -270,13 +372,13 @@ const BoardImpl: FunctionComponent<BoardProps> =
 
       for (const placed of results) {
         const {
-          id, x, y, w, h,
+          id, x, y,
         } = placed;
 
         updatedPositions.set(id, {
           nodeId: id,
-          x: x - boardBounds.width + w / 2 + padding + topLeft.x,
-          y: y - boardBounds.height + h / 2 + padding + topLeft.y,
+          x: x - 1000 + padding + topLeft.x,
+          y: y - 1000 + padding + topLeft.y,
           isAutoPositioned: true,
           isUserPositioned: false,
           level,
@@ -290,43 +392,48 @@ const BoardImpl: FunctionComponent<BoardProps> =
       <div
         id='reduct-board'
         onDragOver={onDragOver}
-        onDrop={e => onDrop(e, props, boardRef, setPositions)}
+        onDrop={e => onDrop(e, props, boardBounds.current, boardOffset, setPositions)}
         onClick={() => clearError()}
+        onWheel={e => onScroll(e, contentBounds.current, boardBounds.current, setOffset)}
         ref={boardRef}
       >
-        {
-          transitions.map(({ item: id, key, props }) => {
-            let style: React.CSSProperties;
-            const pos = positions.get(id);
+        <div
+          id='reduct-board-inner'
+          style={{
+            transform: `translate(${-boardOffset.x}px, ${-boardOffset.y}px)`,
+          }}
+        >
+          {
+            transitions.map(({ item: id, key, props }) => {
+              let style: React.CSSProperties;
+              const pos = positions.get(id);
 
-            if (pos) {
-              const translate = `translate(${pos.x}px, ${pos.y}px) translate(-50%, -50%)`;
-              style = {
-                ...props,
-                transform:
-                  props.transform
-                    ? props.transform as string + ' ' + translate
-                    : translate,
-              };
-            } else {
-              style = {
-                ...props,
-                visibility: 'hidden',
-              };
-            }
+              if (pos) {
+                style = {
+                  ...props,
+                  left: `calc(${pos.x}px)`,
+                  top: `calc(${pos.y}px)`,
+                };
+              } else {
+                style = {
+                  ...props,
+                  visibility: 'hidden',
+                };
+              }
 
-            return (
-              <animated.div
-                className='projection-board-wrapper'
-                style={style}
-                key={key}
-                ref={boardItemRefs.get(id)}
-              >
-                <StageProjection nodeId={id} />
-              </animated.div>
-            );
-          })
-        }
+              return (
+                <animated.div
+                  className='projection-board-container'
+                  style={style}
+                  key={key}
+                  ref={boardItemRefs.get(id)}
+                >
+                  <StageProjection nodeId={id} />
+                </animated.div>
+              );
+            })
+          }
+        </div>
       </div>
     );
   };
