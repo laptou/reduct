@@ -5,7 +5,7 @@ import type * as estree from 'estree';
 import { ReductNode } from '@/semantics';
 import { LambdaNode } from '@/semantics/defs';
 import {
-  createApplyNode, createArrayNode, createBinOpNode, createBoolNode, createConditionalNode, createDefineNode, createLambdaArgNode, createLambdaNode, createMemberNode, createMissingNode, createNotNode, createNumberNode, createOpNode, createIdentifierNode, createStrNode, createSymbolNode, createVtupleNode, createPtupleNode, createLetNode, createNoteNode, createReferenceNode, createVoidNode,
+  createApplyNode, createArrayNode, createBinOpNode, createBoolNode, createConditionalNode, createDefineNode, createLambdaArgNode, createLambdaNode, createMemberNode, createMissingNode, createNotNode, createNumberNode, createOpNode, createIdentifierNode, createStrNode, createSymbolNode, createVtupleNode, createPtupleNode, createLetNode, createNoteNode, createReferenceNode,
 } from '@/semantics/util';
 
 function modifier(ast: esprima.Program) {
@@ -236,6 +236,20 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
           return parseNode(arg, macros);
         });
         return createVtupleNode(...children);
+      }
+
+      if (node.callee.name === '__reference') {
+        if (node.arguments.length !== 1)
+          throw new Error('__reference needs 1 argument');
+
+        const target = node.arguments[0];
+        if (target.type === 'SpreadElement')
+          throw new Error('Varargs are not supported');
+
+        const targetNode = parseNode(target, macros);
+        const referenceNode = createReferenceNode(targetNode.id);
+        referenceNode.subexpressions._ = targetNode;
+        return referenceNode;
       }
 
       if (node.callee.name === '__tests') {
