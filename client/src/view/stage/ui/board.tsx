@@ -15,6 +15,7 @@ import { placeRects } from '@/view/layout/grid';
 
 import '@resources/style/react/ui/board.scss';
 
+
 interface BoardStoreProps {
   level: number;
   board: DeepReadonly<Set<NodeId>>;
@@ -85,12 +86,7 @@ function onDrop(
   event.stopPropagation();
 
   if (!props.board.has(nodeId)) {
-    try {
-      props.moveNodeToBoard(nodeId);
-    } catch (e) {
-    // TODO: show toast to user
-      console.warn('could not add node to board', e);
-    }
+    props.moveNodeToBoard(nodeId);
   }
 
   // get drag offset data
@@ -105,8 +101,8 @@ function onDrop(
   const boardCenterX = (boardBounds.left + boardBounds.right) / 2;
   const boardCenterY = (boardBounds.top + boardBounds.bottom) / 2;
 
-  let x = event.clientX - boardCenterX - nodeOffset.x + boardOffset.x;
-  let y = event.clientY - boardCenterY - nodeOffset.y + boardOffset.y;
+  const x = event.clientX - boardCenterX - nodeOffset.x + boardOffset.x;
+  const y = event.clientY - boardCenterY - nodeOffset.y + boardOffset.y;
 
   setPositions((positions) => {
     const newPositions = new Map(positions);
@@ -126,8 +122,7 @@ function onDrop(
 
 function onScroll(
   event: React.WheelEvent<HTMLDivElement>,
-  contentBounds: Bounds,
-  boardBounds: Bounds,
+  boardOverflow: Bounds,
   setOffset: (setter: (offset: { x: number; y: number; }) => { x: number; y: number; }) => void
 ) {
   let deltaX: number, deltaY: number;
@@ -147,19 +142,30 @@ function onScroll(
 
   event.stopPropagation();
 
-  setOffset(offset => {
-    // calculate by how much the content of the board extends off the board
-    const boardHeight = boardBounds.bottom - boardBounds.top;
-    const boardWidth = boardBounds.right - boardBounds.left;
+  scrollBoard(deltaX, deltaY, boardOverflow, setOffset);
+}
 
-    const leftExtent = Math.min(0, boardWidth / 2 - contentBounds.left);
-    const rightExtent = Math.max(0, contentBounds.right - boardWidth / 2);
-    const topExtent = Math.min(0, boardHeight / 2 - contentBounds.top);
-    const bottomExtent = Math.max(0, contentBounds.bottom - boardHeight / 2);
+function scrollBoard(
+  deltaX: number,
+  deltaY: number,
+  boardOverflow: Bounds,
+  setOffset: (setter: (offset: { x: number; y: number; }) => { x: number; y: number; }) => void
+) {
+  setOffset(offset => {
+    let {
+      left, top, right, bottom,
+    } = boardOverflow;
+
+    // give 50px margin on each side, and don't cause a jump if the user was
+    // already scrolled far out
+    left = Math.min(left - 50, offset.x);
+    top = Math.min(top - 50, offset.y);
+    right = Math.max(right + 50, offset.x);
+    bottom = Math.max(bottom + 50, offset.y);
 
     return {
-      x: Math.max(leftExtent - 50, Math.min(rightExtent + 50, offset.x + deltaX)),
-      y: Math.max(topExtent - 50, Math.min(bottomExtent + 50, offset.y + deltaY)),
+      x: Math.max(left, Math.min(right, offset.x + deltaX)),
+      y: Math.max(top, Math.min(bottom, offset.y + deltaY)),
     };
   });
 }
@@ -171,9 +177,19 @@ const BoardImpl: FunctionComponent<BoardProps> =
     const [positions, setPositions] = useState(
       new Map<NodeId, NodePos>()
     );
-    const [boardOffset, setOffset] = useState({
+
+    // amount by which the board has been scrolled
+    const [boardOffset, setBoardOffset] = useState({
       x: 0,
       y: 0,
+    });
+
+    // amount by which the content overflows the board (independent of offset)
+    const [boardOverflow, setBoardOverflow] = useState({
+      left: 0,
+      top: 0,
+      right: 0,
+      bottom: 0,
     });
 
     const {
@@ -207,15 +223,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
       [board]
     );
 
-    // calculate the bounds of the items of the board
-    const contentBounds = useRef<Bounds>({
-      left: 0,
-      top: 0,
-      right: 0,
-      bottom: 0,
-    });
-
-    // calculate the bounds of the board
+    // measure the bounds of the board
     const boardBounds = useRef<Bounds>({
       left: 0,
       top: 0,
@@ -230,6 +238,11 @@ const BoardImpl: FunctionComponent<BoardProps> =
           [...positions].filter(([_id, pos]) => pos.level === level)
         )
       );
+
+      setBoardOffset({
+        x: 0,
+        y: 0,
+      });
     }, [level]);
 
     // when positions are updated, calculate the outer bounds of all of the items
@@ -238,35 +251,47 @@ const BoardImpl: FunctionComponent<BoardProps> =
       if (!boardRef.current) return;
 
       const boardBounds = boardRef.current.getBoundingClientRect();
-      const boardCenterX = boardBounds.left + boardBounds.width / 2;
-      const boardCenterY = boardBounds.top + boardBounds.height / 2;
+      const boardCenterX = boardBounds.left + boardBounds.width / 2 - boardOffset.x;
+      const boardCenterY = boardBounds.top + boardBounds.height / 2 - boardOffset.y;
 
-      let newContentBounds = null;
+      let contentBounds = null;
 
       for (const boardItemRef of boardItemRefs.values()) {
         if (!boardItemRef.current) continue;
         const itemBounds = boardItemRef.current.getBoundingClientRect();
 
-        if (newContentBounds) {
-          newContentBounds = {
-            left: Math.min(newContentBounds.left, itemBounds.left),
-            top: Math.min(newContentBounds.top, itemBounds.top),
-            right: Math.max(newContentBounds.right, itemBounds.right),
-            bottom: Math.max(newContentBounds.bottom, itemBounds.bottom),
+        if (contentBounds) {
+          contentBounds = {
+            left: Math.min(contentBounds.left, itemBounds.left),
+            top: Math.min(contentBounds.top, itemBounds.top),
+            right: Math.max(contentBounds.right, itemBounds.right),
+            bottom: Math.max(contentBounds.bottom, itemBounds.bottom),
           };
         } else {
-          newContentBounds = itemBounds;
+          contentBounds = itemBounds;
         }
       }
 
-      if (!newContentBounds) return;
+      if (!contentBounds) return;
 
-      contentBounds.current = {
-        left: newContentBounds.left - boardCenterX - boardOffset.x,
-        top: newContentBounds.top - boardCenterY - boardOffset.y,
-        right: newContentBounds.right - boardCenterX - boardOffset.x,
-        bottom: newContentBounds.bottom - boardCenterY - boardOffset.y,
+      contentBounds = {
+        left: contentBounds.left - boardCenterX,
+        top: contentBounds.top - boardCenterY,
+        right: contentBounds.right - boardCenterX,
+        bottom: contentBounds.bottom - boardCenterY,
       };
+
+      // calculate by how much the content of the board extends off the board
+      const boardHeight = boardBounds.bottom - boardBounds.top;
+      const boardWidth = boardBounds.right - boardBounds.left;
+      const overflow = {
+        left: Math.min(0, contentBounds.left + boardWidth / 2),
+        right: Math.max(0, contentBounds.right - boardWidth / 2),
+        top: Math.min(0, contentBounds.top + boardHeight / 2),
+        bottom: Math.max(0, contentBounds.bottom - boardHeight / 2),
+      };
+
+      setBoardOverflow(overflow);
 
     // we do not want this calculation to re-run when offset changes
     // b/c the whole point of including the offset is to make the result
@@ -315,7 +340,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
           // of the node that created it
           const newNodePosition = {
             nodeId,
-            x: sourcePositionInfo.x + (Math.random() - 0.5) * width,
+            x: sourcePositionInfo.x + (Math.random() - 0.5) * height,
             y: sourcePositionInfo.y + (Math.random() - 0.5) * width,
             isAutoPositioned: false,
             isUserPositioned: true,
@@ -333,6 +358,9 @@ const BoardImpl: FunctionComponent<BoardProps> =
           };
 
           fixedNodeBounds.push(fixedRect);
+
+          topLeft.x = Math.min(topLeft.x, fixedRect.x);
+          topLeft.y = Math.min(topLeft.y, fixedRect.y);
         } else if (positionInfo?.isUserPositioned || positionInfo?.isAutoPositioned) {
           // this node already has a position, do not move it
           const fixedRect = {
@@ -394,7 +422,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
         onDragOver={onDragOver}
         onDrop={e => onDrop(e, props, boardBounds.current, boardOffset, setPositions)}
         onClick={() => clearError()}
-        onWheel={e => onScroll(e, contentBounds.current, boardBounds.current, setOffset)}
+        onWheel={e => onScroll(e, boardOverflow, setBoardOffset)}
         ref={boardRef}
       >
         <div
@@ -434,6 +462,59 @@ const BoardImpl: FunctionComponent<BoardProps> =
             })
           }
         </div>
+
+        {
+          boardOverflow.left + 50 < boardOffset.x
+            ? (
+              <div
+                id='reduct-board-overflow-left'
+                className='reduct-board-overflow'
+                onClick={() => scrollBoard(-200, 0, boardOverflow, setBoardOffset)}
+              >
+                More
+              </div>
+            )
+            : null
+        }
+        {
+          boardOverflow.right - 50 > boardOffset.x
+            ? (
+              <div
+                id='reduct-board-overflow-right'
+                className='reduct-board-overflow'
+                onClick={() => scrollBoard(200, 0, boardOverflow, setBoardOffset)}
+              >
+                More
+              </div>
+            )
+            : null
+        }
+        {
+          boardOverflow.top + 50 < boardOffset.y
+            ? (
+              <div
+                id='reduct-board-overflow-top'
+                className='reduct-board-overflow'
+                onClick={() => scrollBoard(0, -200, boardOverflow, setBoardOffset)}
+              >
+                More
+              </div>
+            )
+            : null
+        }
+        {
+          boardOverflow.bottom - 50 > boardOffset.y
+            ? (
+              <div
+                id='reduct-board-overflow-bottom'
+                className='reduct-board-overflow'
+                onClick={() => scrollBoard(0, 200, boardOverflow, setBoardOffset)}
+              >
+                More
+              </div>
+            )
+            : null
+        }
       </div>
     );
   };
