@@ -1,0 +1,114 @@
+name: Lists / Strings / Recursion
+levels:
+  - board:
+      - '[_, _, _]'
+    toolbox:
+      - STAR
+      - RECT
+      - TRIANGLE
+      - CIRCLE
+      - '9'
+    goal:
+      - '[STAR, RECT, TRIANGLE]'
+    hint:
+      - 'Try filling in the empty slots in that list.'
+    defines: []
+  - board:
+      - '[_, _]'
+      - '[1]'
+      - '[TRIANGLE, CIRCLE]'
+      - 'function getFirst(a) {return get(a,0);}'
+      - >-
+        function removeFirst(a) {return length(a) < 2 ? []: slice(a, 1,
+        length(a))}
+    toolbox:
+      - STAR
+      - RECT
+      - removeFirst
+      - getFirst
+      - removeFirst
+      - getFirst
+    note:
+      - null
+    goal:
+      - STAR
+      - '[]'
+      - CIRCLE
+  - board:
+      - '[1]'
+      - 'map(_, addOne)'
+      - >-
+        __note('`map` applies a function to every element in a list and
+        returns a new list\n\n`concat` joins two lists together into a new list')
+      - concat(_, _)
+    toolbox:
+      - '[4]'
+      - '[1,3, _]'
+      - '[2,4]'
+      - STAR
+      - '[5]'
+      - '4'
+    globals:
+      add : 
+        addOne : 'function addOne(number) { return (number + 1); }'
+      hide : []
+    note:
+      - null
+    goal:
+      - '[2,4,5,1]'
+  - board:
+      - >- 
+          function contains(list, target, index){ return  _ ? false :
+          ((_ == _) ? true : ( contains(list, index + 1, target))); }
+      - >-
+          __note('Contains should return true if `list` contains `target`, and
+          false otherwise')
+    toolbox:
+      - length
+      - list
+      - index
+      - get(list, _)
+      - target
+      - 'index == (_) (_)'
+      - contains(_, _, _)
+      - contains(_, _, _)
+      - '[6,7,9,12]'
+      - '[12,9,7,6]'
+      - 0
+      - 4
+      - 11
+      - 12
+      - 0
+    hint:
+      - What's a good starting value for `index`?
+    note:
+      - null
+    goal:
+      - false
+      - true
+  - board:
+      - >-
+          __note('`getIndex` should return the index at which `target`
+          appears in `list`, or -1 if `target` is not found.')
+      - >-
+          function getIndex(list,target,index){ return (_ (_)) ? -1 :
+          ((_ (_) (_) (_)) ? _ : (getIndex(_, _, (_ + 1)))); }
+      - 'x => (x == (_) (_))'
+      - 'function isTarget(list,target,index) {return ( (_(_,_)) == _ );}'
+      
+    toolbox:
+      - getIndex
+      - isTarget
+      - __unlimited;list
+      - __unlimited;target
+      - __unlimited;index
+      - length
+      - get
+      - '[7,9,2,5,18]'
+      - 0
+      - 1
+      - 2
+    hint:
+      - 'Remember the recursive structure of the contains function.'
+    goal:
+      - 2
