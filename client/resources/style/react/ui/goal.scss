@@ -2,7 +2,7 @@
 @use 'base';
 
 #reduct-goal {
-  @include base.ui-panel($accent: hsl(39, 61%, 52%));
+  @include base.ui-panel($accent: hsl(190, 60%, 70%));
   display: grid;
   grid-template-rows: 1fr auto;
   grid-template-columns: auto auto 1fr;
