@@ -340,8 +340,8 @@ const BoardImpl: FunctionComponent<BoardProps> =
           // of the node that created it
           const newNodePosition = {
             nodeId,
-            x: sourcePositionInfo.x + (Math.random() - 0.5) * height,
-            y: sourcePositionInfo.y + (Math.random() - 0.5) * width,
+            x: sourcePositionInfo.x + (Math.random() - 0.5) * 0.25 * height,
+            y: sourcePositionInfo.y + (Math.random() - 0.5) * 0.25 * width,
             isAutoPositioned: false,
             isUserPositioned: true,
             level,
