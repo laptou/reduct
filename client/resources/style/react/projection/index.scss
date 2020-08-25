@@ -9,6 +9,7 @@
 
   font-weight: 700;
   font-family: text.$mono-font;
+  white-space: nowrap;
 
   user-select: none;
 
@@ -53,10 +54,7 @@
   align-items: stretch;
 }
 
-.projection-board-wrapper {
-  position: absolute;
-  top: 50%;
-  left: 50%;
 
-  transform-origin: top left;
+.projection-board-container {
+  position: absolute;
 }

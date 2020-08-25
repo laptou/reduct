@@ -108,24 +108,14 @@ function onDragStart(
 
 
   // get offset from top left of node
-  const {
-    top, left, width, height,
-  } = event.currentTarget.getBoundingClientRect();
+  const { top, left } = event.currentTarget.getBoundingClientRect();
+
   const offset = {
     x: event.clientX - left,
     y: event.clientY - top,
   };
 
-  // set drag image position to get rid of weird bug in Firefox where drag image
-  // is position incorrectly
-  event.dataTransfer.setDragImage(event.currentTarget, offset.x, offset.y);
-
-  // get offset from center, since nodes are positioned by their center
-  const offsetCenter = {
-    x: offset.x - width / 2,
-    y: offset.y - height / 2,
-  };
-  event.dataTransfer.setData('application/reduct-node-offset', JSON.stringify(offsetCenter));
+  event.dataTransfer.setData('application/reduct-node-offset', JSON.stringify(offset));
 
   // stop parent projections from hijacking the drag
   event.stopPropagation();
