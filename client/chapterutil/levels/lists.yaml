@@ -24,10 +24,10 @@ levels:
     toolbox:
       - STAR
       - RECT
-      - removeFirst
-      - getFirst
-      - removeFirst
-      - getFirst
+      - removeFirst(_)
+      - getFirst(_)
+      - removeFirst(_)
+      - getFirst(_)
     note:
       - null
     goal:
@@ -58,8 +58,12 @@ levels:
       - '[2,4,5,1]'
   - board:
       - >- 
-          function contains(list, target, index){ return  _ ? false :
-          ((_ == _) ? true : ( contains(list, index + 1, target))); }
+          function contains(list, target, index) { 
+            return  _ 
+              ? false 
+              : (_ ==_ 
+                ? true 
+                : contains(list, index + 1, target)); }
       - >-
           __note('Contains should return true if `list` contains `target`, and
           false otherwise')
@@ -69,20 +73,14 @@ levels:
       - index
       - get(list, _)
       - target
-      - 'index == (_) (_)'
-      - contains(_, _, _)
-      - contains(_, _, _)
+      - 'index == _(_)'
+      - contains([6,7,9,12], 7, _)
+      - contains(_, 11, _)
       - '[6,7,9,12]'
-      - '[12,9,7,6]'
       - 0
-      - 4
-      - 11
-      - 12
       - 0
     hint:
       - What's a good starting value for `index`?
-    note:
-      - null
     goal:
       - false
       - true
@@ -91,24 +89,17 @@ levels:
           __note('`getIndex` should return the index at which `target`
           appears in `list`, or -1 if `target` is not found.')
       - >-
-          function getIndex(list,target,index){ return (_ (_)) ? -1 :
-          ((_ (_) (_) (_)) ? _ : (getIndex(_, _, (_ + 1)))); }
-      - 'x => (x == (_) (_))'
-      - 'function isTarget(list,target,index) {return ( (_(_,_)) == _ );}'
-      
+          function getIndex(list,target,index) { return (_ == _(_)) ? -1 :
+          (_(list, _) == _) ? _ : getIndex(_, _, _ + 1); }
     toolbox:
-      - getIndex
-      - isTarget
+      - getIndex(_,2, 0)
       - __unlimited;list
       - __unlimited;target
       - __unlimited;index
       - length
       - get
-      - '[7,9,2,5,18]'
-      - 0
-      - 1
-      - 2
+      - '[7,9,5,2,18]'
     hint:
       - 'Remember the recursive structure of the contains function.'
     goal:
-      - 2
+      - 3
