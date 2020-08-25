@@ -14,14 +14,15 @@ import { log } from '@/logging/logger';
 
 interface TitleStoreProps {
   isTitle: boolean;
+  level: number;
 }
 
 interface TitleDispatchProps {
-  startGame(): void;
+  startGame(level: number): void;
 }
 
 const TitlePageImpl = (props: TitleStoreProps & TitleDispatchProps) => {
-  const { isTitle, startGame } = props;
+  const { isTitle, level, startGame } = props;
   const scaleSpring = useRef<ReactSpringHook>(null);
   const scaleProps =
     useSpring({
@@ -78,10 +79,10 @@ const TitlePageImpl = (props: TitleStoreProps & TitleDispatchProps) => {
         <div className='reduct-title-modal-actions'>
           <button
             type='button'
-            onClick={() => startGame()}
+            onClick={() => startGame(level > 0 ? level : 0)}
             className='btn btn-primary'
           >
-            START
+            {level > 0 ? 'RESUME' : 'START'}
           </button>
         </div>
 
@@ -113,8 +114,9 @@ const TitlePageImpl = (props: TitleStoreProps & TitleDispatchProps) => {
 export const TitlePage = connect(
   (store: DeepReadonly<GlobalState>) => ({
     isTitle: store.game.$present.mode === GameMode.Title,
+    level: store.game.$present.level,
   }),
   (dispatch) => ({
-    startGame() { dispatch(createStartLevel(0)); },
+    startGame(level: number) { dispatch(createStartLevel(level)); },
   })
 )(TitlePageImpl);
