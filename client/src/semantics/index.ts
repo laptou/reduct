@@ -16,6 +16,7 @@ import {
   NotNode,
   NumberNode,
   OpNode,
+  VoidNode,
 } from './defs';
 import { BuiltInIdentifierNode } from './defs/builtins';
 import { NoteNode } from './defs/note';
@@ -116,7 +117,8 @@ export type ReductNode =
   VTupleNode |
   PTupleNode |
   MissingNode |
-  BuiltInIdentifierNode;
+  BuiltInIdentifierNode |
+  VoidNode;
 
 export type FlatReductNode =
   Flat<ApplyNode> |
@@ -143,4 +145,5 @@ export type FlatReductNode =
   Flat<VTupleNode> |
   Flat<PTupleNode> |
   Flat<MissingNode> |
-  Flat<BuiltInIdentifierNode>;
+  Flat<BuiltInIdentifierNode> |
+  Flat<VoidNode>;
