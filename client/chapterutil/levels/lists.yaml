@@ -63,7 +63,7 @@ levels:
               ? false 
               : (_ ==_ 
                 ? true 
-                : contains(list, index + 1, target)); }
+                : contains(list, target, index + 1)); }
       - >-
           __note('Contains should return true if `list` contains `target`, and
           false otherwise')
