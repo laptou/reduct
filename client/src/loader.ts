@@ -103,6 +103,7 @@ const chapterDigraph: Record<string, string[]> = {
   definition: ['application'],
   lists: ['definition'],
   reference: ['lists'],
+  challenge: ['reference'],
 };
 
 async function loadChapter(key: string): Promise<ChapterDefinition> {
