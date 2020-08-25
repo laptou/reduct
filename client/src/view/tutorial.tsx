@@ -1,4 +1,4 @@
-import '@resources/style/react/ui/survey.scss';
+import '@resources/style/react/ui/tutorial.scss';
 import React from 'react';
 
 import { Logo } from './stage/ui/logo';
@@ -16,3 +16,4 @@ export const SurveyPage: React.FC = () => {
     </div>
   );
 };
+
