@@ -234,7 +234,6 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
                 draggable={draggable}
                 data-node-id={node.id}
                 onDragStart={e => onDragStart(e, props)}
-                onDragEnd={e => onDragEnd(e)}
                 onClick={e => onClick(e, props)}
               >
                 {getProjectionForNode(node)}
