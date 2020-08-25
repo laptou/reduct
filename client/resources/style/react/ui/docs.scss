@@ -35,3 +35,37 @@
     background: rgba(black, 0.125);
   }
 }
+
+.docs-page-container {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  justify-content: center;
+  justify-self: center;
+
+  min-width: 20rem;
+  max-width: 40rem;
+  max-height: 100%;
+  padding: 5rem 0;
+
+  p {
+    line-height: 2em;
+  }
+}
+
+.docs-page-header {
+  width: 100%;
+
+  padding: 0 5rem;
+}
+
+.docs-page-content {
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  width: 100%;
+
+  padding: 0 5rem;
+
+  border-top: 1px dashed rgba(white, 0.5);
+  border-bottom: 1px dashed rgba(white, 0.5);
+}

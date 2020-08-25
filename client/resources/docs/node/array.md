@@ -1,16 +1,16 @@
 ---
 type: array
-name: Array
+name: List
 example: '[STAR, RECT, TRIANGLE]'
 ---
 
-An **array** is a list of items.
+An **list** is a list of items.
 
 ```javascript
 [1,2,3]
 ```
 
-Arrays can contain anything, or nothing. Their elements don't have to have the
+Lists can contain anything, or nothing. Their elements don't have to have the
 same type.
 
 ```javascript
@@ -20,5 +20,9 @@ same type.
 []
 ```
 
-Unlike numbers or strings, arrays are passed _by reference_, which means that
-passing an array to a function and modifying it will change the original array.
+If you step an identifier that points to a list, you will get a **reference** to the
+list.
+
+```javascript
+__reference([1, 3, 4])
+```
