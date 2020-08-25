@@ -19,6 +19,7 @@ import { ConsentPage } from './consent';
 import { CreditsPage } from './credits';
 import { TimeOverlay } from './stage/ui/modals/time';
 import { SurveyPage } from './survey';
+import { TutorialPage } from './tutorial';
 
 import { GameMode, GlobalState, ResearchConsentState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
@@ -37,6 +38,9 @@ const GameImpl: React.FC<GameStoreProps> = (props) => {
   }
 
   switch (mode) {
+  case GameMode.Tutorial:
+    return <TutorialPage />;
+
   case GameMode.Title:
     return <TitlePage />;
 
