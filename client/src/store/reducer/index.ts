@@ -2,7 +2,9 @@ import { combineReducers } from 'redux';
 import { createTransform, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-import { createStartLevel, createGoToSurvey } from '../action/game';
+import {
+  createStartLevel, createGoToSurvey, createGoToTitle, createGoToTutorial,
+} from '../action/game';
 import { GameState, GameMode, StatsState } from '../state';
 
 import { gameReducer } from './game';
@@ -33,12 +35,19 @@ const gameStateTransform = createTransform(
     case GameMode.Credits:
     case GameMode.Gameplay:
       if ($present.level >= 0) {
-        return gameReducer(undefined, createStartLevel($present.level));
+        // load up the level, then navigate to title screen
+        let state = gameReducer(undefined, createStartLevel($present.level));
+        state = gameReducer(state, createGoToTitle());
+        return state;
       }
 
       return gameReducer();
     case GameMode.Survey:
       return gameReducer(undefined, createGoToSurvey());
+    case GameMode.Tutorial:
+      return gameReducer(undefined, createGoToTutorial());
+    case GameMode.Title:
+      return gameReducer(undefined, createGoToTitle());
     default:
       return gameReducer();
     }

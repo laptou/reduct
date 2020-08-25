@@ -31,6 +31,20 @@ export function gameNavReducer(
     };
   }
 
+  case ActionKind.GoToTutorial: {
+    return {
+      ...state,
+      mode: GameMode.Tutorial,
+    };
+  }
+
+  case ActionKind.GoToTitle: {
+    return {
+      ...state,
+      mode: GameMode.Title,
+    };
+  }
+
   default: return state;
   }
 }

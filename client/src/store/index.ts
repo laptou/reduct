@@ -12,7 +12,7 @@ if (PKG_ENV === 'development') {
   if (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) {
     composer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
       serialize: true,
-      actionsBlacklist: [ActionKind.Raise],
+      actionsBlacklist: [ActionKind.Raise, ActionKind.Cleanup],
     });
   } else {
     composer = compose;

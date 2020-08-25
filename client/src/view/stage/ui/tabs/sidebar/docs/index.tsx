@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { Provider } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
 
-import '@resources/style/react/ui/tutorial.scss';
+import '@resources/style/react/ui/docs.scss';
 
 import { gameReducer } from '@/store/reducer/game';
 import { undoableReducer } from '@/store/reducer/undo';
@@ -19,9 +19,9 @@ const rootReducer = combineReducers({
 
 const tutorialStore = createStore(rootReducer);
 
-export const TutorialTab: React.FC = () => {
+export const DocsTab: React.FC = () => {
   return (
-    <div id='reduct-tutorial'>
+    <div id='reduct-docs'>
       <Provider store={tutorialStore}>
         <Suspense fallback={'loading the docs...'}>
           <DocsListing />
