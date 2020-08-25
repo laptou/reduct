@@ -15,6 +15,7 @@ import { placeRects } from '@/view/layout/grid';
 
 import '@resources/style/react/ui/board.scss';
 
+
 interface BoardStoreProps {
   level: number;
   board: DeepReadonly<Set<NodeId>>;
@@ -141,6 +142,15 @@ function onScroll(
 
   event.stopPropagation();
 
+  scrollBoard(deltaX, deltaY, boardOverflow, setOffset);
+}
+
+function scrollBoard(
+  deltaX: number,
+  deltaY: number,
+  boardOverflow: Bounds,
+  setOffset: (setter: (offset: { x: number; y: number; }) => { x: number; y: number; }) => void
+) {
   setOffset(offset => {
     let {
       left, top, right, bottom,
@@ -228,6 +238,11 @@ const BoardImpl: FunctionComponent<BoardProps> =
           [...positions].filter(([_id, pos]) => pos.level === level)
         )
       );
+
+      setBoardOffset({
+        x: 0,
+        y: 0,
+      });
     }, [level]);
 
     // when positions are updated, calculate the outer bounds of all of the items
@@ -325,7 +340,7 @@ const BoardImpl: FunctionComponent<BoardProps> =
           // of the node that created it
           const newNodePosition = {
             nodeId,
-            x: sourcePositionInfo.x + (Math.random() - 0.5) * width,
+            x: sourcePositionInfo.x + (Math.random() - 0.5) * height,
             y: sourcePositionInfo.y + (Math.random() - 0.5) * width,
             isAutoPositioned: false,
             isUserPositioned: true,
@@ -343,6 +358,9 @@ const BoardImpl: FunctionComponent<BoardProps> =
           };
 
           fixedNodeBounds.push(fixedRect);
+
+          topLeft.x = Math.min(topLeft.x, fixedRect.x);
+          topLeft.y = Math.min(topLeft.y, fixedRect.y);
         } else if (positionInfo?.isUserPositioned || positionInfo?.isAutoPositioned) {
           // this node already has a position, do not move it
           const fixedRect = {
@@ -444,6 +462,59 @@ const BoardImpl: FunctionComponent<BoardProps> =
             })
           }
         </div>
+
+        {
+          boardOverflow.left + 50 < boardOffset.x
+            ? (
+              <div
+                id='reduct-board-overflow-left'
+                className='reduct-board-overflow'
+                onClick={() => scrollBoard(-200, 0, boardOverflow, setBoardOffset)}
+              >
+                More
+              </div>
+            )
+            : null
+        }
+        {
+          boardOverflow.right - 50 > boardOffset.x
+            ? (
+              <div
+                id='reduct-board-overflow-right'
+                className='reduct-board-overflow'
+                onClick={() => scrollBoard(200, 0, boardOverflow, setBoardOffset)}
+              >
+                More
+              </div>
+            )
+            : null
+        }
+        {
+          boardOverflow.top + 50 < boardOffset.y
+            ? (
+              <div
+                id='reduct-board-overflow-top'
+                className='reduct-board-overflow'
+                onClick={() => scrollBoard(0, -200, boardOverflow, setBoardOffset)}
+              >
+                More
+              </div>
+            )
+            : null
+        }
+        {
+          boardOverflow.bottom - 50 > boardOffset.y
+            ? (
+              <div
+                id='reduct-board-overflow-bottom'
+                className='reduct-board-overflow'
+                onClick={() => scrollBoard(0, 200, boardOverflow, setBoardOffset)}
+              >
+                More
+              </div>
+            )
+            : null
+        }
       </div>
     );
   };
