@@ -13,7 +13,7 @@ import { HistoryTab } from './stage/ui/tabs/history';
 import { GameMenuTab } from './stage/ui/tabs/menu';
 import { Sidebar } from './stage/ui/tabs/sidebar';
 import { DefinitionsTab } from './stage/ui/tabs/sidebar/definitions';
-import { TutorialTab } from './stage/ui/tabs/sidebar/tutorial';
+import { DocsTab } from './stage/ui/tabs/sidebar/docs';
 import { ToolboxTab } from './stage/ui/tabs/toolbox';
 import { ConsentPage } from './consent';
 import { CreditsPage } from './credits';
@@ -50,8 +50,8 @@ const GameImpl: React.FC<GameStoreProps> = (props) => {
         <GameMenuTab />
         <HistoryTab />
         <Sidebar>
-          <Sidebar.Section title='Tutorial' isOpen={true}>
-            <TutorialTab />
+          <Sidebar.Section title='Docs' isOpen={true}>
+            <DocsTab />
           </Sidebar.Section>
           <Sidebar.Section title='Global Scope' isOpen={true}>
             <DefinitionsTab />
