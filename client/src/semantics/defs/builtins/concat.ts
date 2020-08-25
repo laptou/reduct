@@ -63,5 +63,7 @@ export function builtinConcat(self: DRF<BuiltInIdentifierNode>,
       newArr.subexpressions[i] = childClone.id;
       i++;
     }
+
+    draft.returned = [newArr.id];
   });
 }

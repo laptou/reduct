@@ -16,8 +16,12 @@ export function builtinMap(self: DRF<BuiltInIdentifierNode>,
   if (args.length !== 2)
     throw new WrongBuiltInParamsCountError(self.id, 2, args.length);
 
-  const arr = args[0];
+  let arr = args[0];
   const fn = args[1];
+
+  while (arr.type === 'reference') {
+    arr = state.nodes.get(arr.fields.target)!;
+  }
 
   if (arr.type !== 'array')
     throw new WrongTypeError(arr.id, 'array', arr.type);

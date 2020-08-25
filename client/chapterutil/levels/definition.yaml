@@ -16,8 +16,8 @@ levels:
     toolbox:
       - __unlimited;isStar(_)
       - __unlimited;isRect(_)
-      - __unlimited;rect(_)
-      - __unlimited;star(_)
+      - __unlimited;rect
+      - __unlimited;star
     defines: []
     goal:
       - true

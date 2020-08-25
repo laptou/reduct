@@ -70,32 +70,8 @@ function parseNode(node: estree.Node, macros: MacroMap): ReductNode {
     if (name === 'CIRCLE')
       return createSymbolNode('circle');
 
-    // TODO: phase out xx and xxx in favour of __tuple(x, x)
-    if (name === 'xx') {
-      return createVtupleNode(
-        createIdentifierNode('x'),
-        createIdentifierNode('x')
-      );
-    }
-
-    if (name === 'xxx') {
-      return createVtupleNode(
-        createIdentifierNode('x'),
-        createIdentifierNode('x'),
-        createIdentifierNode('x')
-      );
-    }
-
-    /*
-        if (node.name.startsWith('__variant')) {
-          const [variant, value] = node.name.slice(10).split('_');
-          if (!variant || !value) {
-            throw new Error(`Invalid dynamic variant ${node.name}`);
-          }
-
-          return this.semantics.dynamicVariant(variant, value);
-        }
-        */
+    if (name === 'VOID')
+      return createVoidNode();
 
     return createIdentifierNode(name);
   }
