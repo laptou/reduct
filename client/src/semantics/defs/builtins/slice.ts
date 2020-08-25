@@ -15,9 +15,13 @@ export function builtinSlice(self: DRF<BuiltInIdentifierNode>,
   if (args.length !== 3)
     throw new WrongBuiltInParamsCountError(self.id, 2, args.length);
 
-  const arrayNode = args[0];
+  let arrayNode = args[0];
   const indexStartNode = args[1];
   const indexEndNode = args[2];
+
+  while (arrayNode.type === 'reference') {
+    arrayNode = state.nodes.get(arrayNode.fields.target)!;
+  }
 
   if (arrayNode.type !== 'array')
     throw new WrongTypeError(arrayNode.id, 'array', arrayNode.type);

@@ -14,7 +14,11 @@ export function builtinLength(self: DRF<BuiltInIdentifierNode>,
   if (args.length !== 1)
     throw new WrongBuiltInParamsCountError(self.id, 1, args.length);
 
-  const arrayOrString = args[0];
+  let arrayOrString = args[0];
+
+  while (arrayOrString.type === 'reference') {
+    arrayOrString = state.nodes.get(arrayOrString.fields.target)!;
+  }
 
   switch (arrayOrString.type) {
   case 'array': {

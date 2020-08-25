@@ -2,7 +2,7 @@
 import { BaseNode } from '../..';
 
 import { builtinGet } from './get';
-import { builtinWith } from './with';
+import { builtinWith } from './with-item';
 import { builtinConcat } from './concat';
 import { builtinMap } from './map';
 import { builtinSlice } from './slice';
@@ -27,7 +27,7 @@ export const builtins: Record<string, BuiltinFn> = {
   length: builtinLength,
   get: builtinGet,
   set: builtinSet,
-  with: builtinWith,
+  withItem: builtinWith,
   map: builtinMap,
   slice: builtinSlice,
   concat: builtinConcat,
