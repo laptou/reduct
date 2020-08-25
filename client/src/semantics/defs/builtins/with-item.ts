@@ -14,9 +14,13 @@ export const builtinWith: BuiltinFn =
     if (args.length !== 3)
       throw new WrongBuiltInParamsCountError(self.id, 3, args.length);
 
-    const array = args[0];
+    let array = args[0];
     const index = args[1];
     const value = args[2];
+
+    while (array.type === 'reference') {
+      array = state.nodes.get(array.fields.target)!;
+    }
 
     if (array.type !== 'array')
       throw new WrongTypeError(array.id, 'array', array.type);
