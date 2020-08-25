@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { createClearError, moveNodeToSlot } from '@/store/action/game';
 import { Flat, NodeId } from '@/semantics';
 import { MissingNode } from '@/semantics/defs';
+import { playSound } from '@/resource/audio';
 
 import '@resources/style/react/projection/missing.scss';
 
@@ -59,6 +60,8 @@ function onDrop(
 
   // fill this slot with the node that was dropped on it
   props.fill(nodeId);
+
+  playSound('attach');
 }
 
 export const MissingProjectionImpl: FunctionComponent<MissingProjectionProps> =
