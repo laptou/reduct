@@ -2,6 +2,7 @@
 @use './shape';
 @use './ui/bubble';
 @use './ui/button';
+@use './text';
 
 :root {
   --reduct-ui-bg: white;
@@ -21,4 +22,8 @@
 
   width: 100%;
   height: 100%;
+}
+
+code {
+  font-family: text.$mono-font;
 }
