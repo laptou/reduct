@@ -148,7 +148,6 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
       frozen,
       error,
       executing,
-      cleanup: disposeNode,
       exec,
       stopExec,
     } = props;
@@ -172,9 +171,6 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
         };
       }
     }, [executing, exec, isFast]);
-
-    // run when this component is unmounted
-    useEffect(() => () => disposeNode(), [disposeNode]);
 
     // transition for when this projection's node is changed
     const transition = useTransition(
