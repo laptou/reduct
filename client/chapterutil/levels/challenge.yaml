@@ -52,20 +52,23 @@ levels:
       - >-
         function replace(list, oldItem, newItem, index) {
           return index == length(list)
-            ? clone(list)
-            : get(list, index) == oldItem
-              ? replace(withItem(list, index, newItem), oldItem, newItem, index + 1)
-              : replace(list, oldItem, newItem, index + 1);
+            ? clone(_)
+            : get(_, index) == _
+              ? replace(_(list, index, _), oldItem, newItem, _)
+              : replace(_, oldItem, newItem, _);
         }
     toolbox:
-      - n
-      - n
-      - value
-      - value
-      - fun
+      - list
+      - list
+      - oldItem
+      - newItem
+      - withItem
+      - index
+      - index
       - '_ - 1'
-      - '[STAR]'
-      - 0
-      - set
+      - '_ + 1'
+      - '_ + 1'
+      - index
+      - '[CIRCLE]'
     goal:
       - '[STAR, RECT, TRIANGLE, STAR, STAR]'
