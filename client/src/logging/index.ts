@@ -23,7 +23,10 @@ export const logMiddleware: Middleware =
     const newState = api.getState() as unknown as GlobalState;
     const lastState = newState.game.$past.length > 0 ? newState.game.$past[0] : null;
     const presentState = newState.game.$present;
-    const errorState = newState.game.$error;
+    const errorState = newState.game.$error ? {
+      type: newState.game.$error.constructor.name,
+      ...newState.game.$error,
+    } : null;
 
     switch (act.type) {
     case ActionKind.Undo: log('game:undo'); break;
@@ -74,7 +77,7 @@ export const logMiddleware: Middleware =
 
     case ActionKind.StartLevel:
       log('game:start-level', {
-        level: presentState.level,
+        levelIndex: presentState.level,
       });
       flushLogs();
       break;
@@ -104,6 +107,26 @@ export const logMiddleware: Middleware =
         },
         error: errorState,
       });
+      break;
+
+    case ActionKind.GoToCredits:
+      log('nav:credits');
+      break;
+
+    case ActionKind.GoToTitle:
+      log('nav:title');
+      break;
+
+    case ActionKind.GoToSurvey:
+      log('nav:survey');
+      break;
+
+    case ActionKind.GoToTutorial:
+      log('nav:tutorial');
+      break;
+
+    case ActionKind.GoToGameplay:
+      log('nav:gameplay');
       break;
 
     case PreferenceActionKind.EnableResearch: {

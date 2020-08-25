@@ -63,7 +63,7 @@ export function flushLogs() {
   void trySendLogs();
 }
 
-export function log(action: string, extra: Record<string, any> = {}) {
+export function log(action: string, extra: Record<Exclude<string, 'timestamp' | 'level' | 'action'>, any> = {}) {
   pendingLogEntries.push({
     action,
     sessionId,
