@@ -42,6 +42,6 @@ export function addClonedNodes(
     ...state,
     added,
     nodes: newNodeMap,
-    returned: clonedRoot.id,
+    returned: [clonedRoot.id],
   };
 }

@@ -21,7 +21,7 @@ const initialProgram: GameState = {
   added: new Map(),
   removed: new Map(),
   executing: new Set(),
-  returned: null,
+  returned: [],
 };
 
 export function gameReducer(

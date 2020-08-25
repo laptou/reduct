@@ -23,7 +23,7 @@ export function gameLevelReducer(
       added: new Map(mapIterable(act.nodes.keys(), id => [id, null] as const)),
       removed: new Map(),
       executing: new Set(),
-      returned: null,
+      returned: [],
     };
   }
 

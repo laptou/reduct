@@ -12,6 +12,6 @@ export const builtinEat: BuiltinFn = (_self, _args, state) => {
       ...state.nodes,
       [voidNode.id, voidNode],
     ]),
-    returned: voidNode.id,
+    returned: [voidNode.id],
   };
 };
