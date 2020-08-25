@@ -21,7 +21,7 @@ const TutorialPageImpl: React.FC<TutorialPageDispatchProps> = (props) => {
       </h1>
 
       <iframe
-        src='https://www.youtube-nocookie.com/embed/9LYjOL72qO8?rel=0&modestbranding=1'
+        src='https://www.youtube-nocookie.com/embed/9LYjOL72qO8?rel=0&apos;modestbranding=1'
         frameBorder='0'
         allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture'
         allowFullScreen
