@@ -13,12 +13,13 @@ import { HistoryTab } from './stage/ui/tabs/history';
 import { GameMenuTab } from './stage/ui/tabs/menu';
 import { Sidebar } from './stage/ui/tabs/sidebar';
 import { DefinitionsTab } from './stage/ui/tabs/sidebar/definitions';
-import { TutorialTab } from './stage/ui/tabs/sidebar/tutorial';
+import { DocsTab } from './stage/ui/tabs/sidebar/docs';
 import { ToolboxTab } from './stage/ui/tabs/toolbox';
 import { ConsentPage } from './consent';
 import { CreditsPage } from './credits';
 import { TimeOverlay } from './stage/ui/modals/time';
 import { SurveyPage } from './survey';
+import { TutorialPage } from './tutorial';
 
 import { GameMode, GlobalState, ResearchConsentState } from '@/store/state';
 import { DeepReadonly } from '@/util/helper';
@@ -37,6 +38,9 @@ const GameImpl: React.FC<GameStoreProps> = (props) => {
   }
 
   switch (mode) {
+  case GameMode.Tutorial:
+    return <TutorialPage />;
+
   case GameMode.Title:
     return <TitlePage />;
 
@@ -50,8 +54,8 @@ const GameImpl: React.FC<GameStoreProps> = (props) => {
         <GameMenuTab />
         <HistoryTab />
         <Sidebar>
-          <Sidebar.Section title='Tutorial' isOpen={true}>
-            <TutorialTab />
+          <Sidebar.Section title='Docs' isOpen={true}>
+            <DocsTab />
           </Sidebar.Section>
           <Sidebar.Section title='Global Scope' isOpen={true}>
             <DefinitionsTab />

@@ -19,6 +19,8 @@ export enum ActionKind {
   CompleteLevel = 'end-level',
   GoToCredits = 'go-to-credits',
   GoToSurvey = 'go-to-survey',
+  GoToTutorial = 'go-to-tutorial',
+  GoToTitle = 'go-to-title',
   GoToGameplay = 'go-to-gameplay',
 
   MoveNodeToBoard = 'move-node-to-stage',
@@ -55,6 +57,8 @@ export type ReductAction =
   GoToGameplayAction |
   GoToCreditsAction |
   GoToSurveyAction |
+  GoToTutorialAction |
+  GoToTitleAction |
   MoveNodeToBoardAction |
   MoveNodeToSlotAction |
   MoveNodeToDefsAction |
@@ -321,6 +325,19 @@ export function createGoToCredits(): GoToCreditsAction {
   };
 }
 
+export interface GoToTitleAction {
+  type: ActionKind.GoToTitle;
+}
+
+/**
+ * Creates an action which will show the title screen.
+ */
+export function createGoToTitle(): GoToTitleAction {
+  return {
+    type: ActionKind.GoToTitle,
+  };
+}
+
 export interface GoToSurveyAction {
   type: ActionKind.GoToSurvey;
 }
@@ -331,6 +348,19 @@ export interface GoToSurveyAction {
 export function createGoToSurvey(): GoToSurveyAction {
   return {
     type: ActionKind.GoToSurvey,
+  };
+}
+
+export interface GoToTutorialAction {
+  type: ActionKind.GoToTutorial;
+}
+
+/**
+ * Creates an action which will show the tutorial screen.
+ */
+export function createGoToTutorial(): GoToTutorialAction {
+  return {
+    type: ActionKind.GoToTutorial,
   };
 }
 
