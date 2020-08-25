@@ -4,6 +4,8 @@ import { BuiltinFn } from '.';
 
 import { BuiltInError, WrongBuiltInParamsCountError, WrongTypeError } from '@/store/errors';
 import { cloneNodeDeep } from '@/util/nodes';
+import { createVoidNode } from '@/semantics/util';
+import { DRF } from '@/util/helper';
 
 export const builtinSet: BuiltinFn =
   (self, args, state) => {
@@ -41,7 +43,10 @@ export const builtinSet: BuiltinFn =
       array.subexpressions[indexValue] = valueClone.id;
 
       draft.added.set(valueClone.id, nodeToReplace.id);
-      draft.returned = [arrayRef.id];
+
+      const voidNode = createVoidNode() as DRF;
+      draft.nodes.set(voidNode.id, voidNode);
+      draft.returned = [voidNode.id];
 
       for (const newNode of [valueClone, ...valueCloneDescendants]) {
         draft.nodes.set(newNode.id, newNode);
