@@ -5,6 +5,10 @@ types of logs that can be collected. Since logs are JSON-formatted, some of them
 have properties that increase the amount of information they carry. Every log
 entry has a timestamp.
 
+Each log has a `netId`, which is the player's NetID, and a `sessionId`, which is
+a random UUID that remains constant as long as the player does not close the
+game.
+
 ## Session and navigation
 - `session:start`: the player has opened the game window
 - `session:end`: the player has closed the game window. this event is not guaranteed to send
