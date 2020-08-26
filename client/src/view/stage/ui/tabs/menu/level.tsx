@@ -72,7 +72,7 @@ const LevelSelectImpl: React.FC<LevelSelectProps> = (props) => {
       levels,
       key: chapter.key,
       name: chapter.name,
-      enabled: isLastChapterCompleted,
+      enabled: true || isLastChapterCompleted,
     };
 
     isLastChapterCompleted = numLevelsComplete >= levels.length / 2;
