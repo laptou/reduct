@@ -117,9 +117,18 @@ export const logMiddleware: Middleware =
       log('nav:title');
       break;
 
-    case ActionKind.GoToSurvey:
+    case ActionKind.GoToSurvey: {
       log('nav:survey');
+
+      const levels = Object.fromEntries(newState.stats.levels.entries());
+      const startTime = newState.stats.startTime;
+
+      log('game:stats', {
+        levels,
+        startTime,
+      });
       break;
+    }
 
     case ActionKind.GoToTutorial:
       log('nav:tutorial');
