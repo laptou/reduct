@@ -53,7 +53,7 @@ levels:
         function replace(list, oldItem, newItem, index) {
           return index == length(list)
             ? clone(_)
-            : get(_, index) == _
+            : _(_, index) == _
               ? replace(_(list, index, _), oldItem, newItem, _)
               : replace(_, oldItem, newItem, _);
         }
@@ -63,6 +63,8 @@ levels:
       - oldItem
       - newItem
       - withItem
+      - get
+      - set
       - index
       - index
       - '_ - 1'
