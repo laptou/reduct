@@ -53,7 +53,7 @@ levels:
             ? VOID
             : __tuple(
               _(list, _, 3),
-              override(list, _ + 1)
+              override(_, _ + 1)
             );
         }
       - __let(listX, [0, 0, 1, 2], () => __tuple(
@@ -63,7 +63,11 @@ levels:
     toolbox:
       - length
       - set
+      - withItem
+      - list
+      - eat
       - index
       - index
     goal:
       - '[3, 3, 3, 3]'
+    hint: '`eat` does nothing and always returns void. Is that what you want?'
