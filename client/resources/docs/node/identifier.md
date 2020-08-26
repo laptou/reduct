@@ -1,7 +1,7 @@
 ---
 type: identifier
 name: Identifier
-example: x
+example: identifier.png
 ---
 
 An **identifier** is a name that points to something else. When you try to

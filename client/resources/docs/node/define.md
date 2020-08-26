@@ -1,7 +1,7 @@
 ---
 type: define
 name: Definition
-example: 'function identity(x) {return x;}'
+example: define.png
 ---
 
 A **define** represents the definition of a new function. It gives a name to a

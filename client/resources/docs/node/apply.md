@@ -1,7 +1,7 @@
 ---
 type: apply
 name: Applier
-example: '(x => x) (_)'
+example: apply.png
 ---
 
 An **applier** passes a parameter to a function.

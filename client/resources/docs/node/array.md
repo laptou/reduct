@@ -1,7 +1,7 @@
 ---
 type: array
 name: List
-example: '[STAR, RECT, TRIANGLE]'
+example: array.png
 ---
 
 An **list** is a list of items.
