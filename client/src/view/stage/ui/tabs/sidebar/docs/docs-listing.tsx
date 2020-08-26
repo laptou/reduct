@@ -22,20 +22,30 @@ export const DocsListing: React.FC = () => {
 
   return (
     <div className='docs-listing-container'>
+      <button
+        type='button'
+        className='btn btn-special docs-listing-tutorial'
+        onClick={goToTutorial}
+      >
+        ▶️ Tutorial video
+      </button>
+
       <ul className='docs-listing-list'>
-        <li
-          className='docs-listing-item'
-          onClick={goToTutorial}
-        >
-          Tutorial video
-        </li>
         {docs.map(doc => (
           <li
             key={doc.attributes.type}
             className='docs-listing-item'
             onClick={() => setActiveDoc(doc)}
           >
-            {doc.attributes.name}
+            {doc.attributes.example && (
+              <img
+                className='docs-listing-item-thumbnail'
+                src={require(`@resources/docs/node/${doc.attributes.example}`).default}
+              />
+            )}
+            <label className='docs-listing-item-label'>
+              {doc.attributes.name}
+            </label>
           </li>
         ))}
       </ul>
