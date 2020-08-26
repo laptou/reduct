@@ -25,6 +25,8 @@ export const statsReducer = (
 
       if (state.levels.has(act.level)) {
         newStats = state.levels.get(act.level)!;
+        if (newStats.complete) return state;
+
         newStats.resumeTime = new Date().getTime();
       } else {
         newStats = {
@@ -68,11 +70,11 @@ export const statsReducer = (
 
     return state;
   }
-  
+
   case ActionKind.CompleteLevel: {
     let newLevels;
 
-    if (state.current) {
+    if (state.current && !state.current.complete) {
       newLevels = new Map([
         ...state.levels,
         [
