@@ -1,5 +1,5 @@
 # Reduct React
-<small>v7.0.6-alpha</small>
+<small>v7.0.15-beta</small>
 
 This is Ibiyemi Abiodun's fork of the project. It has been ported to TypeScript
 and uses a completely new renderer written in React. It also has a backend
@@ -8,11 +8,11 @@ server that handles logging and authentication.
 ## Why?
 
 - Why React: This game is basically an app with bright colours and sound
-  effects. The true capabilities of the `<canvas>` were hardly being used, but
-  the `<canvas>`-based renderer was quite limiting. Moreover, using `<canvas>`
-  presented performance issues that would have been very challenging, if not
-  infeasible or impossible, to optimize away. Rendering using HTML & SVG
-  elements and CSS styles is flexible enough for this use-case.
+  effects. This meant that it was not really taking advantage of the powers of
+  using `<canvas>`, but it was bearing the disadvantages. The game was
+  maintaining its own layout engine, for example, but did not contain any styles
+  of layout that cannot be expressed in CSS. This made it difficult to add new
+  features without facing great complexity and performance impacts.
 - Why TypeScript: TypeScript makes finding, understanding, and refactoring code
   *significantly* easier. The productivity gained by working in TypeScript was
   too great to leave on the table.
