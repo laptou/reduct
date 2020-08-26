@@ -164,7 +164,7 @@ export function getChapterByLevelIndex(index: number): ChapterDefinition {
   let current = 0;
 
   for (const chapter of progression!.chapters) {
-    if (current + chapter.levels.length <= index) {
+    if (current + chapter.levels.length < index) {
       current += chapter.levels.length;
       continue;
     }
