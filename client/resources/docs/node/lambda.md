@@ -1,7 +1,7 @@
 ---
 type: lambda
 name: Lambda
-example: 'x => x + 3'
+example: lambda.png
 ---
 
 The **lambda** represents a function. It takes in a parameter and returns a

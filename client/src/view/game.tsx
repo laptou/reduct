@@ -54,7 +54,7 @@ const GameImpl: React.FC<GameStoreProps> = (props) => {
         <GameMenuTab />
         <HistoryTab />
         <Sidebar>
-          <Sidebar.Section title='Docs' isOpen={true}>
+          <Sidebar.Section title='Documentation' isOpen={true}>
             <DocsTab />
           </Sidebar.Section>
           <Sidebar.Section title='Global Scope' isOpen={true}>

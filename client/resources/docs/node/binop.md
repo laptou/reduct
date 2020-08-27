@@ -1,7 +1,7 @@
 ---
 type: binop
-name: Binary Operator
-example: '3 + 2'
+name: Comparison
+example: binop.png
 ---
 
 The **binary operator** is used for math, comparison, and logic. You can

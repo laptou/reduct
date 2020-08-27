@@ -1,7 +1,7 @@
 ---
 type: let
 name: Let
-example: '__let(x, 5, () => x + x)'
+example: let.png
 ---
 
 The **let** node lets you give a value to a name.

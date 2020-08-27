@@ -1,7 +1,7 @@
 ---
 type: conditional
 name: If-Else
-example: '1 == 2 ? 5 : 6'
+example: conditional.png
 ---
 
 The **if-else block** or **conditional** will give you the first item it

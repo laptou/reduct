@@ -1,7 +1,6 @@
 ---
 type: reference
 name: Reference
-example: '__reference([STAR, RECT, TRIANGLE])'
 ---
 
 A **reference** is a pointer to a value that exists somewhere else.
