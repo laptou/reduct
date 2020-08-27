@@ -1,8 +1,10 @@
 import React, {
-  ReactChild, useState, useRef, useMemo, useLayoutEffect, useReducer,
+  ReactChild, useCallback, useLayoutEffect, useRef, useState,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { animated, useTransition } from 'react-spring';
+
+import { useTimer } from './util';
 
 export interface BubbleProps {
   /**
@@ -16,10 +18,10 @@ export interface BubbleProps {
   type: 'error' | 'info';
 
   /**
-   * A dummy object that can be changed when the boundaries of the bubble need
-   * to be updated.
+   * True if this bubble should continuously check if the parent element's
+   * boundaries have changed.
    */
-  update?: any;
+  update?: boolean;
 
   children: ReactChild;
 }
@@ -65,12 +67,8 @@ export const Bubble: React.FC<BubbleProps> = ({
     },
   });
 
-  // bubble is shown at the edge of its parent element, so we need to find out
-  // which side we should show the bubble on to avoid being clipped
-  useLayoutEffect(() => {
-    if (!show) {
-      return;
-    }
+  const measure = useCallback(() => {
+    if (!show) return;
 
     const bubbleDiv = bubbleDivRef.current!;
     const bubbleBounds = bubbleDiv.getBoundingClientRect();
@@ -108,7 +106,13 @@ export const Bubble: React.FC<BubbleProps> = ({
       width: parentBounds.width,
       height: parentBounds.height,
     });
-  }, [show, update]);
+  }, [show]);
+
+  useTimer(measure, 100, update ?? false);
+
+  // bubble is shown at the edge of its parent element, so we need to find out
+  // which side we should show the bubble on to avoid being clipped
+  useLayoutEffect(measure, [measure]);
 
   return (
     <div ref={baseDivRef}>
