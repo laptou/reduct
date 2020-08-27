@@ -15,7 +15,7 @@
   background-color: white;
   color: theme.$projection-foreground-inverse;
 
-  .lambda-arg, .lambda-arrow, .lambda-body {
+  .lambda-args, .lambda-arrow, .lambda-body {
     @extend %value-container;
   }
 
@@ -33,16 +33,18 @@
     transform-origin: center center;
   }
 
-  &.hover {
-    .lambda-args {
-      border: 1px dashed rgba(black, 0.5);
+  .lambda-args.hover {
+    border: 1px dashed rgba(black, 0.5);
 
-      background-color: rgba(white, 1);
+    background-color: rgba(white, 0.5);
 
-      color: theme.$projection-color-function;
-    }
+    color: theme.$projection-color-function;
+
 
     .lambda-args-inner {
+      // to prevent messing with drag-drop
+      pointer-events: none;
+
       transform: scale(1.5);
     }
   }
