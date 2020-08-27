@@ -6,6 +6,7 @@
   @extend %projection-standalone;
   @include fx.projection-shadow-box();
 
+  flex-flow: row-reverse nowrap;
   gap: 0.25rem;
 
   padding: 0.25rem 0.5rem;
@@ -18,25 +19,31 @@
     @extend %value-container;
   }
 
-  // make the arg bigger so it's easier to drop things on it
-  .lambda-arg {
-    order: 0;
-
+  .lambda-args {
+    // make the arg bigger so it's easier to drop things on it
     margin: -2rem;
     padding: 2rem;
+    border-radius: 0.25rem;
 
     background-color: transparent;
   }
 
-  .lambda-arrow {
-    order: 1;
-  }
-
-  .lambda-body {
-    order: 2;
+  .lambda-args-inner {
+    transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+    transform-origin: center center;
   }
 
   &.hover {
-    color: theme.$projection-color-function;
+    .lambda-args {
+      border: 1px dashed rgba(black, 0.5);
+
+      background-color: rgba(white, 1);
+
+      color: theme.$projection-color-function;
+    }
+
+    .lambda-args-inner {
+      transform: scale(1.5);
+    }
   }
 }

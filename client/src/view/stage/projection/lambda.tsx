@@ -78,17 +78,13 @@ function onDragOver(
 
 function onDragLeave(
   event: React.DragEvent<HTMLDivElement>,
-  props: LambdaProjectionProps,
   setHover: (hover: boolean) => void
 ) {
-  // you can't drop a parameter on a locked node
-  if (props.node.locked && props.node.parent)
+  // if this is a bubbled event, ignore
+  if (event.currentTarget !== event.target)
     return;
 
   event.preventDefault();
-
-  // TODO: add validation on whether the node being dragged can be dropped in
-  // this slot
   setHover(false);
 }
 
@@ -121,19 +117,21 @@ export const LambdaProjectionImpl: FunctionComponent<LambdaProjectionProps> =
 
     return (
       <div className={cx('projection lambda', { hover })}>
+        <div className='lambda-body'>
+          <StageProjection nodeId={props.node.subexpressions.body} />
+        </div>
         <span className='lambda-arrow'>
           =&gt;
         </span>
         <div
-          className='lambda-arg'
+          className='lambda-args'
           onDragOver={e => onDragOver(e, props, setHover)}
-          onDragLeave={e => onDragLeave(e, props, setHover)}
+          onDragLeave={e => onDragLeave(e, setHover)}
           onDrop={e => onDrop(e, props, setHover)}
         >
-          <StageProjection nodeId={props.node.subexpressions.arg} />
-        </div>
-        <div className='lambda-body'>
-          <StageProjection nodeId={props.node.subexpressions.body} />
+          <div className='lambda-args-inner'>
+            <StageProjection nodeId={props.node.subexpressions.arg} />
+          </div>
         </div>
       </div>
     );
