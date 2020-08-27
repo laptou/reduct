@@ -1,6 +1,6 @@
 {
   "name": "@reduct/server",
-  "version": "7.0.15-beta",
+  "version": "7.0.21-beta",
   "description": "",
   "main": "dist/index.js",
   "scripts": {

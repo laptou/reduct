@@ -1,6 +1,6 @@
 {
   "name": "@reduct/client",
-  "version": "7.0.15-beta",
+  "version": "7.0.21-beta",
   "main": "src/index.js",
   "repository": "https://github.coecis.cornell.edu/Reduct/reduct-redux.git",
   "author": "David Li <li.davidm96@gmail.com>, Ibiyemi Abiodun <iaa34@cornell.edu>",
