@@ -3,14 +3,20 @@ import React from 'react';
 import { Bubble } from './bubble';
 
 import {
-  MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError, GameError, CircularCallError, BuiltInError, WrongBuiltInParamsCountError, AlreadyFullyBoundError, InvalidActionError,
+  AlreadyFullyBoundError, BuiltInError, CircularCallError, GameError, InvalidActionError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongBuiltInParamsCountError, WrongTypeError,
 } from '@/store/errors';
 
 interface ErrorBubbleProps {
   error: GameError | null;
+
+  /**
+   * A dummy object that can be changed when the boundaries of the bubble need
+   * to be updated.
+   */
+  update?: any;
 }
 
-export const ErrorBubble: React.FC<ErrorBubbleProps> = ({ error }) => {
+export const ErrorBubble: React.FC<ErrorBubbleProps> = ({ error, update }) => {
   let message = '';
 
   if (error instanceof WrongTypeError) {
@@ -42,7 +48,7 @@ export const ErrorBubble: React.FC<ErrorBubbleProps> = ({ error }) => {
   }
 
   if (error instanceof InvalidActionError) {
-    message = 'You can\'t do that.'
+    message = 'You can\'t do that.';
   }
 
   if (error instanceof BuiltInError) {
@@ -50,7 +56,7 @@ export const ErrorBubble: React.FC<ErrorBubbleProps> = ({ error }) => {
   }
 
   return (
-    <Bubble type='error' show={!!error}>
+    <Bubble type='error' show={!!error} update={update}>
       {message}
     </Bubble>
   );

@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import React, {
-  FunctionComponent, useEffect, useState, useRef,
+  FunctionComponent, useEffect, useState, useRef, useReducer,
 } from 'react';
 import { connect } from 'react-redux';
 import { useTransition, animated } from 'react-spring';
@@ -152,6 +152,9 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
       stopExec,
     } = props;
 
+    // used to force a re-render when bounds of object change
+    const [update, forceUpdate] = useReducer(x => x + 1, 0);
+
     // whether execution is being fast-forwarded or not
     const [isFast, setFast] = useState(false);
     const timer = useRef<number | null>(null);
@@ -159,6 +162,7 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
     useEffect(() => {
       const runner = () => {
         exec();
+        forceUpdate();
       };
 
       if (executing) {
@@ -230,11 +234,17 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
                 draggable={draggable}
                 data-node-id={node.id}
                 onDragStart={e => onDragStart(e, props)}
+                onDragEnd={() => forceUpdate()}
                 onClick={e => onClick(e, props)}
               >
                 {getProjectionForNode(node)}
-                <ErrorBubble error={error} />
+
+                <ErrorBubble 
+                  update={update} 
+                  error={error} 
+                />
                 <ExecBubble
+                  update={update}
                   executing={executing}
                   onStop={() => stopExec()}
                   onSkip={() => setFast(true)}

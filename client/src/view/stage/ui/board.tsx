@@ -302,7 +302,15 @@ const BoardImpl: FunctionComponent<BoardProps> =
     // update the size of the board
     useLayoutEffect(() => {
       if (!boardRef.current) return;
-      boardBounds.current = boardRef.current.getBoundingClientRect();
+      const boardDiv = boardRef.current;
+      const resizeObserver = new ResizeObserver(() => {
+        boardBounds.current = boardDiv.getBoundingClientRect();
+      });
+
+      boardBounds.current = boardDiv.getBoundingClientRect();
+      resizeObserver.observe(boardDiv);
+
+      return () => resizeObserver.disconnect();
     }, []);
 
     // use useLayoutEffect instead of useEffect b/c this needs to execute after

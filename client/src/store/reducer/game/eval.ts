@@ -620,14 +620,16 @@ export function gameEvalReducer(
       }
     }
 
+    const newTargetNode = state.nodes.get(targetNodeId)!;
+
     // if it was replaced by other nodes or is no longer steppable, add those to
     // the execution list
     if (state.removed.has(targetNodeId)
-    || getKindForNode(targetNode, state.nodes) !== 'expression')
+    || getKindForNode(newTargetNode, state.nodes) !== 'expression')
       executing.delete(targetNodeId);
 
-    for (const [nodeId, sourceId] of state.added) {
-      if (sourceId !== targetNodeId)
+    for (const nodeId of state.returned) {
+      if (isAncestorOf(nodeId, targetNodeId, state.nodes))
         continue;
 
       const newNode = state.nodes.get(nodeId)!;

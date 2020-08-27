@@ -1,10 +1,10 @@
 import React, {
-  ReactChild, useState, useRef, useMemo, useLayoutEffect,
+  ReactChild, useState, useRef, useMemo, useLayoutEffect, useReducer,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { animated, useTransition } from 'react-spring';
 
-interface BubbleProps {
+export interface BubbleProps {
   /**
    * True if this bubble should be displayed.
    */
@@ -13,7 +13,13 @@ interface BubbleProps {
   /**
    * The type of bubble this is. Currently only controls the color.
    */
-  type: 'error';
+  type: 'error' | 'info';
+
+  /**
+   * A dummy object that can be changed when the boundaries of the bubble need
+   * to be updated.
+   */
+  update?: any;
 
   children: ReactChild;
 }
@@ -27,7 +33,7 @@ enum BubbleSide {
 }
 
 export const Bubble: React.FC<BubbleProps> = ({
-  children, type, show,
+  children, type, show, update,
 }) => {
   const baseDivRef = useRef<HTMLDivElement>(null);
   const bubbleDivRef = useRef<HTMLDivElement>(null);
@@ -102,7 +108,7 @@ export const Bubble: React.FC<BubbleProps> = ({
       width: parentBounds.width,
       height: parentBounds.height,
     });
-  }, [show]);
+  }, [show, update]);
 
   return (
     <div ref={baseDivRef}>
