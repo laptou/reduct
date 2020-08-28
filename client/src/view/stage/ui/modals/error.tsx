@@ -9,9 +9,7 @@ interface ErrorDisplayProps {
 }
 
 export const ErrorDisplay: React.FC<ErrorDisplayProps> = (props) => {
-  useEffect(() => {
-    log('game:crash');
-  }, []);
+  log('game:crash');
 
   return (
     <Modal>

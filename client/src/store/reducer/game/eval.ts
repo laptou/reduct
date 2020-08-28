@@ -1,4 +1,5 @@
 import { castDraft, produce } from 'immer';
+import * as Sentry from '@sentry/react';
 
 import {
   ActionKind, createEvalApply, createEvalConditional, createEvalIdentifier, createEvalLambda, createEvalLet, createEvalNot, createEvalOperator, createMoveNodeToBoard, createReturn, createStep, ReductAction,
@@ -251,9 +252,9 @@ export function gameEvalReducer(
     case '==':
     {
       if (leftNode.type !== 'number'
-              && leftNode.type !== 'string'
-              && leftNode.type !== 'boolean'
-              && leftNode.type !== 'symbol')
+          && leftNode.type !== 'string'
+          && leftNode.type !== 'boolean'
+          && leftNode.type !== 'symbol')
         throw new WrongTypeError(leftNode.id, [
           'number', 'string', 'boolean', 'symbol',
         ], leftNode.type);
@@ -526,6 +527,10 @@ export function gameEvalReducer(
       throw new Error(`Cannot step a ${targetNode.type}`);
     }
 
+    if (state.error) {
+      return state;
+    }
+
     return gameEvalReducer(state, createReturn(targetNodeId));
   }
 
@@ -551,6 +556,13 @@ export function gameEvalReducer(
 
       for (const returnedNodeId of draft.returned) {
         const returnedNode = draft.nodes.get(returnedNodeId)!;
+
+        if (!returnedNode) {
+          Sentry.captureEvent({
+            level: Sentry.Severity.Warning,
+            message: `returned node ${returnedNodeId} was not found; returned from ${targetNodeId} (${JSON.stringify(targetNode)})`,
+          });
+        }
 
         // replace the target node with the returned node
         if (targetNode.parent) {
