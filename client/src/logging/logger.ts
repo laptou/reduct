@@ -1,4 +1,5 @@
 import { v4 as uuid } from 'uuid';
+import * as Sentry from '@sentry/react';
 
 interface LogEntry {
   /**
@@ -69,5 +70,11 @@ export function log(action: string, extra: Record<Exclude<string, 'timestamp' | 
     sessionId,
     timestamp: new Date(),
     ...extra,
+  });
+
+  Sentry.addBreadcrumb({
+    message: action,
+    data: extra,
+    level: Sentry.Severity.Info,
   });
 }
