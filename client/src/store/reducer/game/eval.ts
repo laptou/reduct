@@ -306,6 +306,9 @@ export function gameEvalReducer(
     const positiveNode = state.nodes.get(blockNode.subexpressions.positive)!;
     const negativeNode = state.nodes.get(blockNode.subexpressions.negative)!;
 
+    if (condNode.type === 'missing')
+      throw new MissingNodeError(condNode.id);
+
     if (condNode.type !== 'boolean')
       throw new WrongTypeError(condNode.id, ['boolean'], condNode.type);
 
