@@ -59,7 +59,7 @@ module.exports = (env) => ({
     path: path.resolve(__dirname, 'dist'),
     crossOriginLoading: 'anonymous',
     publicPath: '/',
-    chunkFilename: env.production ? '[name]-[chunkhash].js' : undefined,
+    chunkFilename: env.production ? '[name].js?id=[chunkhash]' : undefined,
   },
   module: {
     rules: [
