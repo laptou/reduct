@@ -22,7 +22,7 @@ export function builtinLength(self: DRF<BuiltInIdentifierNode>,
 
   switch (arrayOrString.type) {
   case 'array': {
-    const result = createNumberNode(arrayOrString.fields.length);
+    const result = createNumberNode(arrayOrString.fields.length) as DRF;
 
     return addClonedNodes(
       self,
@@ -36,7 +36,7 @@ export function builtinLength(self: DRF<BuiltInIdentifierNode>,
   }
 
   case 'string': {
-    const result = createNumberNode(arrayOrString.fields.value.length);
+    const result = createNumberNode(arrayOrString.fields.value.length) as DRF;
 
     return addClonedNodes(
       self,
