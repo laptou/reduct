@@ -98,6 +98,18 @@ export async function initializeAuth(server: Koa): Promise<void> {
     })
   );
 
+  authRouter.get(
+    '/auth/me',
+    ctx => {
+      if (!ctx.isAuthenticated()) {
+        ctx.response.status = 401;
+        return;
+      }
+
+      ctx.response.body = ctx.state.user.netId;
+    }
+  );
+
   server.use(authRouter.routes());
 }
 

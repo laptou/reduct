@@ -7,6 +7,7 @@ import { ActionKind, ReductAction } from '@/store/action/game';
 import { GlobalState } from '@/store/state';
 import { unflatten } from '@/util/nodes';
 import { PreferenceActionKind, PreferenceAction } from '@/store/action/preferences';
+import { getNetId } from '@/auth';
 
 datadogRum.init({
   applicationId: 'e09f9042-041e-41a9-9166-c6be692e800e',
@@ -16,6 +17,8 @@ datadogRum.init({
   env: PKG_ENV,
   version: PKG_VERSION,
 });
+
+void getNetId().then(netId => datadogRum.addRumGlobalContext('netId', netId));
 
 export const logMiddleware: Middleware =
   (api) => (next) => (act: ReductAction | PreferenceAction) => {
@@ -60,9 +63,10 @@ export const logMiddleware: Middleware =
 
       log('game:execute', {
         nodes: {
-          // use version from lastState b/c targetNode might have been deleted as
-          // a result of executing it
-          executed: unflatten(act.targetNodeId, lastState!.nodes),
+          // use version from lastState b/c targetNode might have been deleted
+          // as a result of executing it; unless an error occured, in which case
+          // there may not be a lastState
+          executed: unflatten(act.targetNodeId, errorState ? presentState.nodes : lastState!.nodes),
           added,
           removed,
         },
