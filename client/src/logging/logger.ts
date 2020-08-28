@@ -31,7 +31,7 @@ const pendingLogEntries: LogEntry[] = [];
 async function trySendLogs() {
   if (pendingLogEntries.length === 0) return;
 
-  const sendingLogEntries = pendingLogEntries.splice(0, pendingLogEntries.length);
+  const sendingLogEntries = pendingLogEntries.splice(0, Math.min(pendingLogEntries.length, 10));
   const body = JSON.stringify(sendingLogEntries);
 
   try {
