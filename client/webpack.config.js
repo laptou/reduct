@@ -190,7 +190,7 @@ module.exports = (env) => ({
       'PKG_VERSION': JSON.stringify(require('./package.json').version),
       'process.env.NODE_ENV': JSON.stringify(env.production ? 'production' : 'development'),
     }),
-    new CleanPlugin(),
+    // new CleanPlugin(),
     // new TsCheckerPlugin({
     //   workers: TsCheckerPlugin.TWO_CPUS_FREE,
     //   eslint: true,
