@@ -299,11 +299,11 @@ const BoardImpl: FunctionComponent<BoardProps> =
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [boardItemRefs, positions]);
 
-    const resizeObserver = new ResizeObserver(() => {
+    const resizeObserver = new ResizeObserver(() => requestAnimationFrame(() => {
       if (!boardRef.current) return;
       const boardDiv = boardRef.current;
       boardBounds.current = boardDiv.getBoundingClientRect();
-    });
+    }));
 
     // update the size of the board
     useLayoutEffect(() => {
