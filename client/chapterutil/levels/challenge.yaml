@@ -60,6 +60,7 @@ levels:
     toolbox:
       - list
       - list
+      - list
       - oldItem
       - newItem
       - withItem

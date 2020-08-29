@@ -74,7 +74,8 @@ export function log(action: string, extra: Record<Exclude<string, 'timestamp' | 
 
   Sentry.addBreadcrumb({
     message: action,
-    data: extra,
+    type: 'action',
+    data: Object.fromEntries(Object.entries(extra).map(([key, value]) => [key, JSON.stringify(value)])),
     level: Sentry.Severity.Info,
   });
 }

@@ -38,7 +38,11 @@ void (async () => {
 
   // body parser MUST be initialized for auth middleware
   // to work correctly
-  app.use(KoaBodyParser());
+  app.use(KoaBodyParser({
+    // patch to recover data for users with huge backlogs
+    jsonLimit: '100mb',
+    textLimit: '100mb',
+  }));
 
   await initializeAuth(app);
   serverLogger.debug('initialized authentication');

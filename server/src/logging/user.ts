@@ -39,7 +39,10 @@ userLoggingRouter.post('/logs/action', (ctx) => {
   const user = ctx.state.user;
 
   for (const logEntry of logEntries) {
-    userLogger.info(`${user?.netId ?? 'unknown'}:${logEntry.action}`, {
+    const netId = user?.netId ?? 'unknown';
+    const action = logEntry.action;
+
+    userLogger.info(`${netId}:${action}`, {
       netId: user.netId,
       ...logEntry,
     });

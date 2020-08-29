@@ -79,12 +79,26 @@ export const logMiddleware: Middleware =
       break;
     }
 
-    case ActionKind.StartLevel:
+    case ActionKind.StartLevel: {
       log('game:start-level', {
         levelIndex: presentState.level,
       });
+
+      try {
+        const levels = Object.fromEntries(newState.stats.levels.entries());
+        const startTime = newState.stats.startTime;
+
+        log('game:stats', {
+          levels,
+          startTime,
+        });
+      } catch {
+        console.warn('logging game stats failed');
+      }
+
       flushLogs();
       break;
+    }
 
     case ActionKind.MoveNodeToBoard:
       log('game:move-node-to-board', {
@@ -131,6 +145,8 @@ export const logMiddleware: Middleware =
         levels,
         startTime,
       });
+      flushLogs();
+
       break;
     }
 

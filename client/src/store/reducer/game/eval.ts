@@ -567,6 +567,9 @@ export function gameEvalReducer(
           });
         }
 
+        if (returnedNode.type === 'missing')
+          throw new MissingNodeError(returnedNodeId);
+
         // replace the target node with the returned node
         if (targetNode.parent) {
           const parent = draft.nodes.get(targetNode.parent)!;

@@ -1,5 +1,6 @@
 import { createLogger, transports, format } from 'winston';
 import { LoggingWinston as GCloudLogging } from '@google-cloud/logging-winston';
+import { start as startDebugAgent } from '@google-cloud/debug-agent';
 
 import { ENV, USE_REMOTE_LOGGING } from '../config';
 
@@ -10,7 +11,12 @@ export const serverLogger = createLogger({
 if (USE_REMOTE_LOGGING) {
   serverLogger.add(new GCloudLogging({
     logName: 'server',
+    maxEntrySize: 20000000,
   }));
+
+  startDebugAgent({
+    serviceContext: { enableCanary: true },
+  });
 }
 
 if (ENV === 'dev' || !USE_REMOTE_LOGGING) {
