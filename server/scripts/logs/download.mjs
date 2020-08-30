@@ -1,13 +1,15 @@
+import { promises as fs } from 'fs';
 import { dirname, resolve } from 'path';
-import { promises as fs, createReadStream } from 'fs';
 
 import GCloudLogging from '@google-cloud/logging';
 
-const { writeFile, access, mkdir } = fs;
+import { detectExistingLogs } from './detect.mjs';
+
+const { writeFile, mkdir } = fs;
 const Logging = new GCloudLogging.Logging();
 
 const scriptDirectory = dirname(new URL(import.meta.url).pathname);
-const dataDirectory = resolve(scriptDirectory, '../data');
+const dataDirectory = resolve(scriptDirectory, '../../data');
 
 async function main() {
   let numEntriesDownloaded = 0;
@@ -19,17 +21,19 @@ async function main() {
 
   console.log('starting export of logs');
 
-  const existingData = await detect();
+  const {
+    batchCount,
+    batchChunkCounts,
+    latestEntryId,
+  } = await detectExistingLogs(dataDirectory);
 
-  if (existingData.latestBatchIndex !== null) {
-    console.log(
-      `detected ${existingData.latestBatchIndex + 1} existing batches`
-    );
+  if (batchCount > 0) {
+    console.log(`detected ${batchCount} existing batches`);
 
-    if (existingData.latestChunkIndex !== null) {
-      console.log(
-        `detected ${existingData.latestChunkIndex + 1} chunks in the most recent batch`
-      );
+    const latestChunkCount = batchChunkCounts[batchCount - 1];
+
+    if (latestChunkCount > 0) {
+      console.log(`detected ${latestChunkCount} chunks in the most recent batch`);
     } else {
       console.error('no chunks were detected in most recent batch, exiting');
       console.info(
@@ -39,8 +43,8 @@ async function main() {
       return;
     }
 
-    if (existingData.latestEntryId !== null) {
-      console.log(`downloading until entry ${existingData.latestEntryId}`);
+    if (latestEntryId !== null) {
+      console.log(`downloading until entry ${latestEntryId}`);
     } else {
       console.info(
         'if you started this script and then terminated it before '
@@ -51,10 +55,7 @@ async function main() {
     }
   }
 
-  const newBatchIndex = existingData.latestBatchIndex !== null
-    ? existingData.latestBatchIndex + 1
-    : 0;
-
+  const newBatchIndex = batchCount;
   const newBatchDir = resolve(dataDirectory, `batch${newBatchIndex}`);
 
   await mkdir(newBatchDir);
@@ -91,7 +92,7 @@ async function main() {
 
     // find index of an entry we've already downloaded
     const existingEntryIndex = entriesChunk.findIndex(
-      entry => entry.metadata.insertId === existingData.latestEntryId
+      entry => entry.metadata.insertId === latestEntryId
     );
 
     if (entriesChunk.length >= 3000 || existingEntryIndex >= 0) {
@@ -99,7 +100,7 @@ async function main() {
         entriesChunk.slice(0, existingEntryIndex > 0 ? existingEntryIndex : undefined),
         numChunksDownloaded,
         newBatchDir,
-        existingData.latestEntryId
+        latestEntryId
       );
 
       entriesChunk = [];
@@ -123,96 +124,6 @@ async function main() {
   }
 
   console.log('done');
-}
-
-async function detect() {
-  let latestBatchIndex = -1;
-
-  while (true) {
-    try {
-      const batchFolderPath = resolve(
-        dataDirectory,
-        `batch${latestBatchIndex + 1}`
-      );
-      await access(batchFolderPath);
-      latestBatchIndex++;
-    } catch {
-      break;
-    }
-  }
-
-  if (latestBatchIndex < 0) {
-    return {
-      latestBatchIndex: null,
-      latestChunkIndex: null,
-      latestEntryId: null,
-    };
-  }
-
-  let latestChunkIndex = -1;
-
-  while (true) {
-    try {
-      const chunkFilePath = resolve(
-        dataDirectory,
-        `batch${latestBatchIndex}/chunk${latestChunkIndex + 1}.json`
-      );
-      await access(chunkFilePath);
-      latestChunkIndex++;
-    } catch {
-
-      break;
-    }
-  }
-
-  if (latestChunkIndex < 0) {
-    return {
-      latestBatchIndex,
-      latestChunkIndex: null,
-      latestEntryId: null,
-    };
-  }
-
-  const latestChunkFilePath = resolve(
-    dataDirectory,
-    `batch${latestBatchIndex}/chunk${latestChunkIndex}.json`
-  );
-
-  const latestEntryLine = await new Promise((resolve, reject) => {
-    const latestChunkFileStream = createReadStream(latestChunkFilePath);
-    let offset = 0, index = 0, data = '';
-
-    latestChunkFileStream.on('close', () => resolve(data.slice(0, offset + index)));
-    latestChunkFileStream.on('error', (err) => reject(err));
-    latestChunkFileStream.on('data', (chunk) => {
-      index = chunk.indexOf('\n');
-      data += chunk;
-      if (index !== -1) {
-        latestChunkFileStream.close();
-      } else {
-        offset += chunk.length;
-      }
-    });
-  });
-
-  try {
-    const latestEntryData = JSON.parse(latestEntryLine);
-
-    const latestEntryId = latestEntryData.eventId;
-
-    return {
-      latestBatchIndex,
-      latestChunkIndex,
-      latestEntryId,
-    };
-
-  } catch {
-    return {
-      latestBatchIndex,
-      latestChunkIndex,
-      latestEntryId: null,
-    };
-  }
 }
 
 async function flush(entriesChunk, index, dir) {
