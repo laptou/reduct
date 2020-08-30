@@ -37,6 +37,14 @@
     pointer-events: none;
   }
 
+  &.executing {
+    cursor: progress;
+
+    .projection {
+      pointer-events: none;
+    }
+  }
+
   .reduct-bubble-error {
     pointer-events: none;
   }

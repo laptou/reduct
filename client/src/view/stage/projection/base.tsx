@@ -226,9 +226,9 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
                   draggable,
                   steppable,
                   frozen,
+                  executing,
                 })}
                 draggable={draggable}
-                data-node-id={node.id}
                 onDragStart={e => onDragStart(e, props)}
                 onClick={e => onClick(e, props)}
               >
@@ -261,11 +261,12 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
 export const StageProjection = connect(
   (state: DeepReadonly<GlobalState>, ownProps: StageProjectionOwnProps) => {
     const presentState = state.game.$present;
+    const { nodeId } = ownProps;
 
-    if (ownProps.nodeId) {
-      const node = presentState.nodes.get(ownProps.nodeId) ?? null;
-      const error = state.game.$error?.target === ownProps.nodeId ? state.game.$error : null;
-      const executing = presentState.executing.has(ownProps.nodeId);
+    if (nodeId) {
+      const node = presentState.nodes.get(nodeId) ?? null;
+      const error = state.game.$error?.target === nodeId ? state.game.$error : null;
+      const executing = presentState.executing.has(nodeId) && !presentState.removed.has(nodeId);
 
       if (!node)
         return {
