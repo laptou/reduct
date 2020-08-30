@@ -1,25 +1,11 @@
-import { createReadStream } from 'fs';
+import { promises } from 'fs';
 
 /**
  * Reads logs from a chunk file.
  * @param chunkFilePath The path of the log chunk file to read.
  */
 export async function readChunk(chunkFilePath) {
-  const data = await new Promise((resolve, reject) => {
-    const chunkFileStream = createReadStream(chunkFilePath, { encoding: 'utf-8' });
-    let data = '';
-
-    chunkFileStream.on('error', (err) => reject(err));
-    chunkFileStream.on('readable', () => {
-      while (true) {
-        const chunk = chunkFileStream.read();
-        if (chunk === null) break;
-        data += chunk;
-      }
-    });
-
-    chunkFileStream.on('end', () => resolve(data));
-  });
+  const data = await promises.readFile(chunkFilePath, 'utf-8');
 
   return data
     .split('\n')

@@ -12,6 +12,10 @@ const scriptDirectory = dirname(new URL(import.meta.url).pathname);
 const dataDirectory = resolve(scriptDirectory, '../../data');
 
 async function main() {
+  if (!global.gc) {
+    console.error('usage: node --expose-gc download.mjs');
+  }
+
   let numEntriesDownloaded = 0;
   let numChunksDownloaded = 0;
   let numRetries = 0;

@@ -7,7 +7,7 @@ example: define.png
 A **define** represents the definition of a new function. It gives a name to a
 function, so that you can refer to it by name later. 
 
-You can drag them into the "definitions" box in the bottom right to put them in the
+You can drag them into the "definitions" box in the bottom left to put them in the
 global scope.
 
 ```javascript

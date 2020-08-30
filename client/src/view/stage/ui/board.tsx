@@ -85,9 +85,8 @@ function onDrop(
   event.preventDefault();
   event.stopPropagation();
 
-  if (!props.board.has(nodeId)) {
+  if (!props.board.has(nodeId))
     props.moveNodeToBoard(nodeId);
-  }
 
   // get drag offset data
   const serializedOffset = event.dataTransfer.getData('application/reduct-node-offset');

@@ -301,7 +301,7 @@ export function flatten(
 export function unflatten(
   id: NodeId,
   map: DeepReadonly<NodeMap>,
-  maxDepth = 10
+  maxDepth = 3
 ): BaseNode {
   const flatNode = map.get(id)!;
 

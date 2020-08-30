@@ -59,7 +59,7 @@ module.exports = (env) => ({
     path: path.resolve(__dirname, 'dist'),
     crossOriginLoading: 'anonymous',
     publicPath: '/',
-    chunkFilename: env.production ? '[name].js?id=[chunkhash]' : undefined,
+    chunkFilename: env.production ? '[name].[chunkhash].js' : undefined,
   },
   module: {
     rules: [
@@ -201,9 +201,9 @@ module.exports = (env) => ({
         new CompressionPlugin({
           threshold: 8192,
         }),
-        new SriPlugin({
-          hashFuncNames: ['sha384', 'sha512'],
-        }),
+        // new SriPlugin({
+        //   hashFuncNames: ['sha384', 'sha512'],
+        // }),
         new SentryCliPlugin({
           include: resolve(__dirname, 'dist'),
           ignoreFile: '.sentrycliignore',

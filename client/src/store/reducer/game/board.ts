@@ -40,10 +40,12 @@ export function gameBoardReducer(
   }
 
   case ActionKind.MoveNodeToBoard: {
-    if (state.board.has(act.nodeId))
+    if (state.board.has(act.nodeId) || state.removed.has(act.nodeId))
       return state;
 
-    const node = state.nodes.get(act.nodeId)!;
+    const node = state.nodes.get(act.nodeId);
+
+    if (!node) return state;
 
     if (node.type === 'missing') {
       throw new MissingNodeError(node.id);
@@ -95,14 +97,18 @@ export function gameBoardReducer(
     state = gameBoardReducer(state, createMoveNodeToBoard(nodeId));
 
     const newState = produce(state, draft => {
-      const slot = draft.nodes.get(slotId)!;
+      const slot = draft.nodes.get(slotId);
+
+      if (!slot) return;
 
       // this should be impossible
       if (!slot.parent)
         throw new Error(`Slot ${slotId} has no parent!`);
 
       const parent = draft.nodes.get(slot.parent)!;
-      const child = draft.nodes.get(nodeId)!;
+      const child = draft.nodes.get(nodeId);
+
+      if (!child) return;
 
       if (child.type === 'missing') {
         throw new MissingNodeError(child.id);
