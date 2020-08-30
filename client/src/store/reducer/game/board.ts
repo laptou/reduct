@@ -45,6 +45,10 @@ export function gameBoardReducer(
 
     const node = state.nodes.get(act.nodeId)!;
 
+    if (node.type === 'missing') {
+      throw new MissingNodeError(node.id);
+    }
+
     if (state.toolbox.has(act.nodeId)) {
       return produce(state, draft => {
         draft.added.clear();
@@ -99,6 +103,10 @@ export function gameBoardReducer(
 
       const parent = draft.nodes.get(slot.parent)!;
       const child = draft.nodes.get(nodeId)!;
+
+      if (child.type === 'missing') {
+        throw new MissingNodeError(child.id);
+      }
 
       const childKind = getKindForNode(child, draft.nodes);
 

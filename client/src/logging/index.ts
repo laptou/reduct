@@ -34,6 +34,7 @@ export const logMiddleware: Middleware =
     switch (act.type) {
     case ActionKind.Undo: log('game:undo'); break;
     case ActionKind.Redo: log('game:redo'); break;
+    case ActionKind.ResetTime: log('game:reset-time'); break;
 
     case ActionKind.Detach:
       // use version from lastState so we have access to parent and parentField

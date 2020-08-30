@@ -1,9 +1,9 @@
 import { dirname, resolve } from 'path';
-import { promises as fs } from 'fs';
+import { promises as fs, createReadStream } from 'fs';
 
 import GCloudLogging from '@google-cloud/logging';
 
-const { writeFile } = fs;
+const { writeFile, access, mkdir } = fs;
 const Logging = new GCloudLogging.Logging();
 
 const scriptDirectory = dirname(new URL(import.meta.url).pathname);
@@ -18,6 +18,46 @@ async function main() {
   let pageToken;
 
   console.log('starting export of logs');
+
+  const existingData = await detect();
+
+  if (existingData.latestBatchIndex !== null) {
+    console.log(
+      `detected ${existingData.latestBatchIndex + 1} existing batches`
+    );
+
+    if (existingData.latestChunkIndex !== null) {
+      console.log(
+        `detected ${existingData.latestChunkIndex + 1} chunks in the most recent batch`
+      );
+    } else {
+      console.error('no chunks were detected in most recent batch, exiting');
+      console.info(
+        'if you started this script and then terminated it before '
+      + 'it could write any data, delete the empty batch folder.'
+      );
+      return;
+    }
+
+    if (existingData.latestEntryId !== null) {
+      console.log(`downloading until entry ${existingData.latestEntryId}`);
+    } else {
+      console.info(
+        'if you started this script and then terminated it before '
+      + 'it could finish writing data, delete the empty chunk file.'
+      );
+      console.error('no entries were detected in most recent chunk, exiting');
+      return;
+    }
+  }
+
+  const newBatchIndex = existingData.latestBatchIndex !== null
+    ? existingData.latestBatchIndex + 1
+    : 0;
+
+  const newBatchDir = resolve(dataDirectory, `batch${newBatchIndex}`);
+
+  await mkdir(newBatchDir);
 
   while (true) {
     let entries, response;
@@ -44,29 +84,38 @@ async function main() {
       }
     }
 
-    if (entries.length === 0) {
-      if (entriesChunk.length > 0) {
-        await flush(entriesChunk, numChunksDownloaded);
-        entriesChunk = [];
-        numChunksDownloaded++;
-        console.log(`exported ${numChunksDownloaded} log chunks`);
-        global.gc();
-      }
-
-      break;
-    }
-
     numEntriesDownloaded += entries.length;
     console.log(`downloaded ${numEntriesDownloaded} log entries`);
 
     entriesChunk.push(...entries);
 
-    if (entriesChunk.length >= 3000) {
-      await flush(entriesChunk, numChunksDownloaded);
+    // find index of an entry we've already downloaded
+    const existingEntryIndex = entriesChunk.findIndex(
+      entry => entry.metadata.insertId === existingData.latestEntryId
+    );
+
+    if (entriesChunk.length >= 3000 || existingEntryIndex >= 0) {
+      await flush(
+        entriesChunk.slice(0, existingEntryIndex > 0 ? existingEntryIndex : undefined),
+        numChunksDownloaded,
+        newBatchDir,
+        existingData.latestEntryId
+      );
+
       entriesChunk = [];
       numChunksDownloaded++;
       console.log(`exported ${numChunksDownloaded} log chunks`);
       global.gc();
+
+      if (existingEntryIndex >= 0) {
+        console.log('reached an event that has already been downloaded');
+        break;
+      }
+
+      if (entries.length === 0) {
+        console.log('reached the end of the log');
+        break;
+      }
     }
 
     pageToken = response.nextPageToken;
@@ -76,7 +125,97 @@ async function main() {
   console.log('done');
 }
 
-async function flush(entriesChunk, index) {
+async function detect() {
+  let latestBatchIndex = -1;
+
+  while (true) {
+    try {
+      const batchFolderPath = resolve(
+        dataDirectory,
+        `batch${latestBatchIndex + 1}`
+      );
+      await access(batchFolderPath);
+      latestBatchIndex++;
+    } catch {
+      break;
+    }
+  }
+
+  if (latestBatchIndex < 0) {
+    return {
+      latestBatchIndex: null,
+      latestChunkIndex: null,
+      latestEntryId: null,
+    };
+  }
+
+  let latestChunkIndex = -1;
+
+  while (true) {
+    try {
+      const chunkFilePath = resolve(
+        dataDirectory,
+        `batch${latestBatchIndex}/chunk${latestChunkIndex + 1}.json`
+      );
+      await access(chunkFilePath);
+      latestChunkIndex++;
+    } catch {
+
+      break;
+    }
+  }
+
+  if (latestChunkIndex < 0) {
+    return {
+      latestBatchIndex,
+      latestChunkIndex: null,
+      latestEntryId: null,
+    };
+  }
+
+  const latestChunkFilePath = resolve(
+    dataDirectory,
+    `batch${latestBatchIndex}/chunk${latestChunkIndex}.json`
+  );
+
+  const latestEntryLine = await new Promise((resolve, reject) => {
+    const latestChunkFileStream = createReadStream(latestChunkFilePath);
+    let offset = 0, index = 0, data = '';
+
+    latestChunkFileStream.on('close', () => resolve(data.slice(0, offset + index)));
+    latestChunkFileStream.on('error', (err) => reject(err));
+    latestChunkFileStream.on('data', (chunk) => {
+      index = chunk.indexOf('\n');
+      data += chunk;
+      if (index !== -1) {
+        latestChunkFileStream.close();
+      } else {
+        offset += chunk.length;
+      }
+    });
+  });
+
+  try {
+    const latestEntryData = JSON.parse(latestEntryLine);
+
+    const latestEntryId = latestEntryData.eventId;
+
+    return {
+      latestBatchIndex,
+      latestChunkIndex,
+      latestEntryId,
+    };
+
+  } catch {
+    return {
+      latestBatchIndex,
+      latestChunkIndex,
+      latestEntryId: null,
+    };
+  }
+}
+
+async function flush(entriesChunk, index, dir) {
   const processedEntriesChunk = entriesChunk.map(entry => {
     const time = entry.metadata.timestamp;
     const eventId = entry.metadata.insertId;
@@ -99,7 +238,7 @@ async function flush(entriesChunk, index) {
 
   const jsonEntriesChunk = processedEntriesChunk.map(JSON.stringify);
 
-  const chunkPath = resolve(dataDirectory, `chunk${index}.json`);
+  const chunkPath = resolve(dir, `chunk${index}.json`);
   const chunkData = jsonEntriesChunk.join('\n');
 
   await writeFile(chunkPath, chunkData);

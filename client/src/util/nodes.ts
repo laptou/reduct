@@ -300,13 +300,17 @@ export function flatten(
  */
 export function unflatten(
   id: NodeId,
-  map: DeepReadonly<NodeMap>
+  map: DeepReadonly<NodeMap>,
+  maxDepth = 10
 ): BaseNode {
   const flatNode = map.get(id)!;
+
+  if (maxDepth === 0) return flatNode;
+
   const subexpressions: Record<string | number, BaseNode> = {};
 
   for (const [path, childId] of Object.entries(flatNode.subexpressions)) {
-    subexpressions[path] = unflatten(childId, map);
+    subexpressions[path] = unflatten(childId, map, maxDepth - 1);
   }
 
   return {

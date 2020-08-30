@@ -1,11 +1,12 @@
 import { compose, applyMiddleware, createStore } from 'redux';
 import { persistStore } from 'redux-persist';
 
-import { ActionKind } from './action/game';
+import { ActionKind, createGoToGameplay, createStartLevel } from './action/game';
 import { createReducer } from './reducer';
 
 import { logMiddleware } from '@/logging';
 import { log } from '@/logging/logger';
+import { getNetId } from '@/auth';
 
 let composer;
 
@@ -39,3 +40,11 @@ export const persistor = persistStore(store, { manualPersist: true } as any, () 
     startTime,
   });
 });
+
+window.func9324 = () => {
+  store.dispatch({ type: ActionKind.ResetTime });
+  store.dispatch(createStartLevel(0));
+  store.dispatch(createGoToGameplay());
+  console.log('your time has been reset. please close the developer tools now.');
+  console.log('we are notified when you use this function.');
+};

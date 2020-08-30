@@ -6,6 +6,7 @@ import { flatten } from '@/util/nodes';
 import { builtins } from '@/semantics/defs/builtins';
 import { DefineNode } from '@/semantics/defs';
 
+
 export enum ActionKind {
   UseToolbox = 'use-toolbox',
   Raise = 'raise',
@@ -49,6 +50,7 @@ export enum ActionKind {
 
   CreateDocNodes = 'create-docs',
   DeleteDocNodes = 'delete-docs',
+  ResetTime = 'reset-time'
 }
 
 export type ReductAction =

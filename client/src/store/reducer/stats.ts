@@ -14,9 +14,18 @@ export const statsReducer = (
   if (!act) return state;
 
   switch (act.type) {
+  case ActionKind.ResetTime: {
+    return {
+      ...state,
+      startTime: new Date().getTime(),
+    };
+  }
   case ActionKind.StartLevel: {
     if (state.startTime === null) {
-      state.startTime = new Date().getTime();
+      state = {
+        ...state,
+        startTime: new Date().getTime(),
+      };
     }
 
     if (state.current?.levelIndex !== act.level) {

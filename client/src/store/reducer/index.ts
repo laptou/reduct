@@ -57,6 +57,8 @@ const gameStateTransform = createTransform(
 const statsTransform = createTransform<StatsState>(
   // transform state on its way to being serialized and persisted.
   (item, key) => {
+    if (!item) return item;
+
     switch (key) {
     case 'levels':
       return Object.fromEntries(item.entries());
