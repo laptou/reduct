@@ -46,8 +46,8 @@ export async function detectExistingLogs(dataDirectory) {
   }
 
   if (
-    batchChunkCounts.length === 0 || 
-    batchChunkCounts[batchChunkCounts.length - 1] === 0
+    batchChunkCounts.length === 0
+    || batchChunkCounts[batchChunkCounts.length - 1] === 0
   ) {
     return {
       batchCount,
