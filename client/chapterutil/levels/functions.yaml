@@ -1,0 +1,66 @@
+name: Functions / tutorial
+levels:
+  - board:
+      - x => x
+      - x => STAR
+      - STAR
+      - RECT
+      - __note('Welcome to Reduct! Try dragging the star and square onto the lambdas.')
+    toolbox: []
+    goal:
+      - STAR
+      - STAR
+    hint: When you're done, there shouldn't be anything on the board except two stars.
+  - board:
+      - x => __tuple(x, x)
+      - __note('Make sure you check out the hints at the top.')
+    toolbox:
+      - CIRCLE
+    goal:
+      - CIRCLE
+      - CIRCLE
+    hint: Use the things on the board and in your toolbox to get what's in the goal.
+  - board:
+      - x => _
+      - y => x + y
+      - 3 + 4
+      - __note('Click on the "3 + 4" to simplify it.')
+    toolbox:
+      - 3
+      - 4
+      - -2
+    goal:
+      - 7
+      - 7
+    hint: Try dragging something into that empty slot (the round white oval).
+  - board:
+      - func => __tuple(func, func, func)
+    toolbox:
+      - z => 3
+      - 4
+      - 2
+      - 0
+    goal:
+      - 3
+      - 3
+      - 3
+    hint: Functions can also take other functions as parameters.
+  - board:
+      - x => y => x + y
+      - x => y => x - y
+      - x => y => x
+      - x => y => y
+      - z => z - 4
+    toolbox:
+      - 1
+      - 1
+      - 2
+      - 2
+      - 3
+      - 6
+      - 14
+    goal:
+      - 3 # 2 + 1 = 3
+      - 5 # 6 - 1 = 5
+      - -2 # 2 - 4 = -2
+    hint: You don't have to use everything in your toolbox.

@@ -1,0 +1,25 @@
+@mixin ui-panel($accent) {
+  --ui-panel-accent: #{$accent};
+  position: relative;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+
+  padding: 1rem;
+
+
+  &::before {
+    content: ' ';
+    position: absolute;
+    top: 0.25rem;
+    right: 0.25rem;
+    bottom: 0.25rem;
+    left: 0.25rem;
+    z-index: -1;
+
+    border: 1.5px solid $accent;
+    border-radius: 0.25rem;
+
+    background: white;
+  }
+}

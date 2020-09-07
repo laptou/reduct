@@ -1,0 +1,27 @@
+@use '../theme';
+@use 'layout';
+@use 'fx';
+
+.projection.binop {
+  @extend %projection-standalone;
+  @include fx.projection-shadow-irregular();
+  color: theme.$projection-foreground;
+
+  & > .decoration {
+    flex-grow: 0;
+
+    width: 20px;
+
+    polygon {
+      fill: theme.$projection-color-boolean;
+    }
+  }
+
+  & > .content {
+    background-color: theme.$projection-color-boolean;
+
+    .left, .right, .operation {
+      @extend %value-container;
+    }
+  }
+}

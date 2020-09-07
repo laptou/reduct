@@ -1,0 +1,36 @@
+@use 'layout';
+@use 'fx';
+@use '../theme';
+
+.projection.conditional {
+  @extend %projection-standalone;
+  @include fx.projection-shadow-box();
+
+  flex-flow: column nowrap;
+
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+
+  background-color: white;
+
+  & > .if, & > .else {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+
+    min-height: 2rem;
+    margin-bottom: 0.5rem;
+
+    & > span {
+      color: theme.$projection-color-boolean;
+      margin-inline-end: 0.5rem;
+    }
+  }
+
+  & > .positive, & > .negative {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-items: start;
+    margin-inline-start: 1rem;
+  }
+}

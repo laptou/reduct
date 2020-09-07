@@ -1,0 +1,18 @@
+// for standalone projections that can be moved around by the user
+@mixin projection-shadow-irregular {
+  filter: drop-shadow(0 0 3pt rgba(black, 0.5));
+
+  .locked > &, &.locked {
+    filter: none;
+  }
+}
+
+@mixin projection-shadow-box {
+  box-shadow: 0 0 3pt rgba(black, 0.5);
+
+  .locked > &, &.locked {
+    border: 1px solid rgba(black, 0.25);
+
+    box-shadow: none;
+  }
+}

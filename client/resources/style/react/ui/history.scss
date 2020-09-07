@@ -1,0 +1,10 @@
+@use '../theme';
+@use 'base';
+
+#reduct-history {
+  @include base.ui-panel($accent: hsl(221, 60%, 70%));
+  z-index: 150;
+  grid-row: 1;
+  grid-column: 4;
+  gap: 0.5rem;
+}

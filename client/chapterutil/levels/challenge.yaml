@@ -1,0 +1,77 @@
+name: Challenges
+levels:
+  - board:
+    - __note('Calculate 2^n.')
+    - pow(0)
+    - pow(1)
+    - pow(3)
+    - >-
+      function pow(n) {
+        return _ == 0
+          ? 1
+          : _(_) + _(_ - 1)
+      }
+    toolbox:
+    - n
+    - n
+    - n
+    - pow
+    - pow
+    - '_ - 1'
+    - '_ || _'
+    - '_ + 1'
+    goal:
+    - 1
+    - 2
+    - 8
+  - board:
+      - __note('Define `repeat`, which applies `fun` to `value` n times.')
+      - repeat(x => x + x, 2, 5)
+      - >-
+        function repeat(fun, value, n) {
+          return _
+        }
+      - '(_ == _) ? _ : repeat(fun, _(_), _)'
+    toolbox:
+      - n
+      - m
+      - n
+      - value
+      - value
+      - fun
+      - '_ - 1'
+      - 0
+      - 1
+      - michael
+      - '[STAR]'
+    goal:
+      - 64
+  - board:
+      - __note('Define `replace`, which returns a new list where every instance of `oldItem` in `list` has been replaced with `newItem`.')
+      - replace([CIRCLE, RECT, TRIANGLE, STAR, CIRCLE], CIRCLE, STAR, 0)
+      - >-
+        function replace(list, oldItem, newItem, index) {
+          return index == length(list)
+            ? clone(_)
+            : _(_, index) == _
+              ? replace(_(list, index, _), oldItem, newItem, _)
+              : replace(_, oldItem, newItem, _);
+        }
+    toolbox:
+      - list
+      - list
+      - list
+      - oldItem
+      - newItem
+      - withItem
+      - get
+      - set
+      - index
+      - index
+      - '_ - 1'
+      - '_ + 1'
+      - '_ + 1'
+      - index
+      - '[CIRCLE]'
+    goal:
+      - '[STAR, RECT, TRIANGLE, STAR, STAR]'

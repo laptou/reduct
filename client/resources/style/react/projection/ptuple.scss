@@ -1,0 +1,28 @@
+@use 'layout';
+@use 'fx';
+
+.projection.ptuple {
+  @extend %projection-standalone;
+  flex-flow: row nowrap;
+  align-items: center;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.ptuple-item {
+  display: inline-block;
+
+  padding: 0 0.125rem;
+}
+
+.ptuple-separator {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-end;
+  justify-self: stretch;
+
+  padding: 0.25rem 0.125rem;
+}

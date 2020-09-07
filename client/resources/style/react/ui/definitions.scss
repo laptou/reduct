@@ -1,0 +1,27 @@
+@use 'base';
+
+#reduct-definitions {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 1rem;
+  align-items: flex-start;
+
+  height: 100%;
+
+  padding: 1rem;
+}
+
+#reduct-definitions-empty-state {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+
+  height: 100%;
+
+  padding: 1rem;
+
+  border: 1.5px dashed rgba(black, 0.25);
+  border-radius: 0.25rem;
+
+  opacity: 0.56;
+}

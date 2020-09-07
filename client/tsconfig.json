@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "allowJs": true,
+    "module": "ESNext",
+    "target": "ES2020",
+    "jsx": "react",
+    "skipLibCheck": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "baseUrl": "./src",
+    "outDir": "./dist",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "paths": {
+      "@resources/*": ["../resources/*"],
+      "@/*": ["*"],
+    },
+    "types": [
+      "webpack-env"
+    ]
+  },
+  "include": [
+    "src/**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.js",
+    "scripts/**/*.js",
+    "scripts/**/*.mjs",
+    "webpack.config.js"
+  ]
+}

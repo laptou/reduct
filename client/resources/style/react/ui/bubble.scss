@@ -1,0 +1,125 @@
+#reduct-bubbles {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 50;
+
+  pointer-events: none;
+}
+
+.reduct-bubble-parent {
+  position: absolute;
+}
+
+.reduct-bubble {
+  --bubble-color: black;
+  --foreground: white;
+  position: absolute;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+
+  min-width: 10rem;
+  margin: auto;
+
+  color: white;
+
+  font-size: 0.9em;
+  font-family: 'Fira Sans', sans-serif;
+
+  pointer-events: all;
+}
+
+.reduct-bubble-inner {
+  min-width: 2rem;
+  min-height: 2rem;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+
+  background: var(--bubble-color);
+  box-shadow: 0 0 4pt rgba(black, 0.25);
+}
+
+.reduct-bubble-pointer {
+  z-index: 10;
+  overflow: visible;
+
+  width: 0.5rem;
+  height: 0.5rem;
+
+  polygon {
+    fill: var(--bubble-color);
+  }
+}
+
+.reduct-bubble-error {
+  --bubble-color: red;
+}
+
+.reduct-bubble-info {
+  --bubble-color: dodgerblue;
+}
+
+.reduct-bubble-auto {
+  visibility: none;
+}
+
+.reduct-bubble-bottom {
+  top: 100%;
+  left: 50%;
+
+  padding-top: 0.5rem;
+
+  transform: translate(-50%, 0) scale(var(--scale));
+  transform-origin: center top;
+}
+
+.reduct-bubble-top {
+  bottom: 100%;
+  left: 50%;
+
+  flex-flow: column-reverse nowrap;
+
+  padding-bottom: 0.5rem;
+
+  transform: translate(-50%, 0) scale(var(--scale));
+  transform-origin: center bottom;
+
+  .reduct-bubble-pointer {
+    transform: rotate(180deg);
+  }
+}
+
+.reduct-bubble-right {
+  top: 50%;
+  left: 100%;
+
+  flex-flow: row nowrap;
+
+  padding-left: 0.5rem;
+
+  transform: translate(0, -50%) scale(var(--scale));
+  transform-origin: left center;
+
+  .reduct-bubble-pointer {
+    transform: rotate(270deg);
+  }
+}
+
+.reduct-bubble-left {
+  top: 50%;
+  right: 100%;
+
+  flex-flow: row-reverse nowrap;
+
+  padding-right: 0.5rem;
+
+  transform: translate(0, -50%) scale(var(--scale));
+  transform-origin: right center;
+
+  .reduct-bubble-pointer {
+    transform: rotate(90deg);
+  }
+}

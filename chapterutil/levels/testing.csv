@@ -1,8 +1,0 @@
-board,goal,textgoal,,toolbox,defines,globals,syntax,animationScales,fade
-"['x => C', '__tests(testMe(A), testMe(B))']","['C', 'C']",,,[''],,{},[],{},{}
-"['__tests(testMe(A), testMe(C))']","['A', 'A']",,,"['x => A', 'x => B', 'x => C']",,{},[],{},{}
-"['__tests(testMe(2), testMe(6))']","['3', '7']",,,['__unlimited;addOne;'],,{},[],{},{}
-"['function starify(x) { return A; }', 'function squarify(x) { return B; }', '__tests(testMe(C), testMe(B))']","['A', 'A']",,,"['__unlimited; starify', '__unlimited; squarify']",,{},[],{},{}
-"['__argumentAnnotated; function threeify(x) { return _; }', '__tests(testMe(1),testMe(2),testMe(3))']","['3', '3', '3']",Define a function that outputs 3,,"['__unlimited; threeify', 'x => _', 'x', '1', '2', '3']",['function threeify(x) { return 3; }'],{},[],{},{}
-"['__tests(testMe(2), testMe(3), testMe(1))']","['2', '3', '4']",,,"['threeify', 'addOne', 'doNothing']",,{},[],{},{}
-"['function addThree(x) { return _; }', '__tests(testMe(2), testMe(6))', 'x']","['5', '9']",Define a function that computes x plus 3,,"['__unlimited; _(_)', '__unlimited; addThree', 'addOne', 'addOne', 'addOne', '__unlimited;doNothing;']",['function addThree(x) { return addOne(addOne(addOne(x))); }'],{},[],{},{}

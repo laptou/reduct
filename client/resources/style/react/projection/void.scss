@@ -1,0 +1,22 @@
+@use '../theme';
+@use 'layout';
+@use 'fx';
+@use 'sass:color';
+
+.projection.void {
+  @extend %projection-standalone;
+  @include fx.projection-shadow-box();
+  
+  align-items: center;
+
+  margin: 0 0.25rem;
+
+  padding: 2px;
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+
+  background-color: black;
+  color: theme.$projection-foreground;
+
+  line-height: 1;
+}

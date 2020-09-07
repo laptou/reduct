@@ -1,0 +1,68 @@
+@use '../text';
+
+.projection {
+  --transform: scale(1);
+  position: relative;
+
+  margin-right: 0.125rem;
+  margin-left: 0.125rem;
+
+  font-weight: 700;
+  font-family: text.$mono-font;
+  white-space: nowrap;
+
+  user-select: none;
+
+  transform: var(--transform);
+  transform-origin: center center;
+}
+
+.projection-interaction-container {
+  // there may be multiple interaction containers inside an animation container
+  // while the projection is transitioning; they need to appear on top of each
+  // other
+  grid-row: 1;
+  grid-column: 1;
+
+  &.draggable {
+    cursor: grab;
+  }
+  
+  &.steppable {
+    cursor: pointer;
+  }
+  
+  &.frozen {
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  &.executing {
+    cursor: progress;
+
+    .projection {
+      pointer-events: none;
+    }
+  }
+
+  .reduct-bubble-error {
+    pointer-events: none;
+  }
+}
+
+.projection-animation-container {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+}
+
+.projection, .projection .content {
+  display: inline-flex;
+  vertical-align: middle;
+  align-items: stretch;
+}
+
+
+.projection-board-container {
+  position: absolute;
+}

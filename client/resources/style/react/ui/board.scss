@@ -1,0 +1,94 @@
+@use 'base';
+@use '../theme';
+
+#reduct-board {
+  position: relative;
+  grid-row: 2;
+  grid-column: 3 / 6;
+  overflow: hidden;
+
+  margin: 0.25rem;
+  border: 1.5px dashed rgba(black, 0.25);
+  border-radius: 0.25rem;
+
+  background: white;
+}
+
+#reduct-board-content {
+  grid-row: 2;
+  grid-column: 2;
+  overflow: hidden;
+}
+
+#reduct-board-inner {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+  overflow: visible;
+}
+
+.reduct-board-overflow {
+  position: absolute;
+
+  padding: 0.25rem;
+
+  background-color: rgba(white, 0.5);
+
+  text-align: center;
+  text-transform: lowercase;
+
+  cursor: pointer;
+
+  user-select: none;
+}
+
+#reduct-board-overflow-left, #reduct-board-overflow-right {
+  top: 0;
+  bottom: 0;
+
+  text-orientation: sideways;
+  writing-mode: vertical-lr;
+}
+
+#reduct-board-overflow-top, #reduct-board-overflow-bottom {
+  right: 0;
+  left: 0;
+}
+
+@mixin reduct-board-overflow($direction, $side) {
+  #reduct-board-overflow-#{$side} {
+    #{$side}: 0;
+  
+    &::before {
+      content: ' ';
+  
+      display: inline-block;
+      vertical-align: middle;
+  
+      width: 1em;
+      height: 1em;
+      margin: 0.25rem;
+  
+      background: url('~@resources/icon/#{$direction}-black-18dp.svg');
+    }
+
+    &::after {
+      content: ' ';
+  
+      display: inline-block;
+      vertical-align: middle;
+  
+      width: 1em;
+      height: 1em;
+      margin: 0.25rem;
+  
+      background: url('~@resources/icon/#{$direction}-black-18dp.svg');
+    }
+  }
+}
+
+@include reduct-board-overflow('left', 'left');
+@include reduct-board-overflow('right', 'right');
+@include reduct-board-overflow('up', 'top');
+@include reduct-board-overflow('down', 'bottom');

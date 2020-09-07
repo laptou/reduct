@@ -1,0 +1,51 @@
+@use '../theme';
+@use 'layout';
+@use 'fx';
+
+.projection.lambda {
+  @extend %projection-standalone;
+  @include fx.projection-shadow-box();
+
+  flex-flow: row-reverse nowrap;
+  gap: 0.25rem;
+
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+
+  background-color: white;
+  color: theme.$projection-foreground-inverse;
+
+  .lambda-args, .lambda-arrow, .lambda-body {
+    @extend %value-container;
+  }
+
+  .lambda-args {
+    // make the arg bigger so it's easier to drop things on it
+    margin: -2rem;
+    padding: 2rem;
+    border-radius: 0.25rem;
+
+    background-color: transparent;
+  }
+
+  .lambda-args-inner {
+    transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+    transform-origin: center center;
+  }
+
+  .lambda-args.hover {
+    border: 1px dashed rgba(black, 0.5);
+
+    background-color: rgba(white, 0.5);
+
+    color: theme.$projection-color-function;
+
+
+    .lambda-args-inner {
+      // to prevent messing with drag-drop
+      pointer-events: none;
+
+      transform: scale(1.5);
+    }
+  }
+}

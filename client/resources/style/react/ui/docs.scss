@@ -1,0 +1,102 @@
+@use '../theme';
+@use 'base';
+
+.docs-listing-container {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  align-content: stretch;
+  justify-content: stretch;
+  overflow: hidden;
+
+  text-align: center;
+}
+
+.docs-listing-tutorial {
+  grid-row: 1;
+
+  margin: 0 1rem 1rem;
+
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(black, 0.125);
+  }
+}
+
+.docs-listing-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 1fr;
+  align-content: stretch;
+
+  margin: 0;
+  padding: 0;
+
+  background: white;
+
+  list-style: none;
+}
+
+.docs-listing-item {
+  display: grid;
+  flex-grow: 1;
+  flex-basis: 50%;
+  align-content: center;
+
+  min-width: 6rem;
+  padding: 1rem;
+
+  outline: 1px dashed rgba(black, 0.5);
+  outline-offset: -0.25rem;
+
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(black, 0.125);
+  }
+}
+
+.docs-listing-item-thumbnail {
+  object-fit: contain;
+
+  width: 100%;
+  max-height: 4rem;
+}
+
+.docs-listing-item-label {
+  margin: 0.5rem 0 0;
+}
+
+.docs-page-container {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  justify-content: center;
+  justify-self: center;
+
+  min-width: 20rem;
+  max-width: 40rem;
+  max-height: 100%;
+  padding: 5rem 0;
+
+  p {
+    line-height: 2em;
+  }
+}
+
+.docs-page-header {
+  width: 100%;
+
+  padding: 0 5rem;
+}
+
+.docs-page-content {
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  width: 100%;
+
+  padding: 0 5rem;
+
+  border-top: 1px dashed rgba(white, 0.5);
+  border-bottom: 1px dashed rgba(white, 0.5);
+}

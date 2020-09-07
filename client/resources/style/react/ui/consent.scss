@@ -1,0 +1,39 @@
+#reduct-consent {
+  width: 100%;
+  max-width: 60rem;
+  height: 100%;
+  margin: 2rem auto;
+
+  .reduct-logo {
+    display: block;
+
+    margin: 2rem auto;
+  }
+
+  p {
+    margin: 1.5rem 0;
+
+    line-height: 1.75em;
+    white-space: pre-wrap;
+  }
+}
+
+.reduct-consent-highlight {
+  margin: 1rem -2rem;
+  padding: 2rem;
+
+  background-color: #eeeeee;
+
+  font-size: 1.25em;
+}
+
+#reduct-consent-buttons {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 1rem;
+  justify-content: flex-end;
+
+  button {
+    font-size: inherit;
+  }
+}

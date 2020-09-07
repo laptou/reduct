@@ -1,0 +1,115 @@
+@use '../text';
+@use '../theme';
+
+button, .btn {
+  padding: 0.5em 1em;
+  
+  border: none;
+  border-radius: 0.25rem;
+
+  font-size: 0.9rem;
+
+  font-family: text.$body-font;
+
+  text-align: center;
+
+  cursor: pointer;
+}
+
+@mixin btn($name, $color-default, $color-highlight, $is-inverse) {
+  @if $is-inverse {
+    .btn-#{$name} {
+      border-color: $color-default;
+
+      background: white;
+      color: $color-default;
+    }
+
+    .btn-#{$name}:enabled:hover,
+    .btn-#{$name}:enabled:focus,
+    .btn-#{$name}:enabled:active {
+      border-color: $color-highlight;
+
+      color: $color-default;
+    }
+  }
+  @else {
+    .btn-#{$name} {
+      background: $color-default;
+      color: black;
+    }
+
+    .btn-#{$name}:enabled:hover,
+    .btn-#{$name}:enabled:focus,
+    .btn-#{$name}:enabled:active {
+      background: $color-highlight;
+    }
+  }
+
+  .btn-#{$name} {
+    position: relative;
+
+    border-width: 1px;
+    border-style: solid;
+
+    box-shadow: 0 1pt 4pt rgba(black, 0.25);
+  }
+
+  .btn-#{$name}:enabled:hover, .btn-#{$name}:enabled:focus {
+    outline: none;
+
+    &::before {
+      content: ' ';
+      position: absolute;
+      top: -0.25rem;
+      right: -0.25rem;
+      bottom: -0.25rem;
+      left: -0.25rem;
+
+      border-width: 1px;
+      border-color: black;
+      border-radius: 0.5rem;
+    }
+  }
+
+  .btn-#{$name}:enabled:hover::before {
+    border-style: dashed;
+  }
+
+  .btn-#{$name}:enabled:focus::before {
+    border-style: solid;
+  }
+
+  .btn-#{$name}:enabled:active {
+    box-shadow: none;
+  }
+
+  .btn-#{$name}:disabled {
+    box-shadow: none;
+
+    opacity: 0.56;
+    cursor: default;
+  }
+}
+
+// stylelint-disable max-line-length
+@include btn('default', theme.$accent-1-default, theme.$accent-1-highlight, false);
+@include btn('default-inv', theme.$accent-1-inverse-default, theme.$accent-1-inverse-highlight, true);
+@include btn('primary', theme.$accent-2-default, theme.$accent-2-highlight, false);
+@include btn('primary-inv', theme.$accent-2-inverse-default, theme.$accent-2-inverse-highlight, true);
+@include btn('secondary', theme.$accent-3-default, theme.$accent-3-highlight, false);
+@include btn('secondary-inv', theme.$accent-3-inverse-default, theme.$accent-3-inverse-highlight, true);
+@include btn('special', theme.$accent-4-default, theme.$accent-4-highlight, false);
+@include btn('special-inv', theme.$accent-4-inverse-default, theme.$accent-4-inverse-highlight, true);
+@include btn('danger', theme.$accent-5-default, theme.$accent-5-highlight, false);
+@include btn('danger-inv', theme.$accent-5-inverse-default, theme.$accent-5-inverse-highlight, true);
+// stylelint-enable max-line-length
+
+.btn-flat {
+  border: none;
+
+  background: transparent;
+  color: var(--foreground);
+
+  font-family: text.$body-font;
+}

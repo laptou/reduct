@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"name": "client",
+			"path": "client"
+		},
+		{
+			"name": "server",
+			"path": "server"
+		},
+		{
+			"name": "reduct-redux",
+			"path": "."
+		}
+	],
+	"settings": {
+		"typescript.tsdk": "reduct-redux/node_modules/typescript/lib"
+	}
+}
