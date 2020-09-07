@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { Modal } from '../modal';
+
+import { log } from '@/logging/logger';
 
 interface ErrorDisplayProps {
   resetError(): void;
 }
 
 export const ErrorDisplay: React.FC<ErrorDisplayProps> = (props) => {
+  log('game:crash');
+
   return (
     <Modal>
       <div

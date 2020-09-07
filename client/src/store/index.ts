@@ -5,6 +5,7 @@ import { ActionKind } from './action/game';
 import { createReducer } from './reducer';
 
 import { logMiddleware } from '@/logging';
+import { log } from '@/logging/logger';
 
 let composer;
 
@@ -26,4 +27,15 @@ export const store = createStore(
   composer(applyMiddleware(logMiddleware))
 );
 
-export const persistor = persistStore(store, { manualPersist: true } as any);
+export const persistor = persistStore(store, { manualPersist: true } as any, () => {
+  const state = store.getState();
+
+  const levels = Object.fromEntries(state.stats.levels.entries());
+  const startTime = state.stats.startTime;
+
+  log('game:rehydrate');
+  log('game:stats', {
+    levels,
+    startTime,
+  });
+});

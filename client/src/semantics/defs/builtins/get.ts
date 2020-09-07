@@ -48,7 +48,7 @@ export function builtinGet(self: DRF<BuiltInIdentifierNode>,
     return produce(state, draft => {
       draft.nodes.set(referenceNode.id, referenceNode);
       draft.added.set(referenceNode.id, self.id);
-      draft.returned = referenceNode.id;
+      draft.returned = [referenceNode.id];
     });
   } else {
     const result = cloneNodeAndAddDeep(targetNode.id, state.nodes);

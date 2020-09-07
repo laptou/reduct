@@ -59,7 +59,7 @@ module.exports = (env) => ({
     path: path.resolve(__dirname, 'dist'),
     crossOriginLoading: 'anonymous',
     publicPath: '/',
-    chunkFilename: env.production ? '[name]-[chunkhash].js' : undefined,
+    chunkFilename: env.production ? '[name].js?id=[chunkhash]' : undefined,
   },
   module: {
     rules: [
@@ -190,7 +190,7 @@ module.exports = (env) => ({
       'PKG_VERSION': JSON.stringify(require('./package.json').version),
       'process.env.NODE_ENV': JSON.stringify(env.production ? 'production' : 'development'),
     }),
-    new CleanPlugin(),
+    // new CleanPlugin(),
     // new TsCheckerPlugin({
     //   workers: TsCheckerPlugin.TWO_CPUS_FREE,
     //   eslint: true,

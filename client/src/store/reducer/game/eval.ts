@@ -1,4 +1,5 @@
 import { castDraft, produce } from 'immer';
+import * as Sentry from '@sentry/react';
 
 import {
   ActionKind, createEvalApply, createEvalConditional, createEvalIdentifier, createEvalLambda, createEvalLet, createEvalNot, createEvalOperator, createMoveNodeToBoard, createReturn, createStep, ReductAction,
@@ -251,9 +252,9 @@ export function gameEvalReducer(
     case '==':
     {
       if (leftNode.type !== 'number'
-              && leftNode.type !== 'string'
-              && leftNode.type !== 'boolean'
-              && leftNode.type !== 'symbol')
+          && leftNode.type !== 'string'
+          && leftNode.type !== 'boolean'
+          && leftNode.type !== 'symbol')
         throw new WrongTypeError(leftNode.id, [
           'number', 'string', 'boolean', 'symbol',
         ], leftNode.type);
@@ -304,6 +305,9 @@ export function gameEvalReducer(
 
     const positiveNode = state.nodes.get(blockNode.subexpressions.positive)!;
     const negativeNode = state.nodes.get(blockNode.subexpressions.negative)!;
+
+    if (condNode.type === 'missing')
+      throw new MissingNodeError(condNode.id);
 
     if (condNode.type !== 'boolean')
       throw new WrongTypeError(condNode.id, ['boolean'], condNode.type);
@@ -526,6 +530,10 @@ export function gameEvalReducer(
       throw new Error(`Cannot step a ${targetNode.type}`);
     }
 
+    if (state.error) {
+      return state;
+    }
+
     return gameEvalReducer(state, createReturn(targetNodeId));
   }
 
@@ -551,6 +559,16 @@ export function gameEvalReducer(
 
       for (const returnedNodeId of draft.returned) {
         const returnedNode = draft.nodes.get(returnedNodeId)!;
+
+        if (!returnedNode) {
+          Sentry.captureEvent({
+            level: Sentry.Severity.Warning,
+            message: `returned node ${returnedNodeId} was not found; returned from ${targetNodeId} (${JSON.stringify(targetNode)})`,
+          });
+        }
+
+        if (returnedNode.type === 'missing')
+          throw new MissingNodeError(returnedNodeId);
 
         // replace the target node with the returned node
         if (targetNode.parent) {
@@ -620,14 +638,16 @@ export function gameEvalReducer(
       }
     }
 
+    const newTargetNode = state.nodes.get(targetNodeId)!;
+
     // if it was replaced by other nodes or is no longer steppable, add those to
     // the execution list
     if (state.removed.has(targetNodeId)
-    || getKindForNode(targetNode, state.nodes) !== 'expression')
+    || getKindForNode(newTargetNode, state.nodes) !== 'expression')
       executing.delete(targetNodeId);
 
-    for (const [nodeId, sourceId] of state.added) {
-      if (sourceId !== targetNodeId)
+    for (const nodeId of state.returned) {
+      if (isAncestorOf(nodeId, targetNodeId, state.nodes))
         continue;
 
       const newNode = state.nodes.get(nodeId)!;

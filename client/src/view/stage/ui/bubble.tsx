@@ -1,10 +1,12 @@
 import React, {
-  ReactChild, useState, useRef, useMemo, useLayoutEffect,
+  ReactChild, useCallback, useLayoutEffect, useRef, useState,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { animated, useTransition } from 'react-spring';
 
-interface BubbleProps {
+import { useTimer } from './util';
+
+export interface BubbleProps {
   /**
    * True if this bubble should be displayed.
    */
@@ -13,7 +15,13 @@ interface BubbleProps {
   /**
    * The type of bubble this is. Currently only controls the color.
    */
-  type: 'error';
+  type: 'error' | 'info';
+
+  /**
+   * True if this bubble should continuously check if the parent element's
+   * boundaries have changed.
+   */
+  update?: boolean;
 
   children: ReactChild;
 }
@@ -27,7 +35,7 @@ enum BubbleSide {
 }
 
 export const Bubble: React.FC<BubbleProps> = ({
-  children, type, show,
+  children, type, show, update,
 }) => {
   const baseDivRef = useRef<HTMLDivElement>(null);
   const bubbleDivRef = useRef<HTMLDivElement>(null);
@@ -59,12 +67,8 @@ export const Bubble: React.FC<BubbleProps> = ({
     },
   });
 
-  // bubble is shown at the edge of its parent element, so we need to find out
-  // which side we should show the bubble on to avoid being clipped
-  useLayoutEffect(() => {
-    if (!show) {
-      return;
-    }
+  const measure = useCallback(() => {
+    if (!show) return;
 
     const bubbleDiv = bubbleDivRef.current!;
     const bubbleBounds = bubbleDiv.getBoundingClientRect();
@@ -103,6 +107,12 @@ export const Bubble: React.FC<BubbleProps> = ({
       height: parentBounds.height,
     });
   }, [show]);
+
+  useTimer(measure, 100, update ?? false);
+
+  // bubble is shown at the edge of its parent element, so we need to find out
+  // which side we should show the bubble on to avoid being clipped
+  useLayoutEffect(measure, [measure]);
 
   return (
     <div ref={baseDivRef}>

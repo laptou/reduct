@@ -17,11 +17,19 @@ interface ExecBubbleProps {
    * Called when the user fast-forwards the execution.
    */
   onSkip: () => void;
+
+  /**
+   * A dummy object that can be changed when the boundaries of the bubble need
+   * to be updated.
+   */
+  update?: any;
 }
 
-export const ExecBubble: React.FC<ExecBubbleProps> = ({ executing, onStop, onSkip }) => {
+export const ExecBubble: React.FC<ExecBubbleProps> = ({
+  executing, onStop, onSkip, update,
+}) => {
   return (
-    <Bubble type='info' show={executing}>
+    <Bubble type='info' show={executing} update={update}>
       <button type='button' className='btn-flat' onClick={e => { e.stopPropagation(); onStop(); }}>
         Stop
       </button>

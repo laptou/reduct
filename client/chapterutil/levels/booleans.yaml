@@ -34,7 +34,7 @@ levels:
       - 1
       - 2
       - 5
-    hint: Make a function that tells us whether a number is big or little, then duplicate it.
+    hint: Make a function that tells us whether a number is greater than 2, then duplicate it.
   - board:
       - "number == _ ? _ : _"
       - "number < _ ? _ : _"
@@ -47,7 +47,7 @@ levels:
       - 8
       - 5
       - func => __tuple(func, func, func)
-      - __note('A number is cool if it is between 3 and 7 (inclusive), unless it is 5.')
+      - __note('A number is cool if it is between 3 and 7 (inclusive), unless it is 5.\n\nMake a function that tells us whether a number is cool.')
     toolbox:
       - 4
       - 5
@@ -56,4 +56,3 @@ levels:
       - "'cool'"
       - "'not cool'"
       - "'not cool'"
-    hint: Make a function that tells us whether a number is cool.

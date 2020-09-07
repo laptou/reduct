@@ -5,6 +5,7 @@ import { enableMapSet } from 'immer';
 import 'react-hot-loader';
 import { initReactApp } from './view';
 import { startLogging } from './logging/logger';
+import { getNetId } from './auth';
 
 
 if (PKG_ENV === 'production') {
@@ -22,6 +23,12 @@ startLogging();
 try {
   console.log(`Reduct v${PKG_VERSION} ${PKG_ENV}`);
   initReactApp();
+  getNetId()
+    .then(netId =>
+      Sentry.configureScope((scope) => {
+        scope.setUser({ id: netId });
+      }))
+    .catch(error => Sentry.captureException(error));
 } catch (error) {
   if (PKG_ENV === 'production')
     Sentry.captureException(error);

@@ -299,11 +299,22 @@ const BoardImpl: FunctionComponent<BoardProps> =
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [boardItemRefs, positions]);
 
+    const resizeObserver = new ResizeObserver(() => requestAnimationFrame(() => {
+      if (!boardRef.current) return;
+      const boardDiv = boardRef.current;
+      boardBounds.current = boardDiv.getBoundingClientRect();
+    }));
+
     // update the size of the board
     useLayoutEffect(() => {
       if (!boardRef.current) return;
-      boardBounds.current = boardRef.current.getBoundingClientRect();
-    }, []);
+      const boardDiv = boardRef.current;
+
+      boardBounds.current = boardDiv.getBoundingClientRect();
+      resizeObserver.observe(boardDiv);
+
+      return () => resizeObserver.disconnect();
+    }, [resizeObserver]);
 
     // use useLayoutEffect instead of useEffect b/c this needs to execute after
     // React has created elements but before the browser can paint (to avoid

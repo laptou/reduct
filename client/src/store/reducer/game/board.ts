@@ -137,10 +137,10 @@ export function gameBoardReducer(
       throw new WrongTypeError(nodeId, 'define', defNode.type);
 
     // search for any unfilled slots
-    const [slot] = findNodesDeep(nodeId, state.nodes, (node) => node.type === 'missing');
+    const slots = findNodesDeep(nodeId, state.nodes, (node) => node.type === 'missing');
 
-    if (slot)
-      throw new MissingNodeError(slot.id);
+    if (slots.length > 0)
+      throw new MissingNodeError(slots[0].id);
 
     return produce(state, draft => {
       draft.globals.set(defNode.fields.name, nodeId);

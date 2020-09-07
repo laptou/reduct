@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import React, {
-  FunctionComponent, useEffect, useState, useRef,
+  FunctionComponent, useEffect, useState, useRef, useReducer,
 } from 'react';
 import { connect } from 'react-redux';
 import { useTransition, animated } from 'react-spring';
@@ -233,8 +233,13 @@ const StageProjectionImpl: FunctionComponent<StageProjectionProps> =
                 onClick={e => onClick(e, props)}
               >
                 {getProjectionForNode(node)}
-                <ErrorBubble error={error} />
+
+                <ErrorBubble
+                  update={true}
+                  error={error}
+                />
                 <ExecBubble
+                  update={true}
                   executing={executing}
                   onStop={() => stopExec()}
                   onSkip={() => setFast(true)}
