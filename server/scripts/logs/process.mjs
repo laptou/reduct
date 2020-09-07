@@ -1,8 +1,12 @@
 import { dirname, resolve } from 'path';
+import { createWriteStream, promises as fs } from 'fs';
+
+import csv from 'csv';
 
 import { detectExistingLogs } from './detect.mjs';
 import { readChunk } from './read.mjs';
 
+const { mkdir, writeFile } = fs;
 const scriptDirectory = dirname(new URL(import.meta.url).pathname);
 const dataDirectory = resolve(scriptDirectory, '../../data');
 
@@ -26,6 +30,8 @@ const dataDirectory = resolve(scriptDirectory, '../../data');
 async function main() {
   /** @type {Map<string, SessionInfo>} */
   const sessions = new Map();
+  const recordsByNetId = new Map();
+  const statsByNetId = new Map();
   const {
     batchCount,
     batchChunkCounts,
@@ -56,69 +62,108 @@ async function main() {
           levelInfos: {},
           currentLevelInfo: {
             index: 0,
-            startTime: null,
+            startTime: time,
+            resumeTime: time,
             totalDuration: null,
             complete: false,
           },
         });
 
-        if (entry.netId === 'td273')
-          console.log(entry);
+        const recordsForNetId = getOrDefault(recordsByNetId, entry.netId, []);
 
         switch (entry.action) {
         case 'session:start':
           if (!session.startTime) {
             session.startTime = time;
           }
+          recordsForNetId.push(entry);
           break;
         case 'game:reset-time':
           session.startTime = time;
+          recordsForNetId.push(entry);
           break;
         case 'research:consent':
           session.consent = entry.consent;
+
+          // reset everything b/c this event means that they reset their cookies
+          session.levelsCompleted = 0;
+          session.levelInfos = {};
+          session.currentLevelInfo = {
+            index: 0,
+            startTime: time,
+            resumeTime: time,
+            totalDuration: null,
+            complete: false,
+          };
+
+          recordsForNetId.push(entry);
           break;
         case 'game:stats': {
+          const existing = statsByNetId.get(entry.netId);
+
+          if (!existing) {
+            statsByNetId.set(entry.netId, entry.levels);
+            break;
+          }
+
           const numCompleted = Object
             .entries(entry.levels)
             .filter(([, stats]) => stats.complete)
             .length;
 
-          if (numCompleted > session.levelsCompleted) {
-            session.levelsCompleted = Math.max(numCompleted, session.levelsCompleted);
-            session.levelInfos = entry.levels;
+          const oldNumCompleted = Object
+            .entries(existing)
+            .filter(([, stats]) => stats.complete)
+            .length;
+
+          if (numCompleted > oldNumCompleted) {
+            statsByNetId.set(entry.netId, entry.levels);
           }
 
-          if (entry.netId === 'td273')
-            debugger;
-
+          recordsForNetId.push(entry);
           break;
         }
         case 'game:start-level':
-          session.currentLevelInfo.index = entry.levelIndex;
-          session.currentLevelInfo.startTime = time;
+          session.levelInfos[session.currentLevelInfo.index] = session.currentLevelInfo;
+          session.currentLevelInfo = entry.levelIndex in session.levelInfos
+            ? session.levelInfos[entry.levelIndex]
+            : (session.levelInfos[entry.levelIndex] = {
+              index: entry.levelIndex,
+              startTime: time,
+              resumeTime: time,
+              totalDuration: null,
+              complete: false,
+            });
+
+          session.currentLevelInfo.resumeTime = time;
+          recordsForNetId.push(entry);
           break;
         case 'game:victory': {
-          if (session.levelInfos[session.currentLevelInfo.index]) continue;
+          if (!session.currentLevelInfo) {
+            console.warn(`found victory with no start-level: ${entry.eventId}`);
+            continue;
+          }
 
           session.currentLevelInfo.complete = true;
-          const duration = +time - session.currentLevelInfo.startTime;
+          const duration = +time - session.currentLevelInfo.resumeTime;
           session.currentLevelInfo.totalDuration = duration;
           session.levelInfos[session.currentLevelInfo.index] = session.currentLevelInfo;
-          session.currentLevelInfo = {
-            index: session.currentLevelInfo.index + 1,
-            startTime: null,
-            totalDuration: null,
-            complete: false,
-          };
-
-          if (entry.netId === 'td273')
-            debugger;
+          session.currentLevelInfo = entry.levelIndex in session.levelInfos
+            ? session.levelInfos[entry.levelIndex]
+            : (session.levelInfos[entry.levelIndex] = {
+              index: entry.levelIndex,
+              startTime: time,
+              resumeTime: time,
+              totalDuration: null,
+              complete: false,
+            });
 
           const numCompleted = Object
             .entries(session.levelInfos)
             .filter(([, stats]) => stats.complete)
             .length;
           session.levelsCompleted = Math.max(numCompleted, session.levelsCompleted);
+          recordsForNetId.push(entry);
           break;
         }
         }
@@ -136,6 +181,17 @@ async function main() {
   console.log(`${researchPlayers.length} players consented to research`);
   console.log(`${noResearchPlayers.length} players did not consent to research`);
 
+  const columns = ['netId', 'mode'];
+  for (let i = 0; i < 32; i++) {
+    columns.push(`level${i}`);
+  }
+  columns.push('total');
+
+  const str = csv.stringify({
+    header: true,
+    columns,
+  });
+
   for (const [netId, session] of sessions) {
     const totalGameDuration = Object
       .values(session.levelInfos)
@@ -146,7 +202,56 @@ async function main() {
       `${netId}:\t`
       + `started ${session.startTime}\t`
       + `completed ${session.levelsCompleted}\t`
-      + `in ${totalGameDuration}ms (${totalGameDuration / 60 / 1000}min)`);
+      + `in ${totalGameDuration}ms (${(totalGameDuration / 60 / 1000).toFixed(2)}min)`);
+
+
+    const serverInfo = session.levelInfos;
+    const clientInfo = statsByNetId.get(netId);
+
+    const serverCsvEntry = {
+      netId,
+      mode: 'server',
+      total: 0,
+    };
+
+    const clientCsvEntry = {
+      netId,
+      mode: 'client',
+      total: 0,
+    };
+
+    for (let i = 0; i < 32; i++) {
+      const serverLevelInfo = serverInfo && serverInfo[i];
+      const clientLevelInfo = clientInfo && clientInfo[i];
+
+      if (serverLevelInfo && serverLevelInfo.complete) {
+        const duration = serverLevelInfo.totalDuration > 1000
+          ? serverLevelInfo.totalDuration / 60 / 1000
+          : 0.5;
+        serverCsvEntry[`level${i}`] = duration.toFixed(3);
+        serverCsvEntry.total += duration;
+      }
+
+      if (clientLevelInfo && clientLevelInfo.complete) {
+        const duration = clientLevelInfo.playDuration / 60 / 1000;
+
+        clientCsvEntry[`level${i}`] = duration.toFixed(3);
+        clientCsvEntry.total += duration;
+      }
+    }
+
+    str.write(serverCsvEntry);
+    str.write(clientCsvEntry);
+  }
+
+  str.pipe(createWriteStream(resolve(dataDirectory, 'players/_all.csv')));
+
+  for (const [netId, entries] of recordsByNetId) {
+    await writeFile(
+      resolve(dataDirectory, `players/${netId}.json`),
+      entries.map(JSON.stringify).join('\n'),
+      'utf-8'
+    );
   }
 }
 

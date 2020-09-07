@@ -5,7 +5,7 @@ import {
   ActionKind, createEvalApply, createEvalConditional, createEvalIdentifier, createEvalLambda, createEvalLet, createEvalNot, createEvalOperator, createMoveNodeToBoard, createReturn, createStep, ReductAction,
 } from '../../action/game';
 import {
-  CircularCallError, GameError, InvalidActionError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongTypeError,
+  CircularCallError, GameError, InvalidActionError, MissingNodeError, NotOnBoardError, RecursiveNodeError, UnknownNameError, WrongTypeError,
 } from '../../errors';
 import { GameState } from '../../state';
 
@@ -73,7 +73,9 @@ export function gameEvalReducer(
     if (!state.board.has(getRootForNode(lambdaNodeId, state.nodes).id))
       throw new NotOnBoardError(lambdaNodeId);
 
-    if (lambdaNodeId === paramNodeId || isAncestorOf(paramNodeId, lambdaNodeId, state.nodes))
+    if (lambdaNodeId === paramNodeId
+      || isAncestorOf(paramNodeId, lambdaNodeId, state.nodes)
+      || isAncestorOf(lambdaNodeId, paramNodeId, state.nodes))
       throw new CircularCallError(lambdaNodeId);
 
     const lambdaNode = state.nodes.get(lambdaNodeId) as DRF<LambdaNode>;

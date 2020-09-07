@@ -14,6 +14,7 @@ const dataDirectory = resolve(scriptDirectory, '../../data');
 async function main() {
   if (!global.gc) {
     console.error('usage: node --expose-gc download.mjs');
+    return;
   }
 
   let numEntriesDownloaded = 0;

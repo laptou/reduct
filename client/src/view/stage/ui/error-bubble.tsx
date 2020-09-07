@@ -3,7 +3,7 @@ import React from 'react';
 import { Bubble } from './bubble';
 
 import {
-  AlreadyFullyBoundError, BuiltInError, CircularCallError, GameError, InvalidActionError, MissingNodeError, NotOnBoardError, UnknownNameError, WrongBuiltInParamsCountError, WrongTypeError,
+  AlreadyFullyBoundError, BuiltInError, CircularCallError, GameError, InvalidActionError, MissingNodeError, NotOnBoardError, RecursiveNodeError, UnknownNameError, WrongBuiltInParamsCountError, WrongTypeError,
 } from '@/store/errors';
 
 interface ErrorBubbleProps {
@@ -49,6 +49,10 @@ export const ErrorBubble: React.FC<ErrorBubbleProps> = ({ error, update }) => {
 
   if (error instanceof InvalidActionError) {
     message = 'You can\'t do that.';
+  }
+
+  if (error instanceof RecursiveNodeError) {
+    message = 'You can\'t drag a node into itself.';
   }
 
   if (error instanceof BuiltInError) {

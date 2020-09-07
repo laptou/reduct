@@ -76,7 +76,7 @@ export const Bubble: React.FC<BubbleProps> = ({
     // bubble is positioned at the edge of its parent, so
     // we need parent bound size
     const parent = baseDivRef.current!.parentElement!;
-    const parentBounds = parent.getBoundingClientRect();
+    const newParentBounds = parent.getBoundingClientRect();
 
     // travel upwards until we find an element that doesn't have
     // overflow: visible
@@ -91,20 +91,20 @@ export const Bubble: React.FC<BubbleProps> = ({
 
     const clipBounds = clip.getBoundingClientRect();
 
-    if (bubbleBounds.height < clipBounds.bottom - parentBounds.bottom)
+    if (bubbleBounds.height < clipBounds.bottom - newParentBounds.bottom)
       setSide(BubbleSide.Bottom);
-    else if (bubbleBounds.height < parentBounds.top - clipBounds.top)
+    else if (bubbleBounds.height < newParentBounds.top - clipBounds.top)
       setSide(BubbleSide.Top);
-    else if (bubbleBounds.width < clipBounds.right - parentBounds.right)
+    else if (bubbleBounds.width < clipBounds.right - newParentBounds.right)
       setSide(BubbleSide.Right);
-    else if (bubbleBounds.width < parentBounds.left - clipBounds.left)
+    else if (bubbleBounds.width < newParentBounds.left - clipBounds.left)
       setSide(BubbleSide.Left);
 
     setParentBounds({
-      top: parentBounds.top,
-      left: parentBounds.left,
-      width: parentBounds.width,
-      height: parentBounds.height,
+      top: newParentBounds.top,
+      left: newParentBounds.left,
+      width: newParentBounds.width,
+      height: newParentBounds.height,
     });
   }, [show]);
 

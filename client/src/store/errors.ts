@@ -27,6 +27,12 @@ export abstract class GameError extends Error {
 export class MissingNodeError extends GameError {
 }
 
+/**
+ * This error is thrown when the user tries to make a node a child of itself.
+ */
+export class RecursiveNodeError extends GameError {
+}
+
 type NodeType = ReductNode['type'];
 
 /**

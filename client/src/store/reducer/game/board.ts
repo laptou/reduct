@@ -3,10 +3,12 @@ import { castDraft, produce } from 'immer';
 import {
   ActionKind, createDetach, createMoveNodeToBoard, ReductAction,
 } from '../../action/game';
-import { InvalidActionError, MissingNodeError, WrongTypeError } from '../../errors';
+import {
+  InvalidActionError, MissingNodeError, RecursiveNodeError, WrongTypeError,
+} from '../../errors';
 import { GameState } from '../../state';
 
-import { cloneNodeAndAddDeep, findNodesDeep } from '@/util/nodes';
+import { cloneNodeAndAddDeep, findNodesDeep, isAncestorOf } from '@/util/nodes';
 import { DeepReadonly } from '@/util/helper';
 import { createMissingNode, getKindForNode } from '@/semantics/util';
 
@@ -95,6 +97,9 @@ export function gameBoardReducer(
     const { slotId, nodeId } = act;
 
     state = gameBoardReducer(state, createMoveNodeToBoard(nodeId));
+
+    if (isAncestorOf(slotId, nodeId, state.nodes))
+      throw new RecursiveNodeError(slotId);
 
     const newState = produce(state, draft => {
       const slot = draft.nodes.get(slotId);
